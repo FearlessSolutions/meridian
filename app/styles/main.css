@@ -1,0 +1,192 @@
+/* This is required for loading a map. */
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.banner {
+    height: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    width: auto;
+    background-color: green;
+    color: white;
+    line-height: 1.2em;
+}
+
+body.embed .banner {
+    display: none;
+}
+
+#mapContainer {
+    height: calc(100% - 32px);
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+body.embed #mapContainer {
+    height: 100%;
+}
+
+.container-fluid {
+    width: 100%;
+    position: absolute;
+    top: 0;
+}
+
+/*****************/
+/* Color Schemes */
+/*****************/
+.label-navy {
+    background-color: #396A92;
+}
+.label-navy:hover {
+    background-color: #848586;
+}
+
+.label-red {
+    background-color: #D61C1F;
+}
+.label-red:hover {
+    background-color: #86B8B1;
+}
+    
+.label-forest {
+    background-color: #4C9B46;
+}
+.label-forest:hover {
+    background-color: #188266;
+}
+    
+.label-black {
+    background-color: #222;
+}
+.label-black:hover {
+    background-color: #777;
+}
+
+/***********/
+/* Styling */
+/***********/
+button::-moz-focus-inner, input::-moz-focus-inner {
+    border: 0;
+}
+
+a {
+    outline: 0;
+}
+
+.glyphicon, .caret {
+    color: #396A92;
+}
+.glyphicon:hover, .caret:hover, .btn-default-icon:hover .glyphicon {
+    color: #848586;
+}
+
+.btn-default-text {
+    background-color: #396A92;
+    border-color: #ccc;
+    color: #fff;
+}
+.btn-default-text .glyphicon,
+.btn-default-text .caret {
+    color: #fff;
+}
+.btn-default-text:hover {
+    color: #fff;
+    background-color: #848586;
+}
+
+.btn-default-icon {
+    background-color: #fff;
+    border-color: #396A92;
+    color: #396A92;
+}
+.btn-default-icon:hover {
+    background-color: #eee;
+    border-color: #57595A;
+    color: #848586;
+}
+.btn-default-icon.active {
+    color: #333333;
+    background-color: #ccc;
+    border-color: #adadad;
+}
+
+.btn-default-secondary {
+    background-color: #ccc;
+    border-color: #eee;
+}
+
+.btn-default-inverse {
+    background-color: #848586;
+    border-color: #eee;
+}
+
+.btn-default-inverse .glyphicon,
+.btn-default-inverse .caret {
+    color: #fff;
+}
+
+.auraComponentBtn{
+    display: inline;
+}
+
+/**********/
+/* Header */
+/**********/
+#header-nav {
+    z-index: 999;
+    top: 0;
+    margin-bottom: 0px;
+    min-height: initial;
+}
+
+#header-left {
+    display: inline;
+    float: left;
+    padding: 5px;
+}
+
+#left-buttons-container {
+    display: inline;
+    float: left;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#left-buttons-container > div {
+    display: inline;
+    float: left;
+    padding-left: 5px;
+}
+
+#right-buttons-container {
+    padding-bottom: 5px;
+    margin-right: 5px;
+}
+
+#right-buttons-container a {
+    display: inline;
+    float: right;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+#header-nav.navbar-default {
+    background-color: transparent;
+    background-color: rgba(256, 256, 256, 0.6);
+    border-color: transparent;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+#header-nave-tools, #rightSide-content {
+    padding-left: 5px;
+    padding-right: 5px;
+}

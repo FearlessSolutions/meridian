@@ -1,0 +1,6 @@
+div[data-aura-component=boilerplate] #boilerplateDiv{
+	background-color: red;
+}
+div[data-aura-component=boilerplate] .contentDiv{
+	background-color: blue;
+}

@@ -1,0 +1,77 @@
+<a href="#" id="internalPubsubTesterToggleButton" type="button" class="btn btn-default-icon bs-tooltip">
+    <span class="glyphicon glyphicon-random"></span>
+</a>
+<div id="internalPubsubTesterDialog" class="dialog fade">
+    <div class="dialog-dialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <button type="button" class="close" data-dismiss="dialog" aria-hidden="true">&times;</button>
+                <p class="dialog-title">Internal PubSub Tester</p>
+            </div>
+            <div class="dialog-body">
+                <div class="panel-group" id="accordion">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapseOne">
+                          <h4 class="panel-title">Publisher</h4>
+                        </a>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                      <div class="panel-body">
+                      
+                        <fieldset>
+                            <select id="internal-pub-channel">
+                                <option></option> {{!-- empty option tag left for placeholdeer text to occupy --}}
+                                {{#each channelList}}
+                                    <optgroup label="{{channelGroup}}">
+                                        {{#each channels}}
+                                            <option>{{this}}</option>
+                                        {{/each}}
+                                {{/each}}
+                            </select>
+                            <textarea id="internal-pub-message" class="form-control" rows="12"></textarea>
+                            <button id="publish" class="btn btn-default-text pull-right">Publish!</button>
+                        </fieldset>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapseTwo">
+                          <h4 class="panel-title">Subscriber</h4>
+                        </a>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse  in">
+                      <div class="panel-body">
+                        <fieldset>
+                            <div class="dropdown">
+                                <button class="dropdown-toggle btn btn-default " data-toggle="dropdown" href="#">
+                                    Channels
+                                    <b class="caret"></b>
+                                </button>
+                                <button id="subscribe" class="btn btn btn-default-text"><span class="glyphicon glyphicon-ok"></span>Update</button>
+                                <ul class="dropdown-menu dropdown-menu-form subscription-list" role="menu">
+                                    {{#each channelList}}
+                                        <span class="menu-group">{{channelGroup}}</span>
+                                        {{#each channels}}
+                                            <li>
+                                                <label class="checkbox">
+                                                    <input type="checkbox" channel="{{this}}">{{this}}
+                                                </label>
+                                            </LI>
+                                        {{/each}}
+                                        <br>
+                                    {{/each}}
+                                </ul>
+                            </div>
+                            <span id="clear-log-button" class="glyphicon glyphicon-remove-circle pull-right" data-toggle="tooltip" title="Clear Log Output"></span>
+                            <pre id="internal-sub-message" class="form-control" rows="12"></pre>
+                        </fieldset>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

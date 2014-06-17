@@ -1,0 +1,17 @@
+<td class="snapshotCell">
+	<div id="snapshot-{{queryId}}" class="snapshot" data-query-id="{{queryId}}" data-placement="top" data-title="{{name}}" data-container="body">
+		<img src="{{thumbnailURL}}" alt="..." class="img-rounded">
+
+		<span id="snapshot-{{queryId}}-settings" class="glyphicon glyphicon-cog bs-tooltip snapshot-settings"></span>
+
+		<div class="btn-group btn-toggle">
+			<button class="btn btn-xs btn-on btn-primary active">ON</button>
+			<button class="btn btn-xs btn-off btn-default">OFF</button>
+		</div>
+		<div class="badgePlacement"> {{! This nesting is required }}
+			<div class="badgeZone">
+				<span class="badge">0</span>				
+			</div>
+		</div>		
+	</div>
+</td>

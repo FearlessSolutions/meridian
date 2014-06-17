@@ -1,0 +1,9 @@
+.typeahead.dropdown-menu{
+    /*higher than the basemap component and the zoom component*/
+    /*last time tested, it was still under basemap component, so I made the item list shorter...*/
+    z-index: 1015;
+}
+
+#locator{
+	width: 450px;
+}

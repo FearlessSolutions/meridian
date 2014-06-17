@@ -1,0 +1,19 @@
+<div id="basemap-gallery" class="btn-group dropup">
+    <button class="btn btn-default btn-lg dropdown-toggle" type="button" data-toggle="dropdown" data-placement="right" 
+            data-title="{{defaultBasemap.label}}">
+        <span class="selection">
+            <img src="{{defaultBasemap.thumbnail}}" alt="..." class="img-rounded bs-tooltip">
+        </span>
+        <span class="caret basemap-caret"></span>
+    </button>
+    <ul class="dropdown-menu" id="basemap-selection">
+        {{#each basemaps}} 
+            <li>
+                <a href="" class="basemap" data-basemap="{{basemap}}">
+                    <img src="{{thumbnail}}" alt="..." class="img-rounded bs-tooltip" data-placement="right" 
+                    data-title="{{label}}">
+                </a>
+            </li>    
+        {{/each}}
+    </ul>
+</div>

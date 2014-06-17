@@ -1,0 +1,91 @@
+div[data-aura-component='controls/timeline'] #timeline {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 1010;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    background-color: rgba(256, 256, 256, 0.6);
+    border: 1px solid;
+    border-color: rgba(256, 256, 256, 0.6);
+    border-radius: 6px;
+    max-width: 500px;
+    overflow-x: auto;
+    padding-right: 5px;
+    padding-left: 5px;
+    display: none;
+}
+div[data-aura-component='controls/timeline'] #timeline:hover {
+    background-color: rgba(256, 256, 256, 1);
+    border: 1px solid #cccccc;
+}
+div[data-aura-component='controls/timeline'] #timeline .snapshot {
+    height: 70px;
+    width: 100px;
+    margin: 10px;
+}
+div[data-aura-component='controls/timeline'] #timeline .snapshot .btn-toggle {
+    position: relative;
+    top: 44px;
+    left: 10px;
+}
+div[data-aura-component='controls/timeline'] #timeline .snapshot img {
+    position: absolute;
+}
+div[data-aura-component='controls/timeline'] #timeline .snapshot .btn-toggle .btn-xs {
+    padding: 0px 3px;
+    font-size: 10px;
+    line-height: 1.5;
+    border-radius: 3px;
+}
+
+/*div[data-aura-component='controls/timeline'] #timeline .badge{
+    right: -6px;
+    top: -8px;
+    background-color: #2f96b4;
+    color: white;
+    -moz-box-shadow: 0 0 12px #999999;
+    -webkit-box-shadow: 0 0 12px #999999;
+    box-shadow: 0 0 12px #999999;    
+    position: relative;
+}*/
+
+div[data-aura-component='controls/timeline'] #timeline .badgePlacement{
+    right: -18px;
+    top: -26px;
+    width: 0; /* Without this, it still takes up room. */
+    position: relative;
+    overflow: visible;
+}
+div[data-aura-component='controls/timeline'] #timeline .badgeZone{
+    width: 90px; /* This gives the badge space to float right. */
+}
+div[data-aura-component='controls/timeline'] #timeline .badge{
+    background-color: #2f96b4;
+    color: white;
+    -moz-box-shadow: 0 0 12px #999999;
+    -webkit-box-shadow: 0 0 12px #999999;
+    box-shadow: 0 0 12px #999999;   
+    text-align: center; 
+    float: right;
+    width: auto;
+}
+div[data-aura-component='controls/timeline'] #timeline .badge.finished{
+    background-color: #51a351;
+}
+div[data-aura-component='controls/timeline'] #timeline .badge.error{
+    background-color: #bd362f;
+}
+div[data-aura-component='controls/timeline'] .snapshot.selected{
+    box-shadow: 0 7px 10px rgba(0, 0, 0, 0.50);
+}
+div[data-aura-component='controls/timeline'] .snapshot-menu {
+    z-index: 1090;
+}
+div[data-aura-component='controls/timeline'] .snapshot-settings {
+    top: 3px;
+    left: 3px;
+}
+div[data-aura-component='controls/timeline'] .snapshot-settings:hover {
+    cursor: pointer;
+}

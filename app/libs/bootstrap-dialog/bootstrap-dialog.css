@@ -1,0 +1,95 @@
+.dialog-dialog {
+  position: relative;
+  z-index: 1050;
+  width: auto;
+  margin: 10px;
+}
+
+.dialog-content {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #999999;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  outline: none;
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  background-clip: padding-box;
+}
+
+.dialog-header {
+  padding: 8px 14px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 18px;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #ebebeb;
+  border-radius: 5px 5px 0 0;
+}
+
+.dialog-header .close {
+  margin-top: -2px;
+}
+
+.dialog-title {
+  margin: 0;
+  line-height: 1.428571429;
+}
+
+.dialog-body {
+  position: relative;
+  padding: 20px;
+}
+
+.dialog-footer {
+  padding: 19px 20px 20px;
+  margin-top: 15px;
+  text-align: right;
+  border-top: 1px solid #e5e5e5;
+}
+
+.dialog-footer:before,
+.dialog-footer:after {
+  display: table;
+  content: " ";
+}
+
+.dialog-footer:after {
+  clear: both;
+}
+
+.dialog-footer:before,
+.dialog-footer:after {
+  display: table;
+  content: " ";
+}
+
+.dialog-footer:after {
+  clear: both;
+}
+
+.dialog-footer .btn + .btn {
+  margin-bottom: 0;
+  margin-left: 5px;
+}
+
+.dialog-footer .btn-group .btn + .btn {
+  margin-left: -1px;
+}
+
+.dialog-footer .btn-block + .btn-block {
+  margin-left: 0;
+}
+
+@media screen and (min-width: 768px) {
+  .dialog-dialog {
+    width: 600px;
+    margin: 35px -40px;
+    display: inline;
+  }
+  .dialog-content {
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  }
+}

@@ -1,0 +1,10 @@
+div[data-aura-component='displays/notifications']  {
+	float: right;
+	position: relative;
+}
+div[data-aura-component='displays/notifications'] #toast-container {
+    position: relative;
+    z-index: 1000;
+    top: 10px;
+    right: 10px;
+}

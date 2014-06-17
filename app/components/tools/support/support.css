@@ -1,0 +1,13 @@
+div[data-aura-component='tools/support'] #SupportDialog {
+    display: none;
+}
+div[data-aura-component='tools/support'] #SupportDialog .dialog-dialog {
+    width: 300px;
+    position: absolute;
+    z-index: 2000;
+    margin: 0;
+}
+div[data-aura-component='tools/support'] #SupportDialog .dialog-body {
+    padding: 0px 20px 0px 20px;
+    margin-bottom: 10px;
+}

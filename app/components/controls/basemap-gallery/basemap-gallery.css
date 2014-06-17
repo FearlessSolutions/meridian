@@ -1,0 +1,39 @@
+div[data-aura-component='controls/basemap-gallery'] #basemap-gallery {
+    position:absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 1010;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+}
+
+div[data-aura-component='controls/basemap-gallery'] #basemap-gallery .dropdown-toggle {
+    padding: 15px;
+    z-index: 50;
+}
+div[data-aura-component='controls/basemap-gallery'] #basemap-gallery .basemap-caret {
+    position: absolute;
+    top: 10px;
+    right: 5px;
+}
+div[data-aura-component='controls/basemap-gallery'] #basemap-selection {
+    min-width: 130px;
+    z-index: 20;
+}
+
+div[data-aura-component='controls/basemap-gallery'] #basemap-gallery .dropdown-menu > li > a {
+    padding: 10px;
+}
+div[data-aura-component='controls/basemap-gallery'] #basemap-gallery .basemap img {
+    width: 110px;
+}
+div[data-aura-component='controls/basemap-gallery'] #basemap-gallery .dropdown-toggle {
+    background-color: transparent;
+    background-color: rgba(256, 256, 256, 0.6);
+    border-color: transparent;
+}
+div[data-aura-component='controls/basemap-gallery'] #basemap-gallery .dropdown-toggle:hover {
+    background-color: #fff;
+    border: 1px solid #cccccc;
+}

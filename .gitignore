@@ -1,0 +1,26 @@
+# System related files
+.DS_Store
+
+# Bower relates files
+# app/bower_components
+
+# NPM related files
+npm-debug.log
+node_modules
+
+# Grunt related files
+/lib
+/tmp
+/dist
+/glide
+.tmp
+.prebuild
+
+# Project related files
+.TODO.md
+.idea/
+*.iml
+
+## Elastic Search Data Storage
+data/data/
+data/logs/

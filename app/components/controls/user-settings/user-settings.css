@@ -1,0 +1,35 @@
+div[data-aura-component='controls/user-settings'] #userSettingsDialog {
+    display: none;
+    float: right;
+}
+
+div[data-aura-component='controls/user-settings'] .dialog-dialog {
+    width: 300px;
+    position: absolute;
+    z-index: 2000;
+    margin: 39px -110px;
+}
+
+div[data-aura-component='controls/user-settings'] #userSettingsDialog .dialog-body {
+    padding: 10px 20px 0px 20px;
+}
+
+/*no default value. This actually adds space*/
+div[data-aura-component='controls/user-settings'] #userSettingsDialog .input-group {
+    margin-bottom: 5px;
+}
+
+/*Default value is 15*/
+div[data-aura-component='controls/user-settings'] #userSettingsDialog .form-group {
+    margin-bottom: 10px;
+}
+
+/*This keeps all of the input-group-addon the same length.*/
+div[data-aura-component='controls/user-settings'] #userSettingsDialog .input-group-addon {
+    min-width: 125px;
+    text-align: left;
+}
+
+div[data-aura-component='controls/user-settings'] #userSettingsDialog .btn-toggle-container {
+    text-align: center;
+}

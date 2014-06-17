@@ -1,0 +1,42 @@
+div[data-aura-component='tools/query'] #QueryDialog {
+    display: none;
+}
+div[data-aura-component='tools/query'] #QueryDialog .dialog-dialog {
+    width: 300px;
+    position: absolute;
+    z-index: 2000;
+    margin: 0;
+}
+div[data-aura-component='tools/query'] .form-group.diamond-top {
+    width: 75px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center; 
+}
+div[data-aura-component='tools/query'] .form-group.diamond-bottom {
+    width: 75px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+div[data-aura-component='tools/query'] .form-group.diamond-left {
+    width: 75px;
+    float: left;
+    margin: -27px 0 0 20px;
+    text-align: center;
+}
+div[data-aura-component='tools/query'] .form-group.diamond-right {
+    width: 75px;
+    float: right;
+    margin: -27px 20px 0 0;
+    text-align: center;
+}
+div[data-aura-component='tools/query'] .query-form #drawBBoxButton {
+    margin: auto;
+}
+div[data-aura-component='tools/query'] .query-form .diamond-middle {
+    text-align: center;
+}
+div[data-aura-component='tools/query'] #QueryDialog .dialog-body {
+    padding: 0px 20px 0px 20px;
+}
