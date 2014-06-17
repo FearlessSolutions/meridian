@@ -30,7 +30,7 @@ Clone the repo and get started.
 At this point, you will be able to run the Grunt tasks.
 
 *Some Node Modules have been checked into the repo (not a normal best practice),
-The node_modules directory will be removed from teh project at a later point, 
+The node_modules directory will be removed from the project at a later point, 
 when the team is comfortable with the process. In the future, 
 developers will be responsible for running `npm install` to get the dependencies.*
 
