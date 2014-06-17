@@ -15,7 +15,7 @@ You have two options for getting up an running, with or without the Grunt suppor
 
 Clone the repo and get started.
 
-`git clone https://
+`git clone https://github.com/ozone-development/meridian.git`
 
 **Option 2 -** With Grunt Support:
 
