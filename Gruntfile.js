@@ -29,7 +29,7 @@ module.exports = function (grunt) {
             async: true,
             stdout: false,
             stderr: false,
-            failOnError: true,
+            failOnError: false,
             execOptions: {
                 cwd: '.'
             }
