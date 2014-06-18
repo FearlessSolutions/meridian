@@ -23,14 +23,26 @@ module.exports = function (grunt) {
     yeoman: yeomanConfig,
 
     shell: {
-        startServer: {
-            command: 'node app.js',
-            options: {
-              async: true,
-              stdout: false,
-              stderr: true,
-              failOnError: true
+        startElasticSearch: {
+          command: 'data/bin/elasticsearch',
+          options: {
+            async: true,
+            stdout: false,
+            stderr: false,
+            failOnError: true,
+            execOptions: {
+                cwd: '.'
             }
+          }
+        },
+        startServer: {
+          command: 'node app.js',
+          options: {
+            async: true,
+            stdout: false,
+            stderr: true,
+            failOnError: true
+          }
         },
         sleep5: {
           command: 'sleep 5'
@@ -365,16 +377,18 @@ module.exports = function (grunt) {
 
   grunt.registerTask('server', [
     'clean:server',
-    'shell:startServer',
+    'shell:startElasticSearch',
     'shell:sleep5',
+    'shell:startServer',
     'open:server',
     'watch'
   ]);
 
   grunt.registerTask('test', [
     'clean:server',
-    'shell:startServer',
+    'shell:startElasticSearch',
     'shell:sleep5',
+    'shell:startServer',
     'open:test',
     'watch'
   ]);

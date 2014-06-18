@@ -6,6 +6,13 @@ To use the command-line version of Grunt you will need to install the global [Gr
 
 Run `npm install -g grunt-cli` if needed
 
+To host the database locally (which will be populated with mock data), you will need to install ElasticSearch.
+Visit the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
+
+If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`
+
+If you don't want to set it up for Grunt, just follow the installation instrcuctions on the ElasticSearch Download page.
+
 
 ## Setup
 
@@ -21,9 +28,9 @@ Clone the repo and get started.
 
 1. Get Grunt's global CLI module. Run `npm install -g grunt-cli`
 
-2. Clone the repo: `git clone https://
+2. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`
 
-3. Change into the project directory: `cd meridian-geo`
+3. Change into the project directory: `cd meridian`
 
 4. Run `npm install` to make sure everything is up to date. 
 
@@ -35,20 +42,22 @@ when the team is comfortable with the process. In the future,
 developers will be responsible for running `npm install` to get the dependencies.*
 
 
+**Starting the App**
+
+The easiest was is to use the Grunt tasks.
+
+To start the local server run: `grunt server`
+
+This will open the main page ([https://localhost:3000](https://localhost:3000)) in your default browser.
+
+To view the documentation page, go to [https://localhost:3000/docs/meridian](https://localhost:3000/docs/meridian).
+
 ## Guides
 
-Introduction to Meridian, coming Soon.
+Introduction to Meridian can be found [here](https://rawgit.com/ozone-development/meridian/master/app/docs/meridian/index.html).
 
 Much of the Design is based on [Aura](http://aurajs.com/). 
 
-There is a [getting started guide](http://aurajs.github.io/getting-started/) that can help newcomers better understand Aura.
-
-
-## API Docs
-
-API Docs for Meridian, coming Soon.
-
-API Docs for Aura can be found [here](http://aurajs.github.io/api/).
 
 ## Copyrights
 > Software (c) 2014 [The Boeing Company](http://www.boeing.com/ "Boeing")
