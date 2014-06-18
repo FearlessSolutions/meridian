@@ -22,5 +22,4 @@ node_modules
 *.iml
 
 ## Elastic Search Data Storage
-data/data/
-data/logs/
+data/
