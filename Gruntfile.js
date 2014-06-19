@@ -35,17 +35,26 @@ module.exports = function (grunt) {
             }
           }
         },
+        startElasticSearch4Win: {
+          command: 'data/bin/elasticsearch.bat',
+          options: {
+            async: true,
+            stdout: false,
+            stderr: false,
+            failOnError: false,
+            execOptions: {
+                cwd: '.'
+            }
+          }
+        },
         startServer: {
           command: 'node app.js',
           options: {
             async: true,
             stdout: false,
-            stderr: true,
+            stderr: false,
             failOnError: true
           }
-        },
-        sleep5: {
-          command: 'sleep 5'
         },
         docs: {
           command: [
@@ -378,7 +387,7 @@ module.exports = function (grunt) {
   grunt.registerTask('server', [
     'clean:server',
     'shell:startElasticSearch',
-    'shell:sleep5',
+    'shell:startElasticSearch4Win',
     'shell:startServer',
     'open:server',
     'watch'
