@@ -2,27 +2,40 @@
 
 The project uses Grunt for task management. Use of Grunt is optional, but highly recommended.
 
+To install grunt, make sure the Node Packaged Module is installed by installing [Node.js](http://nodejs.org/).
+
 To use the command-line version of Grunt you will need to install the global [Grunt CLI](http://gruntjs.com/getting-started) module.
 
-Run `npm install -g grunt-cli` if needed
+- Run `npm install -g grunt-cli` if needed
 
 To host the database locally (which will be populated with mock data), you will need to install ElasticSearch.
-Visit the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
+Download ElasticSearch in the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
 
-If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`
+To use and install ElasticSearch, 
 
-If you don't want to set it up for Grunt, just follow the installation instrcuctions on the ElasticSearch Download page.
+If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`.
+
 
 
 ## Setup
 
-You have two options for getting up an running, with or without the Grunt support
+You have two options for getting up an running, with or without the Grunt support.
 
 **Option 1 -** Without Grunt support:
 
-Clone the repo and get started.
+1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`
 
-`git clone https://github.com/ozone-development/meridian.git`
+2. Change into the project directory: `cd meridian`
+
+3. Run `npm install` to make sure everything is up to date. 
+
+4. Follow the installation instrcuctions on the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/):
+
+ - Download and unzip the latest Elasticsearch distribution.
+
+ - Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
+
+
 
 **Option 2 -** With Grunt Support:
 
