@@ -11,10 +11,9 @@ To use the command-line version of Grunt you will need to install the global [Gr
 To host the database locally (which will be populated with mock data), you will need to install ElasticSearch.
 Download ElasticSearch in the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
 
-To use and install ElasticSearch, 
+To use and install ElasticSearch, make sure to have the JAVA_HOME variable defined.
 
-If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`.
-
+If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the Grunt Support Setup instructions.
 
 
 ## Setup
@@ -23,9 +22,9 @@ You have two options for getting up an running, with or without the Grunt suppor
 
 **Option 1 -** Without Grunt support:
 
-1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`
+1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
 
-2. Change into the project directory: `cd meridian`
+2. Change into the project directory: `cd meridian`.
 
 3. Run `npm install` to make sure everything is up to date. 
 
@@ -35,24 +34,35 @@ You have two options for getting up an running, with or without the Grunt suppor
 
  - Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
 
+ - Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
 
 
 **Option 2 -** With Grunt Support:
 
-1. Get Grunt's global CLI module. Run `npm install -g grunt-cli`
+1. Get Grunt's global CLI module. Run `npm install -g grunt-cli`.
 
-2. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`
+2. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
 
-3. Change into the project directory: `cd meridian`
+3. Change into the project directory: `cd meridian`.
 
 4. Run `npm install` to make sure everything is up to date. 
 
-At this point, you will be able to run the Grunt tasks.
+ At this point, you will be able to run the Grunt tasks.
 
-*Some Node Modules have been checked into the repo (not a normal best practice),
+ *Some Node Modules have been checked into the repo (not a normal best practice),
 The node_modules directory will be removed from the project at a later point, 
 when the team is comfortable with the process. In the future, 
 developers will be responsible for running `npm install` to get the dependencies.*
+
+5. Follow the installation instrcuctions on the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/):
+
+ - Download and unzip the latest Elasticsearch distribution.
+
+ - Unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`.
+
+ - Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
+
+ - Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
 
 
 **Starting the App**
@@ -64,6 +74,8 @@ To start the local server run: `grunt server`
 This will open the main page ([https://localhost:3000](https://localhost:3000)) in your default browser.
 
 To view the documentation page, go to [https://localhost:3000/docs/meridian](https://localhost:3000/docs/meridian).
+
+Without Grunt tasks, just run your web server of choice and visit ([https://localhost:3000](https://localhost:3000)) to see Meridian in action. 
 
 ## Guides
 
