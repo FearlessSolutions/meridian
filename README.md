@@ -28,13 +28,13 @@ You have two options for getting up an running, with or without the Grunt suppor
 
 3. Run `npm install` to make sure everything is up to date. 
 
-4. Follow the installation instrcuctions on the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/):
+4. Download and unzip the latest Elasticsearch distribution from the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
 
- - Download and unzip the latest Elasticsearch distribution.
+5. Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
 
- - Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
+6. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
 
- - Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
+7. Start the application using the web server of your choice.
 
 
 **Option 2 -** With Grunt Support:
@@ -54,15 +54,11 @@ The node_modules directory will be removed from the project at a later point,
 when the team is comfortable with the process. In the future, 
 developers will be responsible for running `npm install` to get the dependencies.*
 
-5. Follow the installation instrcuctions on the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/):
+5. Download and unzip the latest Elasticsearch distribution from the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
 
- - Download and unzip the latest Elasticsearch distribution.
+6. Unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`.
 
- - Unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`.
-
- - Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
-
- - Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
+7. Start the application using Grunt.
 
 
 **Starting the App**
