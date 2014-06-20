@@ -22,7 +22,7 @@ define([
                     });
                     return html;
                 },
-                postRenderingAction: function(feature, featureId) {
+                postRenderingAction: function(feature, layerId) {
                     return;
                 }
             };
