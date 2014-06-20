@@ -8,6 +8,7 @@ define([
         init: function(thisContext){
             context = thisContext;
             context.sandbox.on('map.visualMode', clustering.changeVisualMode);
+            context.sandbox.on('system.clear', clustering.clear);
         }
     };	
 

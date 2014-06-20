@@ -105,6 +105,9 @@ define([
             } else {
                 return; // likely the value is heatmap, or something else not handled here
             }
+        },
+        clear: function() {
+            layers = [];
         }
     };
 
