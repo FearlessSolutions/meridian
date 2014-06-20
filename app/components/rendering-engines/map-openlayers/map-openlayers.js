@@ -288,7 +288,8 @@ define([
                         var popup,
                             infoWinTemplateRef,
                             feature = evt.feature,
-                            formattedAttributes = {};
+                            formattedAttributes = {},
+                            icon = feature.attributes.icon;
 
                         if (!feature.cluster){
 
@@ -305,7 +306,7 @@ define([
                                 popup = new OpenLayers.Popup.FramedCloud('popup',
                                     OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
                                     null,
-                                    infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
+                                    infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes, icon),
                                     null,
                                     true,
                                     function() {
