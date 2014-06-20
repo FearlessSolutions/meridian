@@ -316,6 +316,7 @@ define([
                                 );
                                 feature.popup = popup;
                                 map.addPopup(popup);
+                                infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
                             });
                         } else {
                             var bounds = feature.geometry.getBounds();

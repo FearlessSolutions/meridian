@@ -21,6 +21,9 @@ define([
                         attributes: attributes
                     });
                     return html;
+                },
+                postRenderingAction: function(feature, layerId) {
+                    return;
                 }
             };
             app.sandbox.dataServices.mock.keys = [
