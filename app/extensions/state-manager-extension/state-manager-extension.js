@@ -5,6 +5,9 @@ define([], function(){
 				"map": {
                     // "visualMode": "cluster" 
                     // Other properties that could be in Map.Status
+                    "status": {
+                        "ready": false
+                    }
                 },
                 "layers": {
                     // "SomeLayer": {   

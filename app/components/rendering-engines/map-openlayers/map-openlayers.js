@@ -132,6 +132,8 @@ define([
                 exposed.clearMapSelection();
                 exposed.clearMapPopups();
             });
+
+            context.sandbox.stateManager.map.status.ready = true;
         },
         loadBasemaps: function() {
             context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(value){
