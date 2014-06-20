@@ -24,28 +24,30 @@ You have two options for getting up an running, with or without the Grunt suppor
 
 1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
 
-2. Change into the project directory: `cd meridian`.
+1. Change into the project directory: `cd meridian`.
 
-3. Run `npm install` to make sure everything is up to date. 
+1. Run `npm install` to make sure everything is up to date. 
 
-4. Download and unzip the latest Elasticsearch distribution from the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
+1. Follow the installation instrcuctions on the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/):
+  1. Download and unzip the latest Elasticsearch distribution.
+  1. Start Elastic Search and test it out.
+  1. Change into the ElasticSearch directory (wherever you just extracted it):
+	1. Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
+	1. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
 
-5. Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
-
-6. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
-
-7. Start the application using the web server of your choice.
-
+1. Start the App Server:
+    1. To start the local server run: `node app.js`
+    1. Now open your browser and visit ([https://localhost:3000](https://localhost:3000)) to see Meridian in action.
 
 **Option 2 -** With Grunt Support:
 
 1. Get Grunt's global CLI module. Run `npm install -g grunt-cli`.
 
-2. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
+1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
 
-3. Change into the project directory: `cd meridian`.
+1. Change into the project directory: `cd meridian`.
 
-4. Run `npm install` to make sure everything is up to date. 
+1. Run `npm install` to make sure everything is up to date. 
 
  At this point, you will be able to run the Grunt tasks.
 
@@ -54,24 +56,25 @@ The node_modules directory will be removed from the project at a later point,
 when the team is comfortable with the process. In the future, 
 developers will be responsible for running `npm install` to get the dependencies.*
 
-5. Download and unzip the latest Elasticsearch distribution from the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
+1. Follow the installation instrcuctions on the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/):
+  1. Download and unzip the latest Elasticsearch distribution.
+  1. Unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`.
+  1. Make sure ElasticSearch starts okay, even though you will be using grunt to start it for you:
+    1. Change into the `meridian` directory, if you are not already there.
+    1. Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
+    1. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
 
-6. Unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`.
+1. Start the App Server:
+    1. To start the local server run: `grunt server`
+    1. This will open the main page ([https://localhost:3000](https://localhost:3000)) in your default browser.
 
-7. Start the application using Grunt.
 
+**Resources within the running App**
 
-**Starting the App**
-
-The easiest was is to use the Grunt tasks.
-
-To start the local server run: `grunt server`
-
-This will open the main page ([https://localhost:3000](https://localhost:3000)) in your default browser.
+The main page ([https://localhost:3000](https://localhost:3000)).
 
 To view the documentation page, go to [https://localhost:3000/docs/meridian](https://localhost:3000/docs/meridian).
 
-Without Grunt tasks, just run your web server of choice and visit ([https://localhost:3000](https://localhost:3000)) to see Meridian in action. 
 
 ## Guides
 
