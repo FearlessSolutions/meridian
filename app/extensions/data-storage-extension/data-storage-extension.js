@@ -40,7 +40,7 @@ define([
                     var feature = {};
                     $.ajax({
                         type: "GET",
-                        url: 'https://localhost:3000/feature/' + featureId
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + featureId
                     }).done(function(data){
                         callback(data);
                     });
