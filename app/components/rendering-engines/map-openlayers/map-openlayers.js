@@ -522,86 +522,87 @@ define([
             vectorLayer.addFeatures([polygonFeature]);
         },
         identifyRecord: function(params) {
-            var zoom,
-                popup,
-                bounds,
-                identifiedCluster,
-                record,
-                headerHTML,
-                clusterRecordID,
-                currentFeatureId,
-                currentDataService,
-                infoWinTemplateRef,
-                clusterFeatureCount,
-                isCluster = false,
-                formattedAttributes = {},
-                fullFeature;
+            var layer = map.getLayersBy('layerId', params.queryId)[0],
+                feature = layer.getFeatureBy('featureId', params.recordId);
 
-            var feature = map.getLayersBy('layerId', params.queryId)[0].getFeatureBy('featureId', params.recordId);
-            context.sandbox.utils.each(map.getLayersBy('layerId', params.queryId)[0].features, function(k1, v1) {
-                if(v1.cluster) {
-                    context.sandbox.utils.each(v1.cluster, function(k2, v2) {
-                        if(params.recordId === v2.featureId) {
-                            isCluster = true;
-                            feature = v1;
-                            record = v2;
-                            clusterRecordID = k2 + 1;
-                            clusterFeatureCount = feature.cluster.length;
-                        }
-                    });
-                }
-            });
-            
-            if(isCluster){
-                currentFeatureId = feature.cluster[0].featureId;
-                currentDataService = record.attributes.dataService;
-            } else {
-                currentFeatureId = feature.featureId;
-                currentDataService = feature.attributes.dataService;
-            }
+            //If no feature is found, it is most likely because it was hidden in a cluster
+            if(!feature) {
+                var clusterRecordId,
+                    clusterFeatureCount,
+                    record,
+                    currentDataService;
 
-            headerHTML = '<span>' + clusterRecordID + ' of ' + clusterFeatureCount + '</span>';
-			context.sandbox.dataStorage.getFeatureById({"featureId": currentFeatureId}, function(fullFeature) {
-                infoWinTemplateRef = context.sandbox.dataServices[currentDataService].infoWinTemplate;
-                context.sandbox.utils.each(fullFeature.properties,
-                    function(k, v){
-                    if((context.sandbox.utils.type(v) === "string" ||
-                        context.sandbox.utils.type(v) === "number" ||
-                        context.sandbox.utils.type(v) === "boolean")) {
-                        formattedAttributes[k] = v;
+                context.sandbox.utils.each(layer.features, function(k1, v1) {
+                    if(v1.cluster) {
+                        context.sandbox.utils.each(v1.cluster, function(k2, v2) {
+                            if(params.recordId === v2.featureId) {
+                                feature = v1;
+                                record = v2;
+                                clusterRecordId = k2 + 1;
+                                clusterFeatureCount = feature.cluster.length;
+                            }
+                        });
                     }
                 });
-                popup = new OpenLayers.Popup.FramedCloud('popup',
-                    OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
-                    null,
-                    headerHTML + infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
-                    null,
-                    true,
-                    function() {
+
+                if(!feature) {
+                    context.sandbox.logger.error('Feature does not exist on map.');
+                    return;
+                }
+
+                currentDataService = record.attributes.dataService;
+
+                context.sandbox.dataStorage.getFeatureById(
+                    {"featureId": record.featureId},
+                    function(fullFeature) {
+                        var infoWinTemplateRef = context.sandbox.dataServices[currentDataService].infoWinTemplate,
+                            headerHTML = '<span>' + clusterRecordId + ' of ' + clusterFeatureCount + '</span>',
+                            formattedAttributes = {},
+                            bounds,
+                            popup;
+
+                        context.sandbox.utils.each(fullFeature.properties, 
+                            function(k, v){
+                                if((context.sandbox.utils.type(v) === "string" ||
+                                    context.sandbox.utils.type(v) === "number" ||
+                                    context.sandbox.utils.type(v) === "boolean")) {
+                                    formattedAttributes[k] = v;
+                                }
+                        });
+                        popup = new OpenLayers.Popup.FramedCloud('popup',
+                            OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                            null,
+                            headerHTML + infoWinTemplateRef.buildInfoWinTemplate(
+                                formattedAttributes,
+                                record.attributes.icon
+                            ),
+                            null,
+                            true,
+                            function() {
+                                exposed.clearMapSelection();
+                                exposed.clearMapPopups();
+                            }
+                        );
+                        popup.layerId = params.queryId;
+
                         exposed.clearMapSelection();
                         exposed.clearMapPopups();
+
+                        bounds = feature.geometry.getBounds();
+                        map.setCenter(bounds.getCenterLonLat());
+
+                        feature.popup = popup;
+                        map.addPopup(popup);
+
+                        context.sandbox.dataServices[currentDataService].infoWinTemplate.postRenderingAction(
+                            record,
+                            layer.layerId
+                        );
                     }
                 );
-                popup.layerId = params.queryId;
-                
-                exposed.clearMapSelection();
-                exposed.clearMapPopups();
-
-                if(!isCluster) {
-                    if(feature) {
-                        selector.select(feature);
-                    } else {
-                        context.sandbox.logger.error('Feature does not exist on map.');
-                    }
-                } else {
-                    console.warn(feature);
-                    bounds = feature.geometry.getBounds();
-                    map.setCenter(bounds.getCenterLonLat());
-
-                    feature.popup = popup;
-                    map.addPopup(popup);
-                }
-            });
+            } else {
+                selector.select(feature);
+            }
         },
         clearMapSelection: function() {
             try{
