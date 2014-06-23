@@ -132,6 +132,8 @@ define([
                 exposed.clearMapSelection();
                 exposed.clearMapPopups();
             });
+
+            context.sandbox.stateManager.map.status.ready = true;
         },
         loadBasemaps: function() {
             context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(value){
@@ -286,7 +288,8 @@ define([
                         var popup,
                             infoWinTemplateRef,
                             feature = evt.feature,
-                            formattedAttributes = {};
+                            formattedAttributes = {},
+                            icon = feature.attributes.icon;
 
                         if (!feature.cluster){
 
@@ -303,7 +306,7 @@ define([
                                 popup = new OpenLayers.Popup.FramedCloud('popup',
                                     OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
                                     null,
-                                    infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
+                                    infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes, icon),
                                     null,
                                     true,
                                     function() {
@@ -313,6 +316,7 @@ define([
                                 );
                                 feature.popup = popup;
                                 map.addPopup(popup);
+                                infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
                             });
                         } else {
                             var bounds = feature.geometry.getBounds();
