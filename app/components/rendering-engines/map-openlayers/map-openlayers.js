@@ -523,7 +523,7 @@ define([
         },
         identifyRecord: function(params) {
             var layer = map.getLayersBy('layerId', params.queryId)[0],
-                feature = layer.getFeatureById('featureId', params.recordId);
+                feature = layer.getFeatureBy('featureId', params.recordId);
 
             //If no feature is found, it is most likely because it was hidden in a cluster
             if(!feature) {
