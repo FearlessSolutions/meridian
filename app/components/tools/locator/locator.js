@@ -117,6 +117,16 @@ define([
                         }
                     }, 800);
                 },
+                /**
+                 * Overwrite matcher function to always show values returned by the service.If the service 
+                 * returned a value, show it to the user. Content array is built with values returned by the server, 
+                 * no need to filter results more than once. 
+                 * @param  {String} item Value the user writes in the text area.
+                 * @return {Boolean}      Tells typeahead if there is a value in our array that matches.   
+                 */
+                matcher: function(item){
+                    return true;
+                },
 
                 /* Called by bootstrap once the user selects an item.
                  * Must return item.
