@@ -139,8 +139,8 @@ define([
 
                 var drawOnDefault = true;
                 if(context.sandbox.queryConfiguration && 
-                    typeof context.sandbox.queryConfiguration.drawOnDefault !== undefined) {
-                    drawOnDefault = context.sandbox.queryConfiguration.drawOnDefault; 
+                    typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
+                    drawOnDefault = context.sandbox.queryConfiguration.queryDrawOnDefault; 
                 }
 
                 if(drawOnDefault) {
