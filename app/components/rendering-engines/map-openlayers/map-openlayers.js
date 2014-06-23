@@ -9,7 +9,8 @@ define([
     // Set Full-Scope Variables
     var map, 
         selector,
-        baselayers = {};
+        baselayers = {},
+        showCursorLocationDefault = true;
 
     var exposed = {
         init: function(thisContext) {
@@ -17,7 +18,14 @@ define([
             if(context.sandbox.mapConfiguration.defaultMapEngine === 'OpenLayers') {
                 exposed.createMap();
             }
-            if(context.sandbox.mapConfiguration.coordinates && context.sandbox.mapConfiguration.coordinates.startOn){
+
+            // Check user settings for default setting to display cursor location
+            if(context.sandbox.cursorLocation && 
+                typeof context.sandbox.cursorLocation.defaultDisplay !== undefined) {
+                showCursorLocationDefault = context.sandbox.cursorLocation.defaultDisplay; 
+            }
+
+            if(context.sandbox.mapConfiguration.coordinates && context.sandbox.mapConfiguration.coordinates.startOn && showCursorLocationDefault){
                 exposed.startCoordinates(context.sandbox.mapConfiguration.coordinates);
             }
         },
