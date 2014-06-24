@@ -17,11 +17,13 @@ define([
             $totalBadge = context.$('#stats-total-features.badge');
         },
         addPoints: function(args){
-            var dataset = context.sandbox.dataStorage.datasets[args.queryId];
+            var dataset = context.sandbox.dataStorage.datasets[args.queryId],
+                queryState = context.sandbox.stateManager.layers[args.queryId];
+
             totalCount += args.data.length;
             $totalBadge.html(totalCount);
 
-            if(dataset && dataset.visible){
+            if(queryState && queryState.visible){
                 displayedCount += args.data.length;
                 $displayedBadge.html(displayedCount);
             }
