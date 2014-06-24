@@ -11,10 +11,11 @@ define([
             context.sandbox.on('map.layer.show', timeline.layerToggleOn);
             context.sandbox.on('map.layer.hide.all', timeline.allSnapshotsOff);
             context.sandbox.on('map.heat.on', timeline.hideTimeline);
-            context.sandbox.on('map.heat.off', timeline.showTimeline);
+            context.sandbox.on('map.heat.off', timeline.showTimeline);    
             context.sandbox.on('system.clear', timeline.clear);
             context.sandbox.on('data.add', timeline.addCount);
             context.sandbox.on('data.finished', timeline.markFinished);  
+            context.sandbox.on('query.stop', timeline.markStopped);
             context.sandbox.on('data.error', timeline.markError);
             context.sandbox.on('timeline.playback.start', timeline.timelinePlaybackStart);
             context.sandbox.on('timeline.playback.stop', timeline.timelinePlaybackStop);

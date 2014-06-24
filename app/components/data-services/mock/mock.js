@@ -118,8 +118,6 @@ define([
                 args.start = parseInt(args.start || 0) + parseInt(args.pageSize);
                 args.queryId = queryId;
                 queryData(args);
-
-
             } else {
                 publisher.publishMessage({
                     "messageType": "success",
