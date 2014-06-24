@@ -111,6 +111,11 @@ define([
         },
         "query.execute": {
             "payload": {}
+        },
+        "query.stop": {
+            "payload": {
+                "queryId": "test"
+            }
         }
     };
 
