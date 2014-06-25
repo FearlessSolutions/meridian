@@ -16,12 +16,13 @@ define([
     var exposed = {
         init: function(thisContext) {
             var paddingInt;
+
             context = thisContext;
             $basemapGallery = context.$('#basemap-gallery');
             $basemap = context.$('.basemap');
             $dropdown = context.$('#basemap-selection');
             $toggle = context.$('.dropdown-toggle');
-            
+
             //Cacluate css
             defaultBasemapCSS = {
                 width: parseInt($dropdown.width(), 10)
@@ -52,7 +53,7 @@ define([
             $basemapGallery.on('show.bs.dropdown', function(){
                 adjustCSSVars();
                 $basemapGallery.css(openBasemapCSS);
-                $toggle.css(openToggleCSS);      
+                $toggle.css(openToggleCSS);  
             });
             $basemapGallery.on('hide.bs.dropdown', function(){
                 adjustCSSVars();
@@ -62,9 +63,7 @@ define([
 
             //On window resize, close selector. This solves resizing isses.
             context.sandbox.utils.onWindowResize(function(e) {
-                if($basemapGallery.hasClass("open")) {
-                    $toggle.click();
-                }
+                hideBasemapGallery();
             });
 
             //start tooltips for the values inside the dropdown
@@ -74,6 +73,10 @@ define([
             //start the tooltip for the selected image.
             //FF doesn't like tooltips inside buttons, so the entire button has the tooltip information. 
             $toggle.tooltip();
+
+            //Close dropdown on mouse leave
+            $basemapGallery.mouseleave(hideBasemapGallery);
+
         }
     };
 
@@ -128,6 +131,12 @@ define([
         } else {
             openBasemapCSS = defaultBasemapCSS;
             openToggleCSS = defaultToggleCSS;
+        }
+    }
+
+    function hideBasemapGallery(){
+        if($basemapGallery.hasClass('open')) {
+            $toggle.click();
         }
     }
 
