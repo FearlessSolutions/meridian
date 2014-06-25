@@ -11,22 +11,17 @@ define([
         $basemapGallery,
         $basemap,
         $dropdown,
-        $toggle,
-        HIDE_WAIT;
+        $toggle;
 
     var exposed = {
         init: function(thisContext) {
-            var paddingInt,
-                hideTimeout;
+            var paddingInt;
 
             context = thisContext;
             $basemapGallery = context.$('#basemap-gallery');
             $basemap = context.$('.basemap');
             $dropdown = context.$('#basemap-selection');
             $toggle = context.$('.dropdown-toggle');
-            HIDE_WAIT = 2000;
-            
-
 
             //Cacluate css
             defaultBasemapCSS = {
@@ -68,7 +63,7 @@ define([
 
             //On window resize, close selector. This solves resizing isses.
             context.sandbox.utils.onWindowResize(function(e) {
-                hide();
+                hideBasemapGallery();
             });
 
             //start tooltips for the values inside the dropdown
@@ -79,13 +74,9 @@ define([
             //FF doesn't like tooltips inside buttons, so the entire button has the tooltip information. 
             $toggle.tooltip();
 
-            //Close dropdown when not focused on for 2 seconds
-            $basemapGallery.hover(
-                function(e){ //Mouse in
-                    clearTimeout(hideTimeout);
-                },function(e){ //Mouse out
-                    hideTimeout = setTimeout(function(){hide()}, HIDE_WAIT);
-            });
+            //Close dropdown on mouse leave
+            $basemapGallery.mouseleave(hideBasemapGallery);
+
         }
     };
 
@@ -143,7 +134,7 @@ define([
         }
     }
 
-    function hide(){
+    function hideBasemapGallery(){
         if($basemapGallery.hasClass('open')) {
             $toggle.click();
         }
