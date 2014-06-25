@@ -21,6 +21,10 @@ define([
                 projectionWGS84: new OpenLayers.Projection('EPSG:4326')
             });
 
+            exposed.addSelector({
+                "map": map
+            });
+
             // Check user settings for default setting to display cursor location
             if(context.sandbox.cursorLocation && 
                 typeof context.sandbox.cursorLocation.defaultDisplay !== undefined) {
@@ -81,6 +85,37 @@ define([
         setBasemap: function(params) {
             params.map.setBaseLayer(params.basemapLayer);
         },
+        addSelector: function(params) {
+            var selector = new OpenLayers.Control.SelectFeature([], {
+                "click": true,
+                "autoActivate": true
+            });
+            params.map.addControl(selector);
+        },
+        addLayerToSelector: function(params) {
+            var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+            selector.setLayer([params.layer]);
+        },
+        removeAllSelectors: function(params) {
+            var controls = params.map.getControlsByClass('OpenLayers.Control.SelectFeature');
+            controls.forEach(function(control) {
+                control.destroy();
+            });
+        },
+        resetSelector: function(params) {
+            exposed.removeAllSelectors({
+                "map": params.map
+            });
+            exposed.addSelector({
+                "map": params.map
+            });
+        },
+        clearMapSelection: function(params) { //TODO: Look at renaming function to unselectAll or something like that
+            var controls = params.map.getControlsByClass('OpenLayers.Control.SelectFeature');
+            controls.forEach(function(control) {
+                control.unselectAll();
+            });
+        },
         broadcastMapExtent: function(params) {
             var mapExtentBounds = params.map.getExtent().transform(params.map.projection, params.map.projectionWGS84);
             publisher.publishExtent({
@@ -106,6 +141,35 @@ define([
         },
         getMouseLocation: function(params) {
             return params.map.getLonLatFromPixel(params.position).transform(params.map.projection, params.map.projectionWGS84);
+        },
+        clearMapPopups: function(params) {
+            while(params.map.popups.length) {
+                params.map.removePopup(params.map.popups[0]);
+            }
+        },
+        identifyFeature: function(params) {
+            var popup,
+                feature = params.feature;
+
+            popup = new OpenLayers.Popup.FramedCloud(
+                'popup',
+                OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                null,
+                params.content,
+                null,
+                true,
+                function() {
+                    exposed.clearMapSelection({
+                        "map": params.map
+                    });
+                    exposed.clearMapPopups({
+                        "map": params.map
+                    });
+                }
+            );
+
+            feature.popup = popup;
+            params.map.addPopup(popup);
         }
 
     };

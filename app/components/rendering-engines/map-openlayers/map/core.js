@@ -22,8 +22,7 @@ define([
     var context;
 
     // Set Full-Scope Variables
-    var map, 
-        selector,
+    var map,
         basemapLayers = {};
 
     var exposed = {
@@ -60,13 +59,9 @@ define([
                 "basemapLayer": basemapLayers[context.sandbox.mapConfiguration.defaultBaseMap]
             });
 
-            // call stuff for selector
-            //mapBase.resetSelector();
-
-            // call stuff for pointlayer
-            //mapBase.createPoinLayer();
-            //var clone = geom.clone();
-            //return clone.transform(map.projection, map.projectionWGS84).toShortString
+            mapLayers.createGlobalLayers({
+                "map": map
+            });
             
             context.sandbox.stateManager.map.status.ready = true;
         },
@@ -129,25 +124,40 @@ define([
 
         },
         createLayer: function(params) {
-
+            var newLayer = mapLayers.create({
+                "map": map,
+                "layerId": params.layerId
+            });
         },
         plotFeatures: function(params) {
-
+            
         },
-        plotPoint: function(params) {
-
+        plotPoint: function(params) { //TODO: change how the publish args are not in an object, should also call plotFeatures
+            mapFeatures.plotFeatures({
+                "map": map,
+                "layerId": "global_geolocator",
+                "data": [params]
+            });
         },
         toggleLayer: function(params) {
-
+            // TODO: delete me
         },
         hideLayer: function(params) {
-
+            mapLayers.hide({
+                "map": map,
+                "layerId": params.layerId
+            });
         },
         showLayer: function(params) {
-
+            mapLayers.show({
+                "map": map,
+                "layerId": params.layerId
+            });
         },
-        hideAllLayers: function() {
-
+        hideAllLayers: function() {  //TODO: consider changing function name to hideAllDataLayers
+            mapLayers.hideAllDataLayers({
+                "map": map
+            });
         },
         changeVisualMode: function(params) {
             // enableClustering, disableClustering, addClusteringToLayer, updateHeatmap

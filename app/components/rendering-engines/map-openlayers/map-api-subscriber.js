@@ -11,7 +11,7 @@ define([
         },
         subscribeOn: function(){
             // context.sandbox.on('data.add', mapCore.plotFeatures);
-            // context.sandbox.on('point.plot', mapCore.plotPoint);
+            context.sandbox.on('point.plot', mapCore.plotPoint);
             // context.sandbox.on('map.basemap.change', mapCore.setBasemap);
             context.sandbox.on('map.center.set', mapCore.setCenter);
             // context.sandbox.on('map.draw.bbox.remove', mapCore.removeBBox);
