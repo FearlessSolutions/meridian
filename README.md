@@ -68,6 +68,7 @@ developers will be responsible for running `npm install` to get the dependencies
     1. To start the local server run: `grunt server`
     1. This will open the main page ([https://localhost:3000](https://localhost:3000)) in your default browser.
 
+NOTE: If when starting elastic search you recieve warnings regarding multicasting you most likely have been added to an already exsisting elastic search cluster and may recieve unintended outcomes from the application.  You can disable multicasting by navigating to the directory you extracted elastic search to and then navigating to the config/elasticsearch.yml file. In there uncomment the line `discovery.zen.ping.multicast.enabled: false` and save the file. You can now restart elastic search.
 
 **Resources within the running App**
 
