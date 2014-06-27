@@ -10,12 +10,12 @@ define([
             exposed.subscribeOn();
         },
         subscribeOn: function(){
-            // context.sandbox.on('data.add', mapCore.plotFeatures);
+            context.sandbox.on('data.add', mapCore.plotFeatures);
             context.sandbox.on('point.plot', mapCore.plotPoint);
-            // context.sandbox.on('map.basemap.change', mapCore.setBasemap);
+            context.sandbox.on('map.basemap.change', mapCore.setBasemap);
             context.sandbox.on('map.center.set', mapCore.setCenter);
-            // context.sandbox.on('map.draw.bbox.remove', mapCore.removeBBox);
-            // context.sandbox.on('map.draw.bbox.start', mapCore.drawBBox);
+            context.sandbox.on('map.draw.bbox.remove', mapCore.removeBBox);
+            context.sandbox.on('map.draw.bbox.start', mapCore.drawBBox);
             context.sandbox.on('map.get.extent', mapCore.broadcastMapExtent);
             // context.sandbox.on('map.layer.create', mapCore.createLayer);
             // context.sandbox.on('map.layer.create', mapCore.createShapeLayer);

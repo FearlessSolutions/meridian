@@ -117,20 +117,40 @@ define([
                 "lon": params.lon
             });
         },
-        drawBBox: function() {
-
+        drawBBox: function() { // TODO: Make more generic for start drawing
+            // create drawLayer
+            // start drawing
+            mapDraw.startDrawing({
+                "map": map,
+                "layerId": "global_draw" // should come in params, from component
+            });
         },
         removeBBox: function() {
-
+            mapDraw.stopDrawing({
+                "map": map,
+                "layerId": "global_draw" // should come in params, from component
+            });
         },
         createLayer: function(params) {
-            var newLayer = mapLayers.create({
+            mapLayers.createVectorLayer({
                 "map": map,
-                "layerId": params.layerId
+                "datasetId": params.datasetId, // TODO: decide if a defautl is needed (if not present, generate new UUID)
+                "layerId": params.layerId // TODO: decide if a defautl is needed (if not present, generate new UUID)
             });
         },
         plotFeatures: function(params) {
+            if(!map.getLayersBy('layerId', params.queryId)[0]) {  // TODO: remove after testing, Fix payload in Mock 
+                exposed.createLayer({
+                    "map": map,
+                    "layerId": params.queryId
+                });
+            }
             
+            mapFeatures.plotFeatures({
+                "map": map,
+                "layerId": params.queryId, // TODO: change params.queryId to params.layerID, this needs to be changed in all components using the channel
+                "data": params.data
+            });
         },
         plotPoint: function(params) { //TODO: change how the publish args are not in an object, should also call plotFeatures
             mapFeatures.plotFeatures({
@@ -154,7 +174,7 @@ define([
                 "layerId": params.layerId
             });
         },
-        hideAllLayers: function() {  //TODO: consider changing function name to hideAllDataLayers
+        hideAllLayers: function() {  // TODO: consider changing function name to hideAllDataLayers
             mapLayers.hideAllDataLayers({
                 "map": map
             });

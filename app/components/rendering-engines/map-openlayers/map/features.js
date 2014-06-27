@@ -34,11 +34,16 @@ define([
                 });
 
                 layer.addFeatures(newpts);
-                // layer.recluster();
+                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                    layer.recluster();
+                }
                 layer.refresh({force: true, forces: true});
             } else {
                 // No layer exists
             }
+        },
+        removeFeatures: function(params) {
+
         }
     };
     return exposed;
