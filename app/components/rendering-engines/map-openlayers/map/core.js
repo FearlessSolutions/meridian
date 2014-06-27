@@ -132,20 +132,14 @@ define([
             });
         },
         createLayer: function(params) {
+            console.log('im here');
             mapLayers.createVectorLayer({
                 "map": map,
                 "datasetId": params.datasetId, // TODO: decide if a defautl is needed (if not present, generate new UUID)
-                "layerId": params.layerId // TODO: decide if a defautl is needed (if not present, generate new UUID)
+                "layerId": params.queryId // TODO: decide if a defautl is needed (if not present, generate new UUID)
             });
         },
         plotFeatures: function(params) {
-            if(!map.getLayersBy('layerId', params.queryId)[0]) {  // TODO: remove after testing, Fix payload in Mock 
-                exposed.createLayer({
-                    "map": map,
-                    "layerId": params.queryId
-                });
-            }
-            
             mapFeatures.plotFeatures({
                 "map": map,
                 "layerId": params.queryId, // TODO: change params.queryId to params.layerID, this needs to be changed in all components using the channel
@@ -163,13 +157,13 @@ define([
             // TODO: delete me
         },
         hideLayer: function(params) {
-            mapLayers.hide({
+            mapLayers.hideLayer({
                 "map": map,
                 "layerId": params.layerId
             });
         },
         showLayer: function(params) {
-            mapLayers.show({
+            mapLayers.showLayer({
                 "map": map,
                 "layerId": params.layerId
             });

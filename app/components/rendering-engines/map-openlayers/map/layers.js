@@ -54,7 +54,7 @@ define([
             });
 
         },
-        createVectorLayer: function(params) {
+        createVectorLayer: function(params) { // TODO: add support for taking in params.name
             var newVectorLayer = new OpenLayers.Layer.Vector(
                 params.layerId,
                 {
@@ -63,6 +63,10 @@ define([
                 }
             );
             params.map.addLayers([newVectorLayer]);
+
+            // Default of new layer is visible = true
+            context.sandbox.stateManager.layers[params.layerId] = {"visible": true};
+
             return newVectorLayer;
         },
         createWMSLayer: function(params) {
@@ -71,17 +75,21 @@ define([
         createWMTSLayer: function(params) {
             
         },
-        delete: function() {
+        deleteLayer: function() {
             
         },
-        clear: function(params) {
+        clearLayer: function(params) {
             params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
         },
-        hide: function() {
-            
+        hideLayer: function(params) {
+            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
+            layer.setVisibility(false);
+            context.sandbox.stateManager.layers[params.layerId].visible = false;
         },
-        show: function() {
-            
+        showLayer: function(params) {
+            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
+            layer.setVisibility(true);
+            context.sandbox.stateManager.layers[params.layerId].visible = true;
         },
         hideAllDataLayers: function() {
             
