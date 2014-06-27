@@ -14,21 +14,26 @@ describe("Elastic Search Integration Test Suite", function(){
         save,
         query,
         metadataManager,
-        testResultId = '17DF16AFE6CA626D6EF18746DEBC',
+        testResultId = 'A7478FB8AB254F608335D1D2F6DE960F',
         testQueryId;
 
     before(function(done){
-        config = require('../../../server/extensions/utils/Config').setProfile("local-test").getConfig();
+        config = require('../../../server/extensions/config/Config').setProfile("local-test").getConfig();
+
+        require('../../../server/app').init({
+            get:function(){},
+            post:function(){},
+            all:function(){}
+        });
+
         save = require('../../../server/extensions/elastic/save');
         query = require('../../../server/extensions/elastic/query');
         metadataManager = require('../../../server/extensions/elastic/metadata');
 
-        require('../../../server/extensions/elastic/mapping').init();
-
         // Only required the first time for the mapping
         // It would be better to properly do callbacks within the mapping function
         setTimeout(function(){
-            var testUsers = [{'user':'testUser1', 'sessionId':'17DF16AFE6CA626D6EF18746DEBC'},
+            var testUsers = [{'user':'testUser1', 'sessionId':'A7478FB8AB254F608335D1D2F6DE960F'},
                 {'user':'testUser2', 'sessionId':'8DEFBAC7337475D67E6F76E76C76'},
                 {'user':'testUser3', 'sessionId':'ABC6D7EFC7A6D6EF7C7EA7D7F'}];
 
@@ -172,8 +177,8 @@ describe("Elastic Search Integration Test Suite", function(){
             expect(err).to.be.not.ok;
             expect(meta[testQueryId]).to.be.defined;
             expect(meta[testQueryId].keys.lon).to.be.defined;
-            expect(meta['17DF16AFE6CA626D6EF18746DEBC']).to.be.defined;
-            expect(meta['17DF16AFE6CA626D6EF18746DEBC'].keys.num).to.be.defined;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F']).to.be.defined;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F'].keys.num).to.be.defined;
             done();
         });
     });
@@ -190,7 +195,7 @@ describe("Elastic Search Integration Test Suite", function(){
             },
             end: function(chunk){
                 this.buffer += chunk;
-                expect(this.buffer.length).to.be.above(0);
+                expect(this.buffer.length).to.equal(1045);
                 expect(this.headers['Content-Type']).to.be.defined;
                 expect(this.headers['Content-Disposition']).to.be.defined;
                 done();

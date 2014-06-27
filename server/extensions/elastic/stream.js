@@ -1,4 +1,8 @@
-var client = require('./client').newClient();
+var client ;
+
+exports.init = function(context){
+    client = context.sandbox.elastic.client.newClient();
+};
 
 exports.stream = function(routing, index, type, query, pageSize, pageCallback){
 
@@ -29,10 +33,3 @@ exports.stream = function(routing, index, type, query, pageSize, pageCallback){
     getPage(routing, index, type, query, 0, pageSize, pageCallback);
 
 };
-
-
-//exports.stream('spinesB5256844CBAD423FAA2CDC42F902BEEB', 'features', null, {"query":{"match_all":{}}}, 50, function(err, data){
-//    console.log(err);
-//    console.log('total: ' + data.hits.total);
-//    console.log('page size: ' + data.hits.hits.length);
-//});
