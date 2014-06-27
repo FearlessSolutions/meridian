@@ -4,7 +4,10 @@ define([], function(){
 
     var exposed = {
         init: function(thisContext) {
-        	context = thisContext;
+            context = thisContext;
+        },
+        visualModeChanged: function() {
+
         }
     };
     return exposed;

@@ -132,11 +132,12 @@ define([
             });
         },
         createLayer: function(params) {
-            console.log('im here');
+            mapClustering.addClusteringToLayerOptions({
+                "layerId": params.queryId
+            });
             mapLayers.createVectorLayer({
                 "map": map,
-                "datasetId": params.datasetId, // TODO: decide if a defautl is needed (if not present, generate new UUID)
-                "layerId": params.queryId // TODO: decide if a defautl is needed (if not present, generate new UUID)
+                "layerId": params.queryId
             });
         },
         plotFeatures: function(params) {
@@ -175,6 +176,15 @@ define([
         },
         changeVisualMode: function(params) {
             // enableClustering, disableClustering, addClusteringToLayer, updateHeatmap
+            mapBase.setVisualMode({
+                "mode": params.mode
+            });
+            mapClustering.visualModeChanged({
+                "mode": params.mode
+            });
+            mapHeatmap.visualModeChanged({
+                "mode": params.mode
+            });
         },
         createShapeLayer: function(params) {
 

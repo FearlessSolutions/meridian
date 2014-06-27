@@ -170,6 +170,9 @@ define([
 
             feature.popup = popup;
             params.map.addPopup(popup);
+        },
+        setVisualMode: function(params) {
+            context.sandbox.stateManager.map.visualMode = params.mode;
         }
 
     };

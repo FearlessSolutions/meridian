@@ -55,13 +55,34 @@ define([
 
         },
         createVectorLayer: function(params) { // TODO: add support for taking in params.name
+
+            var options = {
+                "layerId": params.layerId,
+                "styleMap": params.styleMap
+            };
+
+            if(params.layerId !== 'global_draw' && params.layerId !== 'global_geolocator') {
+                console.warn('should not be here for draw');
+                options = {
+                    "layerId": params.layerId,
+                    "styleMap": new OpenLayers.StyleMap({
+                        "externalGraphic": "${icon}",
+                        "graphicHeight": "${height}",
+                        "graphicWidth":  "${width}"
+                    })
+                };
+                context.sandbox.dataStorage.datasets[params.layerId].visible = true;
+                context.sandbox.dataStorage.datasets[params.layerId].visualMode = 'default';
+                // context.sandbox.dataStorage.datasets[params.layerId].isHeated = true;
+            }
+
             var newVectorLayer = new OpenLayers.Layer.Vector(
                 params.layerId,
-                {
-                    "layerId": params.layerId,
-                    "styleMap": params.styleMap
-                }
+                options
             );
+
+            newVectorLayer.setVisibility(true);
+
             params.map.addLayers([newVectorLayer]);
 
             // Default of new layer is visible = true

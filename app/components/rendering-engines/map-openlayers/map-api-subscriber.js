@@ -23,12 +23,12 @@ define([
             // context.sandbox.on('map.layer.hide.all', mapCore.hideAllLayers);
             context.sandbox.on('map.layer.show', mapCore.showLayer);
             context.sandbox.on('map.layer.toggle', mapCore.toggleLayer);
-            // context.sandbox.on('map.visualMode', mapCore.changeVisualMode);
+            context.sandbox.on('map.visualMode', mapCore.changeVisualMode);
             context.sandbox.on('map.zoom.in', mapCore.zoomIn);
             context.sandbox.on('map.zoom.out', mapCore.zoomOut);
             context.sandbox.on('map.zoom.location', mapCore.zoomToExtent);
             // context.sandbox.on('map.zoom.layer', mapCore.zoomToLayer);
-            context.sandbox.on('data.record.identify', mapCore.identifyRecord);
+            // context.sandbox.on('data.record.identify', mapCore.identifyRecord);
             // context.sandbox.on('system.clear', mapCore.clear);
         },
         subscribeOff: function(){
