@@ -132,13 +132,12 @@ define([
             });
         },
         createLayer: function(params) {
-            mapClustering.addClusteringToLayerOptions({
-                "layerId": params.queryId
-            });
-            mapLayers.createVectorLayer({
-                "map": map,
-                "layerId": params.queryId
-            });
+            var layerOptions = {
+                "layerId": params.queryId 
+            };
+            layerOptions.map = map;
+            mapClustering.addClusteringToLayerOptions(layerOptions);
+            mapLayers.createVectorLayer(layerOptions);
         },
         plotFeatures: function(params) {
             mapFeatures.plotFeatures({

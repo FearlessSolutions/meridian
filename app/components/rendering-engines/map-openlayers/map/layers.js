@@ -1,8 +1,9 @@
 define([
     './../map-api-publisher',
     './base',
+    './clustering',
     './../libs/openlayers-2.13.1/OpenLayers'
-], function(publisher, mapBase){
+], function(publisher, mapBase, mapClustering){
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -61,16 +62,14 @@ define([
                 "styleMap": params.styleMap
             };
 
+            // TEST - Merge extra parameter options in...
+            // 
+            // context.sandbox.utils.extend(true, options, params);
+
             if(params.layerId !== 'global_draw' && params.layerId !== 'global_geolocator') {
                 console.warn('should not be here for draw');
-                options = {
-                    "layerId": params.layerId,
-                    "styleMap": new OpenLayers.StyleMap({
-                        "externalGraphic": "${icon}",
-                        "graphicHeight": "${height}",
-                        "graphicWidth":  "${width}"
-                    })
-                };
+                context.sandbox.utils.extend(true, options, params);
+
                 context.sandbox.dataStorage.datasets[params.layerId].visible = true;
                 context.sandbox.dataStorage.datasets[params.layerId].visualMode = 'default';
                 // context.sandbox.dataStorage.datasets[params.layerId].isHeated = true;
