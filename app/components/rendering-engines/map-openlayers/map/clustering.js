@@ -87,10 +87,6 @@ define([], function(){
             layerOptionsCollection.push(layerOptions);
         },
         visualModeChanged: function(params) {
-            if(params && params.mode) {
-                context.sandbox.stateManager.map.visualMode = params.mode;
-            }
-
             if(params.mode === 'cluster') {
                 exposed.enable();
             } else if(params.mode === 'feature') {

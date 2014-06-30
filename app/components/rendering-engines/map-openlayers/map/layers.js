@@ -160,6 +160,9 @@ define([
             mapClustering.update({
                 "map": params.map
             });
+            mapClustering.visualModeChanged({
+                "mode": params.mode
+            });
             mapHeatmap.update({
                 "map": params.map
             });

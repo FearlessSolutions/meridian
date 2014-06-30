@@ -6,12 +6,6 @@ define([], function(){
         init: function(thisContext) {
             context = thisContext;
         },
-        visualModeChanged: function(params) {
-            exposed.update({
-                "map": params.map,
-                "mode": params.mode
-            });
-        },
         update: function(params) {
             var heatLayer = params.map.getLayersBy('layerId', 'global_heatmap')[0];
 

@@ -20,7 +20,7 @@ define([
             context.sandbox.on('map.layer.create', mapCore.createLayer);
             // context.sandbox.on('map.layer.create', mapCore.createShapeLayer);
             context.sandbox.on('map.layer.hide', mapCore.hideLayer);
-            // context.sandbox.on('map.layer.hide.all', mapCore.hideAllLayers);
+            context.sandbox.on('map.layer.hide.all', mapCore.hideAllLayers);
             context.sandbox.on('map.layer.show', mapCore.showLayer);
             context.sandbox.on('map.layer.toggle', mapCore.toggleLayer);
             context.sandbox.on('map.visualMode', mapCore.changeVisualMode);
