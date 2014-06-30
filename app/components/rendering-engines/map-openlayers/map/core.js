@@ -176,12 +176,19 @@ define([
         changeVisualMode: function(params) {
             // enableClustering, disableClustering, addClusteringToLayer, updateHeatmap
             mapBase.setVisualMode({
+                "map": map,
+                "mode": params.mode
+            });
+            console.log(params.mode);
+            mapLayers.visualModeChanged({
+                "map": map,
                 "mode": params.mode
             });
             mapClustering.visualModeChanged({
                 "mode": params.mode
             });
             mapHeatmap.visualModeChanged({
+                "map": map,
                 "mode": params.mode
             });
         },

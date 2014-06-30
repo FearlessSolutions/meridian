@@ -39,6 +39,15 @@ define([], function(){
                 });
             });
         },
+        update: function(params) {
+            var visibility = false;
+            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(layerId, collections) {
+                if(context.sandbox.stateManager.map.visualMode === 'cluster' || context.sandbox.stateManager.map.visualMode === 'feature') {
+                    visibility = context.sandbox.stateManager.layers[layerId].visible;
+                }
+                params.map.getLayersBy('layerId', layerId)[0].setVisibility(visibility);
+            });
+        },
         addClusteringToLayerOptions: function(layerOptions){
             var style = new OpenLayers.Style(OpenLayers.Util.applyDefaults({
                 externalGraphic: "${icon}",

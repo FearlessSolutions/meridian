@@ -34,7 +34,6 @@ define([
                 });
 
                 layer.addFeatures(newpts);
-                console.debug(layer);
                 if(context.sandbox.stateManager.map.visualMode === 'cluster') {
                     layer.recluster(); // TODO: Uncomment when clustering is in place
                 }

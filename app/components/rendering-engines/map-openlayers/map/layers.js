@@ -2,8 +2,10 @@ define([
     './../map-api-publisher',
     './base',
     './clustering',
-    './../libs/openlayers-2.13.1/OpenLayers'
-], function(publisher, mapBase, mapClustering){
+    './heatmap',
+    './../libs/openlayers-2.13.1/OpenLayers',
+    './../libs/Heatmap/Heatmap'
+], function(publisher, mapBase, mapClustering, mapHeatmap){
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -41,14 +43,33 @@ define([
                     }
                 })
             };
-
             var drawLayer = exposed.createVectorLayer(drawParams);
             addDrawListeners({
                 "map": params.map,
                 "layer": drawLayer
             });
 
-            params.map.addLayers([geolocatorLayer, drawLayer]);
+            //Create heatmap layer options
+            var heatmapParams = {
+                "map": params.map,
+                "layerId": "global_heatmap",
+                "renderers": ['Heatmap'],
+                "styleMap": new OpenLayers.StyleMap({
+                    "default": new OpenLayers.Style({
+                        "pointRadius": 10,
+                        "weight": "${weight}" // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer
+                    }, {
+                        "context": {
+                            weight: function(f) {
+                                return 0.05; // Math.min(Math.max((f.attributes.duration || 0) / 43200, 0.25), 1.0);
+                            }
+                        }
+                    })
+                })
+            };
+            var heatmapLayer = exposed.createVectorLayer(heatmapParams);
+
+            params.map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]);
             mapBase.addLayerToSelector({
                 "map": params.map,
                 "layer": geolocatorLayer
@@ -98,20 +119,50 @@ define([
             params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
         },
         hideLayer: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
-            layer.setVisibility(false);
             context.sandbox.stateManager.layers[params.layerId].visible = false;
+            mapClustering.update({
+                "map": params.map
+            });
+            mapHeatmap.update({
+                "map": params.map
+            });
         },
         showLayer: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
-            layer.setVisibility(true);
             context.sandbox.stateManager.layers[params.layerId].visible = true;
+            mapClustering.update({
+                "map": params.map
+            });
+            mapHeatmap.update({
+                "map": params.map
+            });
         },
-        hideAllDataLayers: function() {
-            
+        hideAllDataLayers: function(params) {
+            //this will iterate through every backbone collection. Each collection is a query layer with the key being the queryId.
+            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(queryId, collections){
+                exposed.hideLayer({
+                    "map": params.map,
+                    "layerId": queryId
+                });
+            });
         },
-        showAllDataLayers: function() {
-            
+        showAllDataLayers: function(params) {
+            //this will iterate through every backbone collection. Each collection is a query layer with the key being the queryId.
+            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(queryId, collections){
+                exposed.showLayer({
+                    "map": params.map,
+                    "layerId": queryId
+                });
+            });
+        },
+        visualModeChanged: function(params) {
+            var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+            selector.unselectAll();
+            mapClustering.update({
+                "map": params.map
+            });
+            mapHeatmap.update({
+                "map": params.map
+            });
         }
     };
 
@@ -145,7 +196,7 @@ define([
     // TODO: Split the control func into the drawing.js file and the boxLayer converts to more generic drawing func.
     function addDrawListeners(params) {
         params.layer.events.on({
-            "featureadded": function(evt) {
+            featureadded: function(evt) {
                 var feature = evt.feature,
                     boundingBox,
                     splitBoundingBox,
@@ -173,6 +224,7 @@ define([
         });
     }
 
+    // TODO - add default listeners for default looking default popups for when in default clustering default mode on default layer in the default map
     function addDefaultListeners(params) {
         params.layer.events.on({
             beforefeatureselected: function(evt) {
