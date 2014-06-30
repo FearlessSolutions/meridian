@@ -5,7 +5,7 @@ define([], function(){
     // Set Full-Scope Variables
     var config,
         rules = [],
-        layers = [],
+        layerOptionsCollection = [],
         enabled = true;
 
     var exposed = {
@@ -17,8 +17,8 @@ define([], function(){
         },
         enable: function(){
             enabled = true;
-            layers.forEach(function(layer){
-                layer.strategies.forEach(function(strat){
+            layerOptionsCollection.forEach(function(layerOptions){
+                layerOptions.strategies.forEach(function(strat){
                     if (strat.clusters){
                         strat.distance = config.thresholds.clustering.distance;
                         strat.threshold = config.thresholds.clustering.threshold;
@@ -29,8 +29,8 @@ define([], function(){
         },
         disable: function(){
             enabled = false;
-            layers.forEach(function(layer){
-                layer.strategies.forEach(function(strat){
+            layerOptionsCollection.forEach(function(layerOptions){
+                layerOptions.strategies.forEach(function(strat){
                     if (strat.clusters){
                         strat.distance = config.thresholds.noClustering.distance;
                         strat.threshold = config.thresholds.noClustering.threshold;
@@ -39,7 +39,7 @@ define([], function(){
                 });
             });
         },
-        addClusteringToLayerOptions: function(layer){
+        addClusteringToLayerOptions: function(layerOptions){
             var style = new OpenLayers.Style(OpenLayers.Util.applyDefaults({
                 externalGraphic: "${icon}",
                 graphicOpacity: 1,
@@ -61,21 +61,21 @@ define([], function(){
                 }
             });
 
-            layer.styleMap = new OpenLayers.StyleMap({
+            layerOptions.styleMap = new OpenLayers.StyleMap({
                "default": style,
                "select": style
             });
 
-            layer.strategies = [
+            layerOptions.strategies = [
                 new OpenLayers.Strategy.Cluster(enabled ?
                     config.thresholds.clustering : config.thresholds.noClustering)
             ];
-            layer.rendererOptions = {zIndexing: true};
-            layer.recluster = function(){
+            layerOptions.rendererOptions = {zIndexing: true};
+            layerOptions.recluster = function(){
                 this.strategies[0].recluster();
             };
 
-            layers.push(layer);
+            layerOptionsCollection.push(layerOptions);
         },
         visualModeChanged: function(params) {
             if(params && params.mode) {
@@ -95,7 +95,7 @@ define([], function(){
             layer.recluster();
         },
         clear: function() {
-            layers = [];
+            layerOptionsCollection = [];
         }
     };
 
@@ -169,6 +169,7 @@ define([], function(){
             this.cluster(event);
         };
 
+        // TODO - relook to see if "layers is appropriate var name"
         // Override
         OpenLayers.Strategy.Cluster.prototype.cluster = function(event) {
             if((event && event.recluster) || !event || resolution != this.resolution || !this.clustersExist()) {

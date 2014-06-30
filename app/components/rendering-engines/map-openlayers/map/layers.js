@@ -173,5 +173,32 @@ define([
         });
     }
 
+    function addDefaultListeners(params) {
+        params.layer.events.on({
+            beforefeatureselected: function(evt) {
+                mapBase.clearMapSelection({
+                    "map": params.map
+                });
+                mapBase.clearMapPopups({
+                    "map": params.map
+                });
+            },
+            featureselected: function(evt) {
+                var latLonString = evt.feature.geometry.clone().transform(params.map.projection, params.map.projectionWGS84).toShortString();
+
+                mapBase.identifyFeature({
+                    "map": params.map,
+                    "feature": evt.feature,
+                    "content": latLonString
+                });
+            },
+            featureunselected: function(evt) {
+                mapBase.clearMapPopups({
+                    "map": params.map
+                });
+            }    
+        });
+    }
+
     return exposed;
 });
