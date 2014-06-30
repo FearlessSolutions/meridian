@@ -103,6 +103,12 @@ define([
             });
         },
         resetSelector: function(params) {
+            exposed.clearMapSelection({
+                "map": params.map
+            });
+            exposed.clearMapPopups({
+                "map": params.map
+            });
             exposed.removeAllSelectors({
                 "map": params.map
             });
@@ -179,7 +185,6 @@ define([
                 "map": params.map
             });
         }
-
     };
     return exposed;
 });

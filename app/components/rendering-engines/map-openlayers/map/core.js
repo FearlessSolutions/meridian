@@ -196,7 +196,15 @@ define([
 
         },
         clear: function() {
-            // clear mapcore, heatmap, clustering
+            mapBase.resetSelector({
+                "map": map
+            });
+            mapLayers.clear({
+                "map": map
+            });
+            mapLayers.createGlobalLayers({
+                "map": map
+            });
         }
 
     };

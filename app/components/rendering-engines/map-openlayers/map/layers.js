@@ -166,6 +166,13 @@ define([
             mapHeatmap.update({
                 "map": params.map
             });
+        },
+        clear: function(params) {
+            var layers = params.map.getLayersByClass('OpenLayers.Layer.Vector');
+            layers.forEach(function(layer){
+                layer.destroy();              
+            });
+            context.sandbox.stateManager.layers = {};
         }
     };
 

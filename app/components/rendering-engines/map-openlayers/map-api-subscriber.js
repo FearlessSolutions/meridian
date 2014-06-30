@@ -29,7 +29,7 @@ define([
             context.sandbox.on('map.zoom.location', mapCore.zoomToExtent);
             context.sandbox.on('map.zoom.layer', mapCore.zoomToLayer);
             // context.sandbox.on('data.record.identify', mapCore.identifyRecord);
-            // context.sandbox.on('system.clear', mapCore.clear);
+            context.sandbox.on('system.clear', mapCore.clear);
         },
         subscribeOff: function(){
             context.sandbox.off('data.add', mapCore.plotFeatures);
