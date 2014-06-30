@@ -62,27 +62,23 @@ define([
                 "styleMap": params.styleMap
             };
 
-            // TEST - Merge extra parameter options in...
-            // 
-            // context.sandbox.utils.extend(true, options, params);
-
-            if(params.layerId !== 'global_draw' && params.layerId !== 'global_geolocator') {
-                console.warn('should not be here for draw');
-                context.sandbox.utils.extend(true, options, params);
-
-                context.sandbox.dataStorage.datasets[params.layerId].visible = true;
-                context.sandbox.dataStorage.datasets[params.layerId].visualMode = 'default';
-                // context.sandbox.dataStorage.datasets[params.layerId].isHeated = true;
-            }
+            context.sandbox.utils.extend(options, params);
+            delete(options.map);
 
             var newVectorLayer = new OpenLayers.Layer.Vector(
                 params.layerId,
                 options
             );
 
-            newVectorLayer.setVisibility(true);
+            var initialVisibility = (context.sandbox.stateManager.map.visualMode === 'heatmap') ? false : true;
+            newVectorLayer.setVisibility(initialVisibility);
 
             params.map.addLayers([newVectorLayer]);
+
+            var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+            var layers = selector.layers;
+            layers.push(newVectorLayer);
+            selector.setLayer(layers);
 
             // Default of new layer is visible = true
             context.sandbox.stateManager.layers[params.layerId] = {"visible": true};
