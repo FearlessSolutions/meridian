@@ -59,7 +59,7 @@ define([
                 "basemapLayer": basemapLayers[context.sandbox.mapConfiguration.defaultBaseMap]
             });
 
-            mapLayers.createGlobalLayers({
+            mapLayers.createStaticLayers({
                 "map": map
             });
             
@@ -122,13 +122,13 @@ define([
             // start drawing
             mapDraw.startDrawing({
                 "map": map,
-                "layerId": "global_draw" // should come in params, from component
+                "layerId": "static_draw" // should come in params, from component
             });
         },
         removeBBox: function() {
             mapDraw.stopDrawing({
                 "map": map,
-                "layerId": "global_draw" // should come in params, from component
+                "layerId": "static_draw" // should come in params, from component
             });
         },
         createLayer: function(params) {
@@ -149,7 +149,7 @@ define([
         plotPoint: function(params) { //TODO: change how the publish args are not in an object, should also call plotFeatures
             mapFeatures.plotFeatures({
                 "map": map,
-                "layerId": "global_geolocator",
+                "layerId": "static_geolocator",
                 "data": [params]
             });
         },
@@ -196,13 +196,14 @@ define([
 
         },
         clear: function() {
+            mapBase.resetStateManager(); // TODO: what should be reset in state manager (playback bases itself on layers)
             mapBase.resetSelector({
                 "map": map
             });
             mapLayers.clear({
                 "map": map
             });
-            mapLayers.createGlobalLayers({
+            mapLayers.createStaticLayers({
                 "map": map
             });
         }

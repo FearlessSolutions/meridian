@@ -7,7 +7,7 @@ define([], function(){
             context = thisContext;
         },
         update: function(params) {
-            var heatLayer = params.map.getLayersBy('layerId', 'global_heatmap')[0];
+            var heatLayer = params.map.getLayersBy('layerId', 'static_heatmap')[0];
 
             if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
                 heatLayer.setVisibility(true);
@@ -20,7 +20,7 @@ define([], function(){
             }
         },
         clear: function(params) {
-            var heatLayer = params.map.getLayersBy('layerId', 'global_heatmap')[0];
+            var heatLayer = params.map.getLayersBy('layerId', 'static_heatmap')[0];
             heatLayers.forEach(function(heatLayer){
                 heatLayer.deleteFeatures();
             });  
@@ -28,7 +28,7 @@ define([], function(){
     };
 
     function generateHeatmap(params) {
-        var heatLayer = params.map.getLayersBy('layerId', 'global_heatmap')[0],
+        var heatLayer = params.map.getLayersBy('layerId', 'static_heatmap')[0],
             newData = [];
 
         heatLayer.destroyFeatures();

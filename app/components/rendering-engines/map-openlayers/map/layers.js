@@ -14,12 +14,12 @@ define([
             context = thisContext;
 
         },
-        createGlobalLayers: function(params) {
+        createStaticLayers: function(params) {
 
             //Create geolocator layer options
             var geolocatorParams = {
                 "map": params.map,
-                "layerId": "global_geolocator",
+                "layerId": "static_geolocator",
                 "styleMap": new OpenLayers.StyleMap({
                     "externalGraphic": "${icon}",
                     "graphicHeight": "${height}",
@@ -35,7 +35,7 @@ define([
             //Create draw layer options
             var drawParams = {
                 "map": params.map,
-                "layerId": "global_draw",
+                "layerId": "static_draw",
                 "styleMap": new OpenLayers.StyleMap({
                     "default": {
                         "fillOpacity": 0.05,
@@ -52,7 +52,7 @@ define([
             //Create heatmap layer options
             var heatmapParams = {
                 "map": params.map,
-                "layerId": "global_heatmap",
+                "layerId": "static_heatmap",
                 "renderers": ['Heatmap'],
                 "styleMap": new OpenLayers.StyleMap({
                     "default": new OpenLayers.Style({
