@@ -2,12 +2,14 @@ define([
     './mock-publisher'
 ], function(publisher) {
 
-    var context;
+    var context,
+        activeAJAXs;
 
     var exposed = { 
 
         init: function(thisContext) {
             context = thisContext;
+            activeAJAXs = [];
         },
         executeQuery: function(args) {
             // Set a query ID to pass to the server
@@ -38,14 +40,18 @@ define([
             });
 
         },
+        stop: function(args){
+            abortQuery(args.queryId);
+        },
         clear: function(){
+            stopAllAJAX();
             context.sandbox.dataStorage.clear();
-        }
 
+        }
     };
 
     function queryData(args) {
-        context.sandbox.utils.ajax({
+        var newAJAX = context.sandbox.utils.ajax({
             type: 'POST',
             url: 'https://localhost:3000/query/bbox/' + args.serviceName,
             data: {
@@ -63,9 +69,10 @@ define([
             }
         })
         .done(function(data){
-
             var queryId,
                 newData = [];
+
+            cleanAJAX();
 
             if (data && data.length > 0){
                 queryId = args.queryId || data[0].properties.queryId;
@@ -111,8 +118,6 @@ define([
                 args.start = parseInt(args.start || 0) + parseInt(args.pageSize);
                 args.queryId = queryId;
                 queryData(args);
-
-
             } else {
                 publisher.publishMessage({
                     "messageType": "success",
@@ -126,6 +131,12 @@ define([
 
         })
         .error(function(e){
+            //If the error was because we aborted, ignore
+            if(e.statusText === "abort"){
+                return;
+            }
+
+            cleanAJAX();
             publisher.publishMessage({
                 "messageType": "error",
                 "messageTitle": "Data Service",
@@ -138,7 +149,42 @@ define([
 
             return false;
         }); 
+
+        newAJAX.queryId = args.queryId;
+        activeAJAXs.push(newAJAX);
     }
+
+    function stopAllAJAX(){
+        activeAJAXs.forEach(function(ajax){
+            ajax.abort();
+        });
+
+        activeAJAXs = [];
+    }
+
+    /**
+     * Stop a query's ajax call,
+     * This function requires that ajax.queryId was set when the query was created.
+     */
+    function abortQuery(queryId){
+        activeAJAXs.forEach(function(ajax, index){
+            if(ajax.queryId === queryId){ //This was set in queryData
+                ajax.abort();
+                activeAJAXs.splice(index, 1);
+            }
+        });
+    }
+
+    /**
+     * Clean up all finished ajax calls from the activeAJAXs array
+     */
+    function cleanAJAX(){
+        activeAJAXs.forEach(function(ajax, index){
+            if(ajax.readyState === 4){ //4 is "complete" status
+                activeAJAXs.splice(index, 1);
+            }
+        });
+    };
 
     return exposed;
 

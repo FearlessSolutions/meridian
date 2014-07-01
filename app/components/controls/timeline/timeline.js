@@ -115,8 +115,20 @@ define([
         },
         markFinished: function(args){
             var $badge = context.$('#snapshot-' + args.queryId + ' .badge');
-            $badge.addClass('finished');
-            exposed.setTooltip(args.queryId,'Finished', $badge.data('count'));
+            if(!$badge.hasClass("error")){
+                $badge.addClass('finished');
+                exposed.setTooltip(args.queryId,'Finished', $badge.data('count'));
+                snapshotMenu.disableOption(args.queryId, 'stopQuery');
+            }
+        },
+        markStopped: function(args){
+            var $badge = context.$('#snapshot-' + args.queryId + ' .badge'),
+                count = $badge.data('count') || 0;
+            if(!$badge.hasClass('error') && !$badge.hasClass('finished')){
+                $badge.addClass('stopped');
+                exposed.setTooltip(args.queryId, 'Stopped', count);
+                snapshotMenu.disableOption(args.queryId, 'stopQuery');
+            }
         },
         markError: function(args){
             var $badge = context.$('#snapshot-' + args.queryId + ' .badge'),
@@ -124,6 +136,7 @@ define([
 
             $badge.addClass('error');
             exposed.setTooltip(args.queryId, 'Error', count);
+            snapshotMenu.disableOption(args.queryId, 'stopQuery');
         },
         setTooltip: function(queryId, status, recordCount){
             var $owner = context.$('#snapshot-' + queryId),
