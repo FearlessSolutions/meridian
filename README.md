@@ -16,11 +16,13 @@ To use and install ElasticSearch, make sure:
 1. The JAVA_HOME variable is defined. 
 
 1. Import the given user.p12 certificate into your browser:
-  - No password is used to import the certificate.
+    
+    *Mac OS: Make sure to import the certificate in the login section of Keychain Access and not in the System section.*
+  - Password: 'password'
   - Chrome: Settings>Show Advanced Settings>(HTTPS/SSL)Manage certificates>Import
   - FireFox: Options>Advanced>Certificates>View Certificates>Import
 
-1. Make sure to restart the browser after importing the certificate.
+1. You might need to restart the browser after importing the certificate.
 
 If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the Grunt Support Setup instructions.
 
