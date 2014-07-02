@@ -1,10 +1,13 @@
 var platform = require('platform');
-var auth = require('../authorization/Auth');
 var gaz = require('./Gaz');
 
-exports.init = function(app){
+var auth;
 
-    app.get('/gaz', auth.verifyUser, function(req, res){
+exports.init = function(context){
+
+    auth = context.sandbox.auth;
+
+    context.app.get('/gaz', auth.verifyUser, function(req, res){
         gaz.query(req, function (response){
         	if(response.status === 200){
         		res.status(200);

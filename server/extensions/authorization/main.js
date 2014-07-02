@@ -1,7 +1,9 @@
 var platform = require('platform');
 var auth = require('./Auth');
 
-exports.init = function(app){
+exports.init = function(context){
+
+    var app = context.app;
 
     app.get('/echo', auth.verifyUser, function(req, res){
         res.send({
@@ -10,4 +12,6 @@ exports.init = function(app){
             'user-agent': platform.parse(req.headers['user-agent'])
         });
     });
+
+    context.sandbox.auth = auth;
 };

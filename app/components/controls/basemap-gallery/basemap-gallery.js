@@ -25,7 +25,7 @@ define([
 
             //Cacluate css
             defaultBasemapCSS = {
-                width: parseInt($dropdown.width(), 10)
+                "width": parseInt($dropdown.width(), 10)
             };
             defaultToggleCSS = {
                 "padding-right" : parseInt($toggle.css('padding-right').replace('px', ''), 10)
@@ -73,9 +73,12 @@ define([
             //start the tooltip for the selected image.
             //FF doesn't like tooltips inside buttons, so the entire button has the tooltip information. 
             $toggle.tooltip();
-
-            //Close dropdown on mouse leave
-            $basemapGallery.mouseleave(hideBasemapGallery);
+            
+            //Toggle menu on hover
+            $basemapGallery.hover(
+                showBasemapGallery, //mouseenter
+                hideBasemapGallery //mouseleave
+            );
 
         }
     };
@@ -136,6 +139,11 @@ define([
 
     function hideBasemapGallery(){
         if($basemapGallery.hasClass('open')) {
+            $toggle.click();
+        }
+    }
+    function showBasemapGallery(){
+        if(!$basemapGallery.hasClass('open')) {
             $toggle.click();
         }
     }

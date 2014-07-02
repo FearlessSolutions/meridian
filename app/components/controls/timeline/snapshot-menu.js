@@ -11,9 +11,8 @@ define([
         },
         createMenu: function(args){
             var queryId = args.queryId,
-                $currentMenu;
-
-            var snapshotMenuTemplate = Handlebars.compile(snapshotMenuHBS);
+                $currentMenu,
+                snapshotMenuTemplate = Handlebars.compile(snapshotMenuHBS);
             var snapshotMenuHTML = snapshotMenuTemplate({
                 "queryId": queryId
             });
@@ -56,10 +55,23 @@ define([
             context.$('#snapshot-' + queryId + '-settings-menu li a').click(function(){
                 exposed.menuCallback({
                     "menuChannel": this.getAttribute('data-channel'),
-                    "payload": {"layerId": queryId}
+                    "payload": {
+                        "layerId": queryId,
+                        "queryId": queryId
+                    }
                 });
             });
-
+        },
+        disableOption: function(queryId, optionName){
+            var $option;
+            var options = {
+                "zoomToLayer": "map.zoom.layer",
+                "showLayer": "map.layer.show",
+                "hideLayer": "map.layer.hide",
+                "stopQuery": "query.stop"
+            };
+            $option = context.$('#snapshot-' + queryId + '-settings-menu a[data-channel="' + options[optionName] + '"]');
+            $option.parent().remove();
 
         },
         menuCallback: function(args) {
