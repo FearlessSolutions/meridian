@@ -42,7 +42,7 @@ define([
         createMap: function(params) {
             map = mapBase.createMap(params);
 
-            basemapLayers = mapBase.loadBasemaps({
+            exposed.loadBasemaps({
                 "map": map
             });
 
@@ -54,9 +54,10 @@ define([
                 "maxLat": context.sandbox.mapConfiguration.initialMaxLat
             });
 
-            mapBase.setBasemap({
+            console.debug(basemapLayers);
+            exposed.setBasemap({
                 "map": map,
-                "basemapLayer": basemapLayers[context.sandbox.mapConfiguration.defaultBaseMap]
+                "basemap": context.sandbox.mapConfiguration.defaultBaseMap
             });
 
             mapLayers.createStaticLayers({
@@ -100,13 +101,13 @@ define([
             });
         },
         setBasemap: function(params) {
-            mapBase.setBasemap({
+            mapLayers.setBasemap({
                 "map": map,
                 "basemapLayer": basemapLayers[params.basemap]
             });
         },
         loadBasemaps: function() {
-            basemapLayers = mapBase.loadBasemaps({
+            basemapLayers = mapLayers.loadBasemaps({
                 "map": map
             });
         },

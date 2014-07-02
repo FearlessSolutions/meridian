@@ -40,51 +40,6 @@ define([
 
             return map;
         },
-        loadBasemaps: function(params) {
-            var basemapLayers = {};
-
-            context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(value){
-                var olBaseLayer;
-
-                switch (context.sandbox.mapConfiguration.basemaps[value].type){
-                    case "osm":
-                        olBaseLayer = new OpenLayers.Layer.OSM(
-                            context.sandbox.mapConfiguration.basemaps[value].label,
-                            [context.sandbox.mapConfiguration.basemaps[value].url]
-                        ); 
-                        break;
-                    case "wmts":
-                        olBaseLayer = new OpenLayers.Layer.WMTS({
-                            name: context.sandbox.mapConfiguration.basemaps[value].name,
-                            url: context.sandbox.mapConfiguration.basemaps[value].url,
-                            style: context.sandbox.mapConfiguration.basemaps[value].style,
-                            matrixSet: context.sandbox.mapConfiguration.basemaps[value].matrixSet || context.sandbox.mapConfiguration.projection,
-                            matrixIds: context.sandbox.mapConfiguration.basemaps[value].matrixIds || null,
-                            layer: context.sandbox.mapConfiguration.basemaps[value].layer || null,
-                            requestEncoding: context.sandbox.mapConfiguration.basemaps[value].requestEncoding || 'KVP',
-                            format: context.sandbox.mapConfiguration.basemaps[value].format || 'image/jpeg',
-                            resolutions: context.sandbox.mapConfiguration.basemaps[value].resolutions || null,
-                            tileSize: new OpenLayers.Size(
-                                context.sandbox.mapConfiguration.basemaps[value].tileWidth || 256,
-                                context.sandbox.mapConfiguration.basemaps[value].tileHeight || 256
-                            )
-                        }); 
-                        break;
-                    default:
-                        context.sandbox.logger.error('Did not load basemap. No support for basemap type:', context.sandbox.mapConfiguration.basemaps[value].type);
-                        break;
-                }
-                if(olBaseLayer){
-                    basemapLayers[context.sandbox.mapConfiguration.basemaps[value].basemap] = olBaseLayer;
-                    params.map.addLayer(olBaseLayer);
-                }
-            });
-
-            return basemapLayers;
-        },
-        setBasemap: function(params) {
-            params.map.setBaseLayer(params.basemapLayer);
-        },
         addSelector: function(params) {
             var selector = new OpenLayers.Control.SelectFeature([], {
                 "click": true,

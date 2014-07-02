@@ -106,11 +106,32 @@ define([
 
             return newVectorLayer;
         },
+        createOSMLayer: function(params) {
+            var baseLayer = new OpenLayers.Layer.OSM(params.label,params.url);
+            params.map.addLayer(baseLayer);
+            return baseLayer;
+        },
         createWMSLayer: function(params) {
             
         },
         createWMTSLayer: function(params) {
-            
+            var baseLayer = new OpenLayers.Layer.WMTS({
+                "name": params.name,
+                "url": params.url,
+                "style": params.style,
+                "matrixSet": params.matrixSet || context.sandbox.mapConfiguration.projection,
+                "matrixIds": params.matrixIds || null,
+                "layer": params.layer || null,
+                "requestEncoding": params.requestEncoding || 'KVP',
+                "format": params.format || 'image/jpeg',
+                "resolutions": params.resolutions || null,
+                "tileSize": new OpenLayers.Size(
+                    params.tileWidth || 256,
+                    params.tileHeight || 256
+                )
+            });
+            params.map.addLayer(baseLayer);
+            return baseLayer;
         },
         deleteLayer: function() {
             
@@ -183,6 +204,52 @@ define([
                     "layer": params.layer
                 });
             }
+        },
+        loadBasemaps: function(params) {
+            var basemapLayers = {};
+
+            context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(basemap){
+                var baseLayer;
+
+                switch (context.sandbox.mapConfiguration.basemaps[basemap].type){
+                    case "osm":
+                        baseLayer = exposed.createOSMLayer({
+                            "map": params.map,
+                            "label": context.sandbox.mapConfiguration.basemaps[basemap].label,
+                            "url": [context.sandbox.mapConfiguration.basemaps[basemap].url]
+                        });
+                        break;
+                    case "wmts":
+                        baseLayer = exposed.createWMTSLayer({
+                            "map": params.map,
+                            "name": context.sandbox.mapConfiguration.basemaps[basemap].name,
+                            "url": context.sandbox.mapConfiguration.basemaps[basemap].url,
+                            "style": context.sandbox.mapConfiguration.basemaps[basemap].style,
+                            "matrixSet": context.sandbox.mapConfiguration.basemaps[basemap].matrixSet || context.sandbox.mapConfiguration.projection,
+                            "matrixIds": context.sandbox.mapConfiguration.basemaps[basemap].matrixIds || null,
+                            "layer": context.sandbox.mapConfiguration.basemaps[basemap].layer || null,
+                            "requestEncoding": context.sandbox.mapConfiguration.basemaps[basemap].requestEncoding || 'KVP',
+                            "format": context.sandbox.mapConfiguration.basemaps[basemap].format || 'image/jpeg',
+                            "resolutions": context.sandbox.mapConfiguration.basemaps[basemap].resolutions || null,
+                            "tileSize": new OpenLayers.Size(
+                                context.sandbox.mapConfiguration.basemaps[basemap].tileWidth || 256,
+                                context.sandbox.mapConfiguration.basemaps[basemap].tileHeight || 256
+                            )
+                        });
+                        break;
+                    default:
+                        context.sandbox.logger.error('Did not load basemap. No support for basemap type:', context.sandbox.mapConfiguration.basemaps[basemap].type);
+                        break;
+                }
+                if(baseLayer){
+                    basemapLayers[context.sandbox.mapConfiguration.basemaps[basemap].basemap] = baseLayer;
+                }
+            });
+
+            return basemapLayers;
+        },
+        setBasemap: function(params) {
+            params.map.setBaseLayer(params.basemapLayer);
         }
     };
 
