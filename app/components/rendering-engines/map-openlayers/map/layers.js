@@ -173,6 +173,16 @@ define([
                 layer.destroy();              
             });
             context.sandbox.stateManager.layers = {};
+        },
+        addEventListenersToLayer: function(params){
+            if(params.eventListeners) {
+                params.layer.events.on(params.eventListeners);
+            } else {
+                addDefaultListeners({
+                    "map": params.map,
+                    "layer": params.layer
+                });
+            }
         }
     };
 
@@ -246,19 +256,75 @@ define([
                 });
             },
             featureselected: function(evt) {
-                var latLonString = evt.feature.geometry.clone().transform(params.map.projection, params.map.projectionWGS84).toShortString();
+                var popup,
+                    infoWinTemplateRef,
+                    feature = evt.feature,
+                    formattedAttributes = {},
+                    icon = feature.attributes.icon;
 
-                mapBase.identifyFeature({
-                    "map": params.map,
-                    "feature": evt.feature,
-                    "content": latLonString
-                });
+                if (!feature.cluster){
+
+                    context.sandbox.dataStorage.getFeatureById({"featureId": feature.featureId}, function(fullFeature){
+                        infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
+                        context.sandbox.utils.each(fullFeature.properties,
+                            function(k, v){
+                                if((context.sandbox.utils.type(v) === "string" ||
+                                    context.sandbox.utils.type(v) === "number" ||
+                                    context.sandbox.utils.type(v) === "boolean")) {
+                                    formattedAttributes[k] = v;
+                                }
+                        });
+                        popup = new OpenLayers.Popup.FramedCloud('popup',
+                            OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                            null,
+                            infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes, icon),
+                            null,
+                            true,
+                            function() {
+                                mapBase.clearMapSelection({
+                                    "map": params.map
+                                });
+                                mapBase.clearMapPopups({
+                                    "map": params.map
+                                });
+                            }
+                        );
+                        feature.popup = popup;
+                        params.map.addPopup(popup);
+                        infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
+                    });
+                } else {
+                    var bounds = feature.geometry.getBounds();
+                    feature.cluster.forEach(function(point){
+                        bounds.extend(point.geometry.getBounds());
+                    });
+                    var zoom = params.map.getZoomForExtent(bounds);
+
+                    // To prevent zooming in too far
+                    // Sources don't always provide the correct information
+                    // as to what levels they have imagery for.
+                    //
+                    // Clicking a cluster should never zoom the user out.
+                    var maxAuto = context.sandbox.mapConfiguration.maxAutoZoomLevel;
+                    if (zoom > maxAuto){
+                        zoom = params.map.zoom > maxAuto ? params.map.zoom : maxAuto;
+                        publisher.publishMessage({
+                            messageType: 'warning',
+                            messageTitle: 'Auto Zoom',
+                            messageText: 'Auto zoom is at maximum zoom level. Please use manual zoom for more detail.'
+                        });
+                    }
+                    params.map.setCenter(bounds.getCenterLonLat(), zoom);
+                }
             },
             featureunselected: function(evt) {
-                mapBase.clearMapPopups({
-                    "map": params.map
-                });
-            }    
+                var feature = evt.feature;
+                if (!feature.cluster){
+                    params.map.removePopup(feature.popup);
+                    feature.popup.destroy();
+                    feature.popup = null;
+                }
+            }
         });
     }
 

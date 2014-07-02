@@ -132,12 +132,19 @@ define([
             });
         },
         createLayer: function(params) {
-            var layerOptions = {
-                "layerId": params.queryId 
-            };
+            var newLayer,
+                layerOptions = {
+                    "layerId": params.queryId 
+                };
             layerOptions.map = map;
             mapClustering.addClusteringToLayerOptions(layerOptions);
-            mapLayers.createVectorLayer(layerOptions);
+            newLayer = mapLayers.createVectorLayer(layerOptions);
+            mapLayers.addEventListenersToLayer({
+                "map": map,
+                "layer": newLayer,
+                "eventListeners": params.events //can pass in your own event listeners, or take the default, by not providing any
+            });
+
         },
         plotFeatures: function(params) {
             mapFeatures.plotFeatures({
