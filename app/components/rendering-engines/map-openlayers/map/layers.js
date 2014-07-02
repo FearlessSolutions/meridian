@@ -23,7 +23,8 @@ define([
                 "styleMap": new OpenLayers.StyleMap({
                     "externalGraphic": "${icon}",
                     "graphicHeight": "${height}",
-                    "graphicWidth":  "${width}"
+                    "graphicWidth":  "${width}",
+                    "graphicYOffset": context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
                 })
             };
             var geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
@@ -84,7 +85,7 @@ define([
             };
 
             context.sandbox.utils.extend(options, params);
-            delete(options.map);
+            delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
 
             var newVectorLayer = new OpenLayers.Layer.Vector(
                 params.layerId,
@@ -326,8 +327,7 @@ define([
                 var popup,
                     infoWinTemplateRef,
                     feature = evt.feature,
-                    formattedAttributes = {},
-                    icon = feature.attributes.icon;
+                    formattedAttributes = {};
 
                 if (!feature.cluster){
 
@@ -344,7 +344,7 @@ define([
                         popup = new OpenLayers.Popup.FramedCloud('popup',
                             OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
                             null,
-                            infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes, icon),
+                            infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
                             null,
                             true,
                             function() {
