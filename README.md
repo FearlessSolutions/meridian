@@ -3,7 +3,7 @@
 
 We utilize grunt to start a simple localhost web server.
 
-To install grunt, make sure the Node Packaged Module is installed by installing [Node.js](http://nodejs.org/).
+To install grunt, make sure Node Packaged Module is installed by installing [Node.js](http://nodejs.org/).
 
 To use the command-line version of Grunt you will need to install the global [Grunt CLI](http://gruntjs.com/getting-started) module.
 
