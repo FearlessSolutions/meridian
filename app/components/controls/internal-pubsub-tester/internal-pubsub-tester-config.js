@@ -4,7 +4,65 @@ define([
 
     var config = {
         "data.add": {
-            "payload": {}
+            "payload": {
+              "queryId": "TestLayer1",
+              "data": [
+                {
+                  "classification": "U",
+                  "queryId": "TestLayer1",
+                  "featureId": "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
+                  "lat": 8.82868,
+                  "lon": -13.430793,
+                  "color": "red",
+                  "dataService": "mock",
+                  "id": "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                      -10,
+                      10
+                    ]
+                  },
+                  "type": "Feature"
+                },
+                {
+                  "classification": "U",
+                  "queryId": "TestLayer1",
+                  "featureId": "07f6b9fd-28f1-4de8-b112-fbe0b3df1cd5",
+                  "lat": 8.686703,
+                  "lon": -13.008265,
+                  "color": "yellow",
+                  "dataService": "mock",
+                  "id": "07f6b9fd-28f1-4de8-b112-fbe0b3df1cd5",
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                      -10,
+                      8
+                    ]
+                  },
+                  "type": "Feature"
+                },
+                {
+                  "classification": "U",
+                  "queryId": "TestLayer1",
+                  "featureId": "d3bc9d37-e683-4195-9475-bd4f37887d21",
+                  "lat": 8.800177,
+                  "lon": -13.089125,
+                  "color": "blue",
+                  "dataService": "mock",
+                  "id": "d3bc9d37-e683-4195-9475-bd4f37887d21",
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                      -10,
+                      9
+                    ]
+                  },
+                  "type": "Feature"
+                }
+              ]
+            }
         },
         "data.error": {
             "payload": {}
@@ -55,7 +113,16 @@ define([
             "payload": {}
         },
         "map.layer.create": {
-            "payload": {}
+            "payload": {
+                "queryId": "TestLayer1",
+                "name": "Test Layer",
+                "coords": {
+                    "minLat": "7.602108",
+                    "minLon": "-13.908691",
+                    "maxLat": "11.587669",
+                    "maxLon": "-8.283691"
+                }
+            }
         },
         "map.layer.hide": {
             "payload": {}
@@ -98,7 +165,17 @@ define([
             }
         },
         "point.plot": {
-            "payload": {}
+            "payload": {
+              "type": "feature",
+              "geometry": {
+                "type": "point",
+                "coordinates": [
+                  0,
+                  0
+                ]
+              },
+              "properties": {}
+            }
         },
         "system.clear": {
             "payload": {}

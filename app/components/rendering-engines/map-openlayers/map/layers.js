@@ -78,6 +78,7 @@ define([
 
         },
         createVectorLayer: function(params) { // TODO: add support for taking in params.name
+            ensureLayerInDataStorage({"layerId": params.layerId}); // TODO: fix this... this may have negative effects on other layers like drawing
 
             var options = {
                 "layerId": params.layerId,
@@ -253,6 +254,12 @@ define([
             params.map.setBaseLayer(params.basemapLayer);
         }
     };
+
+    function ensureLayerInDataStorage(params) { // TODO: eveluate where to place this. If here, the renderer would have backbone as a dependency
+        if(!context.sandbox.dataStorage.datasets[params.layerId]){
+            context.sandbox.dataStorage.datasets[params.layerId] = new Backbone.Collection();
+        }
+    }
 
     function addGeoLocatorListeners(params) {
         params.layer.events.on({

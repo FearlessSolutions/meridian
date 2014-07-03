@@ -54,7 +54,6 @@ define([
                 "maxLat": context.sandbox.mapConfiguration.initialMaxLat
             });
 
-            console.debug(basemapLayers);
             exposed.setBasemap({
                 "map": map,
                 "basemap": context.sandbox.mapConfiguration.defaultBaseMap
@@ -145,7 +144,7 @@ define([
                 "layer": newLayer,
                 "eventListeners": params.events //can pass in your own event listeners, or take the default, by not providing any
             });
-
+            // TODO: Layer not added to Data Storage here. Currently, that is done by the data servcie component. Trouble is, that means layers added over this channel wont have storage (toggle layer off doesnt work) 
         },
         plotFeatures: function(params) {
             mapFeatures.plotFeatures({
