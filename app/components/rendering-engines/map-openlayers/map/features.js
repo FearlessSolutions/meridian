@@ -20,22 +20,22 @@ define([
                 context.sandbox.utils.each(data, function(key, value) { // TODO: hoist and cleanup variables
                     
                     // TODO: Test using GeoJSON Parser
-                    // var geoJsonParser = new OpenLayers.Format.GeoJSON({
-                    //         ignoreExtraDims: false,
-                    //         internalProjection: params.map.projection,
-                    //         externalProjection: params.map.projectionWGS84
-                    //     }),
-                    //     currentFeature = geoJsonParser.parseFeature(value),
-                    //     iconData;
+                    var geoJsonParser = new OpenLayers.Format.GeoJSON({
+                            ignoreExtraDims: false,
+                            internalProjection: params.map.projection,
+                            externalProjection: params.map.projectionWGS84
+                        }),
+                        currentFeature = geoJsonParser.parseFeature(value),
+                        iconData;
             
 
                     // TODO: Test without using GoeJSON Parser
-                    if(value.geometry.type.toLowerCase() === 'point'){
-                        currentFeature = exposed.createPoint({
-                            "map": params.map,
-                            "geometry": value.geometry
-                        });
-                    }
+                    // if(value.geometry.type.toLowerCase() === 'point'){
+                    //     currentFeature = exposed.createPoint({
+                    //         "map": params.map,
+                    //         "geometry": value.geometry
+                    //     });
+                    // }
                     
                     iconData = context.sandbox.icons.getIconForFeature({"properties": value.properties}) || context.sandbox.mapConfiguration.markerIcons.default;
                     currentFeature.featureId = value.id || '';
