@@ -131,7 +131,7 @@ define([
                 "layerId": "static_draw" // should come in params, from component
             });
         },
-        createLayer: function(params) {
+        createLayer: function(params) { // TODO: look into this more, it is currently always creating a Vector Layer. Channels may need to be more specific.
             var newLayer,
                 layerOptions = {
                     "layerId": params.queryId 
@@ -194,13 +194,19 @@ define([
 
         },
         identifyRecord: function(params) {
-
+            mapLayers.identifyFeature({
+                "map": map,
+                "layerId": params.queryId, // TODO: change payload to use layerId, not queryId
+                "featureId": params.recordId
+            });
         },
         clearMapSelection: function() {
 
         },
         clearMapPopups: function() {
-
+            mapBase.clearMapPopups({
+                "map": map
+            });
         },
         clear: function() {
             mapBase.resetStateManager(); // TODO: what should be reset in state manager (playback bases itself on layers)

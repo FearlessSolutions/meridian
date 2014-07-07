@@ -20,6 +20,7 @@ define([
             var geolocatorParams = {
                 "map": params.map,
                 "layerId": "static_geolocator",
+                "static": true,
                 "styleMap": new OpenLayers.StyleMap({
                     "externalGraphic": "${icon}",
                     "graphicHeight": "${height}",
@@ -37,6 +38,7 @@ define([
             var drawParams = {
                 "map": params.map,
                 "layerId": "static_draw",
+                "static": true,
                 "styleMap": new OpenLayers.StyleMap({
                     "default": {
                         "fillOpacity": 0.05,
@@ -55,6 +57,7 @@ define([
                 "map": params.map,
                 "layerId": "static_heatmap",
                 "renderers": ['Heatmap'],
+                "static": true,
                 "styleMap": new OpenLayers.StyleMap({
                     "default": new OpenLayers.Style({
                         "pointRadius": 10,
@@ -78,7 +81,10 @@ define([
 
         },
         createVectorLayer: function(params) { // TODO: add support for taking in params.name
-            ensureLayerInDataStorage({"layerId": params.layerId}); // TODO: fix this... this may have negative effects on other layers like drawing
+            // do not put static layers (like drawing) into the data staorage
+            if(!params.static) {
+                ensureLayerInDataStorage({"layerId": params.layerId});
+            }
 
             var options = {
                 "layerId": params.layerId,
@@ -252,7 +258,100 @@ define([
         },
         setBasemap: function(params) {
             params.map.setBaseLayer(params.basemapLayer);
+        },
+        identifyFeature: function(params) {
+            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
+            var feature = layer.getFeatureBy('featureId', params.featureId);
+
+            //If no feature is found, it is most likely because it was hidden in a cluster
+            if(!feature) {
+                var clusterFeatureId,
+                    clusterFeatureCount,
+                    record, //TODO: consider renaming, to feature and renaming feature to something like clusterFeature
+                    currentDataService;
+
+                context.sandbox.utils.each(layer.features, function(k1, v1) {
+                    if(v1.cluster) {
+                        context.sandbox.utils.each(v1.cluster, function(k2, v2) {
+                            if(params.featureId === v2.featureId) {
+                                feature = v1;
+                                record = v2;
+                                clusterFeatureId = k2 + 1;
+                                clusterFeatureCount = feature.cluster.length;
+                            }
+                        });
+                    }
+                });
+
+                if(!feature) {
+                    context.sandbox.logger.error('Feature does not exist on map.');
+                    return;
+                }
+
+                currentDataService = record.attributes.dataService;
+
+                context.sandbox.dataStorage.getFeatureById(
+                    {"featureId": record.featureId},
+                    function(fullFeature) {
+                        var infoWinTemplateRef = context.sandbox.dataServices[currentDataService].infoWinTemplate,
+                            headerHTML = '<span>' + clusterFeatureId + ' of ' + clusterFeatureCount + '</span>',
+                            formattedAttributes = {},
+                            bounds,
+                            popup;
+
+                        context.sandbox.utils.each(fullFeature.properties, 
+                            function(k, v){
+                                if((context.sandbox.utils.type(v) === "string" ||
+                                    context.sandbox.utils.type(v) === "number" ||
+                                    context.sandbox.utils.type(v) === "boolean")) {
+                                    formattedAttributes[k] = v;
+                                }
+                        });
+                        popup = new OpenLayers.Popup.FramedCloud('popup',
+                            OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                            null,
+                            headerHTML + infoWinTemplateRef.buildInfoWinTemplate(
+                                formattedAttributes,
+                                record.attributes.icon
+                            ),
+                            null,
+                            true,
+                            function() {
+                                mapBase.clearMapSelection({
+                                    "map": params.map
+                                });
+                                mapBase.clearMapPopups({
+                                    "map": params.map
+                                });
+                            }
+                        );
+                        popup.layerId = params.queryId;
+
+                        mapBase.clearMapSelection({
+                            "map": params.map
+                        });
+                        mapBase.clearMapPopups({
+                            "map": params.map
+                        });
+
+                        bounds = feature.geometry.getBounds();
+                        params.map.setCenter(bounds.getCenterLonLat());
+
+                        feature.popup = popup;
+                        params.map.addPopup(popup);
+
+                        context.sandbox.dataServices[currentDataService].infoWinTemplate.postRenderingAction(
+                            record,
+                            layer.layerId
+                        );
+                    }
+                );
+            } else {
+                var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                selector.select(feature);
+            }
         }
+
     };
 
     function ensureLayerInDataStorage(params) { // TODO: eveluate where to place this. If here, the renderer would have backbone as a dependency
