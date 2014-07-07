@@ -149,7 +149,7 @@ define([
         plotFeatures: function(params) {
             mapFeatures.plotFeatures({
                 "map": map,
-                "layerId": params.queryId, // TODO: change params.queryId to params.layerID, this needs to be changed in all components using the channel
+                "layerId": params.queryId || params.layerId, // TODO: change params.queryId to params.layerID, this needs to be changed in all components using the channel
                 "data": params.data
             });
         },

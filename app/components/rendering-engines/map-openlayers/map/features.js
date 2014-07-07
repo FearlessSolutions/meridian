@@ -43,6 +43,7 @@ define([
                     iconData = context.sandbox.icons.getIconForFeature({"properties": value.properties}) || context.sandbox.mapConfiguration.markerIcons.default;
                     currentFeature.featureId = value.id || '';
                     currentFeature.attributes.icon = iconData.icon;
+                    // currentFeature.attributes.graphicYOffset = iconData.graphicYOffset || 0;
                     currentFeature.attributes.height = iconData.height;
                     currentFeature.attributes.width = iconData.width;
                     currentFeature.attributes.dataService = value.dataService || '';

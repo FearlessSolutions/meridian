@@ -54,7 +54,8 @@ define([], function(){
                 graphicOpacity: 1,
                 pointRadius: 15,
                 graphicHeight: "${height}",
-                graphicWidth: "${width}"
+                graphicWidth: "${width}",
+                graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
             }, OpenLayers.Feature.Vector.style["default"]), {
                 rules: rules,
                 context: {

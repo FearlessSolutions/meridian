@@ -27,6 +27,26 @@ define([
                         "maxLon": args.maxLon
                     }
                 });
+
+                publisher.plotFeatures({
+                    "layerId": args.queryId,
+                    "data": [{
+                        "queryId": args.queryId,
+                        "featureId": "_aoi",
+                        "dataService": "mock",
+                        "id": "_aoi",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [[
+                                [args.minLon, args.maxLat],
+                                [args.maxLon, args.maxLat],
+                                [args.maxLon, args.minLat],
+                                [args.minLon, args.minLat]
+                            ]]
+                        },
+                        "type": "Feature"
+                    }]
+                });
             }
 
             queryData(args);

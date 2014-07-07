@@ -48,7 +48,7 @@ define([
         "iconLarge": "/extensions/map-configuration-extension/images/markerIcons/marker-2x.png",
         "height": 24,
         "width": 15,
-        "graphicYOffset": -26
+        "graphicYOffset": -24
       }
     },
     "clustering": {

@@ -347,8 +347,37 @@ define([
                     }
                 );
             } else {
-                var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-                selector.select(feature);
+                // var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                // selector.select(feature);
+                infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
+                context.sandbox.utils.each(fullFeature.properties,
+                    function(k, v){
+                        if((context.sandbox.utils.type(v) === "string" ||
+                            context.sandbox.utils.type(v) === "number" ||
+                            context.sandbox.utils.type(v) === "boolean")) {
+                            formattedAttributes[k] = v;
+                        }
+                });
+                
+                anchor= {"size": new OpenLayers.Size(0,0), "offset":new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
+                popup = new OpenLayers.Popup.FramedCloud('popup',
+                    OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                    null,
+                    infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
+                    anchor,
+                    true,
+                    function() {
+                        mapBase.clearMapSelection({
+                            "map": params.map
+                        });
+                        mapBase.clearMapPopups({
+                            "map": params.map
+                        });
+                    }
+                );
+                feature.popup = popup;
+                params.map.addPopup(popup);
+                infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
             }
         }
 
@@ -433,7 +462,8 @@ define([
                 var popup,
                     infoWinTemplateRef,
                     feature = evt.feature,
-                    formattedAttributes = {};
+                    formattedAttributes = {},
+                    anchor;
 
                 if (!feature.cluster){
 
@@ -447,11 +477,13 @@ define([
                                     formattedAttributes[k] = v;
                                 }
                         });
+
+                        anchor= {"size": new OpenLayers.Size(0,0), "offset":new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
                         popup = new OpenLayers.Popup.FramedCloud('popup',
                             OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
                             null,
                             infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
-                            null,
+                            anchor,
                             true,
                             function() {
                                 mapBase.clearMapSelection({

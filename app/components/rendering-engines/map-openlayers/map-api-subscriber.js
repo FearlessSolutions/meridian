@@ -10,6 +10,7 @@ define([
             exposed.subscribeOn();
         },
         subscribeOn: function(){
+            context.sandbox.on('map.features.plot', mapCore.plotFeatures);
             context.sandbox.on('data.add', mapCore.plotFeatures);
             context.sandbox.on('point.plot', mapCore.plotPoint);
             context.sandbox.on('map.basemap.change', mapCore.setBasemap);
@@ -32,6 +33,7 @@ define([
             context.sandbox.on('system.clear', mapCore.clear);
         },
         subscribeOff: function(){
+            context.sandbox.off('map.features.plot', mapCore.plotFeatures);
             context.sandbox.off('data.add', mapCore.plotFeatures);
             context.sandbox.off('point.plot', mapCore.plotPoint);
             context.sandbox.off('map.basemap.change', mapCore.setBasemap);
