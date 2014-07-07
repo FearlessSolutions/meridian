@@ -19,14 +19,17 @@ define([
             if(layer) {
                 context.sandbox.utils.each(data, function(key, value) { // TODO: hoist and cleanup variables
                     
+
+
                     // TODO: Test using GeoJSON Parser
+                    // TODO: if GeoJSON is a feature collection split it into multiple individual GeoJSON features... to fit out process. May be a better fit to happen in the API, or could be here as a safety check.
                     var geoJsonParser = new OpenLayers.Format.GeoJSON({
-                            ignoreExtraDims: false,
-                            internalProjection: params.map.projection,
-                            externalProjection: params.map.projectionWGS84
-                        }),
-                        currentFeature = geoJsonParser.parseFeature(value),
-                        iconData;
+                        "ignoreExtraDims": false,
+                        "internalProjection": params.map.projection,
+                        "externalProjection": params.map.projectionWGS84
+                    }),
+                    currentFeature = geoJsonParser.parseFeature(value),
+                    iconData;
             
 
                     // TODO: Test without using GoeJSON Parser

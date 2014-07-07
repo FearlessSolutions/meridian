@@ -201,7 +201,9 @@ define([
             });
         },
         clearMapSelection: function() {
-
+            mapBase.clearMapSelection({
+                "map": map
+            });
         },
         clearMapPopups: function() {
             mapBase.clearMapPopups({
