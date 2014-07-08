@@ -17,6 +17,7 @@ define([
                     var html = mockTemplate({
                         thumbnail: "./extensions/map-configuration-extension/images/markerIcons/marker.png",
                         classification: attributes.classification,
+                        name: attributes.name,
                         attributes: attributes
                     });
                     return html;
