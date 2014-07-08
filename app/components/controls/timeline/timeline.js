@@ -219,6 +219,9 @@ define([
                 exposed.showLayer({
                     "layerId": tempArray[0]
                 });
+                var $querySnapshot = context.$('#snapshot-' + tempArray[0]);
+                $querySnapshot.addClass('selected');
+
                 $timeline.animate({scrollLeft: 0});
 
                 var i = 1;
@@ -229,12 +232,19 @@ define([
                             //console.log(context.$('#snapshot-' + tempArray[i).width);
                             $timeline.animate({scrollLeft: leftPos + 120});
                         }
+
                         exposed.hideLayer({
                             "layerId": tempArray[i-1]
                         });
+                        var $querySnapshotOld = context.$('#snapshot-' + tempArray[i-1]);
+                        $querySnapshotOld.removeClass('selected');
+
                         exposed.showLayer({
                             "layerId": tempArray[i]
                         });
+                        var $querySnapshotNew = context.$('#snapshot-' + tempArray[i]);
+                        $querySnapshotNew.addClass('selected');
+
                         i++;
                     } else {
                         if(!context.sandbox.dataStorage.datasets[tempArray[i]]) {
@@ -256,7 +266,6 @@ define([
             context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
             publisher.showLayer({"layerId": params.layerId + '_aoi'});
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
-            $querySnapshot.addClass('selected'); // TODO: dont do the playback selection in here
             if($querySnapshot.find('.btn-primary').size()>0){
                 //only toggle class if ON button is active.
                 if(!$querySnapshot.find('.active').hasClass('btn-primary')){
@@ -270,7 +279,6 @@ define([
             context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
             publisher.hideLayer({"layerId": params.layerId + '_aoi'});
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
-            $querySnapshot.removeClass('selected');
             if($querySnapshot.find('.btn-primary').size()>0){
                 //only toggle class if ON button is active.
                 if($querySnapshot.find('.active').hasClass('btn-primary')){
