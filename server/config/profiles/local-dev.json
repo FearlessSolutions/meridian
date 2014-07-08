@@ -1,0 +1,52 @@
+{
+    "client": {
+        "protocol": "http",
+        "host": "localhost",
+        "port": "9200"
+    },
+    "index": {
+        "data": "features",
+        "metadata": "metadata"
+    },
+    "mapping": {
+        "mock": {
+            "index": "features",
+            "type": "mock",
+            "body": {
+                "mock": {
+                    "_ttl": {
+                        "enabled": true,
+                        "default": "12h"
+                    },
+                    "_routing": {
+                        "required": true
+                    },
+                    "properties": {
+                        "userId" : {"type" : "string", "index" : "not_analyzed"},
+                        "sessionId": {"type" : "string", "index" : "not_analyzed"},
+                        "queryId": {"type" : "string", "index" : "not_analyzed"},
+                        "featureId": {"type" : "string", "index" : "not_analyzed"}
+                    }
+                }
+            }
+        },
+        "metadata": {
+            "index": "metadata",
+            "type": "metadata",
+            "body": {
+                "metadata": {
+                    "_ttl": {
+                        "enabled": true,
+                        "default": "7d"
+                    },
+                    "properties": {
+                        "userId" : {"type" : "string", "index" : "not_analyzed"},
+                        "sessionId": {"type" : "string", "index" : "not_analyzed"},
+                        "queryId": {"type" : "string", "index" : "not_analyzed"},
+                        "featureId": {"type" : "string", "index" : "not_analyzed"}
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,14 +1,17 @@
 var mock = require('./mock.js');
 var uuid = require('node-uuid');
-var save = require('../../extensions/elastic/save');
-var auth = require('../../extensions/authorization/Auth');
 var _ = require("underscore");
 
 /**
  * curl -XPOST https://localhost:8000/query/bbox/mock -d'{"minLat":"40","maxLat":"50","minLon":"40","maxLon":"50"}' --cert sean.pines.p12:schemaless --insecure --header "Content-Type:application/json"
  * @param app
  */
-exports.init = function(app){
+exports.init = function(context){
+
+    var app = context.app;
+    var auth = context.sandbox.auth;
+    var save = context.sandbox.elastic.save;
+
     app.post('/query/bbox/:source', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         var minLat = parseFloat(req.body.minLat);
         var minLon = parseFloat(req.body.minLon);

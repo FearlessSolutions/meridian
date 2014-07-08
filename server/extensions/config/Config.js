@@ -1,4 +1,4 @@
-var DEFAULT_PROFILE = "local-test";
+var DEFAULT_PROFILE = "local-dev";
 
 var activeConfig = require('../../config/profiles/' + DEFAULT_PROFILE + '.json');
 

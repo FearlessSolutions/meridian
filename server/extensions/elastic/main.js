@@ -1,13 +1,33 @@
 var query = require('./query');
 var save = require('./save');
 var download = require('./download');
+var mapping = require('./mapping');
+var client = require('./client');
+var stream = require('./stream');
+
 var uuid = require('node-uuid');
-var auth = require('../authorization/Auth');
 
-exports.init = function(app){
+exports.init = function(context){
 
-    // Inject mappings for ElasticSearch
-    require('./mapping').init();
+    var app = context.app;
+
+    context.sandbox.elastic = {
+        query: query,
+        save: save,
+        download: download,
+        mapping: mapping,
+        client: client,
+        stream: stream
+    };
+
+    // Init sub-modules as necessary
+    context.sandbox.elastic.client.init(context);
+    context.sandbox.elastic.mapping.init(context);
+    context.sandbox.elastic.query.init(context);
+    context.sandbox.elastic.save.init(context);
+    context.sandbox.elastic.stream.init(context);
+
+    var auth = context.sandbox.auth;
 
     // See public/test.html for examples
     app.get('/feature', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
@@ -19,7 +39,6 @@ exports.init = function(app){
                 res.send(err);
             } else {
                 res.status(200);
-//                console.log(response);
                 res.send(response.hits.hits.map(function(ele){return ele._source;}));
             }
         });
@@ -66,14 +85,14 @@ exports.init = function(app){
         var sessionId = res.get('Parsed-SessionId');
         save.writeGeoJSON(userName, sessionId, req.body.queryId || uuid.v4(),
             req.body.type || 'UNKNOWN', geoJSON, function(err, results){
-            if (err){
-                res.status(500);
-                res.send(err);
-            } else {
-                res.status(200);
-                res.send(results);
-            }
-        });
+                if (err){
+                    res.status(500);
+                    res.send(err);
+                } else {
+                    res.status(200);
+                    res.send(results);
+                }
+            });
     });
 
     app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){

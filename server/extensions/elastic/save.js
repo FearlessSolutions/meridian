@@ -1,39 +1,14 @@
-var config = require('../utils/Config').getConfig();
 var _ = require('underscore');
 var uuid = require('node-uuid');
-var client = require('./client.js').newClient();
 var Metadata = require('./metadata');
 
-/**
- * Username/sessionId are added to enforce that we have some kind of security tag to
- * filter results on. Note: routing strictly tells us which shard to look at and doesn't
- * provide any implicit filtering.
- */
-var writeJSON = function(userName, sessionId, routing, index, dataType, data, callback){
+var config,
+    client;
 
-    if (!_.isArray(data)){
-        data = [data];
-    }
-    var bulk = [];
-    data.forEach(function(record){
-        var newIndex = {
-            index: {
-                _index: index,
-                _type: dataType
-            }
-        };
-        if (record.id){ newIndex.index._id = record.id; }
-        if (routing){ newIndex.index._routing = routing; }
 
-        bulk.push(newIndex);
-
-        // Inject security tag
-        record.data.userId = userName;
-        record.data.sessionId = sessionId;
-
-        bulk.push(record.data);
-    });
-    client.bulk({body: bulk}, callback);
+exports.init = function(context){
+    config = context.sandbox.config.getConfig();
+    client = context.sandbox.elastic.client.newClient();
 };
 
 exports.writeMetadata = function(userName, sessionId, queryId, metadata, callback){
@@ -91,4 +66,36 @@ exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON,
             writeJSON(userName, sessionId, routingStr, config.index.data, dataType, records, callback);
         });
     });
+};
+
+/**
+ * Username/sessionId are added to enforce that we have some kind of security tag to
+ * filter results on. Note: routing strictly tells us which shard to look at and doesn't
+ * provide any implicit filtering.
+ */
+var writeJSON = function(userName, sessionId, routing, index, dataType, data, callback){
+
+    if (!_.isArray(data)){
+        data = [data];
+    }
+    var bulk = [];
+    data.forEach(function(record){
+        var newIndex = {
+            index: {
+                _index: index,
+                _type: dataType
+            }
+        };
+        if (record.id){ newIndex.index._id = record.id; }
+        if (routing){ newIndex.index._routing = routing; }
+
+        bulk.push(newIndex);
+
+        // Inject security tag
+        record.data.userId = userName;
+        record.data.sessionId = sessionId;
+
+        bulk.push(record.data);
+    });
+    client.bulk({body: bulk}, callback);
 };

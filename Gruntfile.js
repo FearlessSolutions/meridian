@@ -32,6 +32,9 @@ module.exports = function (grunt) {
             failOnError: false,
             execOptions: {
                 cwd: '.'
+            },
+            node:{
+              local: true
             }
           }
         },
