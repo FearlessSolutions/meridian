@@ -71,10 +71,10 @@ define([], function(){
                 }
             });
 
-            layerOptions.styleMap = new OpenLayers.StyleMap({
+            layerOptions.styleMap = {
                "default": style,
                "select": style
-            });
+            };
 
             layerOptions.strategies = [
                 new OpenLayers.Strategy.Cluster(enabled ?

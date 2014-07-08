@@ -134,10 +134,17 @@ define([
         createLayer: function(params) { // TODO: look into this more, it is currently always creating a Vector Layer. Channels may need to be more specific.
             var newLayer,
                 layerOptions = {
-                    "layerId": params.queryId 
+                    "layerId": params.queryId
                 };
             layerOptions.map = map;
             mapClustering.addClusteringToLayerOptions(layerOptions);
+
+            if(params.styleMap) {
+                layerOptions.styleMap = params.styleMap;
+            }
+            if(params.selectable) {
+                layerOptions.selectable = params.selectable;
+            }
             newLayer = mapLayers.createVectorLayer(layerOptions);
             mapLayers.addEventListenersToLayer({
                 "map": map,
@@ -145,6 +152,13 @@ define([
                 "eventListeners": params.events //can pass in your own event listeners, or take the default, by not providing any
             });
             // TODO: Layer not added to Data Storage here. Currently, that is done by the data servcie component. Trouble is, that means layers added over this channel wont have storage (toggle layer off doesnt work) 
+        },
+        setLayerIndex: function(params) {
+            mapLayers.setLayerIndex({
+                "map": map,
+                "layerId": params.layerId,
+                "layerIndex": params.layerIndex
+            });
         },
         plotFeatures: function(params) {
             mapFeatures.plotFeatures({

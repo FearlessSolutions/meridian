@@ -56,7 +56,7 @@ define([
             context.$('#snapshot-' + queryId + '-settings-menu li a').click(function(){
                 exposed.menuCallback({
                     "menuChannel": this.getAttribute('data-channel'),
-                    "payload": {"layerId": queryId}
+                    "payload": {"layerId": queryId} // TODO: need to somehow hide/show AOI layers with the corredsponding data layer
                 });
             });
 

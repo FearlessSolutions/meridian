@@ -19,7 +19,7 @@ define([
             context.sandbox.on('map.draw.bbox.start', mapCore.drawBBox);
             context.sandbox.on('map.get.extent', mapCore.broadcastMapExtent);
             context.sandbox.on('map.layer.create', mapCore.createLayer);
-            // context.sandbox.on('map.layer.create', mapCore.createShapeLayer);
+            context.sandbox.on('map.layer.index.set', mapCore.setLayerIndex);
             context.sandbox.on('map.layer.hide', mapCore.hideLayer);
             context.sandbox.on('map.layer.hide.all', mapCore.hideAllLayers);
             context.sandbox.on('map.layer.show', mapCore.showLayer);
@@ -42,7 +42,7 @@ define([
             context.sandbox.off('map.draw.bbox.start', mapCore.drawBBox);
             context.sandbox.off('map.get.extent', mapCore.getExtent);
             context.sandbox.off('map.layer.create', mapCore.createLayer);
-            context.sandbox.off('map.layer.create', mapCore.createShapeLayer);
+            context.sandbox.off('map.layer.index.set', mapCore.setLayerIndex);
             context.sandbox.off('map.layer.hide', mapCore.hideLayer);
             context.sandbox.off('map.layer.hide.all', mapCore.hideAllLayers);
             context.sandbox.off('map.layer.show', mapCore.showLayer);

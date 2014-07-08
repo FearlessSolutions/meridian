@@ -21,12 +21,12 @@ define([
                 "map": params.map,
                 "layerId": "static_geolocator",
                 "static": true,
-                "styleMap": new OpenLayers.StyleMap({
+                "styleMap": {
                     "externalGraphic": "${icon}",
                     "graphicHeight": "${height}",
                     "graphicWidth":  "${width}",
                     "graphicYOffset": context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
-                })
+                }
             };
             var geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
             addGeoLocatorListeners({
@@ -39,12 +39,12 @@ define([
                 "map": params.map,
                 "layerId": "static_draw",
                 "static": true,
-                "styleMap": new OpenLayers.StyleMap({
+                "styleMap": {
                     "default": {
                         "fillOpacity": 0.05,
                         "strokeOpacity": 1
                     }
-                })
+                }
             };
             var drawLayer = exposed.createVectorLayer(drawParams);
             addDrawListeners({
@@ -58,7 +58,7 @@ define([
                 "layerId": "static_heatmap",
                 "renderers": ['Heatmap'],
                 "static": true,
-                "styleMap": new OpenLayers.StyleMap({
+                "styleMap": {
                     "default": new OpenLayers.Style({
                         "pointRadius": 10,
                         "weight": "${weight}" // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer
@@ -69,7 +69,7 @@ define([
                             }
                         }
                     })
-                })
+                }
             };
             var heatmapLayer = exposed.createVectorLayer(heatmapParams);
 
@@ -81,17 +81,17 @@ define([
 
         },
         createVectorLayer: function(params) { // TODO: add support for taking in params.name
-            // do not put static layers (like drawing) into the data staorage
-            if(!params.static) {
-                ensureLayerInDataStorage({"layerId": params.layerId});
-            }
 
-            var options = {
-                "layerId": params.layerId,
-                "styleMap": params.styleMap
+            var options = { 
+                "layerId": params.layerId, // set as layerId, is not present its null
+                "styleMap": null  // set as null for default of not providing a stylemap
             };
 
             context.sandbox.utils.extend(options, params);
+            if(params.styleMap) {
+                options.styleMap = new OpenLayers.StyleMap(params.styleMap);
+            }
+            
             delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
 
             var newVectorLayer = new OpenLayers.Layer.Vector(
@@ -104,10 +104,12 @@ define([
 
             params.map.addLayers([newVectorLayer]);
 
-            var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-            var layers = selector.layers;
-            layers.push(newVectorLayer);
-            selector.setLayer(layers);
+            if(params.selectable) { // TODO: this doesnt account for the datatable selection/identify... figure out if this is cool
+                var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                var layers = selector.layers;
+                layers.push(newVectorLayer);
+                selector.setLayer(layers);
+            }
 
             // Default of new layer is visible = true
             context.sandbox.stateManager.layers[params.layerId] = {"visible": true};
@@ -141,6 +143,9 @@ define([
             params.map.addLayer(baseLayer);
             return baseLayer;
         },
+        setLayerIndex: function(params) {
+            params.map.setLayerIndex(params.map.getLayersBy('layerId', params.layerId)[0], params.layerIndex);
+        },
         deleteLayer: function() {
             
         },
@@ -148,22 +153,40 @@ define([
             params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
         },
         hideLayer: function(params) {
-            context.sandbox.stateManager.layers[params.layerId].visible = false;
-            mapClustering.update({
-                "map": params.map
-            });
-            mapHeatmap.update({
-                "map": params.map
-            });
+            var currentLayer;
+            
+            if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
+                context.sandbox.stateManager.layers[params.layerId].visible = false;
+                mapClustering.update({
+                    "map": params.map
+                });
+                mapHeatmap.update({
+                    "map": params.map
+                });
+            } else {
+                currentLayer = params.map.getLayersBy('layerId', params.layerId)[0];
+                if(currentLayer) {
+                    currentLayer.setVisibility(false);
+                }
+            }
         },
         showLayer: function(params) {
-            context.sandbox.stateManager.layers[params.layerId].visible = true;
-            mapClustering.update({
-                "map": params.map
-            });
-            mapHeatmap.update({
-                "map": params.map
-            });
+            var currentLayer;
+
+            if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
+                context.sandbox.stateManager.layers[params.layerId].visible = true;
+                mapClustering.update({
+                    "map": params.map
+                });
+                mapHeatmap.update({
+                    "map": params.map
+                });
+            } else {
+                currentLayer = params.map.getLayersBy('layerId', params.layerId)[0];
+                if(currentLayer) {
+                    currentLayer.setVisibility(true);
+                }
+            }
         },
         hideAllDataLayers: function(params) {
             //this will iterate through every backbone collection. Each collection is a query layer with the key being the queryId.
@@ -382,12 +405,6 @@ define([
         }
 
     };
-
-    function ensureLayerInDataStorage(params) { // TODO: eveluate where to place this. If here, the renderer would have backbone as a dependency
-        if(!context.sandbox.dataStorage.datasets[params.layerId]){
-            context.sandbox.dataStorage.datasets[params.layerId] = new Backbone.Collection();
-        }
-    }
 
     function addGeoLocatorListeners(params) {
         params.layer.events.on({

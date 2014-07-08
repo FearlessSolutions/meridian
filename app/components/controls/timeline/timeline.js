@@ -21,55 +21,115 @@ define([
             var queryId = args.queryId,
                 name = args.name,
                 coords = args.coords,
-                thumnailURL = context.sandbox.snapshot.thumbnailURL(coords);
+                thumnailURL;
 
-            var	snapshotHTML = snapshotTemplate({
-                "queryId": queryId,
-                "name": name,
-                "thumbnailURL": thumnailURL
-            });
+            if(context.sandbox.dataStorage.datasets[args.queryId]) {
 
-            context.$('#timeline-container').append(snapshotHTML);
-            $timeline.show();
-            $timeline.scrollLeft(5000);
-            $timeline.fadeIn();
+                if(coords) {
 
-            snapshotMenu.createMenu({'queryId': queryId});
+                    thumnailURL = context.sandbox.snapshot.thumbnailURL(coords);
 
-            context.$('#snapshot-' + queryId).find('.btn-toggle').on('click', function() {
-                var collection = context.sandbox.dataStorage.datasets[queryId],
-                    $this = context.$(this),
-                    $thisBtns = $this.find('.btn');
+                    publisher.createLayer({
+                        "queryId": queryId + "_aoi",
+                        "name": name + "_aoi",
+                        "styleMap": {
+                            "default": {
+                                "strokeColor": '#000',
+                                "strokeOpacity": 0.3,
+                                "strokeWidth": 2,
+                                "fillColor": 'gray',
+                                "fillOpacity": 0.3
+                            }
+                        }
+                    });
+                        
+                    publisher.setLayerIndex({
+                        "layerId": queryId + "_aoi",
+                        "layerIndex": 0
+                    });
 
+                    publisher.plotFeatures({
+                        "layerId": queryId + "_aoi",
+                        "data": [{
+                            "queryId": queryId + "_aoi",
+                            "featureId": "_aoi",
+                            "dataService": "",
+                            "id": "_aoi",
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": [[
+                                    [coords.minLon, coords.maxLat],
+                                    [coords.maxLon, coords.maxLat],
+                                    [coords.maxLon, coords.minLat],
+                                    [coords.minLon, coords.minLat]
+                                ]]
+                            },
+                            "type": "Feature"
+                        }]
+                    });
 
-                if ($this.find('.btn-primary').size()>0) {
-                    $thisBtns.toggleClass('btn-primary');
-                }
-
-                /** These Lines can probably be removed. Eric/Steve say they need to be here,
-                    so I will leave them, but I didn't see any problems when I removed them**/
-                if ($this.find('.btn-danger').size()>0) {
-                    $thisBtns.toggleClass('btn-danger');
-                }
-                if ($this.find('.btn-success').size()>0) {
-                    $thisBtns.toggleClass('btn-success');
-                }
-                if ($this.find('.btn-info').size()>0) {
-                    $thisBtns.toggleClass('btn-info');
-                }
-                /** End remove lines **/
-
-
-                if($this.find('.btn-on').hasClass('btn-primary')) {
-                    context.sandbox.stateManager.layers[queryId].visible = true;
-                    publisher.showLayer({"layerId": queryId});
                 } else {
-                    context.sandbox.stateManager.layers[queryId].visible = false;
-                    publisher.hideLayer({"layerId": queryId});
+                    // TODO: Change thumbnail to stock placeholder
+                    thumnailURL = context.sandbox.snapshot.thumbnailURL({
+                        "minLat": -10,
+                        "minLon": -10,
+                        "maxLat": 10,
+                        "maxLon": 10
+                    });
+
                 }
-            });
-            
-            exposed.setTooltip(queryId, 'Starting', 0);
+
+                var	snapshotHTML = snapshotTemplate({
+                    "queryId": queryId,
+                    "name": name,
+                    "thumbnailURL": thumnailURL
+                });
+
+                context.$('#timeline-container').append(snapshotHTML);
+                $timeline.show();
+                $timeline.scrollLeft(5000);
+                $timeline.fadeIn();
+
+                snapshotMenu.createMenu({'queryId': queryId});
+
+                context.$('#snapshot-' + queryId).find('.btn-toggle').on('click', function() {
+                    var collection = context.sandbox.dataStorage.datasets[queryId],
+                        $this = context.$(this),
+                        $thisBtns = $this.find('.btn');
+
+
+                    if ($this.find('.btn-primary').size()>0) {
+                        $thisBtns.toggleClass('btn-primary');
+                    }
+
+                    /** These Lines can probably be removed. Eric/Steve say they need to be here,
+                        so I will leave them, but I didn't see any problems when I removed them**/
+                    if ($this.find('.btn-danger').size()>0) {
+                        $thisBtns.toggleClass('btn-danger');
+                    }
+                    if ($this.find('.btn-success').size()>0) {
+                        $thisBtns.toggleClass('btn-success');
+                    }
+                    if ($this.find('.btn-info').size()>0) {
+                        $thisBtns.toggleClass('btn-info');
+                    }
+                    /** End remove lines **/
+
+
+                    if($this.find('.btn-on').hasClass('btn-primary')) {
+                        context.sandbox.stateManager.layers[queryId].visible = true;
+                        publisher.showLayer({"layerId": queryId});
+                        publisher.showLayer({"layerId": queryId + '_aoi'});
+                    } else {
+                        context.sandbox.stateManager.layers[queryId].visible = false;
+                        publisher.hideLayer({"layerId": queryId});
+                        publisher.hideLayer({"layerId": queryId + '_aoi'});
+                    }
+                });
+                
+                exposed.setTooltip(queryId, 'Starting', 0);
+
+            }
         },
         /*A message to hide all layers was emitted. Toggles buttons to the off position.*/
         allSnapshotsOff: function(args){
@@ -141,25 +201,23 @@ define([
         },
         timelinePlaybackStart: function(args){
             if(checkLayerCount() > 1) {
-                context.sandbox.utils.each(context.sandbox.stateManager.layers, function(key, value){
-                    if(value.visible) {
-                        console.log(key);
-                    }
-                });
-
-
                 stopTimelinePlayback = false;
 
                 var tempArray = [];
                 context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(queryId, collections){
                     tempArray.push(queryId);
                     context.sandbox.stateManager.layers[queryId].visible = false;
+                    exposed.hideLayer({
+                        "layerId": queryId
+                    });
                 });
 
-
-                publisher.hideAllLayers();
+                // publisher.hideAllLayers();
+                
                 exposed.allSnapshotsOff();
-                exposed.showLayer(tempArray[0]);
+                exposed.showLayer({
+                    "layerId": tempArray[0]
+                });
                 $timeline.animate({scrollLeft: 0});
 
                 var i = 1;
@@ -170,8 +228,12 @@ define([
                             //console.log(context.$('#snapshot-' + tempArray[i).width);
                             $timeline.animate({scrollLeft: leftPos + 120});
                         }
-                        exposed.hideLayer(tempArray[i-1]);
-                        exposed.showLayer(tempArray[i]);
+                        exposed.hideLayer({
+                            "layerId": tempArray[i-1]
+                        });
+                        exposed.showLayer({
+                            "layerId": tempArray[i]
+                        });
                         i++;
                     } else {
                         if(!context.sandbox.dataStorage.datasets[tempArray[i]]) {
@@ -187,11 +249,13 @@ define([
             stopTimelinePlayback = true;
             context.$('.snapshot').removeClass('selected');
         },
-        showLayer: function(queryId){
-            context.sandbox.stateManager.layers[queryId].visible = true;
-            publisher.showLayer({"layerId": queryId});
-            var $querySnapshot = context.$('#snapshot-' + queryId);
-            $querySnapshot.addClass('selected');
+        showLayer: function(params) {
+            context.sandbox.stateManager.layers[params.layerId].visible = true;
+            publisher.showLayer({"layerId": params.layerId});
+            context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
+            publisher.showLayer({"layerId": params.layerId + '_aoi'});
+            var $querySnapshot = context.$('#snapshot-' + params.layerId);
+            $querySnapshot.addClass('selected'); // TODO: dont do the playback selection in here
             if($querySnapshot.find('.btn-primary').size()>0){
                 //only toggle class if ON button is active.
                 if(!$querySnapshot.find('.active').hasClass('btn-primary')){
@@ -199,10 +263,12 @@ define([
                 }
             }
         },
-        hideLayer: function(queryId){
-            context.sandbox.stateManager.layers[queryId].visible = false;
-            publisher.hideLayer({"layerId": queryId});
-            var $querySnapshot = context.$('#snapshot-' + queryId);
+        hideLayer: function(params) {
+            context.sandbox.stateManager.layers[params.layerId].visible = false;
+            publisher.hideLayer({"layerId": params.layerId});
+            context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
+            publisher.hideLayer({"layerId": params.layerId + '_aoi'});
+            var $querySnapshot = context.$('#snapshot-' + params.layerId);
             $querySnapshot.removeClass('selected');
             if($querySnapshot.find('.btn-primary').size()>0){
                 //only toggle class if ON button is active.
