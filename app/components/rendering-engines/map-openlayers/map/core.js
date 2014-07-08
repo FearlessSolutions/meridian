@@ -166,6 +166,11 @@ define([
                 "layerId": params.queryId || params.layerId, // TODO: change params.queryId to params.layerID, this needs to be changed in all components using the channel
                 "data": params.data
             });
+            if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
+                mapHeatmap.update({
+                    "map": map
+                });
+            }
         },
         plotPoint: function(params) { //TODO: change how the publish args are not in an object, should also call plotFeatures
             mapFeatures.plotFeatures({

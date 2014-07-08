@@ -91,7 +91,7 @@ define([
             if(params.styleMap) {
                 options.styleMap = new OpenLayers.StyleMap(params.styleMap);
             }
-            
+
             delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
 
             var newVectorLayer = new OpenLayers.Layer.Vector(
@@ -99,8 +99,11 @@ define([
                 options
             );
 
-            var initialVisibility = (context.sandbox.stateManager.map.visualMode === 'heatmap') ? false : true;
-            newVectorLayer.setVisibility(initialVisibility);
+            // var initialVisibility = (context.sandbox.stateManager.map.visualMode === 'heatmap') ? false : true;
+            // newVectorLayer.setVisibility(initialVisibility);
+            if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
+                newVectorLayer.setVisibility(false);
+            }
 
             params.map.addLayers([newVectorLayer]);
 

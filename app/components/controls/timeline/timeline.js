@@ -32,6 +32,7 @@ define([
                     publisher.createLayer({
                         "queryId": queryId + "_aoi",
                         "name": name + "_aoi",
+                        "initialVisibility": true,
                         "styleMap": {
                             "default": {
                                 "strokeColor": '#000',

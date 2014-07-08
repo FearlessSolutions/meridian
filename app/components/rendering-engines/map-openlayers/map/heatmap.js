@@ -34,7 +34,7 @@ define([], function(){
         heatLayer.destroyFeatures();
 
         context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, collection) {
-            if(context.sandbox.stateManager.layers[key].visible && collection.models){
+            if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible && collection.models) {
                 collection.models.forEach(function(model){
                     newData.push(new OpenLayers.Feature.Vector(
                         new OpenLayers.Geometry.Point(
