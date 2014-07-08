@@ -1,0 +1,28 @@
+div[data-aura-component='displays/legend'] .container {
+    position: absolute;
+    float: left;
+    z-index: 990;
+    bottom: 380px;
+    left: 0px;
+    width:0;
+    height:0;
+}
+
+div[data-aura-component='displays/legend'] #legend {
+    width: 300px;
+}
+
+div[data-aura-component='displays/legend'] .empty-body {
+    height: 100px;
+    vertical-align: middle;
+    text-align:center
+}
+
+div[data-aura-component='displays/legend'] img {
+    width: 100%
+}
+
+div[data-aura-component='displays/legend'] .icon {
+    width: 30%
+}
+

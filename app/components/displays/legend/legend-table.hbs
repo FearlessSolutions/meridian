@@ -1,0 +1,19 @@
+<div class="legend-table-container">
+    <table class="table">
+        <!--<thead></thead>-->
+        <tbody>
+            {{#each entries}}
+                <tr>
+                    <td class="icon">
+                        <img src="{{this.image}}" alt="No Image">
+                    </td>
+                    <td class="icon-description">
+                        {{this.description}}
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+
