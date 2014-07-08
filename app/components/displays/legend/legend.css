@@ -11,6 +11,9 @@ div[data-aura-component='displays/legend'] .container {
 div[data-aura-component='displays/legend'] #legend {
     width: 300px;
 }
+div[data-aura-component='displays/legend'] button.close {
+    /*float: right;*/
+}
 
 div[data-aura-component='displays/legend'] .empty-body {
     height: 100px;

@@ -33,6 +33,10 @@ define([
                 //"handle": ".title" //TODO Use this to only allow dragging from the title
                 "containment": "document"
             });
+
+            context.$('button.close').on('click', function(){
+                exposed.hide();
+            });
         },
         update: function(params){
 
