@@ -71,13 +71,7 @@ define([
 
                 } else {
                     // TODO: Change thumbnail to stock placeholder
-                    thumnailURL = context.sandbox.snapshot.thumbnailURL({
-                        "minLat": -10,
-                        "minLon": -10,
-                        "maxLat": 10,
-                        "maxLon": 10
-                    });
-
+                    thumnailURL = context.sandbox.snapshot.thumbnailURL();
                 }
 
                 var	snapshotHTML = snapshotTemplate({
