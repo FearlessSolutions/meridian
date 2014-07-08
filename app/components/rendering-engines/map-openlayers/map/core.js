@@ -172,15 +172,12 @@ define([
                 });
             }
         },
-        plotPoint: function(params) { //TODO: change how the publish args are not in an object, should also call plotFeatures
+        plotPoint: function(params) {
             mapFeatures.plotFeatures({
                 "map": map,
                 "layerId": "static_geolocator",
-                "data": [params]
+                "data": params.data
             });
-        },
-        toggleLayer: function(params) {
-            // TODO: delete me
         },
         hideLayer: function(params) {
             mapLayers.hideLayer({

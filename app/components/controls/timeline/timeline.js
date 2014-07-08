@@ -70,7 +70,6 @@ define([
                     });
 
                 } else {
-                    // TODO: Change thumbnail to stock placeholder
                     thumnailURL = context.sandbox.snapshot.thumbnailURL();
                 }
 
@@ -92,24 +91,9 @@ define([
                         $this = context.$(this),
                         $thisBtns = $this.find('.btn');
 
-
                     if ($this.find('.btn-primary').size()>0) {
                         $thisBtns.toggleClass('btn-primary');
                     }
-
-                    /** These Lines can probably be removed. Eric/Steve say they need to be here,
-                        so I will leave them, but I didn't see any problems when I removed them**/
-                    if ($this.find('.btn-danger').size()>0) {
-                        $thisBtns.toggleClass('btn-danger');
-                    }
-                    if ($this.find('.btn-success').size()>0) {
-                        $thisBtns.toggleClass('btn-success');
-                    }
-                    if ($this.find('.btn-info').size()>0) {
-                        $thisBtns.toggleClass('btn-info');
-                    }
-                    /** End remove lines **/
-
 
                     if($this.find('.btn-on').hasClass('btn-primary')) {
                         context.sandbox.stateManager.layers[queryId].visible = true;

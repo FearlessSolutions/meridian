@@ -65,7 +65,7 @@ define([
 
             if(drawControl) {
                 drawLayer = params.map.getLayersBy('layerId', params.layerId)[0];
-                drawLayer.removeAllFeatures(); // TODO: consider clearing recrods as part of the workflow, not here
+                drawLayer.removeAllFeatures(); // TODO: consider clearing records as part of the workflow, not here
                 drawControl.deactivate();
                 drawControl = null;
             }

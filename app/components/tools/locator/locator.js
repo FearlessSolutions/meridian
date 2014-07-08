@@ -155,7 +155,9 @@ define([
             $locatorButton.attr('disabled',true);
         },//end of goToLocation
         markLocation: function(coordinates) {
-            publisher.markLocation(context.sandbox.utils.createGeoJson(coordinates));
+            publisher.markLocation({
+                "data": [context.sandbox.utils.createGeoJson(coordinates)]
+            });
             publisher.setMapCenter(coordinates);
         },
         clear: function() {

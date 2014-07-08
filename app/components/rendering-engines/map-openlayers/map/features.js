@@ -53,9 +53,12 @@ define([
 
                 layer.addFeatures(newFeatures);
                 if(context.sandbox.stateManager.map.visualMode === 'cluster') {
-                    layer.recluster(); // TODO: Uncomment when clustering is in place
+                    layer.recluster();
                 }
-                layer.refresh({force: true, forces: true});
+                layer.refresh({
+                    "force": true,
+                    "forces": true
+                });
             } else {
                 // No layer exists, should we make a temp layer for them?
             }
