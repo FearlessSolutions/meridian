@@ -157,7 +157,14 @@ define([
         },
         hideLayer: function(params) {
             var currentLayer;
-            
+
+            mapBase.clearMapSelection({
+                "map": params.map
+            });
+            mapBase.clearMapPopups({
+                "map": params.map
+            });
+
             if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
                 context.sandbox.stateManager.layers[params.layerId].visible = false;
                 mapClustering.update({
@@ -176,6 +183,13 @@ define([
         showLayer: function(params) {
             var currentLayer;
 
+            mapBase.clearMapSelection({
+                "map": params.map
+            });
+            mapBase.clearMapPopups({
+                "map": params.map
+            });
+            
             if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
                 context.sandbox.stateManager.layers[params.layerId].visible = true;
                 mapClustering.update({
