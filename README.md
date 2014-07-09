@@ -11,7 +11,18 @@ To use the command-line version of Grunt you will need to install the global [Gr
 To host the database locally (which will be populated with mock data), you will need to install ElasticSearch.
 Download ElasticSearch in the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
 
-To use and install ElasticSearch, make sure to have the JAVA_HOME variable defined.
+To use and install ElasticSearch, make sure:
+
+1. The JAVA_HOME variable is defined. 
+
+1. Import the given user.p12 certificate into your browser:
+    
+    *Mac OS: Make sure to import the certificate in the login section of Keychain Access and not in the System section.*
+  - Password: 'password'
+  - Chrome: Settings>Show Advanced Settings>(HTTPS/SSL)Manage certificates>Import
+  - FireFox: Options>Advanced>Certificates>View Certificates>Import
+
+1. You might need to restart the browser after importing the certificate.
 
 If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the Grunt Support Setup instructions.
 
