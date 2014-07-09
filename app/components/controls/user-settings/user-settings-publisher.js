@@ -18,9 +18,6 @@ define([
         },
         changeBasemap: function(params) {
             context.sandbox.emit('map.basemap.change', params);
-        },
-        getExtent: function(params) {
-            context.sandbox.emit('map.get.extent',params);
         }
     };
 

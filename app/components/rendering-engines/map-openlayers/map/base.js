@@ -38,6 +38,29 @@ define([
                 });
             }
 
+            // Set initial value of map extent, in the state manager
+            context.sandbox.stateManager.setMapExtent({
+                "extent": {
+                    "minLon": context.sandbox.mapConfiguration.initialMinLon,
+                    "minLat": context.sandbox.mapConfiguration.initialMinLat,
+                    "maxLon": context.sandbox.mapConfiguration.initialMaxLon,
+                    "maxLat": context.sandbox.mapConfiguration.initialMaxLat
+                }
+            });
+
+            // Listen for map movents and update the map extent in the state manager
+            map.events.register('moveend', map, function(evt) {
+                var currentExtent = map.getExtent().transform(map.projection, map.projectionWGS84);
+                context.sandbox.stateManager.setMapExtent({
+                    "extent": {
+                        "minLon": currentExtent.left,
+                        "minLat": currentExtent.bottom,
+                        "maxLon": currentExtent.right,
+                        "maxLat": currentExtent.top
+                    }
+                });
+            });
+
             map.events.register('zoomend', map, function(evt) {
                 // Basic cleanup for things on the map when zoom changes... can adjust later as needed
                 exposed.clearMapSelection({
@@ -85,16 +108,6 @@ define([
             var controls = params.map.getControlsByClass('OpenLayers.Control.SelectFeature');
             controls.forEach(function(control) {
                 control.unselectAll();
-            });
-        },
-        broadcastMapExtent: function(params) {
-            var mapExtentBounds = params.map.getExtent().transform(params.map.projection, params.map.projectionWGS84);
-            publisher.publishExtent({
-                "minLon": mapExtentBounds.left,
-                "minLat": mapExtentBounds.bottom,
-                "maxLon": mapExtentBounds.right,
-                "maxLat": mapExtentBounds.top,
-                "target": params.target
             });
         },
         trackMousePosition: function(params){

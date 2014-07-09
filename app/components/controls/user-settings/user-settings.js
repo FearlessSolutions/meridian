@@ -220,7 +220,7 @@ define([
              */
             context.$('.form-horizontal button[type="extent"]').on('click', function(event) {
                 event.preventDefault();
-                publisher.getExtent({"target":"userSettings"});
+                exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
             });
 
             /**
@@ -260,19 +260,17 @@ define([
             }
         },
         populateCoordinates: function(params) {
-            if(params.target === 'userSettings') {
-                removeCssError();
-                $minLon.val(params.minLon);
-                $maxLat.val(params.maxLat);
-                $maxLon.val(params.maxLon);
-                $minLat.val(params.minLat);
+            removeCssError();
+            $minLon.val(params.minLon);
+            $maxLat.val(params.maxLat);
+            $maxLon.val(params.maxLon);
+            $minLat.val(params.minLat);
 
-                publisher.publishMessage({
-                    "messageType": "success",
-                    "messageTitle": "User Settings",
-                    "messageText": "Extent loaded. Remember to save."
-                });
-            }
+            publisher.publishMessage({
+                "messageType": "success",
+                "messageTitle": "User Settings",
+                "messageText": "Extent loaded. Remember to save."
+            });
         },
         closeMenu: function(){
             if(menuDisabled){

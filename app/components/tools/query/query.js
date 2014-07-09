@@ -151,7 +151,7 @@ define([
                     $queryDialog.dialog('toggle');
 
                     publisher.removeBBox();
-                    publisher.getExtent({"target":"queryTool"});
+                    exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
                 }
             });
         },

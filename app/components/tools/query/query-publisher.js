@@ -12,9 +12,6 @@ define([
         publishOpening: function(params){
             context.sandbox.emit('menu.opening', params);
         },
-        getExtent: function(params) {
-            context.sandbox.emit('map.get.extent', params);
-        },
         drawBBox: function() {
             context.sandbox.emit('map.draw.start');
         },

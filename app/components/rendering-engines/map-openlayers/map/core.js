@@ -42,7 +42,7 @@ define([
         createMap: function(params) {
             map = mapBase.createMap(params);
 
-            exposed.loadBasemaps({
+            basemapLayers = mapLayers.loadBasemaps({
                 "map": map
             });
 
@@ -64,12 +64,6 @@ define([
             });
             
             context.sandbox.stateManager.map.status.ready = true;
-        },
-        broadcastMapExtent: function(params) {
-            mapBase.broadcastMapExtent({
-                "map": map,
-                "target": params.target  // TODO: Consider storing through stateManager instead of passing target
-            });
         },
         zoomIn: function() {
             mapNavigation.zoomIn({
@@ -100,11 +94,6 @@ define([
             mapLayers.setBasemap({
                 "map": map,
                 "basemapLayer": basemapLayers[params.basemap]
-            });
-        },
-        loadBasemaps: function() {
-            basemapLayers = mapLayers.loadBasemaps({
-                "map": map
             });
         },
         setCenter: function(params) {
@@ -146,7 +135,7 @@ define([
                 "layer": newLayer,
                 "eventListeners": params.events //can pass in your own event listeners, or take the default, by not providing any
             });
-            // TODO: Layer not added to Data Storage here. Currently, that is done by the data servcie component. Trouble is, that means layers added over this channel wont have storage (toggle layer off doesnt work) 
+            // TODO: Layer not added to Data Storage here. Currently, that is done by the data service component. Trouble is, that means layers added over this channel wont have storage (toggle layer off doesnt work) 
         },
         setLayerIndex: function(params) {
             mapLayers.setLayerIndex({
@@ -194,16 +183,6 @@ define([
                 "map": map,
                 "layerId": params.layerId,
                 "featureId": params.featureId
-            });
-        },
-        clearMapSelection: function() {
-            mapBase.clearMapSelection({
-                "map": map
-            });
-        },
-        clearMapPopups: function() {
-            mapBase.clearMapPopups({
-                "map": map
             });
         },
         clear: function() {
