@@ -3,7 +3,43 @@ define([
 ], function() {
 
     var config = {
-        "data.add": {
+        "data.clear.all": {
+            "payload": {}
+        },
+        "data.error": {
+            "payload": {}
+        },
+        "data.finished": {
+            "payload": {}
+        },
+        "data.record.identify": {
+            "payload": {}
+        },
+        "event.count.add": {
+            "payload": {}
+        },
+        "map.basemap.change": {
+            "payload": {}
+        },
+        "map.center.set": {
+            "payload": {}
+        },
+        "map.cluster": {
+            "payload": {}
+        },
+        "map.datagrid.toggle": {
+            "payload": {}
+        },
+        "map.draw.bbox.added": {
+            "payload": {}
+        },
+        "map.draw.bbox.remove": {
+            "payload": {}
+        },
+        "map.draw.bbox.start": {
+            "payload": {}
+        },
+        "map.features.plot": {
             "payload": {
               "layerId": "TestLayer1",
               "data": [
@@ -65,42 +101,6 @@ define([
                 }
               ]
             }
-        },
-        "data.clear.all": {
-            "payload": {}
-        },
-        "data.error": {
-            "payload": {}
-        },
-        "data.finished": {
-            "payload": {}
-        },
-        "data.record.identify": {
-            "payload": {}
-        },
-        "event.count.add": {
-            "payload": {}
-        },
-        "map.basemap.change": {
-            "payload": {}
-        },
-        "map.center.set": {
-            "payload": {}
-        },
-        "map.cluster": {
-            "payload": {}
-        },
-        "map.datagrid.toggle": {
-            "payload": {}
-        },
-        "map.draw.bbox.added": {
-            "payload": {}
-        },
-        "map.draw.bbox.remove": {
-            "payload": {}
-        },
-        "map.draw.bbox.start": {
-            "payload": {}
         },
         "map.get.extent": {
             "payload": {}

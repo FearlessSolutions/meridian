@@ -127,13 +127,13 @@ define([
 			context.$('#timeline-container').html('');
             $timeline.hide();
 		},
-        addCount: function(params){
+        updateCount: function(params){
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
-                count = $badge.data('count') || 0;
+                count = 0;
 
-            count += params.data.length;
+            count = context.sandbox.dataStorage.datasets[params.layerId].length;
+
             $badge.text(context.sandbox.utils.trimNumber(count));
-            $badge.data('count', count);
             exposed.setTooltip(params.layerId,'Running', count);
         },
         markFinished: function(params){

@@ -113,7 +113,7 @@ define([
                 // Clear data out from memory
                 data = [];
 
-                publisher.publishData({
+                publisher.plotFeatures({
                     "layerId": layerId,
                     "data": newData
                 });

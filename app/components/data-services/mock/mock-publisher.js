@@ -12,9 +12,6 @@ define([
         plotFeatures: function(params) {
             context.sandbox.emit('map.features.plot', params);
         },
-        publishData: function(params) {
-            context.sandbox.emit('data.add', params);
-        },
         publishMessage: function(params) {
             context.sandbox.emit('message.publish', params); 
         },
