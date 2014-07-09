@@ -22,9 +22,6 @@ define([
         showLayer: function(args) {
             context.sandbox.emit('map.layer.show', args); 
         },
-        hideAllLayers: function() {
-            context.sandbox.emit('map.layer.hide.all');   
-        },
         stopPlayback: function(args){
             context.sandbox.emit('timeline.playback.stop', args);
         },

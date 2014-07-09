@@ -10,8 +10,8 @@ define([
         publishMessage: function(args) {
             context.sandbox.emit('message.publish', args); 
         },
-        bboxAdded: function(args) {
-            context.sandbox.emit('map.draw.bbox.added', args);
+        stopDrawing: function(args) {
+            context.sandbox.emit('map.draw.stop', args);
         },
         publishExtent: function(args) {
             context.sandbox.emit('map.view.extent', args);

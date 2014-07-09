@@ -16,10 +16,10 @@ define([
             context.sandbox.emit('map.get.extent', args);
         },
         drawBBox: function() {
-            context.sandbox.emit('map.draw.bbox.start');
+            context.sandbox.emit('map.draw.start');
         },
         removeBBox: function() {
-            context.sandbox.emit('map.draw.bbox.remove');
+            context.sandbox.emit('map.draw.clear');
         },
         executeQuery: function(args) {
             context.sandbox.emit('query.execute', args);

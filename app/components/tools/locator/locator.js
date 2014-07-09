@@ -156,6 +156,7 @@ define([
         },//end of goToLocation
         markLocation: function(coordinates) {
             publisher.markLocation({
+                "layerId": "static_geolocator",
                 "data": [context.sandbox.utils.createGeoJson(coordinates)]
             });
             publisher.setMapCenter(coordinates);

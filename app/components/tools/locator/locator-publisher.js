@@ -8,7 +8,7 @@ define([
             context = thisContext;
         },
         markLocation: function(args){
-            context.sandbox.emit('point.plot', args); 
+            context.sandbox.emit('map.features.plot', args); 
         },
         publishMessage: function(args) {
             context.sandbox.emit('message.publish', args); 

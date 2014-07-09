@@ -203,8 +203,6 @@ define([
                         "layerId": queryId
                     });
                 });
-
-                // publisher.hideAllLayers();
                 
                 exposed.allSnapshotsOff();
                 exposed.showLayer({

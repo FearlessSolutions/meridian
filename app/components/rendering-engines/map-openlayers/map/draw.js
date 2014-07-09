@@ -60,7 +60,7 @@ define([
          * @param {string} params.layerId the layerId
          * @return
          */
-        stopDrawing: function(params) {
+        clearDrawing: function(params) {
             var drawLayer;
 
             if(drawControl) {

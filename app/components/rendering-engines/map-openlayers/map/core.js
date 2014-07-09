@@ -65,9 +65,6 @@ define([
             
             context.sandbox.stateManager.map.status.ready = true;
         },
-        broadcastMapStatus: function() {
-
-        },
         broadcastMapExtent: function(params) {
             mapBase.broadcastMapExtent({
                 "map": map,
@@ -117,16 +114,14 @@ define([
                 "lon": params.lon
             });
         },
-        drawBBox: function() { // TODO: Make more generic for start drawing
-            // create drawLayer
-            // start drawing
+        startDrawing: function() { // TODO: Make more generic for start drawing
             mapDraw.startDrawing({
                 "map": map,
                 "layerId": "static_draw" // should come in params, from component
             });
         },
-        removeBBox: function() {
-            mapDraw.stopDrawing({
+        clearDrawing: function() {
+            mapDraw.clearDrawing({
                 "map": map,
                 "layerId": "static_draw" // should come in params, from component
             });
@@ -172,13 +167,6 @@ define([
                 });
             }
         },
-        plotPoint: function(params) {
-            mapFeatures.plotFeatures({
-                "map": map,
-                "layerId": "static_geolocator",
-                "data": params.data
-            });
-        },
         hideLayer: function(params) {
             mapLayers.hideLayer({
                 "map": map,
@@ -205,9 +193,6 @@ define([
                 "map": map,
                 "mode": params.mode
             });
-        },
-        createShapeLayer: function(params) {
-
         },
         identifyRecord: function(params) {
             mapLayers.identifyFeature({

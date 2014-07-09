@@ -487,7 +487,7 @@ define([
                         "maxLat": splitBoundingBox[3]
                     };
 
-                    publisher.bboxAdded(coords);
+                    publisher.stopDrawing(coords);
                 }
 
                 if(params.layer.features.length > 1) {

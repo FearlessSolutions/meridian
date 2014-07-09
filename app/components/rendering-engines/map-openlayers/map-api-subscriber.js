@@ -12,11 +12,10 @@ define([
         subscribeOn: function(){
             context.sandbox.on('map.features.plot', mapCore.plotFeatures);
             context.sandbox.on('data.add', mapCore.plotFeatures);
-            context.sandbox.on('point.plot', mapCore.plotPoint);
             context.sandbox.on('map.basemap.change', mapCore.setBasemap);
             context.sandbox.on('map.center.set', mapCore.setCenter);
-            context.sandbox.on('map.draw.bbox.remove', mapCore.removeBBox);
-            context.sandbox.on('map.draw.bbox.start', mapCore.drawBBox);
+            context.sandbox.on('map.draw.clear', mapCore.clearDrawing);
+            context.sandbox.on('map.draw.start', mapCore.startDrawing);
             context.sandbox.on('map.get.extent', mapCore.broadcastMapExtent);
             context.sandbox.on('map.layer.create', mapCore.createLayer);
             context.sandbox.on('map.layer.index.set', mapCore.setLayerIndex);
@@ -34,11 +33,10 @@ define([
         subscribeOff: function(){
             context.sandbox.off('map.features.plot', mapCore.plotFeatures);
             context.sandbox.off('data.add', mapCore.plotFeatures);
-            context.sandbox.off('point.plot', mapCore.plotPoint);
             context.sandbox.off('map.basemap.change', mapCore.setBasemap);
             context.sandbox.off('map.center.set', mapCore.setCenter);
-            context.sandbox.off('map.draw.bbox.remove', mapCore.removeBBox);
-            context.sandbox.off('map.draw.bbox.start', mapCore.drawBBox);
+            context.sandbox.off('map.draw.clear', mapCore.clearDrawing);
+            context.sandbox.off('map.draw.start', mapCore.startDrawing);
             context.sandbox.off('map.get.extent', mapCore.getExtent);
             context.sandbox.off('map.layer.create', mapCore.createLayer);
             context.sandbox.off('map.layer.index.set', mapCore.setLayerIndex);
