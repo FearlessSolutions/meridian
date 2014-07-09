@@ -189,7 +189,7 @@ define([
             mapBase.clearMapPopups({
                 "map": params.map
             });
-            
+
             if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
                 context.sandbox.stateManager.layers[params.layerId].visible = true;
                 mapClustering.update({
@@ -406,7 +406,7 @@ define([
                             }
                     });
                     
-                    anchor= {"size": new OpenLayers.Size(0,0), "offset":new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
+                    anchor= {"size": new OpenLayers.Size(0,0), "offset": new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
                     popup = new OpenLayers.Popup.FramedCloud('popup',
                         OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
                         null,
@@ -528,7 +528,7 @@ define([
                                 }
                         });
 
-                        anchor= {"size": new OpenLayers.Size(0,0), "offset":new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
+                        anchor= {"size": new OpenLayers.Size(0,0), "offset": new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
                         popup = new OpenLayers.Popup.FramedCloud('popup',
                             OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
                             null,

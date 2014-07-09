@@ -120,14 +120,17 @@ define([
         },
         identifyFeature: function(params) {
             var popup,
-                feature = params.feature;
+                feature = params.feature,
+                anchor;
 
+
+            anchor= {"size": new OpenLayers.Size(0,0), "offset": new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
             popup = new OpenLayers.Popup.FramedCloud(
                 'popup',
                 OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
                 null,
                 params.content,
-                null,
+                anchor,
                 true,
                 function() {
                     exposed.clearMapSelection({
