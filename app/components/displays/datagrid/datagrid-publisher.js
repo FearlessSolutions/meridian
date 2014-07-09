@@ -8,7 +8,7 @@ define([
             context = thisContext;
         },
         identifyRecord: function(params) {
-            context.sandbox.emit('data.record.identify', params);
+            context.sandbox.emit('map.feature.identify', params);
         }
     };
 

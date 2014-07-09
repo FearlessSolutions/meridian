@@ -6,7 +6,7 @@ define([
 	var exposed = {
         init: function(thisContext){
             context = thisContext;
-            context.sandbox.on('system.clear', locatorTool.clear);
+            context.sandbox.on('data.clear.all', locatorTool.clear);
         }
     };	
 

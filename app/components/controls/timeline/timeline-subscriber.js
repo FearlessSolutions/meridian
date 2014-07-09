@@ -11,7 +11,7 @@ define([
             context.sandbox.on('map.layer.show', timeline.showLayer);
             context.sandbox.on('map.heat.on', timeline.hideTimeline);
             context.sandbox.on('map.heat.off', timeline.showTimeline);    
-            context.sandbox.on('system.clear', timeline.clear);
+            context.sandbox.on('data.clear.all', timeline.clear);
             context.sandbox.on('data.add', timeline.addCount);
             context.sandbox.on('data.finished', timeline.markFinished);  
             context.sandbox.on('query.stop', timeline.markStopped);

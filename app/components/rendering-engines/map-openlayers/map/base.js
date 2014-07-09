@@ -117,7 +117,7 @@ define([
                     "map": params.map,
                     "position": position
                 });
-                publisher.publishCoordinates({
+                publisher.publishMousePosition({
                     "lat": latlon.lat,
                     "lon": latlon.lon
                 });

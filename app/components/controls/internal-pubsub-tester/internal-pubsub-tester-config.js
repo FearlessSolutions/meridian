@@ -66,6 +66,9 @@ define([
               ]
             }
         },
+        "data.clear.all": {
+            "payload": {}
+        },
         "data.error": {
             "payload": {}
         },
@@ -178,9 +181,6 @@ define([
               },
               "properties": {}
             }
-        },
-        "system.clear": {
-            "payload": {}
         },
         "timeline.playback.start": {
             "payload": {}

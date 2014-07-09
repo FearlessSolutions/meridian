@@ -8,7 +8,7 @@ define([
             context = thisContext;
         },
         setVisualMode: function(params) {
-            context.sandbox.emit('map.visualMode', params);
+            context.sandbox.emit('map.visualMode.set', params);
         },
         publishNotification: function(params) {
             context.sandbox.emit('notification.open', params);

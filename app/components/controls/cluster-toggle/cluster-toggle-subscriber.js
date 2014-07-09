@@ -8,7 +8,7 @@ define([
         init: function(thisContext){
             context = thisContext;
             context.sandbox.on('notification.confirm', clusterToggle.checkConfirmation);
-            context.sandbox.on('system.clear', clusterToggle.clear);
+            context.sandbox.on('data.clear.all', clusterToggle.clear);
         }
     };	
 

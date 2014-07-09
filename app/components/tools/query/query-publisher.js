@@ -22,7 +22,7 @@ define([
             context.sandbox.emit('query.execute', params);
         },
         clear: function(){
-            context.sandbox.emit("system.clear");
+            context.sandbox.emit("data.clear.all");
         }
     };
 

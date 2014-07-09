@@ -11,7 +11,7 @@ define([
         },
         subscribeOn: function(){
             context.sandbox.on('map.features.plot', mapCore.plotFeatures);
-            context.sandbox.on('data.add', mapCore.plotFeatures); // ?
+            context.sandbox.on('data.add', mapCore.plotFeatures); // TODO: is there a better channel name?
             context.sandbox.on('map.basemap.change', mapCore.setBasemap);
             context.sandbox.on('map.center.set', mapCore.setCenter);
             context.sandbox.on('map.draw.clear', mapCore.clearDrawing);
@@ -20,13 +20,13 @@ define([
             context.sandbox.on('map.layer.index.set', mapCore.setLayerIndex);
             context.sandbox.on('map.layer.hide', mapCore.hideLayer);
             context.sandbox.on('map.layer.show', mapCore.showLayer);
-            context.sandbox.on('map.visualMode', mapCore.changeVisualMode); // map.visualMode.set
+            context.sandbox.on('map.visualMode.set', mapCore.changeVisualMode);
             context.sandbox.on('map.zoom.in', mapCore.zoomIn);
             context.sandbox.on('map.zoom.out', mapCore.zoomOut);
-            context.sandbox.on('map.zoom.location', mapCore.zoomToExtent); // map.zoom.toLocation
-            context.sandbox.on('map.zoom.layer', mapCore.zoomToLayer); // map.zoom.toLayer
-            context.sandbox.on('data.record.identify', mapCore.identifyRecord); // map.feature.identify
-            context.sandbox.on('system.clear', mapCore.clear); // data.clear.all
+            context.sandbox.on('map.zoom.toLocation', mapCore.zoomToExtent);
+            context.sandbox.on('map.zoom.toLayer', mapCore.zoomToLayer);
+            context.sandbox.on('map.feature.identify', mapCore.identifyRecord);
+            context.sandbox.on('data.clear.all', mapCore.clear);
         },
         subscribeOff: function(){
             context.sandbox.off('map.features.plot', mapCore.plotFeatures);
@@ -39,13 +39,13 @@ define([
             context.sandbox.off('map.layer.index.set', mapCore.setLayerIndex);
             context.sandbox.off('map.layer.hide', mapCore.hideLayer);
             context.sandbox.off('map.layer.show', mapCore.showLayer);
-            context.sandbox.off('map.visualMode', mapCore.changeVisualMode);
+            context.sandbox.off('map.visualMode.set', mapCore.changeVisualMode);
             context.sandbox.off('map.zoom.in', mapCore.zoomIn);
             context.sandbox.off('map.zoom.out', mapCore.zoomOut);
-            context.sandbox.off('map.zoom.location', mapCore.zoomToLocation);
-            context.sandbox.off('map.zoom.layer', mapCore.zoomToLayer);
-            context.sandbox.off('data.record.identify', mapCore.identifyRecord);
-            context.sandbox.off('system.clear', mapCore.clear);
+            context.sandbox.off('map.zoom.toLocation', mapCore.zoomToLocation);
+            context.sandbox.off('map.zoom.toLayer', mapCore.zoomToLayer);
+            context.sandbox.off('map.feature.identify', mapCore.identifyRecord);
+            context.sandbox.off('data.clear.all', mapCore.clear);
         }
     };	
 

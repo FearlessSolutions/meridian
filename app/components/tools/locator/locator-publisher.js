@@ -17,7 +17,7 @@ define([
             context.sandbox.emit('map.center.set', params);
         },
         zoomToLocation: function(params){
-            context.sandbox.emit('map.zoom.location',params);
+            context.sandbox.emit('map.zoom.toLocation',params);
         }
     };
 

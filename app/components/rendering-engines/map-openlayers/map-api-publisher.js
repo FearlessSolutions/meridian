@@ -13,8 +13,8 @@ define([
         stopDrawing: function(params) {
             context.sandbox.emit('map.draw.stop', params);
         },
-        publishCoordinates: function(params){
-            context.sandbox.emit('map.coordinates', params); // TODO: Used by mouse position component (change channel)
+        publishMousePosition: function(params){
+            context.sandbox.emit('mouse.position.change', params); // TODO: Used by mouse position component (change channel)
         }
     };
 
