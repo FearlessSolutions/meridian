@@ -26,7 +26,6 @@ define([
             });
         },
         startPlayback: function() {
-            console.debug(context.sandbox.stateManager.layers);
             // if there is more than one layer, handle event
             if(checkLayerCount() > 1) {
                 if(!running) {

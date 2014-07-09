@@ -201,7 +201,6 @@ define([
                     if(!stopTimelinePlayback && context.sandbox.dataStorage.datasets[tempArray[i]]) {
                         if(i > 3){
                             var leftPos = $timeline.scrollLeft();
-                            //console.log(context.$('#snapshot-' + tempArray[i).width);
                             $timeline.animate({scrollLeft: leftPos + 120});
                         }
 
