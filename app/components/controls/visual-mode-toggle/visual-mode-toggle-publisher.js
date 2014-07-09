@@ -7,14 +7,14 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        setVisualMode: function(args) {
-            context.sandbox.emit('map.visualMode', args);
+        setVisualMode: function(params) {
+            context.sandbox.emit('map.visualMode', params);
         },
-        publishNotification: function(args) {
-            context.sandbox.emit('notification.open', args);
+        publishNotification: function(params) {
+            context.sandbox.emit('notification.open', params);
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args);
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params);
         }
     };
 

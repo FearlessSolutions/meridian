@@ -259,13 +259,13 @@ define([
                 $cursorLocationDefaultToggle.find('.btn-off').addClass('btn-primary');
             }
         },
-        populateCoordinates: function(args) {
-            if(args.target === 'userSettings') {
+        populateCoordinates: function(params) {
+            if(params.target === 'userSettings') {
                 removeCssError();
-                $minLon.val(args.minLon);
-                $maxLat.val(args.maxLat);
-                $maxLon.val(args.maxLon);
-                $minLat.val(args.minLat);
+                $minLon.val(params.minLon);
+                $maxLat.val(params.maxLat);
+                $maxLon.val(params.maxLon);
+                $minLat.val(params.minLat);
 
                 publisher.publishMessage({
                     "messageType": "success",
@@ -282,8 +282,8 @@ define([
 
             resetDialog();
         },
-        handleMenuOpening: function(args){
-            if(args.componentOpening === MENU_DESIGNATION){
+        handleMenuOpening: function(params){
+            if(params.componentOpening === MENU_DESIGNATION){
                 return;
             }else{
                 exposed.closeMenu();

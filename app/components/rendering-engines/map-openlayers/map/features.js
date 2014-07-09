@@ -9,7 +9,7 @@ define([
             context = thisContext;
         },
         plotFeatures: function(params) {
-            var args,
+            var params,
                 layerId = params.layerId,
                 data = params.data,
                 newFeatures = [],

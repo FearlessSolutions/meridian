@@ -27,7 +27,7 @@ define([
                 });
             });
         },
-        open: function(args) {
+        open: function(params) {
             if(!modalInitialized){
                $modalContainer.modal({
                     "backdrop": "static",
@@ -38,8 +38,8 @@ define([
                 modalInitialized = true;
             }
 
-            $modalBody.html(args.body);
-            currentOrigin = args.origin;
+            $modalBody.html(params.body);
+            currentOrigin = params.origin;
             $modalContainer.modal('show');
         },
         close: function(){

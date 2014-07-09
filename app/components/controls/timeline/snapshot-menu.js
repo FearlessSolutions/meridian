@@ -9,8 +9,8 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        createMenu: function(args){
-            var layerId = args.layerId,
+        createMenu: function(params){
+            var layerId = params.layerId,
                 $currentMenu,
                 snapshotMenuTemplate = Handlebars.compile(snapshotMenuHBS);
             var snapshotMenuHTML = snapshotMenuTemplate({
@@ -73,14 +73,14 @@ define([
             $option.parent().remove();
 
         },
-        menuCallback: function(args) {
-            context.sandbox.emit(args.menuChannel, args.payload);  // dynamically emit publish messages
+        menuCallback: function(params) {
+            context.sandbox.emit(params.menuChannel, params.payload);  // dynamically emit publish messages
         },
-        showMenu: function(args) {
-            context.$('#snapshot-' + args.layerId + '-settings-menu').show();
+        showMenu: function(params) {
+            context.$('#snapshot-' + params.layerId + '-settings-menu').show();
         },
-        hideMenu: function(args) {
-            context.$('#snapshot-' + args.layerId + '-settings-menu').hide();
+        hideMenu: function(params) {
+            context.$('#snapshot-' + params.layerId + '-settings-menu').hide();
         }
     };
 

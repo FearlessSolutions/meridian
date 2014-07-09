@@ -7,26 +7,26 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        createLayer: function(args) {
-            context.sandbox.emit('map.layer.create', args);
+        createLayer: function(params) {
+            context.sandbox.emit('map.layer.create', params);
         },
-        setLayerIndex: function(args) {
-            context.sandbox.emit('map.layer.index.set', args);
+        setLayerIndex: function(params) {
+            context.sandbox.emit('map.layer.index.set', params);
         },
-        plotFeatures: function(args) {
-            context.sandbox.emit('map.features.plot', args);
+        plotFeatures: function(params) {
+            context.sandbox.emit('map.features.plot', params);
         },
-        hideLayer: function(args) {
-            context.sandbox.emit('map.layer.hide', args); 
+        hideLayer: function(params) {
+            context.sandbox.emit('map.layer.hide', params); 
         },
-        showLayer: function(args) {
-            context.sandbox.emit('map.layer.show', args); 
+        showLayer: function(params) {
+            context.sandbox.emit('map.layer.show', params); 
         },
-        stopPlayback: function(args){
-            context.sandbox.emit('timeline.playback.stop', args);
+        stopPlayback: function(params){
+            context.sandbox.emit('timeline.playback.stop', params);
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args); 
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
         },
     };
 

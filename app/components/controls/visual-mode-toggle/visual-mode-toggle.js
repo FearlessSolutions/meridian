@@ -54,8 +54,8 @@ define([
                 });
             }
         },
-        setFeatureMode: function(args) {
-            if(args.origin !== CONTROL_DESIGNATION) {
+        setFeatureMode: function(params) {
+            if(params.origin !== CONTROL_DESIGNATION) {
                 return;
             }
             userNotified = true;

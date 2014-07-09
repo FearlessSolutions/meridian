@@ -13,11 +13,11 @@ define([
         uncluster: function(){
             context.sandbox.emit('map.uncluster', {});
         },
-        publishNotification: function(args){
-            context.sandbox.emit('notification.open', args);  
+        publishNotification: function(params){
+            context.sandbox.emit('notification.open', params);  
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args); 
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
         }
     };
 

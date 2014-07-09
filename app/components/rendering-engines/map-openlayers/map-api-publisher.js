@@ -7,17 +7,17 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args); 
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
         },
-        stopDrawing: function(args) {
-            context.sandbox.emit('map.draw.stop', args);
+        stopDrawing: function(params) {
+            context.sandbox.emit('map.draw.stop', params);
         },
-        publishExtent: function(args) {
-            context.sandbox.emit('map.view.extent', args);
+        publishExtent: function(params) {
+            context.sandbox.emit('map.view.extent', params);
         },
-        publishCoordinates: function(args){
-            context.sandbox.emit('map.coordinates', args);
+        publishCoordinates: function(params){
+            context.sandbox.emit('map.coordinates', params);
         }
     };
 

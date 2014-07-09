@@ -17,13 +17,13 @@ define([
             snapshotTemplate = Handlebars.compile(snapshotHBS);
             $timeline = context.$('#timeline');
         },
-        createSnapshot: function(args){
-            var layerId = args.layerId,
-                name = args.name,
-                coords = args.coords,
+        createSnapshot: function(params){
+            var layerId = params.layerId,
+                name = params.name,
+                coords = params.coords,
                 thumnailURL;
 
-            if(context.sandbox.dataStorage.datasets[args.layerId]) {
+            if(context.sandbox.dataStorage.datasets[params.layerId]) {
 
                 if(coords) {
 
@@ -117,49 +117,49 @@ define([
 
             }
         },
-        hideTimeline: function(args){
+        hideTimeline: function(params){
             $timeline.hide();
         },
-        showTimeline: function(args){
+        showTimeline: function(params){
 			$timeline.show();	
 		},
 		clear: function(){
 			context.$('#timeline-container').html('');
             $timeline.hide();
 		},
-        addCount: function(args){
-            var $badge = context.$('#snapshot-' + args.layerId + ' .badge'),
+        addCount: function(params){
+            var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
                 count = $badge.data('count') || 0;
 
-            count += args.data.length;
+            count += params.data.length;
             $badge.text(context.sandbox.utils.trimNumber(count));
             $badge.data('count', count);
-            exposed.setTooltip(args.layerId,'Running', count);
+            exposed.setTooltip(params.layerId,'Running', count);
         },
-        markFinished: function(args){
-            var $badge = context.$('#snapshot-' + args.layerId + ' .badge');
+        markFinished: function(params){
+            var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
             if(!$badge.hasClass("error")){
                 $badge.addClass('finished');
-                exposed.setTooltip(args.layerId,'Finished', $badge.data('count'));
-                snapshotMenu.disableOption(args.layerId, 'stopQuery');
+                exposed.setTooltip(params.layerId,'Finished', $badge.data('count'));
+                snapshotMenu.disableOption(params.layerId, 'stopQuery');
             }
         },
-        markStopped: function(args){
-            var $badge = context.$('#snapshot-' + args.layerId + ' .badge'),
+        markStopped: function(params){
+            var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
                 count = $badge.data('count') || 0;
             if(!$badge.hasClass('error') && !$badge.hasClass('finished')){
                 $badge.addClass('stopped');
-                exposed.setTooltip(args.layerId, 'Stopped', count);
-                snapshotMenu.disableOption(args.layerId, 'stopQuery');
+                exposed.setTooltip(params.layerId, 'Stopped', count);
+                snapshotMenu.disableOption(params.layerId, 'stopQuery');
             }
         },
-        markError: function(args){
-            var $badge = context.$('#snapshot-' + args.layerId + ' .badge'),
+        markError: function(params){
+            var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
                 count = $badge.data('count') || 0;
 
             $badge.addClass('error');
-            exposed.setTooltip(args.layerId, 'Error', count);
-            snapshotMenu.disableOption(args.layerId, 'stopQuery');
+            exposed.setTooltip(params.layerId, 'Error', count);
+            snapshotMenu.disableOption(params.layerId, 'stopQuery');
         },
         setTooltip: function(layerId, status, recordCount){
             var $owner = context.$('#snapshot-' + layerId),
@@ -175,7 +175,7 @@ define([
                     'Features: ' + recordCount
             });
         },
-        timelinePlaybackStart: function(args){
+        timelinePlaybackStart: function(params){
             if(checkLayerCount() > 1) {
                 stopTimelinePlayback = false;
 
@@ -228,7 +228,7 @@ define([
                 }, 4000);
             }
         },
-        timelinePlaybackStop: function(args) {
+        timelinePlaybackStop: function(params) {
             stopTimelinePlayback = true;
             context.$('.snapshot').removeClass('selected');
         },

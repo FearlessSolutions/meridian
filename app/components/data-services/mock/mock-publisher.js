@@ -6,23 +6,23 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        createLayer: function(args) {
-            context.sandbox.emit('map.layer.create', args);
+        createLayer: function(params) {
+            context.sandbox.emit('map.layer.create', params);
         },
-        plotFeatures: function(args) {
-            context.sandbox.emit('map.features.plot', args);
+        plotFeatures: function(params) {
+            context.sandbox.emit('map.features.plot', params);
         },
-        publishData: function(args) {
-            context.sandbox.emit('data.add', args);
+        publishData: function(params) {
+            context.sandbox.emit('data.add', params);
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args); 
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
         },
-        publishFinish: function(args) {
-            context.sandbox.emit('data.finished', args);
+        publishFinish: function(params) {
+            context.sandbox.emit('data.finished', params);
         },
-        publishError: function(args){
-            context.sandbox.emit('data.error', args);
+        publishError: function(params){
+            context.sandbox.emit('data.error', params);
         }
     };
 

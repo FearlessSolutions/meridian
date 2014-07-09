@@ -10,8 +10,8 @@ define([
         publishClear: function(){
             context.sandbox.emit('system.clear');
         },
-        publishOpening: function(args){
-            context.sandbox.emit('menu.opening', args);
+        publishOpening: function(params){
+            context.sandbox.emit('menu.opening', params);
         }
     };
 

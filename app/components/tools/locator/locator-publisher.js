@@ -7,17 +7,17 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        markLocation: function(args){
-            context.sandbox.emit('map.features.plot', args); 
+        markLocation: function(params){
+            context.sandbox.emit('map.features.plot', params); 
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args); 
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
         },
-        setMapCenter: function(args) {
-            context.sandbox.emit('map.center.set', args);
+        setMapCenter: function(params) {
+            context.sandbox.emit('map.center.set', params);
         },
-        zoomToLocation: function(args){
-            context.sandbox.emit('map.zoom.location',args);
+        zoomToLocation: function(params){
+            context.sandbox.emit('map.zoom.location',params);
         }
     };
 

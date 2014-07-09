@@ -6,14 +6,14 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args); 
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
         },
-        publishOpening: function(args){
-            context.sandbox.emit('menu.opening', args);
+        publishOpening: function(params){
+            context.sandbox.emit('menu.opening', params);
         },
-        getExtent: function(args) {
-            context.sandbox.emit('map.get.extent', args);
+        getExtent: function(params) {
+            context.sandbox.emit('map.get.extent', params);
         },
         drawBBox: function() {
             context.sandbox.emit('map.draw.start');
@@ -21,8 +21,8 @@ define([
         removeBBox: function() {
             context.sandbox.emit('map.draw.clear');
         },
-        executeQuery: function(args) {
-            context.sandbox.emit('query.execute', args);
+        executeQuery: function(params) {
+            context.sandbox.emit('query.execute', params);
         },
         clear: function(){
             context.sandbox.emit("system.clear");

@@ -7,8 +7,8 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        changeBasemap: function(args) {
-            context.sandbox.emit('map.basemap.change', args);
+        changeBasemap: function(params) {
+            context.sandbox.emit('map.basemap.change', params);
         }
     };
 
