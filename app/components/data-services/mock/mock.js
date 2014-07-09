@@ -42,7 +42,9 @@ define([
 
         },
         stop: function(params){
-            abortQuery(params.queryId);
+            abortQuery({
+                "queryId": params.layerId
+            });
         },
         clear: function(){
             stopAllAJAX();
@@ -168,9 +170,9 @@ define([
      * Stop a query's ajax call,
      * This function requires that ajax.queryId was set when the query was created.
      */
-    function abortQuery(queryId){
+    function abortQuery(params){
         activeAJAXs.forEach(function(ajax, index){
-            if(ajax.queryId === queryId){ //This was set in queryData
+            if(ajax.queryId === params.queryId){ //This was set in queryData
                 ajax.abort();
                 activeAJAXs.splice(index, 1);
             }
