@@ -96,42 +96,26 @@ define([
                     }
 
                     if($this.find('.btn-on').hasClass('btn-primary')) {
-                        context.sandbox.stateManager.layers[queryId].visible = true;
-                        publisher.showLayer({"layerId": queryId});
-                        publisher.showLayer({"layerId": queryId + '_aoi'});
+                        // Does not call showLayer to avoid duplicate effort to toggleBtn change
+                        exposed.showDataLayer({
+                            "layerId": queryId
+                        });
+                        exposed.showAOILayer({
+                            "layerId": queryId
+                        });
                     } else {
-                        context.sandbox.stateManager.layers[queryId].visible = false;
-                        publisher.hideLayer({"layerId": queryId});
-                        publisher.hideLayer({"layerId": queryId + '_aoi'});
+                        exposed.hideDataLayer({
+                            "layerId": queryId
+                        });
+                        exposed.hideAOILayer({
+                            "layerId": queryId
+                        });
                     }
                 });
                 
                 exposed.setTooltip(queryId, 'Starting', 0);
 
             }
-        },
-        /*A message to hide all layers was emitted. Toggles buttons to the off position.*/
-        allSnapshotsOff: function(args){
-            //this will iterate through every backbone collection. Each collection is a query layer with the key being the queryId.
-            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(queryId, collections){
-                var $querySnapshot = context.$('#snapshot-' + queryId);
-                if($querySnapshot.find('.btn-primary').size()>0){
-                    //only toggle class if ON button is active.
-                    if($querySnapshot.find('.active').hasClass('btn-primary')){
-                        $querySnapshot.find('.btn').toggleClass('btn-primary'); //Two buttons
-                    }
-                }
-            });
-        },
-        layerToggleOn: function(args){
-            var $querySnapshot = context.$('#snapshot-' + args.layerId);
-            $querySnapshot.find('.btn-on').addClass('btn-primary');
-            $querySnapshot.find('.btn-off').removeClass('btn-primary');
-        },
-        layerToggleOff: function(args){
-            var $querySnapshot = context.$('#snapshot-' + args.layerId);
-            $querySnapshot.find('.btn-on').removeClass('btn-primary');
-            $querySnapshot.find('.btn-off').addClass('btn-primary');
         },
         hideTimeline: function(args){
             $timeline.hide();
@@ -199,13 +183,12 @@ define([
                 context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(queryId, collections){
                     tempArray.push(queryId);
                     context.sandbox.stateManager.layers[queryId].visible = false;
-                    exposed.hideLayer({
+                    exposed.hideSnapshotLayerGroup({
                         "layerId": queryId
                     });
                 });
                 
-                exposed.allSnapshotsOff();
-                exposed.showLayer({
+                exposed.showSnapshotLayerGroup({
                     "layerId": tempArray[0]
                 });
                 var $querySnapshot = context.$('#snapshot-' + tempArray[0]);
@@ -222,13 +205,13 @@ define([
                             $timeline.animate({scrollLeft: leftPos + 120});
                         }
 
-                        exposed.hideLayer({
+                        exposed.hideSnapshotLayerGroup({
                             "layerId": tempArray[i-1]
                         });
                         var $querySnapshotOld = context.$('#snapshot-' + tempArray[i-1]);
                         $querySnapshotOld.removeClass('selected');
 
-                        exposed.showLayer({
+                        exposed.showSnapshotLayerGroup({
                             "layerId": tempArray[i]
                         });
                         var $querySnapshotNew = context.$('#snapshot-' + tempArray[i]);
@@ -250,31 +233,75 @@ define([
             context.$('.snapshot').removeClass('selected');
         },
         showLayer: function(params) {
-            context.sandbox.stateManager.layers[params.layerId].visible = true;
-            publisher.showLayer({"layerId": params.layerId});
-            context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
-            publisher.showLayer({"layerId": params.layerId + '_aoi'});
-            var $querySnapshot = context.$('#snapshot-' + params.layerId);
-            if($querySnapshot.find('.btn-primary').size()>0){
-                //only toggle class if ON button is active.
-                if(!$querySnapshot.find('.active').hasClass('btn-primary')){
-                    $querySnapshot.find('.btn').toggleClass('btn-primary'); //Two buttons
-                }
+            if(context.sandbox.dataStorage.datasets[params.layerId]) {
+                // Take care of AOI and toggleBtn state
+                exposed.showAOILayer({
+                    "layerId": params.layerId
+                });
+                exposed.layerToggleOn({
+                    "layerId": params.layerId
+                });
             }
         },
         hideLayer: function(params) {
+            if(context.sandbox.dataStorage.datasets[params.layerId]) {
+                // Take care of AOI and toggleBtn state
+                exposed.hideAOILayer({
+                    "layerId": params.layerId
+                });
+                exposed.layerToggleOff({
+                    "layerId": params.layerId
+                });
+            }
+        },
+        showSnapshotLayerGroup: function(params) {
+            exposed.showDataLayer({
+                "layerId": params.layerId
+            });
+            exposed.showAOILayer({
+                "layerId": params.layerId
+            });
+            exposed.layerToggleOn({
+                "layerId": params.layerId
+            });
+        },
+        hideSnapshotLayerGroup: function(params) {
+            exposed.hideDataLayer({
+                "layerId": params.layerId
+            });
+            exposed.hideAOILayer({
+                "layerId": params.layerId
+            });
+            exposed.layerToggleOff({
+                "layerId": params.layerId
+            });
+        },
+        showDataLayer: function(params) {
+            context.sandbox.stateManager.layers[params.layerId].visible = true;
+            publisher.showLayer({"layerId": params.layerId});
+        },
+        hideDataLayer: function(params) {
             context.sandbox.stateManager.layers[params.layerId].visible = false;
             publisher.hideLayer({"layerId": params.layerId});
+        },
+        showAOILayer: function(params) {
+            context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
+            publisher.showLayer({"layerId": params.layerId + '_aoi'});
+        },
+        hideAOILayer: function(params) {
             context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
             publisher.hideLayer({"layerId": params.layerId + '_aoi'});
+        },
+        layerToggleOn: function(params){
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
-            if($querySnapshot.find('.btn-primary').size()>0){
-                //only toggle class if ON button is active.
-                if($querySnapshot.find('.active').hasClass('btn-primary')){
-                    $querySnapshot.find('.btn').toggleClass('btn-primary'); //Two buttons
-                }
-            }
-        }
+            $querySnapshot.find('.btn-on').addClass('btn-primary');
+            $querySnapshot.find('.btn-off').removeClass('btn-primary');
+        },
+        layerToggleOff: function(params){
+            var $querySnapshot = context.$('#snapshot-' + params.layerId);
+            $querySnapshot.find('.btn-on').removeClass('btn-primary');
+            $querySnapshot.find('.btn-off').addClass('btn-primary');
+        },
     };
 
     function checkLayerCount() {

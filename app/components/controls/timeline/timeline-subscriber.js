@@ -7,7 +7,8 @@ define([
         init: function(thisContext){
             context = thisContext;
             context.sandbox.on('map.layer.create', timeline.createSnapshot);
-            context.sandbox.on('map.layer.hide.all', timeline.allSnapshotsOff);
+            context.sandbox.on('map.layer.hide', timeline.hideLayer);
+            context.sandbox.on('map.layer.show', timeline.showLayer);
             context.sandbox.on('map.heat.on', timeline.hideTimeline);
             context.sandbox.on('map.heat.off', timeline.showTimeline);    
             context.sandbox.on('system.clear', timeline.clear);
@@ -17,8 +18,8 @@ define([
             context.sandbox.on('data.error', timeline.markError);
             context.sandbox.on('timeline.playback.start', timeline.timelinePlaybackStart);
             context.sandbox.on('timeline.playback.stop', timeline.timelinePlaybackStop);
-            context.sandbox.on('timeline.menu.layer.hide', timeline.hideLayer);
-            context.sandbox.on('timeline.menu.layer.show', timeline.showLayer);
+            context.sandbox.on('timeline.menu.layer.hide', timeline.hideSnapshotLayerGroup);
+            context.sandbox.on('timeline.menu.layer.show', timeline.showSnapshotLayerGroup);
         }
     };
 

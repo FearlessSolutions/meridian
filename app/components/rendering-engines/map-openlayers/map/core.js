@@ -179,11 +179,6 @@ define([
                 "layerId": params.layerId
             });
         },
-        hideAllLayers: function() {  // TODO: consider changing function name to hideAllDataLayers
-            mapLayers.hideAllDataLayers({
-                "map": map
-            });
-        },
         changeVisualMode: function(params) {
             mapBase.setVisualMode({
                 "map": map,

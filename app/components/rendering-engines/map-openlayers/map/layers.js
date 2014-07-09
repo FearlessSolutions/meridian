@@ -99,8 +99,6 @@ define([
                 options
             );
 
-            // var initialVisibility = (context.sandbox.stateManager.map.visualMode === 'heatmap') ? false : true;
-            // newVectorLayer.setVisibility(initialVisibility);
             if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
                 newVectorLayer.setVisibility(false);
             }
@@ -204,24 +202,6 @@ define([
                     currentLayer.setVisibility(true);
                 }
             }
-        },
-        hideAllDataLayers: function(params) {
-            //this will iterate through every backbone collection. Each collection is a query layer with the key being the queryId.
-            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(queryId, collections){
-                exposed.hideLayer({
-                    "map": params.map,
-                    "layerId": queryId
-                });
-            });
-        },
-        showAllDataLayers: function(params) {
-            //this will iterate through every backbone collection. Each collection is a query layer with the key being the queryId.
-            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(queryId, collections){
-                exposed.showLayer({
-                    "map": params.map,
-                    "layerId": queryId
-                });
-            });
         },
         visualModeChanged: function(params) {
             var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
