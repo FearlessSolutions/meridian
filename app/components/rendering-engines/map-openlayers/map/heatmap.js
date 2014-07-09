@@ -21,9 +21,9 @@ define([], function(){
         },
         clear: function(params) {
             var heatLayer = params.map.getLayersBy('layerId', 'static_heatmap')[0];
-            heatLayers.forEach(function(heatLayer){
+            if(heatLayer) {
                 heatLayer.deleteFeatures();
-            });  
+            }
         }
     };
 

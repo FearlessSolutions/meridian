@@ -228,6 +228,10 @@ define([
                 layer.destroy();              
             });
             context.sandbox.stateManager.layers = {};
+            mapClustering.clear();
+            mapHeatmap.clear({
+                "map": params.map
+            });
         },
         addEventListenersToLayer: function(params){
             if(params.eventListeners) {
