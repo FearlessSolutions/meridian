@@ -61,8 +61,8 @@ define([
                     "clickable": true,
                     "afterRowClick": function(target) {
                         publisher.identifyRecord({
-                            "recordId": target['Feature ID'],
-                            "queryId": target['Query ID']
+                            "featureId": target['Feature ID'],
+                            "layerId": target['Layer ID']
                         });
                     }
                 });

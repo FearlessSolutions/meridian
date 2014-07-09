@@ -349,7 +349,7 @@ define([
                                 });
                             }
                         );
-                        popup.layerId = params.queryId;
+                        popup.layerId = params.layerId;
 
                         mapBase.clearMapSelection({
                             "map": params.map

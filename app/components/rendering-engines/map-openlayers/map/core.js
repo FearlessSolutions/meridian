@@ -129,7 +129,7 @@ define([
         createLayer: function(params) { // TODO: look into this more, it is currently always creating a Vector Layer. Channels may need to be more specific.
             var newLayer,
                 layerOptions = {
-                    "layerId": params.queryId
+                    "layerId": params.layerId
                 };
             layerOptions.map = map;
             mapClustering.addClusteringToLayerOptions(layerOptions);
@@ -158,7 +158,7 @@ define([
         plotFeatures: function(params) {
             mapFeatures.plotFeatures({
                 "map": map,
-                "layerId": params.queryId || params.layerId, // TODO: change params.queryId to params.layerID, this needs to be changed in all components using the channel
+                "layerId": params.layerId,
                 "data": params.data
             });
             if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
@@ -192,8 +192,8 @@ define([
         identifyRecord: function(params) {
             mapLayers.identifyFeature({
                 "map": map,
-                "layerId": params.queryId, // TODO: change payload to use layerId, not queryId
-                "featureId": params.recordId
+                "layerId": params.layerId,
+                "featureId": params.featureId
             });
         },
         clearMapSelection: function() {

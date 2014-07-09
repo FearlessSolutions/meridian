@@ -20,7 +20,7 @@ define([
                 context.sandbox.dataStorage.datasets[args.queryId] = new Backbone.Collection();
 
                 publisher.createLayer({
-                    "queryId": args.queryId,
+                    "layerId": args.queryId,
                     "name": args.name,
                     "selectable": true,
                     "coords": {
@@ -70,13 +70,13 @@ define([
             }
         })
         .done(function(data){
-            var queryId,
+            var layerId,
                 newData = [];
 
             cleanAJAX();
 
             if (data && data.length > 0){
-                queryId = args.queryId || data[0].properties.queryId;
+                layerId = args.queryId || data[0].properties.queryId;
 
                 publisher.publishMessage({
                     "messageType": "info",
@@ -101,7 +101,7 @@ define([
                     newValue.type = value.type;
 
                     context.sandbox.dataStorage.addData({
-                        "datasetId": queryId,
+                        "datasetId": layerId,
                         "data": newValue
                     });
 
@@ -112,12 +112,13 @@ define([
                 data = [];
 
                 publisher.publishData({
-                    "queryId": queryId,
+                    "layerId": layerId,
                     "data": newData
                 });
 
                 args.start = parseInt(args.start || 0) + parseInt(args.pageSize);
-                args.queryId = queryId;
+                args.queryId = layerId;
+                // Loop back over the funtion
                 queryData(args);
             } else {
                 publisher.publishMessage({
@@ -126,7 +127,7 @@ define([
                     "messageText": args.name + " query complete"
                 });
                 publisher.publishFinish({
-                    "queryId": args.queryId
+                    "layerId": args.queryId
                 });
             }
 
@@ -145,7 +146,7 @@ define([
             });
 
             publisher.publishError({
-                "queryId": args.queryId
+                "layerId": args.queryId
             });
 
             return false;
@@ -185,7 +186,7 @@ define([
                 activeAJAXs.splice(index, 1);
             }
         });
-    };
+    }
 
     return exposed;
 

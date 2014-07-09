@@ -18,19 +18,19 @@ define([
             $timeline = context.$('#timeline');
         },
         createSnapshot: function(args){
-            var queryId = args.queryId,
+            var layerId = args.layerId,
                 name = args.name,
                 coords = args.coords,
                 thumnailURL;
 
-            if(context.sandbox.dataStorage.datasets[args.queryId]) {
+            if(context.sandbox.dataStorage.datasets[args.layerId]) {
 
                 if(coords) {
 
                     thumnailURL = context.sandbox.snapshot.thumbnailURL(coords);
 
                     publisher.createLayer({
-                        "queryId": queryId + "_aoi",
+                        "layerId": layerId + "_aoi",
                         "name": name + "_aoi",
                         "initialVisibility": true,
                         "styleMap": {
@@ -45,14 +45,14 @@ define([
                     });
                         
                     publisher.setLayerIndex({
-                        "layerId": queryId + "_aoi",
+                        "layerId": layerId + "_aoi",
                         "layerIndex": 0
                     });
 
                     publisher.plotFeatures({
-                        "layerId": queryId + "_aoi",
+                        "layerId": layerId + "_aoi",
                         "data": [{
-                            "queryId": queryId + "_aoi",
+                            "layerId": layerId + "_aoi",
                             "featureId": "_aoi",
                             "dataService": "",
                             "id": "_aoi",
@@ -74,7 +74,7 @@ define([
                 }
 
                 var	snapshotHTML = snapshotTemplate({
-                    "queryId": queryId,
+                    "layerId": layerId,
                     "name": name,
                     "thumbnailURL": thumnailURL
                 });
@@ -84,10 +84,10 @@ define([
                 $timeline.scrollLeft(5000);
                 $timeline.fadeIn();
 
-                snapshotMenu.createMenu({'queryId': queryId});
+                snapshotMenu.createMenu({'layerId': layerId});
 
-                context.$('#snapshot-' + queryId).find('.btn-toggle').on('click', function() {
-                    var collection = context.sandbox.dataStorage.datasets[queryId],
+                context.$('#snapshot-' + layerId).find('.btn-toggle').on('click', function() {
+                    var collection = context.sandbox.dataStorage.datasets[layerId],
                         $this = context.$(this),
                         $thisBtns = $this.find('.btn');
 
@@ -98,22 +98,22 @@ define([
                     if($this.find('.btn-on').hasClass('btn-primary')) {
                         // Does not call showLayer to avoid duplicate effort to toggleBtn change
                         exposed.showDataLayer({
-                            "layerId": queryId
+                            "layerId": layerId
                         });
                         exposed.showAOILayer({
-                            "layerId": queryId
+                            "layerId": layerId
                         });
                     } else {
                         exposed.hideDataLayer({
-                            "layerId": queryId
+                            "layerId": layerId
                         });
                         exposed.hideAOILayer({
-                            "layerId": queryId
+                            "layerId": layerId
                         });
                     }
                 });
                 
-                exposed.setTooltip(queryId, 'Starting', 0);
+                exposed.setTooltip(layerId, 'Starting', 0);
 
             }
         },
@@ -128,41 +128,41 @@ define([
             $timeline.hide();
 		},
         addCount: function(args){
-            var $badge = context.$('#snapshot-' + args.queryId + ' .badge'),
+            var $badge = context.$('#snapshot-' + args.layerId + ' .badge'),
                 count = $badge.data('count') || 0;
 
             count += args.data.length;
             $badge.text(context.sandbox.utils.trimNumber(count));
             $badge.data('count', count);
-            exposed.setTooltip(args.queryId,'Running', count);
+            exposed.setTooltip(args.layerId,'Running', count);
         },
         markFinished: function(args){
-            var $badge = context.$('#snapshot-' + args.queryId + ' .badge');
+            var $badge = context.$('#snapshot-' + args.layerId + ' .badge');
             if(!$badge.hasClass("error")){
                 $badge.addClass('finished');
-                exposed.setTooltip(args.queryId,'Finished', $badge.data('count'));
-                snapshotMenu.disableOption(args.queryId, 'stopQuery');
+                exposed.setTooltip(args.layerId,'Finished', $badge.data('count'));
+                snapshotMenu.disableOption(args.layerId, 'stopQuery');
             }
         },
         markStopped: function(args){
-            var $badge = context.$('#snapshot-' + args.queryId + ' .badge'),
+            var $badge = context.$('#snapshot-' + args.layerId + ' .badge'),
                 count = $badge.data('count') || 0;
             if(!$badge.hasClass('error') && !$badge.hasClass('finished')){
                 $badge.addClass('stopped');
-                exposed.setTooltip(args.queryId, 'Stopped', count);
-                snapshotMenu.disableOption(args.queryId, 'stopQuery');
+                exposed.setTooltip(args.layerId, 'Stopped', count);
+                snapshotMenu.disableOption(args.layerId, 'stopQuery');
             }
         },
         markError: function(args){
-            var $badge = context.$('#snapshot-' + args.queryId + ' .badge'),
+            var $badge = context.$('#snapshot-' + args.layerId + ' .badge'),
                 count = $badge.data('count') || 0;
 
             $badge.addClass('error');
-            exposed.setTooltip(args.queryId, 'Error', count);
-            snapshotMenu.disableOption(args.queryId, 'stopQuery');
+            exposed.setTooltip(args.layerId, 'Error', count);
+            snapshotMenu.disableOption(args.layerId, 'stopQuery');
         },
-        setTooltip: function(queryId, status, recordCount){
-            var $owner = context.$('#snapshot-' + queryId),
+        setTooltip: function(layerId, status, recordCount){
+            var $owner = context.$('#snapshot-' + layerId),
                 name = $owner.attr('data-title');
 
             //must destroy to add and modify tooltip
@@ -180,11 +180,11 @@ define([
                 stopTimelinePlayback = false;
 
                 var tempArray = [];
-                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(queryId, collections){
-                    tempArray.push(queryId);
-                    context.sandbox.stateManager.layers[queryId].visible = false;
+                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(layerId, collections){
+                    tempArray.push(layerId);
+                    context.sandbox.stateManager.layers[layerId].visible = false;
                     exposed.hideSnapshotLayerGroup({
-                        "layerId": queryId
+                        "layerId": layerId
                     });
                 });
                 
