@@ -37,11 +37,17 @@ define([
             context.$('button.close').on('click', function(){
                 exposed.hide();
             });
+
+            exposed.update({
+                "image": "/extensions/legend-extension/images/legend.png"
+            })
         },
         update: function(params){
 
             if(params.image){
-                var html = imageTemplate(params);
+                var html = imageTemplate({
+                    "image": context.sandbox.legend.getIconForLegend(params.image)
+                });
                 $body.html(html);
             }else{
                 var html = tableTemplate(params);
