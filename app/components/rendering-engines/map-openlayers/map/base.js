@@ -165,9 +165,6 @@ define([
             exposed.clearMapPopups({
                 "map": params.map
             });
-        },
-        resetStateManager: function() {
-            // context.sandbox.stateManager.layers = {};
         }
     };
     return exposed;

@@ -106,13 +106,13 @@ define([
         startDrawing: function() { // TODO: Make more generic for start drawing
             mapDraw.startDrawing({
                 "map": map,
-                "layerId": "static_draw" // should come in params, from component
+                "layerId": "static_draw" // Should come in params, from component
             });
         },
         clearDrawing: function() {
             mapDraw.clearDrawing({
                 "map": map,
-                "layerId": "static_draw" // should come in params, from component
+                "layerId": "static_draw" // Should come in params, from component
             });
         },
         createLayer: function(params) { // TODO: look into this more, it is currently always creating a Vector Layer. Channels may need to be more specific.
@@ -123,6 +123,7 @@ define([
             layerOptions.map = map;
             mapClustering.addClusteringToLayerOptions(layerOptions);
 
+            // If a styleMap was provided, overwrite the default style from clustering
             if(params.styleMap) {
                 layerOptions.styleMap = params.styleMap;
             }
@@ -133,9 +134,8 @@ define([
             mapLayers.addEventListenersToLayer({
                 "map": map,
                 "layer": newLayer,
-                "eventListeners": params.events //can pass in your own event listeners, or take the default, by not providing any
+                "eventListeners": params.events // Can pass in your own event listeners or take the default by not providing any
             });
-            // TODO: Layer not added to Data Storage here. Currently, that is done by the data service component. Trouble is, that means layers added over this channel wont have storage (toggle layer off doesnt work) 
         },
         setLayerIndex: function(params) {
             mapLayers.setLayerIndex({
@@ -186,7 +186,6 @@ define([
             });
         },
         clear: function() {
-            mapBase.resetStateManager(); // TODO: what should be reset in state manager (playback bases itself on layers)
             mapBase.resetSelector({
                 "map": map
             });
@@ -197,7 +196,6 @@ define([
                 "map": map
             });
         }
-
     };
     
     return exposed;
