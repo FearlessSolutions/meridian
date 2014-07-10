@@ -24,10 +24,10 @@ define([
                 "target": "div[data-aura-component='displays/notifications']"
             };
         },
-        displayMessage: function(args) {
-            var messageType = args.messageType,
-                messageTitle = args.messageTitle,
-                messageText = args.messageText;
+        displayMessage: function(params) {
+            var messageType = params.messageType,
+                messageTitle = params.messageTitle,
+                messageText = params.messageText;
                 
             if(messageType === 'success') {
                 toastr.success(messageText, messageTitle);

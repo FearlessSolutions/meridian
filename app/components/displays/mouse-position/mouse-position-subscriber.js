@@ -6,8 +6,8 @@ define([
 	var exposed = {
         init: function(thisContext){
             context = thisContext;
-            context.sandbox.on('map.coordinates', mousePosition.updateCoordinates);
-            context.sandbox.on('system.clear', mousePosition.clear);
+            context.sandbox.on('mouse.position.change', mousePosition.updateCoordinates);
+            context.sandbox.on('data.clear.all', mousePosition.clear);
         }
     };	
 

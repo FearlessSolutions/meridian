@@ -11,76 +11,82 @@ define([
             context = thisContext;
             activeAJAXs = [];
         },
-        executeQuery: function(args) {
+        executeQuery: function(params) {
             // Set a query ID to pass to the server
-            args.queryId = context.sandbox.utils.UUID();
+            params.queryId = context.sandbox.utils.UUID();
 
             // Create the snapshot prior to executing query, so user knows something happened
-            if(!context.sandbox.dataStorage.datasets[args.queryId]) {
-                context.sandbox.dataStorage.datasets[args.queryId] = new Backbone.Collection();
+            if(!context.sandbox.dataStorage.datasets[params.queryId]) {
+                context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
 
                 publisher.createLayer({
-                    "queryId": args.queryId,
-                    "name": args.name,
+                    "layerId": params.queryId,
+                    "name": params.name,
+                    "selectable": true,
                     "coords": {
-                        "minLat": args.minLat,
-                        "minLon": args.minLon,
-                        "maxLat": args.maxLat,
-                        "maxLon": args.maxLon
+                        "minLat": params.minLat,
+                        "minLon": params.minLon,
+                        "maxLat": params.maxLat,
+                        "maxLon": params.maxLon
                     }
                 });
             }
 
-            queryData(args);
+            queryData(params);
 
             publisher.publishMessage({
                 "messageType": "success",
                 "messageTitle": "Data Service",
-                "messageText": args.name + " query initiated"
+                "messageText": params.name + " query initiated"
             });
 
         },
-        stop: function(args){
-            abortQuery(args.queryId);
+        stop: function(params){
+            abortQuery({
+                "queryId": params.layerId
+            });
         },
         clear: function(){
             stopAllAJAX();
             context.sandbox.dataStorage.clear();
 
+        },
+        deleteDataset: function(params) {
+            // delete context.sandbox.dataStorage.datasets[params.layerId]; 
         }
     };
 
-    function queryData(args) {
+    function queryData(params) {
         var newAJAX = context.sandbox.utils.ajax({
             type: 'POST',
-            url: 'https://localhost:3000/query/bbox/' + args.serviceName,
+            url: 'https://localhost:3000/query/bbox/' + params.serviceName,
             data: {
                 "throttleMs": 0,
-                "minLat": args.minLat,
-                "minLon": args.minLon,
-                "maxLat": args.maxLat,
-                "maxLon": args.maxLon,
-                "start": args.start || 0,
-                "queryId": args.queryId || null,
-                "pageSize": args.pageSize
+                "minLat": params.minLat,
+                "minLon": params.minLon,
+                "maxLat": params.maxLat,
+                "maxLon": params.maxLon,
+                "start": params.start || 0,
+                "queryId": params.queryId || null,
+                "pageSize": params.pageSize
             },
             xhrFields: {
                 withCredentials: true
             }
         })
         .done(function(data){
-            var queryId,
+            var layerId,
                 newData = [];
 
             cleanAJAX();
 
             if (data && data.length > 0){
-                queryId = args.queryId || data[0].properties.queryId;
+                layerId = params.queryId || data[0].properties.queryId;
 
                 publisher.publishMessage({
                     "messageType": "info",
                     "messageTitle": "Data Service",
-                    "messageText": data.length+ " events have been added to " + args.name + " query layer."
+                    "messageText": data.length+ " events have been added to " + params.name + " query layer."
                 });
 
                 context.sandbox.utils.each(data, function(key, value){
@@ -100,7 +106,7 @@ define([
                     newValue.type = value.type;
 
                     context.sandbox.dataStorage.addData({
-                        "datasetId": queryId,
+                        "datasetId": layerId,
                         "data": newValue
                     });
 
@@ -110,22 +116,23 @@ define([
                 // Clear data out from memory
                 data = [];
 
-                publisher.publishData({
-                    "queryId": queryId,
+                publisher.plotFeatures({
+                    "layerId": layerId,
                     "data": newData
                 });
 
-                args.start = parseInt(args.start || 0) + parseInt(args.pageSize);
-                args.queryId = queryId;
-                queryData(args);
+                params.start = parseInt(params.start || 0) + parseInt(params.pageSize);
+                params.queryId = layerId;
+                // Loop back over the funtion
+                queryData(params);
             } else {
                 publisher.publishMessage({
                     "messageType": "success",
                     "messageTitle": "Data Service",
-                    "messageText": args.name + " query complete"
+                    "messageText": params.name + " query complete"
                 });
                 publisher.publishFinish({
-                    "queryId": args.queryId
+                    "layerId": params.queryId
                 });
             }
 
@@ -144,13 +151,13 @@ define([
             });
 
             publisher.publishError({
-                "queryId": args.queryId
+                "layerId": params.queryId
             });
 
             return false;
         }); 
 
-        newAJAX.queryId = args.queryId;
+        newAJAX.queryId = params.queryId;
         activeAJAXs.push(newAJAX);
     }
 
@@ -166,9 +173,9 @@ define([
      * Stop a query's ajax call,
      * This function requires that ajax.queryId was set when the query was created.
      */
-    function abortQuery(queryId){
+    function abortQuery(params){
         activeAJAXs.forEach(function(ajax, index){
-            if(ajax.queryId === queryId){ //This was set in queryData
+            if(ajax.queryId === params.queryId){ //This was set in queryData
                 ajax.abort();
                 activeAJAXs.splice(index, 1);
             }
@@ -184,7 +191,7 @@ define([
                 activeAJAXs.splice(index, 1);
             }
         });
-    };
+    }
 
     return exposed;
 

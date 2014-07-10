@@ -7,14 +7,14 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        startPlayback: function(args){
-            context.sandbox.emit('timeline.playback.start', args);
+        startPlayback: function(params){
+            context.sandbox.emit('timeline.playback.start', params);
         },
-        stopPlayback: function(args){
-            context.sandbox.emit('timeline.playback.stop', args);
+        stopPlayback: function(params){
+            context.sandbox.emit('timeline.playback.stop', params);
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args); 
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
         },
     };
 

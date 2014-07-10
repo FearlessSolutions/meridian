@@ -7,7 +7,7 @@ define([
         init: function(thisContext){
             context = thisContext;
             context.sandbox.on('clear.menu.open', clear.open);
-            context.sandbox.on('system.clear', clear.clear);
+            context.sandbox.on('data.clear.all', clear.clear);
         }
     };	
 

@@ -54,8 +54,8 @@ define([
                 });
             }
         },
-        setFeatureMode: function(args) {
-            if(args.origin !== CONTROL_DESIGNATION) {
+        setFeatureMode: function(params) {
+            if(params.origin !== CONTROL_DESIGNATION) {
                 return;
             }
             userNotified = true;
@@ -71,10 +71,10 @@ define([
         },
         clear: function() {
             // Setting the current visual mode locally and in state manager from the config
-            currentVisualMode = context.sandbox.mapConfiguration.defaultVisualMode;
-            context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
-            context.$('#visual-mode-toggle-container').children('.btn').removeClass('active');
-            context.$('#visual-mode-toggle-container [data-visual-mode="' + currentVisualMode + '"]').addClass('active');
+            // currentVisualMode = context.sandbox.mapConfiguration.defaultVisualMode;
+            // context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
+            // context.$('#visual-mode-toggle-container').children('.btn').removeClass('active');
+            // context.$('#visual-mode-toggle-container [data-visual-mode="' + currentVisualMode + '"]').addClass('active');
         }
     };
 

@@ -8,8 +8,16 @@ define([
             context = thisContext;
             context.$('#dataGridToggleButton').on('click', function(event) {
                 event.preventDefault();
-                
-                if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets) && context.sandbox.utils.first(context.sandbox.dataStorage.datasets).length >0) {
+                var validDataFound = false;
+
+                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value){
+                    if(value.length > 0) {
+                        validDataFound = true;
+                        return;
+                    }
+                });
+
+                if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets) && validDataFound) {
                     publisher.toogleGrid();
                     if(context.$(this).hasClass('active')) {
                         context.$(this).removeClass('active');

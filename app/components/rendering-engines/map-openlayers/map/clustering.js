@@ -1,20 +1,15 @@
-define([
-    './clustering-publisher'
-], function (publisher) {
-
-    // To add '_boilerplate' component, add following line to index.html
-    // <div data-aura-component="_boilerplate"></div>
-
+define([], function(){
+    // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
+    // Set Full-Scope Variables
     var config,
         rules = [],
-        layers = [],
+        layerOptionsCollection = [],
         enabled = true;
 
     var exposed = {
         init: function(thisContext) {
-            // The 'context' provides a reference to 'sandbox' using 'context.sandbox'
             context = thisContext;
             config = context.sandbox.mapConfiguration.clustering;
             populateRules();
@@ -22,8 +17,8 @@ define([
         },
         enable: function(){
             enabled = true;
-            layers.forEach(function(layer){
-                layer.strategies.forEach(function(strat){
+            layerOptionsCollection.forEach(function(layerOptions){
+                layerOptions.strategies.forEach(function(strat){
                     if (strat.clusters){
                         strat.distance = config.thresholds.clustering.distance;
                         strat.threshold = config.thresholds.clustering.threshold;
@@ -31,16 +26,11 @@ define([
                     }
                 });
             });
-            publisher.publishMessage({
-                "messageType": "info",
-                "messageTitle": "Clustering",
-                "messageText": "Clustering enabled"
-            });
         },
         disable: function(){
             enabled = false;
-            layers.forEach(function(layer){
-                layer.strategies.forEach(function(strat){
+            layerOptionsCollection.forEach(function(layerOptions){
+                layerOptions.strategies.forEach(function(strat){
                     if (strat.clusters){
                         strat.distance = config.thresholds.noClustering.distance;
                         strat.threshold = config.thresholds.noClustering.threshold;
@@ -48,20 +38,24 @@ define([
                     }
                 });
             });
-            publisher.publishMessage({
-                "messageType": "info",
-                "messageTitle": "Clustering",
-                "messageText": "Clustering disabled"
+        },
+        update: function(params) {
+            var visibility = false;
+            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(layerId, collections) {
+                if(context.sandbox.stateManager.map.visualMode === 'cluster' || context.sandbox.stateManager.map.visualMode === 'feature') {
+                    visibility = context.sandbox.stateManager.layers[layerId].visible;
+                }
+                params.map.getLayersBy('layerId', layerId)[0].setVisibility(visibility);
             });
         },
-        addClusteringToLayer: function(layer){
-
+        addClusteringToLayerOptions: function(layerOptions){
             var style = new OpenLayers.Style(OpenLayers.Util.applyDefaults({
                 externalGraphic: "${icon}",
                 graphicOpacity: 1,
                 pointRadius: 15,
                 graphicHeight: "${height}",
-                graphicWidth: "${width}"
+                graphicWidth: "${width}",
+                graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
             }, OpenLayers.Feature.Vector.style["default"]), {
                 rules: rules,
                 context: {
@@ -77,37 +71,37 @@ define([
                 }
             });
 
-            layer.styleMap = new OpenLayers.StyleMap({
+            layerOptions.styleMap = {
                "default": style,
                "select": style
-            });
+            };
 
-            layer.strategies = [
+            layerOptions.strategies = [
                 new OpenLayers.Strategy.Cluster(enabled ?
                     config.thresholds.clustering : config.thresholds.noClustering)
             ];
-            layer.rendererOptions = {zIndexing: true};
-            layer.recluster = function(){
+            layerOptions.rendererOptions = {zIndexing: true};
+            layerOptions.recluster = function(){
                 this.strategies[0].recluster();
             };
 
-            layers.push(layer);
+            layerOptionsCollection.push(layerOptions);
         },
-        changeVisualMode: function(args) {
-            if(args && args.mode) {
-                context.sandbox.stateManager.map.visualMode = args.mode;
-            }
-
-            if(args.mode === 'cluster') {
+        visualModeChanged: function(params) {
+            if(params.mode === 'cluster') {
                 exposed.enable();
-            } else if(args.mode === 'feature') {
+            } else if(params.mode === 'feature') {
                 exposed.disable();
             } else {
                 return; // likely the value is heatmap, or something else not handled here
             }
         },
+        recluster: function(params) {
+            var layer =  params.map.getLayersBy('layerId', params.layerId)[0];
+            layer.recluster();
+        },
         clear: function() {
-            layers = [];
+            layerOptionsCollection = [];
         }
     };
 
@@ -245,5 +239,4 @@ define([
     }
 
     return exposed;
-
 });
