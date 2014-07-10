@@ -92,7 +92,7 @@ define([
             });
 
         },
-        createVectorLayer: function(params) { // TODO: add support for taking in params.name
+        createVectorLayer: function(params) {
 
             var options = { 
                 "layerId": params.layerId, // set as layerId, is not present its null
@@ -117,7 +117,7 @@ define([
 
             params.map.addLayers([newVectorLayer]);
 
-            if(params.selectable) { // TODO: this doesnt account for the datatable selection/identify... figure out if this is cool
+            if(params.selectable) {
                 var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
                 var layers = selector.layers;
                 layers.push(newVectorLayer);
@@ -303,7 +303,7 @@ define([
             if(!feature) {
                 var clusterFeatureId,
                     clusterFeatureCount,
-                    record, //TODO: consider renaming, to feature and renaming feature to something like clusterFeature
+                    record,
                     currentDataService;
 
                 context.sandbox.utils.each(layer.features, function(k1, v1) {
@@ -489,7 +489,7 @@ define([
         });
     }
 
-    // TODO - add default listeners for default looking default popups for when in default clustering default mode on default layer in the default map
+    // TODO: add default listeners for default looking default popups for when in default clustering default mode on default layer in the default map
     function addDefaultListeners(params) {
         params.layer.events.on({
             beforefeatureselected: function(evt) {

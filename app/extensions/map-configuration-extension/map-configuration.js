@@ -114,8 +114,8 @@ define([
       }
     },
     "basemapGalleryMaxHeight": "40%",
-    "coordinates": {
-      "startOn": true
+    "cursorLocation": {
+      "defaultDisplay": true
     }
   };
 

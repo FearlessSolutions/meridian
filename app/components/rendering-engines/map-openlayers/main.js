@@ -33,7 +33,6 @@ define([], function (){
             olMapRendererPublisher,
             olMapRendererSubscriber
         ){
-            //do something
             context.sandbox.utils.addCSS(olMapRendererCSS, 'rendering-engines-map-openlayers-component-style');
 
             var olMapRendererTemplate = Handlebars.compile(olMapRendererHBS);

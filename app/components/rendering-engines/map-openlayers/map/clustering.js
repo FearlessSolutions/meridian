@@ -175,7 +175,6 @@ define([], function(){
             this.cluster(event);
         };
 
-        // TODO - relook to see if "layers is appropriate var name"
         // Override
         OpenLayers.Strategy.Cluster.prototype.cluster = function(event) {
             if((event && event.recluster) || !event || resolution != this.resolution || !this.clustersExist()) {

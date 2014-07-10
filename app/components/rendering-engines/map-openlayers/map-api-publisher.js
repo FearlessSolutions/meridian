@@ -14,7 +14,7 @@ define([
             context.sandbox.emit('map.draw.stop', params);
         },
         publishMousePosition: function(params){
-            context.sandbox.emit('mouse.position.change', params); // TODO: Used by mouse position component (change channel)
+            context.sandbox.emit('mouse.position.change', params);
         }
     };
 

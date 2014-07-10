@@ -103,7 +103,7 @@ define([
                 "lon": params.lon
             });
         },
-        startDrawing: function() { // TODO: Make more generic for start drawing
+        startDrawing: function() {
             mapDraw.startDrawing({
                 "map": map,
                 "layerId": "static_draw" // Should come in params, from component

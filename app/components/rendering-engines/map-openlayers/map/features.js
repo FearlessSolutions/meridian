@@ -9,8 +9,7 @@ define([
             context = thisContext;
         },
         plotFeatures: function(params) {
-            var params,
-                layerId = params.layerId,
+            var layerId = params.layerId,
                 data = params.data,
                 newFeatures = [],
                 currentFeature,
@@ -19,7 +18,7 @@ define([
             if(layer) {
                 context.sandbox.utils.each(data, function(key, value) {
                     
-                    // TODO: if GeoJSON is a feature collection split it into multiple individual GeoJSON features... to fit out process. May be a better fit to happen in the API, or could be here as a safety check.
+                    // TODO: Need to address how geoJSON feature collections are handled
                     var geoJsonParser = new OpenLayers.Format.GeoJSON({
                             "ignoreExtraDims": false,
                             "internalProjection": params.map.projection,

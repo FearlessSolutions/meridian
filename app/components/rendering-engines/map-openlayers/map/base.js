@@ -31,8 +31,7 @@ define([
                 showCursorLocationDefault = context.sandbox.cursorLocation.defaultDisplay; 
             }
 
-            // TODO: Why use cooridnates.startOn as the var name?
-            if(context.sandbox.mapConfiguration.coordinates && context.sandbox.mapConfiguration.coordinates.startOn && showCursorLocationDefault){
+            if(context.sandbox.mapConfiguration.cursorLocation && context.sandbox.mapConfiguration.cursorLocation.defaultDisplay && showCursorLocationDefault){
                 exposed.trackMousePosition({
                     "map": map
                 });
@@ -104,13 +103,13 @@ define([
                 "map": params.map
             });
         },
-        clearMapSelection: function(params) { //TODO: Look at renaming function to unselectAll or something like that
+        clearMapSelection: function(params) {
             var controls = params.map.getControlsByClass('OpenLayers.Control.SelectFeature');
             controls.forEach(function(control) {
                 control.unselectAll();
             });
         },
-        trackMousePosition: function(params){
+        trackMousePosition: function(params) {
             params.map.events.register('mousemove', params.map, function(e){
                 var position = this.events.getMousePosition(e);
                 var latlon = exposed.getMouseLocation({
