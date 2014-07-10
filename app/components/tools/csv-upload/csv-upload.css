@@ -1,0 +1,21 @@
+div[data-aura-component='tools/csv-upload'] #csvDialog{
+    display: none;
+}
+div[data-aura-component='tools/csv-upload'] .dialog-dialog{
+    margin: 0;
+    width: 350px;
+    position: absolute;
+    z-index: 2000;
+}
+div[data-aura-component='tools/csv-upload'] .glyphicon{
+    cursor: pointer;
+}
+div[data-aura-component='tools/csv-upload'] #open-file{
+    cursor: pointer;
+}
+div[data-aura-component='tools/csv-upload'] #csvDialog{
+    display: none;
+}
+div[data-aura-component='tools/csv-upload'] .glyphicon-folder-open{
+    margin-right: 5px;
+}

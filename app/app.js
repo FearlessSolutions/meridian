@@ -64,7 +64,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     });
     
     Aura({
-        "debug":true,
+        "debug":false,
         sources: {default: 'components'} 
     })
     .use('extensions/utils-extension/utils-extension')
@@ -81,6 +81,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/locator-extension/locator-query-extension')
     .use('extensions/locator-extension/locator-formatData-extension')
     .use('extensions/mock-extension/mock-extension')
+    .use('extensions/csv-upload-extension/csv-upload-extension')
     .start({ components: 'body' });
 
 });

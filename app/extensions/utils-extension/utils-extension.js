@@ -142,6 +142,15 @@ define([
                         return String(number);
                     }
                 },
+                getAsText: function(file, callback){
+                    var reader = new FileReader();
+
+                    reader.readAsText(file, 'UTF-8');
+                    reader.onloadend = function(e){
+                        var text = e.target.result;
+                        callback(text);
+                    }
+                },
                 pageHeight: function(el){
                     if(el) {
                         return $(el).height();

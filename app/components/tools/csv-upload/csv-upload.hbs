@@ -1,0 +1,31 @@
+<a href="#" id="csv" type="button" class="btn btn-default-icon bs-tooltip">
+    <span class="glyphicon glyphicon-upload"></span>
+</a>
+<div id="csvDialog" class="dialog fade" >
+    <div class="dialog-dialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <button type="button" class="close" data-dismiss="dialog" aria-hidden="true">&times;</button>
+                <p class="dialog-title">Upload CSV</p>
+            </div>
+            <div class="dialog-body">
+                <input id="file" type="file" style="display:none"> <!-- hidden file -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="file-group" class="input-group">
+                            <input id="dummy-file" type="text" class="input-large form-control" placeholder="Please aelect a file">
+                            <span id="open-file" class="input-group-addon">
+                                <span class="glyphicon glyphicon-folder-open"></span>
+                                Select File
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-footer text-right">
+                <button id="upload-submit" type="submit" class="btn btn-primary">Upload</button>
+                <button id="upload-cancel" type="cancel" class="btn btn-primary">Cancel</button>
+            </div>
+        </div><!-- /.dialog-content -->
+    </div><!-- /.dialog-dialog -->
+</div><!-- /.dialog -->
