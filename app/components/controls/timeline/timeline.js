@@ -113,7 +113,10 @@ define([
                     }
                 });
                 
-                exposed.setTooltip(layerId, 'Starting', 0);
+                exposed.setTooltip({
+                    "layerId": layerId,
+                    "status": "Starting"
+                });
 
             }
         },
@@ -130,42 +133,51 @@ define([
         updateCount: function(params){
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
-                    count = 0;
-            
-                count = context.sandbox.dataStorage.datasets[params.layerId].length;
+                    count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
             
                 $badge.text(context.sandbox.utils.trimNumber(count));
-                exposed.setTooltip(params.layerId,'Running', count);
+                exposed.setTooltip({
+                    "layerId": params.layerId,
+                    "status": "Running"
+                });
             }
         },
         markFinished: function(params){
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
             if(!$badge.hasClass("error")){
                 $badge.addClass('finished');
-                exposed.setTooltip(params.layerId,'Finished', $badge.data('count'));
+                exposed.setTooltip({
+                    "layerId": params.layerId,
+                    "status": "Finished"
+                });
                 snapshotMenu.disableOption(params.layerId, 'stopQuery');
             }
         },
         markStopped: function(params){
-            var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
-                count = $badge.data('count') || 0;
+            var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
             if(!$badge.hasClass('error') && !$badge.hasClass('finished')){
                 $badge.addClass('stopped');
-                exposed.setTooltip(params.layerId, 'Stopped', count);
+                exposed.setTooltip({
+                    "layerId": params.layerId,
+                    "status": "Stopped"
+                });
                 snapshotMenu.disableOption(params.layerId, 'stopQuery');
             }
         },
         markError: function(params){
-            var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
-                count = $badge.data('count') || 0;
+            var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
 
             $badge.addClass('error');
-            exposed.setTooltip(params.layerId, 'Error', count);
+            exposed.setTooltip({
+                    "layerId": params.layerId,
+                    "status": "Error"
+                });
             snapshotMenu.disableOption(params.layerId, 'stopQuery');
         },
-        setTooltip: function(layerId, status, recordCount){
-            var $owner = context.$('#snapshot-' + layerId),
-                name = $owner.attr('data-title');
+        setTooltip: function(params){
+            var $owner = context.$('#snapshot-' + params.layerId),
+                name = $owner.attr('data-title'),
+                count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
 
             //must destroy to add and modify tooltip
             $owner.tooltip('destroy'); 
@@ -173,8 +185,8 @@ define([
             $owner.tooltip({
                 "html": true,
                 "title": 'Name: ' + name + '<br/>' +
-                    'Status: '+ status + '<br/>' +
-                    'Features: ' + recordCount
+                    'Status: '+ params.status + '<br/>' +
+                    'Features: ' + count
             });
         },
         timelinePlaybackStart: function(params){
