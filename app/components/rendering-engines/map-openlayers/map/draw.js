@@ -11,7 +11,6 @@ define([
         /**
          * Initialize Draw.js
          * @param  {object} thisContext Aura's sandboxed 'this'
-         * @return N/A
          */
         init: function(thisContext) {
             context = thisContext;
@@ -23,7 +22,6 @@ define([
          * @param {string} params.layerId the layerId
          * @param {integer} params.sides the number of sides on the polygon
          * @param {boolean} params.irregular true if sides can be of differing length
-         * @return
          */
         startDrawing: function(params) {
             // TODO: add switch for points and lines, along with the polygon support
@@ -58,7 +56,6 @@ define([
          * @param  {object} params Parameters JSON
          * @param {object} params.map the map object
          * @param {string} params.layerId the layerId
-         * @return
          */
         clearDrawing: function(params) {
             var drawLayer;
