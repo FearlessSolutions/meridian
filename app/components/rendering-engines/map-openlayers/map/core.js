@@ -137,6 +137,12 @@ define([
                 "eventListeners": params.events // Can pass in your own event listeners or take the default by not providing any
             });
         },
+        deleteLayer: function(params) {
+            mapLayers.deleteLayer({
+                "map": map,
+                "layerId": params.layerId
+            });
+        },
         setLayerIndex: function(params) {
             mapLayers.setLayerIndex({
                 "map": map,

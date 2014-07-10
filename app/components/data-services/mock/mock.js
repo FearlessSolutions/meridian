@@ -50,6 +50,9 @@ define([
             stopAllAJAX();
             context.sandbox.dataStorage.clear();
 
+        },
+        deleteDataset: function(params) {
+            // delete context.sandbox.dataStorage.datasets[params.layerId]; 
         }
     };
 

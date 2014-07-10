@@ -129,6 +129,9 @@ define([
                 }
             }
         },
+        "map.layer.delete": {
+          "payload": {}
+        },
         "map.layer.hide": {
             "payload": {}
         },

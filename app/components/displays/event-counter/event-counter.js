@@ -21,7 +21,7 @@ define([
             displayedCount = 0;
             context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value) {
                 totalCount += value.length;
-                if(context.sandbox.stateManager.layers[key].visible) {
+                if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible) {
                     displayedCount += value.length;
                 }
             });

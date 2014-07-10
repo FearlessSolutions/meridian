@@ -159,8 +159,20 @@ define([
         setLayerIndex: function(params) {
             params.map.setLayerIndex(params.map.getLayersBy('layerId', params.layerId)[0], params.layerIndex);
         },
-        deleteLayer: function() {
-            
+        deleteLayer: function(params) {
+            params.map.removeLayer(params.map.getLayersBy('layerId', params.layerId)[0]);
+            var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+            var layers = selector.layers;
+            var index;
+            context.sandbox.utils.each(layers, function(key, value){
+                if(value.layerId === params.layerId) {
+                    index = key;
+                    return false;
+                }
+            });
+            layers.splice(index, 1);
+            selector.setLayer(layers);
+            delete context.sandbox.stateManager.layers[params.layerId];
         },
         clearLayer: function(params) {
             params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();

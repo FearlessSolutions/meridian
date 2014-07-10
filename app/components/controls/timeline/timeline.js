@@ -128,13 +128,15 @@ define([
             $timeline.hide();
 		},
         updateCount: function(params){
-            var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
-                count = 0;
-
-            count = context.sandbox.dataStorage.datasets[params.layerId].length;
-
-            $badge.text(context.sandbox.utils.trimNumber(count));
-            exposed.setTooltip(params.layerId,'Running', count);
+            if(context.sandbox.dataStorage.datasets[params.layerId]) {
+                var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
+                    count = 0;
+            
+                count = context.sandbox.dataStorage.datasets[params.layerId].length;
+            
+                $badge.text(context.sandbox.utils.trimNumber(count));
+                exposed.setTooltip(params.layerId,'Running', count);
+            }
         },
         markFinished: function(params){
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
