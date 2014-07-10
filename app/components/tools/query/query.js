@@ -6,6 +6,7 @@ define([
 ], function (publisher) {
     var context,
         MENU_DESIGNATION = 'query-tool',
+        $queryButton,
         $queryDialog,
         $maxLon,
         $maxLat,
@@ -15,11 +16,15 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            $queryButton = context.$('#Query');
             $queryDialog = context.$('#QueryDialog');
             $minLon = context.$('.query-form #query-location-minLon');
             $minLat = context.$('.query-form #query-location-minLat');
             $maxLon = context.$('.query-form #query-location-maxLon');
             $maxLat = context.$('.query-form #query-location-maxLat');
+
+
+            $queryButton.tooltip();
 
             context.$('.show-query').click(function(event) {
                 event.preventDefault();
@@ -134,7 +139,7 @@ define([
                 publisher.drawBBox();
             });
             
-            context.$('#Query').on('click', function(event) {
+            $queryButton.on('click', function(event) {
                 event.preventDefault();
 
                 var drawOnDefault = true;
