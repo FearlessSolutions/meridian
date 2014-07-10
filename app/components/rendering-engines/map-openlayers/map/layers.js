@@ -61,11 +61,23 @@ define([
                 "styleMap": {
                     "default": new OpenLayers.Style({
                         "pointRadius": 10,
-                        "weight": "${weight}" // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer
+                        // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer.
+                        // The weight is calcluated by the context.weight function below.
+                        "weight": "${weight}"
                     }, {
                         "context": {
-                            weight: function(f) {
-                                return 0.05; // Math.min(Math.max((f.attributes.duration || 0) / 43200, 0.25), 1.0);
+                            weight: function() {
+                                var visibleDataRecordCount = 0;
+                                // Build the visibleDataRecordCount by adding all records from datasets that are visible
+                                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value) {
+                                    if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible) {
+                                        visibleDataRecordCount += value.length;
+                                    }
+                                });
+                                // Set initial weight value to 0.1,
+                                // once there are more than 10k records it will decrease by 0.01 per 1k records, 
+                                // stopping at a lowest weight of 0.01 at 100k records (it will not go lower, even if more than 100k records)
+                                return Math.max(Math.min(1000 / visibleDataRecordCount, 0.1), 0.01);
                             }
                         }
                     })
