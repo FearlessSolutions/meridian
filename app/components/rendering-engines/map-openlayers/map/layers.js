@@ -134,9 +134,6 @@ define([
             params.map.addLayer(baseLayer);
             return baseLayer;
         },
-        createWMSLayer: function(params) {
-            
-        },
         createWMTSLayer: function(params) {
             var baseLayer = new OpenLayers.Layer.WMTS({
                 "name": params.name,
