@@ -86,15 +86,11 @@ define([
                         context.sandbox.dataStorage.datasets[queryId].dataService = DATASOURCE_NAME;
 
                         //Create the layer.Since we don't know what the bounds are, make up a no-area box
+
                         publisher.createLayer({
-                            "queryId": queryId,
+                            "layerId": queryId,
                             "name": queryName,
-                            "coords": {
-                                "minLat": 0,
-                                "minLon": 0,
-                                "maxLat": 0,
-                                "maxLon": 0
-                            }
+                            "selectable": true
                         });
 
                         /**
@@ -111,10 +107,10 @@ define([
                                 publisher.publishMessage({
                                     "messageType": "error",
                                     "messageTitle": "CSV Upload",
-                                    "messageText": status + " " + jqXHR
+                                    "messageText": status.statusText
                                 });
 
-                                publisher.publishError({"queryId": queryId});
+                                publisher.publishError({"layerId": queryId});
                             }
                         );
 
@@ -164,7 +160,7 @@ define([
         context.sandbox.csv.parse(data, queryId);
 
         publisher.publishData({
-            "queryId": queryId,
+            "layerId": queryId,
             "data": data
         });
 
