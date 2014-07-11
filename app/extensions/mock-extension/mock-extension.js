@@ -15,7 +15,7 @@ define([
                 buildInfoWinTemplate: function(attributes){
                     var mockTemplate = Handlebars.compile(mockHbs);
                     var html = mockTemplate({
-                        thumbnail: "./extensions/map-configuration-extension/images/markerIcons/marker.png",
+                        thumbnail: "./extensions/map-configuration-extension/images/markerIcons/marker-2x.png",
                         classification: attributes.classification,
                         name: attributes.name,
                         attributes: attributes

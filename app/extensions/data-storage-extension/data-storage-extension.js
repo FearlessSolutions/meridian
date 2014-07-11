@@ -9,7 +9,7 @@ define([
                 },
                 "columns": {
                     "featureId":"Feature ID",
-                    "queryId":"Query ID",
+                    "queryId":"Layer ID",
                     "lat": "Lat",
                     "lon": "Lon"
                 },

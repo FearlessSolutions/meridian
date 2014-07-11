@@ -1,5 +1,5 @@
 define([
-	'./locator-configuration.js'
+	'./locator-configuration'
 ], function(locatorConfiguration){
 
     var COORDINATE_SYSYEMS = [

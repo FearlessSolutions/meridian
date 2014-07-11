@@ -3,7 +3,7 @@ define([
 ], function() {
 
     var config = {
-        "data.add": {
+        "data.clear.all": {
             "payload": {}
         },
         "data.error": {
@@ -39,6 +39,69 @@ define([
         "map.draw.bbox.start": {
             "payload": {}
         },
+        "map.features.plot": {
+            "payload": {
+              "layerId": "TestLayer1",
+              "data": [
+                {
+                  "classification": "U",
+                  "layerId": "TestLayer1",
+                  "featureId": "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
+                  "dataService": "mock",
+                  "id": "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
+                  "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [[
+                      [-9.0, 10.0], [-9.0, 0.0], [0.0, 0.0], [0.0, 10.0]
+                      ]]
+                  },
+                  "type": "Feature"
+                },
+                {
+                  "classification": "U",
+                  "layerId": "TestLayer1",
+                  "featureId": "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
+                  "dataService": "mock",
+                  "id": "f74ff07f-4964-4f7e-beb6-33e6d2abeee",
+                  "geometry": {
+                    "type": "LineString",
+                    "coordinates": [ [-12.0, 0.0], [-8.0, 10.0] ]
+                      },
+                  "type": "Feature"
+                },
+                {
+                  "classification": "U",
+                  "layerId": "TestLayer1",
+                  "featureId": "07f6b9fd-28f1-4de8-b112-fbe0b3df1cd5",
+                  "dataService": "mock",
+                  "id": "07f6b9fd-28f1-4de8-b112-fbe0b3df1cd5",
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                      -10,
+                      8
+                    ]
+                  },
+                  "type": "Feature"
+                },
+                {
+                  "classification": "U",
+                  "layerId": "TestLayer1",
+                  "featureId": "d3bc9d37-e683-4195-9475-bd4f37887d21",
+                  "dataService": "mock",
+                  "id": "d3bc9d37-e683-4195-9475-bd4f37887d21",
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                      -10,
+                      9
+                    ]
+                  },
+                  "type": "Feature"
+                }
+              ]
+            }
+        },
         "map.get.extent": {
             "payload": {}
         },
@@ -55,7 +118,19 @@ define([
             "payload": {}
         },
         "map.layer.create": {
-            "payload": {}
+            "payload": {
+                "layerId": "TestLayer1",
+                "name": "Test Layer",
+                "coords": {
+                    "minLat": "7.602108",
+                    "minLon": "-13.908691",
+                    "maxLat": "11.587669",
+                    "maxLon": "-8.283691"
+                }
+            }
+        },
+        "map.layer.delete": {
+          "payload": {}
         },
         "map.layer.hide": {
             "payload": {}
@@ -98,10 +173,17 @@ define([
             }
         },
         "point.plot": {
-            "payload": {}
-        },
-        "system.clear": {
-            "payload": {}
+            "payload": {
+              "type": "feature",
+              "geometry": {
+                "type": "point",
+                "coordinates": [
+                  0,
+                  0
+                ]
+              },
+              "properties": {}
+            }
         },
         "timeline.playback.start": {
             "payload": {}
@@ -114,7 +196,7 @@ define([
         },
         "query.stop": {
             "payload": {
-                "queryId": "test"
+                "layerId": "test"
             }
         }
     };

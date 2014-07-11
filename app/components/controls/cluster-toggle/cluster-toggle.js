@@ -56,8 +56,8 @@ define([
                 });
             }
         },
-        checkConfirmation: function(args){
-            if(args.origin !== CONTROL_DESIGNATION){
+        checkConfirmation: function(params){
+            if(params.origin !== CONTROL_DESIGNATION){
                 return;
             }
 

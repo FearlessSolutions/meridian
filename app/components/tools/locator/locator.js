@@ -134,7 +134,10 @@ define([
             $locatorButton.attr('disabled',true);
         },//end of goToLocation
         markLocation: function(coordinates) {
-            publisher.markLocation(context.sandbox.utils.createGeoJson(coordinates));
+            publisher.markLocation({
+                "layerId": "static_geolocator",
+                "data": [context.sandbox.utils.createGeoJson(coordinates)]
+            });
             publisher.setMapCenter(coordinates);
         },
         clear: function() {

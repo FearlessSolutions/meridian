@@ -220,7 +220,7 @@ define([
              */
             context.$('.form-horizontal button[type="extent"]').on('click', function(event) {
                 event.preventDefault();
-                publisher.getExtent({"target":"userSettings"});
+                exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
             });
 
             /**
@@ -259,20 +259,18 @@ define([
                 $cursorLocationDefaultToggle.find('.btn-off').addClass('btn-primary');
             }
         },
-        populateCoordinates: function(args) {
-            if(args.target === 'userSettings') {
-                removeCssError();
-                $minLon.val(args.minLon);
-                $maxLat.val(args.maxLat);
-                $maxLon.val(args.maxLon);
-                $minLat.val(args.minLat);
+        populateCoordinates: function(params) {
+            removeCssError();
+            $minLon.val(params.minLon);
+            $maxLat.val(params.maxLat);
+            $maxLon.val(params.maxLon);
+            $minLat.val(params.minLat);
 
-                publisher.publishMessage({
-                    "messageType": "success",
-                    "messageTitle": "User Settings",
-                    "messageText": "Extent loaded. Remember to save."
-                });
-            }
+            publisher.publishMessage({
+                "messageType": "success",
+                "messageTitle": "User Settings",
+                "messageText": "Extent loaded. Remember to save."
+            });
         },
         closeMenu: function(){
             if(menuDisabled){
@@ -282,8 +280,8 @@ define([
 
             resetDialog();
         },
-        handleMenuOpening: function(args){
-            if(args.componentOpening === MENU_DESIGNATION){
+        handleMenuOpening: function(params){
+            if(params.componentOpening === MENU_DESIGNATION){
                 return;
             }else{
                 exposed.closeMenu();

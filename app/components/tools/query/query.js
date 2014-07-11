@@ -151,21 +151,21 @@ define([
                     $queryDialog.dialog('toggle');
 
                     publisher.removeBBox();
-                    publisher.getExtent({"target":"queryTool"});
+                    exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
                 }
             });
         },
-        bboxAdded: function(args) {
+        bboxAdded: function(params) {
             $queryDialog.dialog('show');
-            exposed.populateCoordinates(args);   
+            exposed.populateCoordinates(params);   
         },
-        populateCoordinates: function(args) {
-            $minLon.val(args.minLon);
-            $minLat.val(args.minLat);
-            $maxLon.val(args.maxLon);
-            $maxLat.val(args.maxLat);
+        populateCoordinates: function(params) {
+            $minLon.val(params.minLon);
+            $minLat.val(params.minLat);
+            $maxLon.val(params.maxLon);
+            $maxLat.val(params.maxLat);
         },
-        clearQueryForm: function(args) {
+        clearQueryForm: function(params) {
                 $minLon.val('');
                 $minLat.val('');
                 $maxLon.val('');
@@ -180,8 +180,8 @@ define([
             exposed.clearQueryForm();
             $queryDialog.dialog('hide');
         },
-        handleMenuOpening: function(args){
-            if(args.componentOpening === MENU_DESIGNATION){
+        handleMenuOpening: function(params){
+            if(params.componentOpening === MENU_DESIGNATION){
                 return;
             }else{
                 closeMenu();

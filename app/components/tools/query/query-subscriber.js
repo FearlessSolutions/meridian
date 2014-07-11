@@ -6,9 +6,8 @@ define([
 	var exposed = {
         init: function(thisContext){
             context = thisContext;
-            context.sandbox.on('map.view.extent', queryTool.populateCoordinates);
-            context.sandbox.on('map.draw.bbox.added', queryTool.bboxAdded);
-            context.sandbox.on('system.clear', queryTool.clear);
+            context.sandbox.on('map.draw.stop', queryTool.bboxAdded);
+            context.sandbox.on('data.clear.all', queryTool.clear);
             context.sandbox.on('menu.opening', queryTool.handleMenuOpening);
         }
     };	

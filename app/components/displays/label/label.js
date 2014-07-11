@@ -10,9 +10,9 @@ define([
             context = thisContext;
             context.$("#labelContainer").draggable({ handle: ".dialog-header" });
         },
-        createLabel: function(args) {
-            var labelTitle = args.title;
-            var labelDescription = args.description;
+        createLabel: function(params) {
+            var labelTitle = params.title;
+            var labelDescription = params.description;
 
             if(labelTitle === undefined){
                 labelTitle = "No Title";

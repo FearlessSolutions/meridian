@@ -7,8 +7,8 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishOpenClearDialog: function(args){
-            context.sandbox.emit('clear.menu.open', args);
+        publishOpenClearDialog: function(params){
+            context.sandbox.emit('clear.menu.open', params);
         }
     };
 

@@ -25,7 +25,6 @@ define([
         },
         setSessionId: function(sessionId){
             var id = sessionId.split("-").join("");
-            console.log("Session ID = " + id);
             context.sandbox.sessionId = id;
         }
     };
