@@ -13,7 +13,7 @@ define([
             context.sandbox.emit('map.layer.create', args);
         },
         publishData: function(args){
-            context.sandbox.emit('data.add', args);
+            context.sandbox.emit('map.features.plot', args);
         },
         publishMessage: function(args){
             context.sandbox.emit('message.publish', args);
@@ -22,7 +22,7 @@ define([
             context.sandbox.emit('data.finished', args);
         },
         publishError: function(args){
-            context.sandbox.emit('data.errir', args);
+            context.sandbox.emit('data.error', args);
         }
     };
 
