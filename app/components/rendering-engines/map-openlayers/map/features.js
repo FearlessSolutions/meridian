@@ -12,19 +12,19 @@ define([
             var layerId = params.layerId,
                 data = params.data,
                 newFeatures = [],
-                currentFeature,
-                layer = params.map.getLayersBy('layerId', layerId)[0];
+                layer = params.map.getLayersBy('layerId', layerId)[0],
+                geoJsonParser;
+
+            // TODO: Need to address how geoJSON feature collections are handled
+            geoJsonParser = new OpenLayers.Format.GeoJSON({
+                "ignoreExtraDims": false,
+                "internalProjection": params.map.projection,
+                "externalProjection": params.map.projectionWGS84
+            });
 
             if(layer) {
                 context.sandbox.utils.each(data, function(key, value) {
-                    
-                    // TODO: Need to address how geoJSON feature collections are handled
-                    var geoJsonParser = new OpenLayers.Format.GeoJSON({
-                            "ignoreExtraDims": false,
-                            "internalProjection": params.map.projection,
-                            "externalProjection": params.map.projectionWGS84
-                        }),
-                        currentFeature = geoJsonParser.parseFeature(value),
+                        var currentFeature = geoJsonParser.parseFeature(value),
                         iconData;
                     
                     iconData = context.sandbox.icons.getIconForFeature({"properties": value.properties}) || context.sandbox.mapConfiguration.markerIcons.default;
