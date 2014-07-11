@@ -27,6 +27,7 @@ exports.newClient = function(options){
         options = context.sandbox.config.getConfig().client;
     }
 
+    console.log(options);
     var esOptions = {host:{}, agentConfig:{}};
     if (options.protocol) { esOptions.host.protocol = options.protocol; }
     if (options.host) { esOptions.host.host = options.host; }
