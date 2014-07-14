@@ -19,11 +19,11 @@ define([
             params.map.zoomToExtent(bounds.transform(params.map.projectionWGS84, params.map.projection), true);
         },
         zoomToLayer: function(params) {
-            var queryLayer = params.map.getLayersBy('layerId', params.layerId + '_bbox')[0];
-            if(!queryLayer) {
-                queryLayer = params.map.getLayersBy('layerId', params.layerId)[0];
+            var queryLayer = params.map.getLayersBy('layerId', params.layerId)[0];
+
+            if(queryLayer){
+                params.map.zoomToExtent(queryLayer.getDataExtent());
             }
-            params.map.zoomToExtent(queryLayer.getDataExtent());
         },
         setCenter: function(params) {
             var centerPoint,

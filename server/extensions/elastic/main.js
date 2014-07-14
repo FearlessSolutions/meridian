@@ -85,6 +85,7 @@ exports.init = function(context){
         var sessionId = res.get('Parsed-SessionId');
         save.writeGeoJSON(userName, sessionId, req.body.queryId || uuid.v4(),
             req.body.type || 'UNKNOWN', geoJSON, function(err, results){
+                console.log(results);
                 if (err){
                     res.status(500);
                     res.send(err);

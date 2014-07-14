@@ -298,12 +298,16 @@ define([
             publisher.hideLayer({"layerId": params.layerId});
         },
         showAOILayer: function(params) {
-            context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
-            publisher.showLayer({"layerId": params.layerId + '_aoi'});
+            if(context.sandbox.stateManager.layers[params.layerId + '_aoi']){
+                context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
+                publisher.showLayer({"layerId": params.layerId + '_aoi'});
+            }
         },
         hideAOILayer: function(params) {
-            context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
-            publisher.hideLayer({"layerId": params.layerId + '_aoi'});
+            if(context.sandbox.stateManager.layers[params.layerId + '_aoi']){
+                context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
+                publisher.hideLayer({"layerId": params.layerId + '_aoi'});
+            }
         },
         layerToggleOn: function(params){
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
@@ -314,7 +318,7 @@ define([
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
             $querySnapshot.find('.btn-on').removeClass('btn-primary');
             $querySnapshot.find('.btn-off').addClass('btn-primary');
-        },
+        }
     };
 
     function checkLayerCount() {

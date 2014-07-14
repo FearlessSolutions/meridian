@@ -39,7 +39,7 @@ exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON,
 
         var records = [];
         geoJSON.forEach(function(record){
-            var featureId = uuid.v4();
+            var featureId = record.properties.featureId || uuid.v4();
 
             // Putting in both locations for now, change them later
             record.properties.featureId = featureId;
