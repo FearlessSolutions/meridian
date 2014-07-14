@@ -14,6 +14,15 @@ define([
         init:function(thisContext) {
             context = thisContext;
 
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            context.$('#internalPubsubTesterToggleButton').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
             context.$('#internalPubsubTesterToggleButton').on('click', function(event) {
                 event.preventDefault();
                 context.$('#internalPubsubTesterDialog').dialog('toggle');

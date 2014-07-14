@@ -24,7 +24,14 @@ define([
             $maxLat = context.$('.query-form #query-location-maxLat');
 
 
-            $queryButton.tooltip();
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            $queryButton.tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
 
             context.$('.show-query').click(function(event) {
                 event.preventDefault();

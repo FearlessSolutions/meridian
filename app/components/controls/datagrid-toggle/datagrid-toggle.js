@@ -1,12 +1,25 @@
 define([
     './datagrid-toggle-publisher',
+    'bootstrap'
 ], function (publisher) {
-    var context;
+    var context,
+        $dataGridToggleButton;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            context.$('#dataGridToggleButton').on('click', function(event) {
+            $dataGridToggleButton = context.$('#dataGridToggleButton');
+
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            $dataGridToggleButton.tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
+            $dataGridToggleButton.on('click', function(event) {
                 event.preventDefault();
                 var validDataFound = false;
 
@@ -35,7 +48,7 @@ define([
 
         },
         clear: function(){
-            context.$('#dataGridToggleButton').removeClass('active');
+            $dataGridToggleButton.removeClass('active');
         }
     };
 

@@ -45,7 +45,11 @@ define([
                 //destroy old tooltip and then add new information of the new value selected.
                 $toggle.tooltip('destroy');
                 $toggle.tooltip({
-                    'title': $this.find('.bs-tooltip').attr('data-title')
+                    'title': $this.find('.bs-tooltip').attr('data-title'),
+                    "container": "body",
+                    "delay": {
+                        "show": 500
+                    }
                 });
             });
 
@@ -68,11 +72,21 @@ define([
 
             //start tooltips for the values inside the dropdown
             context.$('.img-rounded').tooltip({
-                "container": "body"
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
             });
-            //start the tooltip for the selected image.
+
+            //Activate bootstrap tooltip for the selected image. 
+            //Specify container to make the tooltip appear in one line.
             //FF doesn't like tooltips inside buttons, so the entire button has the tooltip information. 
-            $toggle.tooltip();
+            $toggle.tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
             
             //Toggle menu on hover
             $basemapGallery.hover(

@@ -7,14 +7,25 @@ define([
 
     var context,
         MENU_DESIGNATION = 'support-dialog',
-        $SupportDialog;
+        $SupportDialog,
+        $supportButton;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
             $supportDialog = context.$('#SupportDialog');
+            $supportButton = context.$('#support');
 
-            context.$('#support').on('click', function(event) {
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            $supportButton.tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
+            $supportButton.on('click', function(event) {
                 event.preventDefault();
                 $supportDialog.dialog('toggle');
             });
@@ -24,7 +35,7 @@ define([
             });
 
             context.$('#tour').on('click', function(event) {
-                context.$('#support').trigger('click');
+                $supportButton.trigger('click');
                 bootstro.start('.bootstro');
             });
 
