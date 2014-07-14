@@ -6,26 +6,23 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args); 
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
         },
-        publishOpening: function(args){
-            context.sandbox.emit('menu.opening', args);
-        },
-        getExtent: function(args) {
-            context.sandbox.emit('map.get.extent', args);
+        publishOpening: function(params){
+            context.sandbox.emit('menu.opening', params);
         },
         drawBBox: function() {
-            context.sandbox.emit('map.draw.bbox.start');
+            context.sandbox.emit('map.draw.start');
         },
         removeBBox: function() {
-            context.sandbox.emit('map.draw.bbox.remove');
+            context.sandbox.emit('map.draw.clear');
         },
-        executeQuery: function(args) {
-            context.sandbox.emit('query.execute', args);
+        executeQuery: function(params) {
+            context.sandbox.emit('query.execute', params);
         },
         clear: function(){
-            context.sandbox.emit("system.clear");
+            context.sandbox.emit("data.clear.all");
         }
     };
 

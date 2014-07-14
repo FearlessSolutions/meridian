@@ -105,9 +105,7 @@ define([
             var dropdownHeightPercent = parseInt(dropdownMaxHeight.replace('%', ''), 10) / 100;
             dropdownMaxHeight = pageHeight * dropdownHeightPercent;
         } else {
-            console.warn('Basemap Gallery Dropdown Max Height not defined');
             dropdownMaxHeight = dropdownMaxHeight;
-        
             return;
         }
 

@@ -183,9 +183,9 @@ OpenLayers.Class = function() {
         function(){ P.prototype.initialize.apply(this, arguments); };
 
     if (len > 1) {
-        var newArgs = [C, P].concat(
+        var newparams = [C, P].concat(
                 Array.prototype.slice.call(arguments).slice(1, len-1), F);
-        OpenLayers.inherit.apply(null, newArgs);
+        OpenLayers.inherit.apply(null, newparams);
     } else {
         C.prototype = F;
     }
@@ -367,7 +367,7 @@ OpenLayers.String = {
      * context - {Object} An optional object with properties corresponding
      *     to the tokens in the format string.  If no context is sent, the
      *     window object will be used.
-     * args - {Array} Optional arguments to pass to any functions found in
+     * params - {Array} Optional arguments to pass to any functions found in
      *     the context.  If a context property is a function, the token
      *     will be replaced by the return from the function called with
      *     these arguments.
@@ -375,7 +375,7 @@ OpenLayers.String = {
      * Returns:
      * {String} A string with tokens replaced from the context object.
      */
-    format: function(template, context, args) {
+    format: function(template, context, params) {
         if(!context) {
             context = window;
         }
@@ -402,8 +402,8 @@ OpenLayers.String = {
             }
 
             if(typeof replacement == "function") {
-                replacement = args ?
-                    replacement.apply(null, args) :
+                replacement = params ?
+                    replacement.apply(null, params) :
                     replacement();
             }
 
@@ -605,14 +605,14 @@ OpenLayers.Function = {
      */
     bind: function(func, object) {
         // create a reference to all arguments past the second one
-        var args = Array.prototype.slice.apply(arguments, [2]);
+        var params = Array.prototype.slice.apply(arguments, [2]);
         return function() {
             // Push on any additional arguments from the actual function call.
             // These will come after those sent to the bind call.
-            var newArgs = args.concat(
+            var newparams = params.concat(
                 Array.prototype.slice.apply(arguments, [0])
             );
-            return func.apply(object, newArgs);
+            return func.apply(object, newparams);
         };
     },
     
@@ -3501,7 +3501,7 @@ OpenLayers.Util.destinationVincenty = function(lonlat, brng, dist) {
  * options - {Object} Additional options. Optional.
  *
  * Valid options:
- *   splitArgs - {Boolean} Split comma delimited params into arrays? Default is
+ *   splitparams - {Boolean} Split comma delimited params into arrays? Default is
  *       true.
  * 
  * Returns:
@@ -3544,7 +3544,7 @@ OpenLayers.Util.getParameters = function(url, options) {
             }
             
             // follow OGC convention of comma delimited values
-            if (options.splitArgs !== false) {
+            if (options.splitparams !== false) {
                 value = value.split(",");
             }
 
@@ -3940,30 +3940,30 @@ OpenLayers.Util.isEquivalentUrl = function(url1, url2, options) {
         ignoreCase: true,
         ignorePort80: true,
         ignoreHash: true,
-        splitArgs: false
+        splitparams: false
     });
 
     var urlObj1 = OpenLayers.Util.createUrlObject(url1, options);
     var urlObj2 = OpenLayers.Util.createUrlObject(url2, options);
 
-    //compare all keys except for "args" (treated below)
+    //compare all keys except for "params" (treated below)
     for(var key in urlObj1) {
-        if(key !== "args") {
+        if(key !== "params") {
             if(urlObj1[key] != urlObj2[key]) {
                 return false;
             }
         }
     }
 
-    // compare search args - irrespective of order
-    for(var key in urlObj1.args) {
-        if(urlObj1.args[key] != urlObj2.args[key]) {
+    // compare search params - irrespective of order
+    for(var key in urlObj1.params) {
+        if(urlObj1.params[key] != urlObj2.params[key]) {
             return false;
         }
-        delete urlObj2.args[key];
+        delete urlObj2.params[key];
     }
-    // urlObj2 shouldn't have any args left
-    for(var key in urlObj2.args) {
+    // urlObj2 shouldn't have any params left
+    for(var key in urlObj2.params) {
         return false;
     }
     
@@ -3981,11 +3981,11 @@ OpenLayers.Util.isEquivalentUrl = function(url1, url2, options) {
  *   ignoreCase - {Boolean} lowercase url,
  *   ignorePort80 - {Boolean} don't include explicit port if port is 80,
  *   ignoreHash - {Boolean} Don't include part of url after the hash (#).
- *   splitArgs - {Boolean} Split comma delimited params into arrays? Default is
+ *   splitparams - {Boolean} Split comma delimited params into arrays? Default is
  *       true.
  * 
  * Returns:
- * {Object} An object with separate url, a, port, host, and args parsed out 
+ * {Object} An object with separate url, a, port, host, and params parsed out 
  *          and ready for comparison
  */
 OpenLayers.Util.createUrlObject = function(url, options) {
@@ -4032,14 +4032,14 @@ OpenLayers.Util.createUrlObject = function(url, options) {
     //hash
     urlObject.hash = (options.ignoreHash || a.hash === "#") ? "" : a.hash;  
     
-    //args
+    //params
     var queryString = a.search;
     if (!queryString) {
         var qMark = url.indexOf("?");
         queryString = (qMark != -1) ? url.substr(qMark) : "";
     }
-    urlObject.args = OpenLayers.Util.getParameters(queryString,
-            {splitArgs: options.splitArgs});
+    urlObject.params = OpenLayers.Util.getParameters(queryString,
+            {splitparams: options.splitparams});
 
     // pathname
     //
@@ -10364,12 +10364,12 @@ OpenLayers.Handler = OpenLayers.Class({
     * Parameters:
     * name - {String} The key for the callback that is one of the properties
     *     of the handler's callbacks object.
-    * args - {Array(*)} An array of arguments (any type) with which to call 
+    * params - {Array(*)} An array of arguments (any type) with which to call 
     *     the callback (defined by the control).
     */
-    callback: function (name, args) {
+    callback: function (name, params) {
         if (name && this.callbacks[name]) {
-            this.callbacks[name].apply(this.control, args);
+            this.callbacks[name].apply(this.control, params);
         }
     },
 
@@ -15981,7 +15981,7 @@ OpenLayers.Format.XML = OpenLayers.Class(OpenLayers.Format, {
     /**
      * Method: readNode
      * Shorthand for applying one of the named readers given the node
-     *     namespace and local name.  Readers take two args (node, obj) and
+     *     namespace and local name.  Readers take two params (node, obj) and
      *     generally extend or modify the second.
      *
      * Parameters:
@@ -24051,7 +24051,7 @@ OpenLayers.Format.GML.Base = OpenLayers.Class(OpenLayers.Format.XML, {
     /**
      * Method: readNode
      * Shorthand for applying one of the named readers given the node
-     *     namespace and local name.  Readers take two args (node, obj) and
+     *     namespace and local name.  Readers take two params (node, obj) and
      *     generally extend or modify the second.
      *
      * Parameters:
@@ -25744,7 +25744,7 @@ OpenLayers.Format.WFST.v1_1_0 = OpenLayers.Class(
     /**
      * Method: readNode
      * Shorthand for applying one of the named readers given the node
-     *     namespace and local name.  Readers take two args (node, obj) and
+     *     namespace and local name.  Readers take two params (node, obj) and
      *     generally extend or modify the second.
      *
      * Parameters:
@@ -39265,8 +39265,8 @@ OpenLayers.Layer.Bing = OpenLayers.Class(OpenLayers.Layer.XYZ, {
         }, options);
         var name = options.name || "Bing " + (options.type || this.type);
         
-        var newArgs = [name, null, options];
-        OpenLayers.Layer.XYZ.prototype.initialize.apply(this, newArgs);
+        var newparams = [name, null, options];
+        OpenLayers.Layer.XYZ.prototype.initialize.apply(this, newparams);
         this.tileOptions = OpenLayers.Util.extend({
             crossOriginKeyword: 'anonymous'
         }, this.options.tileOptions);
@@ -42171,7 +42171,7 @@ OpenLayers.Format.WFST.v1_0_0 = OpenLayers.Class(
     /**
      * Method: readNode
      * Shorthand for applying one of the named readers given the node
-     *     namespace and local name.  Readers take two args (node, obj) and
+     *     namespace and local name.  Readers take two params (node, obj) and
      *     generally extend or modify the second.
      *
      * Parameters:
@@ -43449,21 +43449,21 @@ OpenLayers.Control.ArgParser = OpenLayers.Class(OpenLayers.Control, {
         }
         if (i == this.map.controls.length) {
 
-            var args = this.getParameters();
+            var params = this.getParameters();
             // Be careful to set layer first, to not trigger unnecessary layer loads
-            if (args.layers) {
-                this.layers = args.layers;
+            if (params.layers) {
+                this.layers = params.layers;
     
                 // when we add a new layer, set its visibility 
                 this.map.events.register('addlayer', this, 
                                          this.configureLayers);
                 this.configureLayers();
             }
-            if (args.lat && args.lon) {
-                this.center = new OpenLayers.LonLat(parseFloat(args.lon),
-                                                    parseFloat(args.lat));
-                if (args.zoom) {
-                    this.zoom = parseFloat(args.zoom);
+            if (params.lat && params.lon) {
+                this.center = new OpenLayers.LonLat(parseFloat(params.lon),
+                                                    parseFloat(params.lat));
+                if (params.zoom) {
+                    this.zoom = parseFloat(params.zoom);
                 }
     
                 // when we add a new baselayer to see when we can set the center
@@ -49206,7 +49206,7 @@ OpenLayers.Handler.Feature = OpenLayers.Class(OpenLayers.Handler, {
      * Parameters:
      * type - {String}
      */
-    triggerCallback: function(type, mode, args) {
+    triggerCallback: function(type, mode, params) {
         var key = this.EVENTMAP[type][mode];
         if(key) {
             if(type == 'click' && this.up && this.down) {
@@ -49216,7 +49216,7 @@ OpenLayers.Handler.Feature = OpenLayers.Class(OpenLayers.Handler, {
                     Math.pow(this.up.y - this.down.y, 2)
                 );
                 if(dpx <= this.clickTolerance) {
-                    this.callback(key, args);
+                    this.callback(key, params);
                 }
                 // we're done with this set of events now: clear the cached
                 // positions so we can't trip over them later (this can occur
@@ -49224,7 +49224,7 @@ OpenLayers.Handler.Feature = OpenLayers.Class(OpenLayers.Handler, {
                 // but we still get the click)
                 this.up = this.down = null;
             } else {
-                this.callback(key, args);
+                this.callback(key, params);
             }
         }
     },
@@ -53698,21 +53698,21 @@ OpenLayers.Kinetic = OpenLayers.Class({
             var x = p * fx;
             var y = p * fy;
 
-            var args = {};
-            args.end = false;
+            var params = {};
+            params.end = false;
             var v = -this.deceleration * t + v0;
 
             if (v <= 0) {
                 OpenLayers.Animation.stop(this.timerId);
                 this.timerId = null;
-                args.end = true;
+                params.end = true;
             }
 
-            args.x = x - lastX;
-            args.y = y - lastY;
+            params.x = x - lastX;
+            params.y = y - lastY;
             lastX = x;
             lastY = y;
-            callback(args.x, args.y, args.end);
+            callback(params.x, params.y, params.end);
         };
 
         this.timerId = OpenLayers.Animation.start(
@@ -67296,10 +67296,10 @@ OpenLayers.Handler.RegularPolygon = OpenLayers.Class(OpenLayers.Handler.Drag, {
      * Parameters:
      * name - {String} The key for the callback that is one of the properties
      *     of the handler's callbacks object.
-     * args - {Array} An array of arguments with which to call the callback
+     * params - {Array} An array of arguments with which to call the callback
      *     (defined by the control).
      */
-    callback: function (name, args) {
+    callback: function (name, params) {
         // override the callback method to always send the polygon geometry
         if (this.callbacks[name]) {
             this.callbacks[name].apply(this.control,
@@ -82856,7 +82856,7 @@ OpenLayers.Control.Split = OpenLayers.Class(OpenLayers.Control, {
                                             // handle parts that result from source splitting
                                             if(parts.length > 1) {
                                                 // splice in new source parts
-                                                parts.unshift(j, 1); // add args for splice below
+                                                parts.unshift(j, 1); // add params for splice below
                                                 Array.prototype.splice.apply(sourceParts, parts);
                                                 j += parts.length - 3;
                                             }
@@ -82865,7 +82865,7 @@ OpenLayers.Control.Split = OpenLayers.Class(OpenLayers.Control, {
                                         // handle parts that result from target splitting
                                         if(results.length > 1) {
                                             // splice in new target parts
-                                            results.unshift(k, 1); // add args for splice below
+                                            results.unshift(k, 1); // add params for splice below
                                             Array.prototype.splice.apply(targetParts, results);
                                             k += results.length - 3;
                                         }
@@ -83209,8 +83209,8 @@ OpenLayers.Layer.WMTS = OpenLayers.Class(OpenLayers.Layer.Grid, {
         }
 
         config.params = OpenLayers.Util.upperCaseObject(config.params);
-        var args = [config.name, config.url, config.params, config];
-        OpenLayers.Layer.Grid.prototype.initialize.apply(this, args);
+        var params = [config.name, config.url, config.params, config];
+        OpenLayers.Layer.Grid.prototype.initialize.apply(this, params);
         
 
         // determine format suffix (for REST)

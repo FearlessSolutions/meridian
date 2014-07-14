@@ -9,7 +9,7 @@ define([
             context = thisContext;
 
             // The 'on' function subscribes to the specified channel and calls dummyFunction
-            // If there are args passed along the channel, then those are passed to dummyFunction
+            // If there are params passed along the channel, then those are passed to dummyFunction
             context.sandbox.on('map.zoom.in', boilerplate.dummyFunction);
         }
     };	

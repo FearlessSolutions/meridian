@@ -9,8 +9,7 @@ define([
         dataByName = {},
         $locator,
         $locatorButton,
-        $locatorInput,
-        COORDINATE_REGEX = /(^-?)\d+(\.\d+)?,[\s-]*-?\d+(\.\d+)?\s*$/; //Useful regex
+        $locatorInput;
 
     var exposed = {
         init: function(thisContext) {
@@ -24,20 +23,14 @@ define([
                 var input = $locatorInput.val();
                 event.preventDefault();
 
-                if(input.match(COORDINATE_REGEX)) { 
-                    var coordinates = input.split(',');
-                    coordinates = {
-                        lon: parseFloat(coordinates[0], 10),
-                        lat: parseFloat(coordinates[1], 10)
-                    };
-
-                    exposed.markLocation(coordinates);
-                }else if(selectedLocation === null) {/*Extra precaution, button should be disabled anyways.*/
+                if(selectedLocation === null) {/*Extra precaution, button should be disabled anyways.*/
                     publisher.publishMessage({
-                        messageType: 'warning',
-                        messageTitle: 'Search',
-                        messageText: 'No valid location selected. Please try again.'
+                        "messageType": 'warning',
+                        "messageTitle": 'Search',
+                        "messageText": 'No valid location selected. Please try again.'
                     });
+                }else if(selectedLocation.lat) { //It is coordinates
+                    exposed.markLocation(selectedLocation);
                 }else {
                     exposed.goToLocation();
                 }
@@ -45,24 +38,7 @@ define([
 
             $locatorInput.on('keydown', function(e) {
                 if (e.keyCode === 13) {
-                    var input = $locatorInput.val();
-                    if(input.match(COORDINATE_REGEX)) { 
-                        var coordinates = input.split(',');
-                        coordinates = {
-                            lon: parseFloat(coordinates[0], 10),
-                            lat: parseFloat(coordinates[1], 10) 
-                        };
-
-                        exposed.markLocation(coordinates);
-                    }else if(selectedLocation === null) {
-                        publisher.publishMessage({
-                            messageType: 'warning',
-                            messageTitle: 'Search',
-                            messageText: 'No valid location selected. Please try again.'
-                        });
-                    }else {
-                        exposed.goToLocation();
-                    }
+                    $locatorButton.click();
                 }
             });
 
@@ -90,9 +66,12 @@ define([
 
                             //Handle both coordinates and places
                             if(query.match(/^-/) || query.match(/^-?\d/)) {
-                                if(query.match(COORDINATE_REGEX)) { 
-                                    $locatorButton.attr('disabled', false);
-                                }
+                                context.sandbox.locator.queryCoordinates(query, function(coordinates){
+                                    if(coordinates){
+                                        selectedLocation = coordinates;
+                                        $locatorButton.attr('disabled', false);
+                                    }
+                                });
                             }else { 
                                 publisher.publishMessage({
                                     messageType: 'info',
@@ -155,7 +134,10 @@ define([
             $locatorButton.attr('disabled',true);
         },//end of goToLocation
         markLocation: function(coordinates) {
-            publisher.markLocation(context.sandbox.utils.createGeoJson(coordinates));
+            publisher.markLocation({
+                "layerId": "static_geolocator",
+                "data": [context.sandbox.utils.createGeoJson(coordinates)]
+            });
             publisher.setMapCenter(coordinates);
         },
         clear: function() {

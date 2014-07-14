@@ -8,7 +8,7 @@ define([
         init: function(thisContext){
             context = thisContext;
             context.sandbox.on('notification.open', notificationModal.open);
-            context.sandbox.on('system.clear', notificationModal.clear);
+            context.sandbox.on('data.clear.all', notificationModal.clear);
         }
     };	
 

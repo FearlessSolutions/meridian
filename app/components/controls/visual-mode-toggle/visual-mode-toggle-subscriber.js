@@ -8,7 +8,7 @@ define([
         init: function(thisContext) {
             context = thisContext;
             context.sandbox.on('notification.confirm', visualModeToggle.setFeatureMode);
-            context.sandbox.on('system.clear', visualModeToggle.clear);
+            context.sandbox.on('data.clear.all', visualModeToggle.clear);
         }
     };
 

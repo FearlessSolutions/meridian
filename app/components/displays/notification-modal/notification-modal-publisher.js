@@ -7,8 +7,8 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishConfirmation: function(args) {
-            context.sandbox.emit('notification.confirm', args); 
+        publishConfirmation: function(params) {
+            context.sandbox.emit('notification.confirm', params); 
         }
     };
 

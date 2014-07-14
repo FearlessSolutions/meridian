@@ -61,7 +61,7 @@ define([
 
     function checkLayerCount() {
         if(context.sandbox.stateManager.layers) {
-            return _.size(context.sandbox.stateManager.layers);
+            return _.size(context.sandbox.dataStorage.datasets);
         } else {
             return 0;
         }
