@@ -42,37 +42,10 @@ define([
 		}
     };
 
-    var emitChannels= {
-        "map.feature.plot": function(message){
-        },
-        "map.feature.plot.url": function(message){
-            //TODO don't support?
-        },
-        "map.feature.unplot": function(message){
-            //TODO no remove feature yet
-        },
-        "map.feature.hide": function(message){
-            //TODO no hide single feature yet
-        },
-        "map.feature.show": function(message){
-            //TODO no show single feature yet
-        },
-        "map.feature.selected": function(message){
-            //TODO no selection yet
-        },
-        "map.feature.deselected": function(message){
-            //TODO no deselection yet
-        },
-        "map.feature.update": function(message){
-            //TODO don't support?
-        }
-    };
-
 	var exposed = {
-		init: function(thisContext, layerId, parentEmit) {
+		init: function(thisContext, layerId) {
 			context = thisContext;
 			defaultLayerId = layerId;
-            emit = parentEmit;
             activeAJAXs = [];
             publisher.init(context);
             subscriber.init(context, exposed);
@@ -88,21 +61,6 @@ define([
             emit(channel, message);
         }
 	};
-
-    /*
-     publisher.createLayer({
-     "layerId": params.queryId,
-     "name": params.name,
-     "selectable": true,
-     "coords": {
-     "minLat": params.minLat,
-     "minLon": params.minLon,
-     "maxLat": params.maxLat,
-     "maxLon": params.maxLon
-     }
-     });
-     */
-
 
     function plotGeoJSON(message){
         var postOptions,
@@ -143,8 +101,6 @@ define([
             .done(function(data){
                 var newData = [];
 
-                cleanAJAX();
-
                 if(data){
 
                     message.feature.features.forEach(function(feature, index){
@@ -177,96 +133,16 @@ define([
                 }
 
             }).error(function(){
+                publisher.publishPlotError({"layerId": layerId});
+
                 //TODO error
             });
 
-        activeAJAXs.push(newAJAX);
-
-
-        /*
+        context.sandbox.ajax.addActiveAJAX(newAJAX, layerId);
 
         //TODO collection-wide style map?
         //TODO modify format more?
-        message.layerId = message.overlayId || defaultLayerId;
-        message.name = message.name || '';
-        if(message.overlayId ){
-            message.feature.overlayId = message.overlayId || defaultLayerId;
-            message.feature.name = message.name;
-            message.feature.zoom = message.zoom;
-            message.feature.format = message.format;
-            message = message.feature;
-        }
 
-        message.overlayId = message.overlayId || message.origin || defaultLayerId;
-
-        if(!context.sandbox.dataStorage.datasets[message.overlayId]) {
-            context.sandbox.dataStorage.datasets[message.overlayId] = new Backbone.Collection();
-        }
-
-        else if(!message.format || message.format === 'geojson'){
-            //Add to and adjust properties; Add to dataset
-            message.features.forEach(function(feature){
-                if(feature.properties
-                    && feature.properties.style
-                    && feature.properties.style.iconStyle
-                    && feature.properties.style.iconStyle.url){
-                    feature.properties.icon = feature.properties.style.iconStyle.url;
-                    feature.properties.height = 25;
-                    feature.properties.width = 25;
-                }else{
-                    var icon = context.sandbox.mapConfiguration.markerIcons.default;
-
-                    feature.properties.icon = icon.icon; //We only use icons, so clean up everything
-                    feature.properties.height = icon.height;
-                    feature.properties.width = icon.width;
-                }
-
-                var newValue = {};
-                feature.properties.dataService = 'cmapi';
-                context.sandbox.utils.each(feature.properties, function(k, v){
-                    newValue[k] = v;
-                });
-                newValue.id = feature.properties.featureId || feature.id;
-
-                context.sandbox.dataStorage.datasets[message.overlayId].add(newValue);
-            });
-        }else {
-        }
-
-        publisher.publishPlotFeature(message);
-        */
-    }
-
-    function stopAllAJAX(){
-        activeAJAXs.forEach(function(ajax){
-            ajax.abort();
-        });
-
-        activeAJAXs = [];
-    }
-
-    /**
-     * Stop a query's ajax call,
-     * This function requires that ajax.queryId was set when the query was created.
-     */
-    function abortQuery(params){
-        activeAJAXs.forEach(function(ajax, index){
-            if(ajax.queryId === params.queryId){ //This was set in queryData
-                ajax.abort();
-                activeAJAXs.splice(index, 1);
-            }
-        });
-    }
-
-    /**
-     * Clean up all finished ajax calls from the activeAJAXs array
-     */
-    function cleanAJAX(){
-        activeAJAXs.forEach(function(ajax, index){
-            if(ajax.readyState === 4){ //4 is "complete" status
-                activeAJAXs.splice(index, 1);
-            }
-        });
     }
 
     return exposed;

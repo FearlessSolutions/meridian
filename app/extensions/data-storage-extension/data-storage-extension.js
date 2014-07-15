@@ -38,12 +38,14 @@ define([
                 getFeatureById: function(params, callback) {
                     var featureId = params.featureId;
                     var feature = {};
-                    $.ajax({
+                    var ajax = $.ajax({
                         type: "GET",
                         url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + featureId
                     }).done(function(data){
                         callback(data);
                     });
+
+                    return ajax;
                 }
 			};
 

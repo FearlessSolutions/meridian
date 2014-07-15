@@ -8,7 +8,7 @@ define([
             context = thisContext;
             parent = thisParent;
 
-            context.sandbox.on('map.view.status', parent.emitViewStatus);
+//            context.sandbox.on('map.view.status', parent.emitViewStatus);
         }
     };	
 

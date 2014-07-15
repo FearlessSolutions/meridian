@@ -57,7 +57,7 @@ define([
         		//error?
         	}
         }
-	}
+	};
 
     return exposed;
 });

@@ -1,3 +1,7 @@
+/**
+ * Points the parent channels to the correct function.
+ * Uses the CMAPI categor
+ */
 define([
     './view/cmapi-view',
     './overlay/cmapi-overlay',
@@ -15,7 +19,7 @@ define([
             feature.init(context, defaultLayerId, emit);
             overlay.init(context, defaultLayerId, emit);
             status.init(context, defaultLayerId, emit);
-            view.init(context);
+            view.init(context, defaultLayerId);
 
             context.sandbox.external.onPostMessage(receive);
 

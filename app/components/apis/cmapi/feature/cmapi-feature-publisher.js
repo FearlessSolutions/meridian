@@ -15,27 +15,6 @@ define([
         publishPlotError: function(params) {
             context.sandbox.emit('data.error', params);
         },
-        publishPlotUrl: function(message){
-            //TODO don't support?
-        },
-        publishUnplotFeature: function(message){
-            //TODO no remove feature yet
-        },
-        publishHideFeature: function(message){
-            //TODO no hide single feature yet
-        },
-        publishShowFeature: function(message){
-            //TODO no show single feature yet
-        },
-        publishSelectedFeature: function(message){
-            //TODO no selection yet
-        },
-        publishDeselectedFeature: function(message){
-            //TODO no deselection yet
-        },
-        publishUpdateFeature: function(message){
-            //TODO don't support?
-        },
         publishCreateLayer: function(args) {
             context.sandbox.emit('map.layer.create', args);
         }

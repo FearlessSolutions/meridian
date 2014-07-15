@@ -1,6 +1,6 @@
 define([
 	'./cmapi-view-publisher'
-], function (publisher) {
+], function (publisher, defaultLayerId) {
 	var context;
 
     var receiveChannels= {
@@ -18,16 +18,49 @@ define([
             }
 		},
 		"map.view.center.overlay": function(message){
-            //TODO
+            var params = {};
+
+            if(message === ''){
+                params = {
+                    "layerId": defaultLayerId,
+                    "zoom": true
+                };
+            }else {
+                params.layerId = message.overlayId || defaultLayerId;
+                params.zoom = message.zoom || true;
+            }
+            publisher.publishZoomToLayer(params);
 		},
 		"map.view.center.feature": function(message){
-            //TODO
+            var newAjax;
+            if(message === '' || !message.featureId){
+                //TODO error
+                return;
+            }
+
+            //Get feature from server, then go to it
+            newAjax = context.sandbox.dataStorage.getFeatureById(message, function(data){
+                var extent;
+
+                //If the feature is a point, set center; else, zoom to extent
+                if(data.geometry.type === "Point"){
+                    publisher.publishSetCenter({
+                        "lon": data.geometry.coordinates[1],
+                        "lat": data.geometry.coordinates[0]
+                    });
+                }else{ //TODO test
+                    extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
+                    publisher.publishCenterOnBounds(extent);
+                }
+            });
+
+            context.sandbox.ajax.addActiveAJAX(newAjax); //Keep track of current AJAX calls
 		},
-		"map.view.center.location": function(message){ //TODO make sure this is still valid
+		"map.view.center.location": function(message){
 			if('location' in message 
 				&& 'lat' in message.location
 				&& 'lon' in message.location){
-				publisher.publishZoom(message.location);
+				publisher.publishSetCenter(message.location);
 			}else{
 				//Error
 			}
@@ -51,10 +84,7 @@ define([
 
             publisher.publishCenterOnBounds(bounds);
 		},
-		"map.view.clicked": function(message){
-            //This is not supported
-            //TODO remove this?
-		}	
+		"map.view.clicked": function(message){ return; } //This is not supported
     };
 
 	var exposed = {

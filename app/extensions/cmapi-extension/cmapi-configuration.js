@@ -6,7 +6,7 @@ define([
         valid:true
       },
       "map.overlay.remove":{
-        valid: false
+        valid: true
       },
       "map.overlay.hide":{
         valid: true
@@ -14,33 +14,8 @@ define([
       "map.overlay.show":{
         valid: true
       },
-      "map.feature.plot":{
-        "valid": true,
-        "sample": {
-           "overlayId":"2d882141-0d9e-59d4-20bb-58e6d0460699.1",
-           "featureId":"example.geojson.1",
-           "format":"geojson",
-           "feature":{
-              "type":"FeatureCollection",
-              "features":[
-                 {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [0.0, 10.0]
-                    },
-                    "properties": {
-                       "style":{
-                          "fillColor":"red"
-                       }
-                    }
-                 }
-              ]
-           },
-           "name":"Sample GeoJSON Feature Collection",
-           "zoom":"true",
-           "readOnly":"false"
-        }
+      "map.feature.plot": {
+          "valid": true
       },
       /*"map.feature.plot.url":{
        "valid": false
@@ -67,22 +42,22 @@ define([
         "valid": true
       },
       "map.view.center.overlay":{
-        "valid": false
+        "valid": true
       },
       "map.view.center.feature":{
-        "valid": false
+        "valid": true
       },
       "map.view.center.location":{
         "valid": true
       },
       "map.view.center.bounds":{
-        "valid": false
+        "valid": true
       },
       "map.view.clicked":{
         "valid": false
       },
       "map.status.request":{
-        "valid": true
+        "valid": false
       }
     },
     "publishChannels":{
@@ -98,15 +73,7 @@ define([
       "map.overlay.show":{
        "valid": false
       },
-      "map.feature.plot":{
-       "valid": false
-      },
-      "map.feature.plot.url":{
-       "valid": false
-      },
-      "map.feature.unplot":{
-       "valid": false
-      },
+
       "map.feature.hide":{
        "valid": false
       },
@@ -119,29 +86,11 @@ define([
       "map.feature.deselected":{
        "valid": false
       },
-      "map.feature.update":{
-       "valid": false
-      },
-      "map.view.zoom":{
-       "valid": false
-      },
-      "map.view.center.overlay":{
-       "valid": false
-      },
-      "map.view.center.feature":{
-       "valid": false
-      },
-      "map.view.center.location":{
-       "valid": false
-      },
-      "map.view.center.bounds":{
-       "valid": false
-      },
       "map.view.clicked":{
        "valid": false
       },*/
       "map.status.view":{
-          "valid": true
+          "valid": false
       },
       "map.status.format":{
           "valid": true

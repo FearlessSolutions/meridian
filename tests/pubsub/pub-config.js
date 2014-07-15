@@ -6,7 +6,13 @@ define([
                 valid:true,
                 sample: {
                     "name": "Test Name 1",
-                    "overlayId": "testOverlayId1"
+                    "overlayId": "testOverlayId1",
+                    "coords": {
+                        "minLat": "7.602108",
+                        "minLon": "-13.908691",
+                        "maxLat": "11.587669",
+                        "maxLon": "-8.283691"
+                    }
                 }
             },
             "map.overlay.remove":{
@@ -57,10 +63,16 @@ define([
                 "valid": true
             },
             "map.view.center.overlay":{
-                "valid": false
+                "valid": true,
+                "sample": {
+                    "overlayId": "testOverlayId1"
+                }
             },
             "map.view.center.feature":{
-                "valid": false
+                "valid": true,
+                "sample": {
+                    "featureId": "f1"
+                }
             },
             "map.view.center.location":{
                 "valid": true,
@@ -69,8 +81,7 @@ define([
                         "lat": 30,
                         "lon": 30
 
-                    },
-                    "zoom": 3000000
+                    }
                 }
             },
             "map.view.center.bounds":{ //TODO support zoom, or just best fit?
@@ -86,8 +97,7 @@ define([
                             "lon": -79
                         }
 
-                    },
-                    "zoom": 3000000
+                    }
                 }
             }
         }

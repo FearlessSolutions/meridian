@@ -1,9 +1,12 @@
+/**
+ * Handles all of the CMAPI status channels
+ * TODO needs to actually be implemented
+ */
 define([
 	'./cmapi-status-publisher',	
 	'./cmapi-status-subscriber'
 ], function (publisher, subscriber) {
 	var context,
-		defaultLayerId,
         emit;
 
     var receiveChannels= {
@@ -25,29 +28,30 @@ define([
 
     var emitChannels= {
         "map.status.view": function(){
-            publisher.getStatus(); //Will call exposed.emitViewStatus when replied to
+//            publisher.getStatus(); //Will call exposed.emitViewStatus when replied to
         },
         "map.status.format": function(){
             var message = {
-                formats: ['geojson', 'kml']
+                formats: ['geojson']
             };
             emit('map.status.format', message);
         },
         "map.status.about": function(){
-            var message = {
-                "version": "2.0",
-                "type": "map",
-                "widgetName": "Meridian-Geo",
-                "extensions": []
-            };
-            emit('map.status.about', message);        
+//            var message = {
+//                "version": "2.0",
+//                "type": "map",
+//                "widgetName": "Meridian-Geo",
+//                "extensions": []
+//            };
+//            emit('map.status.about', message);
         },
         "map.status.selected": function(){
-            var message = {
-                overlayId: '',
-                selectedFeatures: []                
-            };
-            emit('map.status.selected', message);        }
+//            var message = {
+//                overlayId: '',
+//                selectedFeatures: []
+//            };
+//            emit('map.status.selected', message);
+        }
     };
 
 	var exposed = {
@@ -68,23 +72,23 @@ define([
             emit(channel, message);
         },
         emitViewStatus: function(params){
-            var message = {
-                bounds:{
-                    southWest:{
-                        lat: params.bottom,
-                        lon: params.left
-                    },
-                    northEast:{
-                        lat: params.top,
-                        lon: params.right
-                    }
-                },
-                center: params.center,
-                range: 0 //meters
-            };
-            emit('map.status.view', message);
+//            var message = {
+//                bounds:{
+//                    southWest:{
+//                        lat: params.bottom,
+//                        lon: params.left
+//                    },
+//                    northEast:{
+//                        lat: params.top,
+//                        lon: params.right
+//                    }
+//                },
+//                center: params.center,
+//                range: 0 //meters
+//            };
+//            emit('map.status.view', message);
         }
-	}
+	};
 
     return exposed;
 
