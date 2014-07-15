@@ -45,7 +45,7 @@ define([
                 //destroy old tooltip and then add new information of the new value selected.
                 $toggle.tooltip('destroy');
                 $toggle.tooltip({
-                    'title': $this.find('.bs-tooltip').attr('data-title'),
+                    'title': $this.find('.img-rounded').attr('data-title'),
                     "container": "body",
                     "delay": {
                         "show": 500
