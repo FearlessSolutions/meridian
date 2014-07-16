@@ -7,7 +7,7 @@ define([
 
     var context,
         MENU_DESIGNATION = 'support-dialog',
-        $SupportDialog,
+        $supportDialog,
         $supportButton;
 
     var exposed = {
