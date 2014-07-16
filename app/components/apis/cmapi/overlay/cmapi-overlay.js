@@ -4,6 +4,7 @@ define([
 ], function (publisher, subscriber) {
 	var context,
 		defaultLayerId,
+        sendError,
         DEFAULT_SELECTABLE = true;
 
     var receiveChannels= {
@@ -19,8 +20,8 @@ define([
             }
 
             if(context.sandbox.dataStorage.datasets[message.layerId]){
+                sendError('map.overlay.create', message, 'Layer already made');
                 return; //Layer already made; ignore this request
-                //TODO call error?
             }else{
                 context.sandbox.dataStorage.datasets[message.layerId] = new Backbone.Collection();
                 publisher.publishCreateLayer(message);
@@ -39,14 +40,15 @@ define([
 			publisher.publishShowLayer(message);
 		},
 		"map.overlay.update": function(message){
-			//TODO don't support?
-		}
+            sendError('map.overlay.update', message, 'Channel not supported');
+        }
     };
 
 	var exposed = {
-		init: function(thisContext, layerId) {
+		init: function(thisContext, layerId, errorChannel) {
 			context = thisContext;
 			defaultLayerId = layerId;
+            sendError = errorChannel;
             publisher.init(context);
             subscriber.init(context, exposed);
         },

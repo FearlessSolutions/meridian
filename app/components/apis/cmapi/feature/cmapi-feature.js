@@ -4,8 +4,8 @@ define([
 ], function (publisher, subscriber) {
 	var context,
 		defaultLayerId,
-        emit,
-        activeAJAXs;
+        sendError,
+        emit;
 
     var receiveChannels= {
 		"map.feature.plot": function(message){
@@ -14,39 +14,39 @@ define([
             }else if(!message.format || message.format === 'geojson'){
                 plotGeoJSON(message);
             }else if(message.format === 'kml'){
-                //TODO error for now
+                sendError('map.feature.unplot', message, 'KML is not currently supported');
             }else{
-                //TODO error
+                sendError('map.feature.unplot', message, 'Must be in geoJSON format');
             }
 		},
 		"map.feature.plot.url": function(message){
-			//TODO don't support?
+            sendError('map.feature.plot.url', message, 'Channel not supported');
 		},
 		"map.feature.unplot": function(message){
-			//TODO no remove feature yet
+            sendError('map.feature.unplot', message, 'Channel not supported');
 		},
 		"map.feature.hide": function(message){
-			//TODO no hide single feature yet
+            sendError('map.feature.hide', message, 'Channel not supported');
 		},
 		"map.feature.show": function(message){
-			//TODO no show single feature yet
+            sendError('map.feature.show', message, 'Channel not supported');
 		},
 		"map.feature.selected": function(message){
-			//TODO no selection yet
+            sendError('map.feature.selected', message, 'Channel not supported');
 		},
 		"map.feature.deselected": function(message){
-			//TODO no deselection yet
+            sendError('map.feature.deselected', message, 'Channel not supported');
 		},
 		"map.feature.update": function(message){
-			//TODO don't support?
+            sendError('map.feature.update', message, 'Channel not supported');
 		}
     };
 
 	var exposed = {
-		init: function(thisContext, layerId) {
+		init: function(thisContext, layerId, errorChannel) {
 			context = thisContext;
 			defaultLayerId = layerId;
-            activeAJAXs = [];
+            sendError = errorChannel;
             publisher.init(context);
             subscriber.init(context, exposed);
         },
@@ -80,7 +80,6 @@ define([
                 "layerId": layerId,
                 "name": message.name || "",
                 "selectable": message.selectable || true // Default true
-                // TODO add coords prop
             });
         }
 
@@ -96,7 +95,6 @@ define([
             }
         };
 
-        //TODO save to server //TODO keep track of AJAX
         var newAJAX = context.sandbox.utils.ajax(postOptions)
             .done(function(data){
                 var newData = [];
@@ -128,14 +126,14 @@ define([
                     publisher.publishPlotFinish({"layerId": layerId});
                 } else {
                     publisher.publishPlotError({"layerId": layerId});
+                    sendError('map.feature.plot', message, 'No data plotted');
 
-                    //TODO finish messaging
                 }
 
             }).error(function(){
                 publisher.publishPlotError({"layerId": layerId});
+                sendError('map.feature.plot', message, 'Server not available or malformed geoJSON');
 
-                //TODO error
             });
 
         context.sandbox.ajax.addActiveAJAX(newAJAX, layerId);

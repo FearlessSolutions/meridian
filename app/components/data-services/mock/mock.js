@@ -2,14 +2,12 @@ define([
     './mock-publisher'
 ], function(publisher) {
 
-    var context,
-        activeAJAXs;
+    var context;
 
     var exposed = { 
 
         init: function(thisContext) {
             context = thisContext;
-            activeAJAXs = [];
         },
         executeQuery: function(params) {
             // Set a query ID to pass to the server
@@ -42,12 +40,9 @@ define([
 
         },
         stop: function(params){
-            abortQuery({
-                "queryId": params.layerId
-            });
+           //Now handled in the AJAX handler
         },
         clear: function(){
-            stopAllAJAX();
             context.sandbox.dataStorage.clear();
 
         },
@@ -77,8 +72,6 @@ define([
         .done(function(data){
             var layerId,
                 newData = [];
-
-            cleanAJAX();
 
             if (data && data.length > 0){
                 layerId = params.queryId || data[0].properties.queryId;
@@ -143,7 +136,6 @@ define([
                 return;
             }
 
-            cleanAJAX();
             publisher.publishMessage({
                 "messageType": "error",
                 "messageTitle": "Data Service",
@@ -155,43 +147,11 @@ define([
             });
 
             return false;
-        }); 
-
-        newAJAX.queryId = params.queryId;
-        activeAJAXs.push(newAJAX);
-    }
-
-    function stopAllAJAX(){
-        activeAJAXs.forEach(function(ajax){
-            ajax.abort();
         });
 
-        activeAJAXs = [];
+        context.sandbox.ajax.addActiveAJAX(newAJAX, params.queryId);
     }
 
-    /**
-     * Stop a query's ajax call,
-     * This function requires that ajax.queryId was set when the query was created.
-     */
-    function abortQuery(params){
-        activeAJAXs.forEach(function(ajax, index){
-            if(ajax.queryId === params.queryId){ //This was set in queryData
-                ajax.abort();
-                activeAJAXs.splice(index, 1);
-            }
-        });
-    }
-
-    /**
-     * Clean up all finished ajax calls from the activeAJAXs array
-     */
-    function cleanAJAX(){
-        activeAJAXs.forEach(function(ajax, index){
-            if(ajax.readyState === 4){ //4 is "complete" status
-                activeAJAXs.splice(index, 1);
-            }
-        });
-    }
 
     return exposed;
 

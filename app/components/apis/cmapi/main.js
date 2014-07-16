@@ -16,10 +16,10 @@ define([
         initialize: function() {
             context = this;
             
-            feature.init(context, defaultLayerId, emit);
-            overlay.init(context, defaultLayerId, emit);
-            status.init(context, defaultLayerId, emit);
-            view.init(context, defaultLayerId);
+            feature.init(context, defaultLayerId, sendError, emit);
+            overlay.init(context, defaultLayerId, sendError, emit);
+            status.init(context, defaultLayerId, sendError, emit);
+            view.init(context, defaultLayerId, sendError);
 
             context.sandbox.external.onPostMessage(receive);
 
@@ -31,7 +31,12 @@ define([
     };
 
     return exposed;
-    
+
+    /**
+     * Takes in the message and tries to parse it.
+     * Passes that message to the correct module
+     * @param e
+     */
     function receive(e){
         var channel = e.data.channel,
             category = channel.split('.')[1], //0 is always "map"
@@ -40,7 +45,7 @@ define([
             if(message !== ''){
                 message = JSON.parse(message);
                 if(!message.origin){
-                    message.origin = 'cmapi';
+                    message.origin = defaultLayerId;
                 }
                 /* //TODO this is for handling kml also; not doing right now
                 var split = message.split('<');
@@ -82,6 +87,21 @@ define([
             "message": message
         });
     }
+
+    /**
+     * help function to send errors to the parent
+     * @param message
+     */
+    function sendError(failedChannel, msg, err){
+        var payload = {
+            "sender": context.sandbox.cmapi.thisName,
+            "type": failedChannel,
+            "msg": msg,
+            "error": err
+        };
+        emit('map.error', payload);
+    }
+
 
     /* //TODO this is for KML; not using right now; might use in the future?
     function parseXMLString(text){//TODO move to Utils?

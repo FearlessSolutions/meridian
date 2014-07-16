@@ -1,7 +1,8 @@
 define([
 	'./cmapi-view-publisher'
 ], function (publisher, defaultLayerId) {
-	var context;
+	var context,
+        sendError;
 
     var receiveChannels= {
 		"map.view.zoom": function(message){ //TODO verify this is correct
@@ -14,7 +15,7 @@ define([
                     //TODO
                 }
 			}else{
-                //error
+                sendError('map.view.zoom', message, 'Must include either "range" or "direction"');
             }
 		},
 		"map.view.center.overlay": function(message){
@@ -34,7 +35,7 @@ define([
 		"map.view.center.feature": function(message){
             var newAjax;
             if(message === '' || !message.featureId){
-                //TODO error
+                sendError('map.view.center.feature', message, 'Must include "featureId"');
                 return;
             }
 
@@ -48,13 +49,13 @@ define([
                         "lon": data.geometry.coordinates[1],
                         "lat": data.geometry.coordinates[0]
                     });
-                }else{ //TODO test
+                }else{
                     extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
                     publisher.publishCenterOnBounds(extent);
                 }
             });
 
-            context.sandbox.ajax.addActiveAJAX(newAjax); //Keep track of current AJAX calls
+            context.sandbox.ajax.addActiveAJAX(newAjax, null); //Keep track of current AJAX calls
 		},
 		"map.view.center.location": function(message){
 			if('location' in message 
@@ -62,8 +63,8 @@ define([
 				&& 'lon' in message.location){
 				publisher.publishSetCenter(message.location);
 			}else{
-				//Error
-			}
+                sendError('map.view.center.location', message, 'Requires "location":{"lat", "lon"}');
+            }
 		},
 		"map.view.center.bounds": function(message){
             var bounds;
@@ -71,7 +72,8 @@ define([
             if(!message.bounds ||
                 !message.bounds.northEast || !('lat' in message.bounds.northEast) || !('lon' in message.bounds.northEast) ||
                 !message.bounds.southWest || !('lat' in message.bounds.southWest) || !('lon' in message.bounds.southWest)){
-                //TODO error
+
+                sendError('map.view.center.bounds', message, 'Requires "bounds" with northEast and southWest lat,lons');
                 return;
             }
 
@@ -88,8 +90,9 @@ define([
     };
 
 	var exposed = {
-		init: function(thisContext) {
+		init: function(thisContext, defaultLayer, errorChannel, emit) {
 			context = thisContext;
+            sendError = errorChannel;
             publisher.init(context);
         },
         receive: function(channel, message){

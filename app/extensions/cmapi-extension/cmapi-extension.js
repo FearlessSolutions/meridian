@@ -31,6 +31,7 @@ define([
 
             //Put utility function in sandbox
             app.sandbox.cmapi.getMaxExtent = getMaxExtent;
+            app.sandbox.cmapi.thisName = "meridian";
 
             //Set up CMAPI as a 'dataService'
             if (!app.sandbox.dataServices) {
@@ -43,7 +44,7 @@ define([
                     var cmapiTemplate = Handlebars.compile(cmapiHBS);
                     var html = cmapiTemplate({
                         "thumbnail": "./extensions/map-configuration-extension/images/markerIcons/marker.png",
-                        "classification": "?????", //TODO make this dynamic?
+                        "classification": attributes.classification || "????", //TODO make this dynamic?
                         "name": attributes.name,
                         "attributes": attributes
                     });

@@ -1,3 +1,7 @@
+/**
+ * Consolidated holding place for open AJAX calls.
+ * Cleans and aborts as required
+ */
 define([
 ], function() {
     var activeAJAXs;
@@ -6,6 +10,12 @@ define([
             activeAJAXs = [];
 
             app.sandbox.ajax = {
+                /**
+                 * Add a new AJAX to the list.
+                 * If it is a query, add the property to the call
+                 * @param newAJAX
+                 * @param queryId
+                 */
                 "addActiveAJAX": function (newAJAX, queryId){
                     if(queryId){
                         newAJAX.queryId = queryId;00
@@ -13,6 +23,9 @@ define([
 
                     activeAJAXs.push(newAJAX);
                 },
+                /**
+                 * Remove finished AJAX from list
+                 */
                 "clean": function(){
                     activeAJAXs.forEach(function(ajax, index){
                         if(ajax.readyState === 4){ //4 is "complete" status
@@ -20,6 +33,9 @@ define([
                         }
                     });
                 },
+                /**
+                 * Abort ALL open AJAX
+                 */
                 "clear": function(){
                     activeAJAXs.forEach(function(ajax, index){
                         if(ajax.queryId === params.queryId){ //This was set in queryData
@@ -28,6 +44,10 @@ define([
                         }
                     });
                 },
+                /**
+                 * Aborts AJAX based on queryId
+                 * @param queryId
+                 */
                 "stopQuery": function(queryId){
                     activeAJAXs.forEach(function(ajax, index){
                         if(ajax.queryId === queryId){
