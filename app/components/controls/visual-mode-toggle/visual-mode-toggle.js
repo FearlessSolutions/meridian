@@ -22,6 +22,27 @@ define([
             context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
             context.$('#visual-mode-toggle-container [data-visual-mode="' + currentVisualMode + '"]').addClass('active');
 
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            context.$('#cluster-toggle-btn').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+            context.$('#feature-toggle-btn').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+            context.$('#heatmap-toggle-btn').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
             context.$('#visual-mode-toggle-container .btn').on('click', function() {
                 $target = context.$(this);
                 targetVisualMode = $target.attr('data-visual-mode');

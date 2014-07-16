@@ -111,8 +111,8 @@ casper.test.begin("Exist Tests", 68, function suite(test) {
         // . is class
         this.wait(3000, function() {
            test.assertExists('div[data-aura-component="controls/datagrid-toggle"] #dataGridToggleButton', "Datagrid toggle button is displayed in data grid is expected");
-           test.assertExists('div[data-aura-component="controls/datagrid-toggle"] #dataGridToggleButton.btn.btn-default-icon.bs-tooltip.bootstro', "Datagrid toggle button displays a tooltip is expected");
-           test.assertExists('div[data-aura-component="controls/datagrid-toggle"] #dataGridToggleButton.btn.btn-default-icon.bs-tooltip.bootstro .glyphicon.glyphicon-th-list', "Datagrid toggle button displays list icon is expected");
+           test.assertExists('div[data-aura-component="controls/datagrid-toggle"] #dataGridToggleButton.btn.btn-default-icon.bootstro', "Datagrid toggle button displays a tooltip is expected");
+           test.assertExists('div[data-aura-component="controls/datagrid-toggle"] #dataGridToggleButton.btn.btn-default-icon.bootstro .glyphicon.glyphicon-th-list', "Datagrid toggle button displays list icon is expected");
             
         }); 
 
@@ -120,8 +120,8 @@ casper.test.begin("Exist Tests", 68, function suite(test) {
         //# is id
         //. is class
         this.wait(3000, function() {
-            test.assertExists('div[data-aura-component="controls/clear"] #clear.btn.btn-default-icon.bs-tooltip.bootstro', "Clear button is displayed as a button, is expected");
-            test.assertExists('div[data-aura-component="controls/clear"] #clear.btn.btn-default-icon.bs-tooltip.bootstro .glyphicon.glyphicon-eye-close', "Clear button displays a closed eye icon on button, is expected");
+            test.assertExists('div[data-aura-component="controls/clear"] #clear.btn.btn-default-icon.bootstro', "Clear button is displayed as a button, is expected");
+            test.assertExists('div[data-aura-component="controls/clear"] #clear.btn.btn-default-icon.bootstro .glyphicon.glyphicon-eye-close', "Clear button displays a closed eye icon on button, is expected");
         });
 
         //Test Components inside aura div basemap gallery
@@ -139,9 +139,9 @@ casper.test.begin("Exist Tests", 68, function suite(test) {
         // . is class
         this.wait(3000, function() {
             test.assertExists('div[data-aura-component="controls/zoom"] .btn-group-vertical.bootstro#zoom', "Zoom controls display vertical is expected");
-            test.assertExists('div[data-aura-component="controls/zoom"] .btn-group-vertical.bootstro#zoom .btn.btn-default-text.btn-xs.bs-tooltip.zoom-in', "Zoom In tooltip displays during hover over in zoom controls is expected");
-            test.assertExists('div[data-aura-component="controls/zoom"] .btn-group-vertical.bootstro#zoom .btn.btn-default-text.btn-xs.bs-tooltip.zoom-in .glyphicon.glyphicon-plus', "Zoom In displays as a plus icon under zoom controls is expected");
-            test.assertExists('div[data-aura-component="controls/zoom"] .btn-group-vertical.bootstro#zoom .btn.btn-default-text.btn-xs.bs-tooltip.zoom-out .glyphicon.glyphicon-minus', "Zoom Out displays as a minus icon under zoom controls is expected");
+            test.assertExists('div[data-aura-component="controls/zoom"] .btn-group-vertical.bootstro#zoom .btn.btn-default-text.btn-xs.zoom-in', "Zoom In tooltip displays during hover over in zoom controls is expected");
+            test.assertExists('div[data-aura-component="controls/zoom"] .btn-group-vertical.bootstro#zoom .btn.btn-default-text.btn-xs.zoom-in .glyphicon.glyphicon-plus', "Zoom In displays as a plus icon under zoom controls is expected");
+            test.assertExists('div[data-aura-component="controls/zoom"] .btn-group-vertical.bootstro#zoom .btn.btn-default-text.btn-xs.zoom-out .glyphicon.glyphicon-minus', "Zoom Out displays as a minus icon under zoom controls is expected");
         });
 
         

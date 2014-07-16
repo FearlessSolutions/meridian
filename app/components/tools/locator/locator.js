@@ -19,6 +19,16 @@ define([
             $locatorInput = context.$('#locator input');
             $locatorButton.attr('disabled', true);      /*Valid location must be selected before button is enabled.*/
 
+            //Activate bootstrap tooltip. 
+            //No need to specify container to make the tooltip appear in one line. 
+            //Still added to keep consistency.
+            $locator.tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
             $locatorButton.on('click', function(event) {
                 var input = $locatorInput.val();
                 event.preventDefault();
