@@ -149,7 +149,7 @@ define([
                     reader.onloadend = function(e){
                         var text = e.target.result;
                         callback(text);
-                    }
+                    };
                 },
                 pageHeight: function(el){
                     if(el) {
@@ -167,6 +167,9 @@ define([
                 },
                 onWindowResize: function(callback){
                     $(window).on('resize', callback);
+                },
+                size: function(obj){
+                    return _.size(obj);
                 }
             };
 

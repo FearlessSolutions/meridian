@@ -20,6 +20,7 @@ define([
             context.sandbox.on('timeline.playback.stop', timeline.timelinePlaybackStop);
             context.sandbox.on('timeline.menu.layer.hide', timeline.hideSnapshotLayerGroup);
             context.sandbox.on('timeline.menu.layer.show', timeline.showSnapshotLayerGroup);
+            context.sandbox.on('timeline.menu.layer.delete', timeline.deleteSnapshotLayerGroup);
         }
     };
 
