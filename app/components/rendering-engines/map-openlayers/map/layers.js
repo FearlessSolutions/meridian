@@ -167,7 +167,7 @@ define([
                     return false;
                 }
             });
-            layers.splice(index, 1);
+            layers = layers.splice(index, 1);
             selector.setLayer(layers);
             delete context.sandbox.stateManager.layers[params.layerId];
         },

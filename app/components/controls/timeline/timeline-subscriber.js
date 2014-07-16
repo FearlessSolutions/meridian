@@ -9,6 +9,7 @@ define([
             context.sandbox.on('map.layer.create', timeline.createSnapshot);
             context.sandbox.on('map.layer.hide', timeline.hideLayer);
             context.sandbox.on('map.layer.show', timeline.showLayer);
+            context.sandbox.on('map.layer.delete', timeline.deleteLayer);
             context.sandbox.on('map.heat.on', timeline.hideTimeline);
             context.sandbox.on('map.heat.off', timeline.showTimeline);    
             context.sandbox.on('data.clear.all', timeline.clear);

@@ -10,6 +10,7 @@ define([
             context.sandbox.on('map.layer.hide', eventCountTool.update);
             context.sandbox.on('map.layer.hide.all', eventCountTool.update);
             context.sandbox.on('map.layer.show', eventCountTool.update);
+            context.sandbox.on('map.layer.delete', eventCountTool.update);
             context.sandbox.on('data.clear.all', eventCountTool.clear);
         }
     };	
