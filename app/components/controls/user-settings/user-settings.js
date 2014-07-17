@@ -24,6 +24,15 @@ define([
             context = thisContext;
             $userSettingsDialog = context.$("#userSettingsDialog");
 
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            context.$('#userSettings').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
             if(context.options.label && context.options.label === true) {
                 exposed.makeUserLabel();
                 menuDisabled = true;
@@ -34,7 +43,7 @@ define([
             }            
         },
         makeUserLabel: function() {
-            //removed unwanted html and adds the required css files that give the looc and location of the button.
+            //removed unwanted html and adds the required css files that give the look and location of the button.
             context.$('.caret').remove();
             $userSettingsDialog.remove(); //to have a cleaner html.
             context.$('#userSettings').addClass('disabled');

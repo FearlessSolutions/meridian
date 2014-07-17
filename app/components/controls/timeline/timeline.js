@@ -186,7 +186,10 @@ define([
                 "html": true,
                 "title": 'Name: ' + name + '<br/>' +
                     'Status: '+ params.status + '<br/>' +
-                    'Features: ' + count
+                    'Features: ' + count,
+                "delay": {
+                    "show": 500
+                }
             });
         },
         timelinePlaybackStart: function(params){
