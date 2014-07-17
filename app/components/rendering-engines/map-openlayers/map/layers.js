@@ -157,19 +157,35 @@ define([
             params.map.setLayerIndex(params.map.getLayersBy('layerId', params.layerId)[0], params.layerIndex);
         },
         deleteLayer: function(params) {
+            mapBase.clearMapSelection({
+                "map": params.map
+            });
+            mapBase.clearMapPopups({
+                "map": params.map
+            });
+
+            delete context.sandbox.stateManager.layers[params.layerId];
             params.map.removeLayer(params.map.getLayersBy('layerId', params.layerId)[0]);
             var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
             var layers = selector.layers;
-            var index;
             context.sandbox.utils.each(layers, function(key, value){
                 if(value.layerId === params.layerId) {
-                    index = key;
+                    layers.splice(key, 1);
                     return false;
                 }
             });
-            layers = layers.splice(index, 1);
             selector.setLayer(layers);
-            delete context.sandbox.stateManager.layers[params.layerId];
+
+            mapClustering.deleteClusteringLayerOptions({
+                "layerId": params.layerId
+            });
+
+            mapClustering.update({
+                "map": params.map
+            });
+            mapHeatmap.update({
+                "map": params.map
+            });
         },
         clearLayer: function(params) {
             params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();

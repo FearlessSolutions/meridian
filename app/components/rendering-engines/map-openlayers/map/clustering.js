@@ -48,7 +48,7 @@ define([], function(){
                 params.map.getLayersBy('layerId', layerId)[0].setVisibility(visibility);
             });
         },
-        addClusteringToLayerOptions: function(layerOptions){
+        addClusteringToLayerOptions: function(layerOptions) {
             var style = new OpenLayers.Style(OpenLayers.Util.applyDefaults({
                 externalGraphic: "${icon}",
                 graphicOpacity: 1,
@@ -86,6 +86,14 @@ define([], function(){
             };
 
             layerOptionsCollection.push(layerOptions);
+        },
+        deleteClusteringLayerOptions: function(params) {
+            context.sandbox.utils.each(layerOptionsCollection, function(key, value){
+                if(value.layerId === params.layerId) {
+                    layerOptionsCollection.splice(key, 1);
+                    return false;
+                }
+            });
         },
         visualModeChanged: function(params) {
             if(params.mode === 'cluster') {
