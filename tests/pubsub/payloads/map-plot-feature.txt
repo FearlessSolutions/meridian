@@ -214,59 +214,59 @@
 
 
 {
-        "overlayId":"multipolygon",
-        "format":"geojson",
-        "feature":{
-            "type":"FeatureCollection",
-            "features":[
-                {
-                    "type":"Feature",
-                    "geometry":{
-                        "type": "Polygon",
-                        "coordinates": [
-                        [[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]],
-                        [[20, 30], [35, 35], [30, 20], [20, 30]]
-                        ]
+    "overlayId":"multipolygon",
+    "format":"geojson",
+    "feature":{
+        "type":"FeatureCollection",
+        "features":[
+            {
+                "type":"Feature",
+                "geometry":{
+                    "type": "Polygon",
+                    "coordinates": [
+                    [[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]],
+                    [[20, 30], [35, 35], [30, 20], [20, 30]]
+                    ]
 
-                    },
-                    "properties":{
-                    }
                 },
-                {
-                    "type":"Feature",
-                    "geometry":{
-
-                        "type": "MultiPolygon",
-                        "coordinates": [
-                        [
-                            [[40, 40], [20, 45], [45, 30], [40, 40]]
-                            ],
-                            [
-                            [[20, 35], [10, 30], [10, 10], [30, 5], [45, 20], [20, 35]],
-                            [[30, 20], [20, 15], [20, 25], [30, 20]]
-                            ]
-                        ]
-
-                    },
-                    "properties":{
-                    }
-                },
-                {
-                    "type":"Feature",
-                    "geometry":{
-
-                        "type": "MultiLineString",
-                        "coordinates": [
-                            [[10, 10], [20, 20], [10, 40]],
-                            [[40, 40], [30, 30], [40, 20], [30, 10]]
-                            ]
-                    },
-                    "properties":{
-                    }
+                "properties":{
                 }
-            ]
-        },
-        "name":"Multi polygon",
-        "zoom":"true",
-        "readOnly":"false"
-    }
+            },
+            {
+                "type":"Feature",
+                "geometry":{
+
+                    "type": "MultiPolygon",
+                    "coordinates": [
+                    [
+                        [[40, 40], [20, 45], [45, 30], [40, 40]]
+                        ],
+                        [
+                        [[20, 35], [10, 30], [10, 10], [30, 5], [45, 20], [20, 35]],
+                        [[30, 20], [20, 15], [20, 25], [30, 20]]
+                        ]
+                    ]
+
+                },
+                "properties":{
+                }
+            },
+            {
+                "type":"Feature",
+                "geometry":{
+
+                    "type": "MultiLineString",
+                    "coordinates": [
+                        [[10, 10], [20, 20], [10, 40]],
+                        [[40, 40], [30, 30], [40, 20], [30, 10]]
+                        ]
+                },
+                "properties":{
+                }
+            }
+        ]
+    },
+    "name":"Multi polygon",
+    "zoom":"true",
+    "readOnly":"false"
+}
