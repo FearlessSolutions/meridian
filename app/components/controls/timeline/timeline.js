@@ -134,7 +134,11 @@ define([
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
                     count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
-            
+                if($badge.length === 0){
+                    console.error("update fail", $badge);
+                    $badge = context.$('#snapshot-' + params.layerId + ' .badge');
+                }
+
                 $badge.text(context.sandbox.utils.trimNumber(count));
                 exposed.setTooltip({
                     "layerId": params.layerId,

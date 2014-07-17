@@ -98,7 +98,6 @@ define([
         var newAJAX = context.sandbox.utils.ajax(postOptions)
             .done(function(data){
                 var newData = [];
-
                 if(data){
 
                     message.feature.features.forEach(function(feature, index){

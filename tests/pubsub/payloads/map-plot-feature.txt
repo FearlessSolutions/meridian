@@ -1,5 +1,5 @@
 {
-        "overlayId":"2d882141-0d9e-59d4-20bb-58e6d0460699.1",
+        "overlayId":"lay1",
         "featureId":"example.geojson.1",
         "format":"geojson",
         "feature":{
@@ -75,7 +75,7 @@
 
 
 {
-   "overlayId":"2d882141-0d9e-59d4-20bb-58e6d0460699.1",
+   "overlayId":"lay2",
    "featureId":"example.geojson.1",
    "format":"geojson",
    "feature":{
@@ -100,7 +100,7 @@
 
 
 {
-   "overlayId":"2d882141-0d9e-59d4-20bb-58e6d0460699.1",
+   "overlayId":"lay3",
    "featureId":"example.geojson.1",
    "format":"geojson",
    "feature":{
