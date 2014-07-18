@@ -1,0 +1,22 @@
+body { 
+	padding-top: 50px; /*taking into account the fixed nav bar*/
+}
+
+.main-banner {
+	display: block;
+	text-align: center;
+}
+
+.jumbotron {
+	/*Make backgroun a screenshot of the application*/
+}
+
+.logo {
+	height: 250px;
+	width: 300px;
+}
+
+a.text-primary {
+  color: #4582ec;
+}
+
