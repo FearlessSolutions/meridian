@@ -64,9 +64,10 @@ define([
         disableOption: function(layerId, optionName){
             var $option;
             var options = {
-                "zoomToLayer": "map.zoom.layer",
-                "showLayer": "map.layer.show",
-                "hideLayer": "map.layer.hide",
+                "zoomToLayer": "map.zoom.toLayer",
+                "showLayer": "timeline.menu.layer.show",
+                "hideLayer": "timeline.menu.layer.hide",
+                "deleteLayer": "timeline.menu.layer.delete",
                 "stopQuery": "query.stop"
             };
             $option = context.$('#snapshot-' + layerId + '-settings-menu a[data-channel="' + options[optionName] + '"]');

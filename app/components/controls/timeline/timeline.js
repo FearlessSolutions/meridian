@@ -270,6 +270,19 @@ define([
                 });
             }
         },
+        deleteLayer: function(params){
+            if(context.sandbox.dataStorage.datasets[params.layerId]) {
+                //do not use deleteDataLayer since the renderer is already receiving the call.
+                delete context.sandbox.dataStorage.datasets[params.layerId];
+                // Take care of AOI and toggleBtn state
+                exposed.deleteAOILayer({
+                    "layerId": params.layerId
+                });
+                exposed.deleteSnapshot({
+                    "layerId": params.layerId
+                });
+            }
+        },
         showSnapshotLayerGroup: function(params) {
             exposed.showDataLayer({
                 "layerId": params.layerId
@@ -292,6 +305,17 @@ define([
                 "layerId": params.layerId
             });
         },
+        deleteSnapshotLayerGroup: function (params) {
+            exposed.deleteDataLayer({
+                 "layerId": params.layerId
+            });
+            exposed.deleteAOILayer({
+                 "layerId": params.layerId
+            });
+            exposed.deleteSnapshot({
+                 "layerId": params.layerId
+             });
+        },
         showDataLayer: function(params) {
             context.sandbox.stateManager.layers[params.layerId].visible = true;
             publisher.showLayer({"layerId": params.layerId});
@@ -299,6 +323,11 @@ define([
         hideDataLayer: function(params) {
             context.sandbox.stateManager.layers[params.layerId].visible = false;
             publisher.hideLayer({"layerId": params.layerId});
+        },
+        deleteDataLayer: function(params) {
+            //delete data from datastorage.
+            delete context.sandbox.dataStorage.datasets[params.layerId];
+            publisher.deleteLayer({"layerId": params.layerId});
         },
         showAOILayer: function(params) {
             context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
@@ -308,21 +337,42 @@ define([
             context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
             publisher.hideLayer({"layerId": params.layerId + '_aoi'});
         },
-        layerToggleOn: function(params){
+        deleteAOILayer: function(params) {
+            publisher.deleteLayer({"layerId": params.layerId + '_aoi'});
+        },
+        layerToggleOn: function(params) {
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
             $querySnapshot.find('.btn-on').addClass('btn-primary');
             $querySnapshot.find('.btn-off').removeClass('btn-primary');
         },
-        layerToggleOff: function(params){
+        layerToggleOff: function(params) {
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
             $querySnapshot.find('.btn-on').removeClass('btn-primary');
             $querySnapshot.find('.btn-off').addClass('btn-primary');
         },
+        deleteSnapshot: function(params) {
+            var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
+                $owner = context.$('#snapshot-' + params.layerId);
+            //destroy tooltip.
+            $owner.tooltip('destroy');
+            //make sure layer query is finished. If not, stop query before deleting.
+            if(!$badge.hasClass('error') || !$badge.hasClass('finished') || !$badge.hasClass('stopped')){
+                publisher.stopQuery({"layerId": params.layerId});
+            }
+            //delete timeline snapshot
+            context.$('#snapshot-' + params.layerId).parent().remove();
+            //delete layer menu.
+            $timeline.siblings('#snapshot-' + params.layerId + '-settings-menu').remove();
+            //hide timeline if no other layers are present.
+            if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0){
+                exposed.hideTimeline();
+            }
+        }
     };
 
     function checkLayerCount() {
         if(context.sandbox.stateManager.layers) {
-            return _.size(context.sandbox.stateManager.layers);
+            return context.sandbox.utils.size(context.sandbox.stateManager.layers);
         } else {
             return 0;
         }
