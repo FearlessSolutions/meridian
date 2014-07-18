@@ -20,37 +20,88 @@
       </div>
       <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
-          <li><a href="./about">About</a></li>
           <li><a href="./getting-started">Getting Started</a></li>
-         <!--  <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li class="divider"></li>
-              <li class="dropdown-header">Dropdown header</li>
-              <li><a href="#">Separated link</a></li>
-              <li><a href="#">One more separated link</a></li>
-            </ul>
-          </li> -->
+          <li><a href="./contribute">Contribute</a></li>
+          <li><a href="./examples">Examples</a></li>
         </ul>
       </div>
     </div>
 
-    <div class="jumbotron">
-      <div class="main-banner">
-          <img class="logo" src="./images/logos/merid1.2.png">
-          <p> Event-driven, framework-agnostic, extensible architecture for mapping applications.</p>
-          <div class="container">
-            <div class="row">
-              
-                <a class="btn btn-default text-primary "><i class="icon-github"></i>Download Meridian</a>
-                <a class="btn btn-default text-primary">View on Github</a>
+    <div class="jumbotron main-banner">
+      <img class="logo" src="./images/logos/merid1.2.png">
+      <p> Event-driven, framework-agnostic, extensible architecture <br> for mapping applications.</p>
+      <div class="container">
+        <div class="row">
+            <a class="btn btn-default text-primary" href="//github.com/ozone-development/meridian/archive/master.zip"><i class="icon-cloud-download"></i> Download Meridian</a>
+            <a class="btn btn-default text-primary" href="//github.com/ozone-development/meridian"><i class="icon-github3"></i> View on Github</a>
+        </div><!-- row -->
+      </div><!-- button container -->
+    </div><!-- jumbotron -->
 
-              
-            </div><!-- row -->
-          </div><!-- button container -->
-    </div><!-- main-banner -->
+    <div class="new-section container">
+      <h2 class="text-center text-primary"> Web-based mapping done right.</h2>
+      <p class="lead text-center"> 
+         Meridian wraps code into reusable and decoupled components and/or extensions that can easily communicate with each other. 
+         <!-- Forked from the open source project called Aura JS. -->
+      </p>
+    </div><!-- new-section -->
+    <hr>
+
+    <div class="new-section container text-center">
+      <div class="row">
+        <div class="col-sm-4">
+          <h2 class="text-primary"><i class=" icon-cog3 text-warning"></i> Everything is a Component</h2>
+            <p>A Meridian component represents a unit of a page. 
+              An independant block of reusable code, wrapped 
+              up so that it works well on its own or together with 
+              other components. 
+
+            <p>Specify a component source, and you can just start
+            including them in your page on demand
+            with data attributes.</p>
+            </p>
+        </div>
+        <div class="col-sm-4">
+          <h2 class="text-primary"><i class="icon-bubbles text-warning"></i> Messaging & Sandboxing</h2>
+            <p>Meridian Events give components a rich way to communicate between each other
+            at a global or local level. Subscribe, unsubscribe and emit sandboxed event notifications.
+
+            <p>A Meridian sandbox is the layer between you and your library.
+            It gives you the flexibility to switch out libraries with greater ease.</p>
+            </p>
+        </div>
+        <div class="col-sm-4">
+          <h2 class="text-primary"><i class="icon-lightning text-warning"></i> Easily extend capabilities</h2>
+            <p>Meridian Extensions help you extend the core capabilities of your app 
+            before any of your components load. Want to ensure all of them have 
+            access to a particular library, like Backbone, or an API wrapper, like GitHub?
+
+            <p>It'll make them available via the component's sandbox so you don't have
+            to worry about importing and setting this up yourself.</p>
+            </p>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <div class="footer text-center">
+        <div class="container">
+          <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian/archive/master.zip"><i class="glyphicon glyphicon-cloud-download"></i> Download Meridian</a>
+          <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian"><i class="icon-github3"></i> View on Github</a>
+        </div>
+          
+        <div class="container new-section small">
+          <p>Software (c) 2014 <a href="http://www.boeing.com/" title="Boeing">The Boeing Company</a></p>
+          <p>The United States Government has unlimited rights in this software, pursuant to the contracts under which it was developed.</p>
+       
+          <p>The AML Center (under OZONE) is released to the public as Open Source Software as required by <a href="http://www.gpo.gov/fdsys/pkg/PLAW-112publ81/pdf/PLAW-112publ81.pdf" title="NDAA FY12">Section 924 of the 2012 National Defense Authorization Act</a>.</p>
+
+          <p>Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html" title="Apache License v2.0">Apache License v2.0</a>.</p>
+
+          <p>Forked from the Open Source Project: <a href="http://aurajs.com/"> Aura JS</a>.</p>
+        </div>
+    </div>
+
+    
   </body>
  </html>

@@ -8,10 +8,8 @@ body {
 .main-banner {
 	display: block;
 	text-align: center;
-}
-
-.jumbotron {
-	/*Make backgroun a screenshot of the application*/
+	padding-top: 33px; /*modifying jumbotron padding to be smaller*/
+	padding-bottom: 33px; /*modifying jumbotron padding to be smaller*/
 }
 
 .logo {
@@ -21,5 +19,17 @@ body {
 
 a.text-primary {
   color: #4582ec;
+}
+
+.new-section {
+	padding-top: 25px;
+}
+
+.footer {
+	padding-bottom: 10px;
+}
+
+.footer p {
+	margin-bottom: 0px;
 }
 
