@@ -7,6 +7,7 @@ define([
         init: function(thisContext){
             context = thisContext;
             context.sandbox.on('data.clear.all', datagridToggle.clear);
+            context.sandbox.on('map.layer.delete', datagridToggle.clear);
         }
     };	
 
