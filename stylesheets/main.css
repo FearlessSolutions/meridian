@@ -1,3 +1,6 @@
+@import url("./bootstrap-3.2.0/readable-theme/bootstrap.css");
+@import url("./icomoon/style.css");
+
 body { 
 	padding-top: 50px; /*taking into account the fixed nav bar*/
 }
