@@ -7,6 +7,7 @@ define([
         sendError,
         emit;
 
+    //Map channels to functions, and error if a channel is not supported
     var receiveChannels= {
 		"map.feature.plot": function(message){
             if(message === ''){
@@ -62,9 +63,39 @@ define([
         }
 	};
 
+    /**
+     * Plot passed in geoJSON
+     * If geoJSON is trying to be put in a layer that doesn't exist
+     * @param message
+     * message =
+     * {
+        "overlayId":"STRING",           (optional)(default: 'cmapi'
+        "format":"geojson",             (required)
+        "feature":{                     (required)
+            "type":"FeatureCollection"  (required),
+            "features":[ (required) (this must be formatted as proper geoJSON features)
+                {
+                    "type":"Feature",
+                    "geometry":{
+                        "type":"Polygon",
+                         "coordinates": [*]
+                    },
+                    "properties":{
+                        "p1": "test prop 1"
+                    }
+                }
+            ]
+        },
+        "name":"STRING",                (optional)(default: '')
+        "zoom":"true",                  (optional)(default: true)(If it should center and zoom after plotting)
+        "selectable":BOOLEAN            (optional)(default: true)
+    }
+     *Note that name and selectable will only be used if there was no overlay with the given id
+     */
     function plotGeoJSON(message){
         var postOptions,
-            layerId;
+            layerId,
+            layerOptions;
 
         if(!message.feature ||
             !message.feature ||
@@ -76,11 +107,16 @@ define([
 
         if(!context.sandbox.dataStorage.datasets[layerId]) {
             context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
-            publisher.publishCreateLayer({
+            layerOptions = {
                 "layerId": layerId,
-                "name": message.name || "",
-                "selectable": message.selectable || true // Default true
-            });
+                "name": message.name || ""
+            };
+
+            ('selectable' in message) ?
+                layerOptions.selectable = message.selectable :
+                true; //Default to true
+
+            publisher.publishCreateLayer(layerOptions);
         }
 
         postOptions = {
@@ -95,6 +131,7 @@ define([
             }
         };
 
+        // Save the features and plot them.
         var newAJAX = context.sandbox.utils.ajax(postOptions)
             .done(function(data){
                 var newData = [];
@@ -103,11 +140,15 @@ define([
                     message.feature.features.forEach(function(feature, index){
                         var newValue = {};
 
-                        newValue.dataService = "cmapi";
+                        newValue.dataService = 'cmapi';
                         newValue.id = data.items[index].index._id; //TODO this should change serverside
                         newValue.geometry = feature.geometry;
                         newValue.type = feature.type;
                         newValue.properties = feature.properties;
+                        if(feature.geometry.type === 'Point'){
+                            newValue.lat = feature.geometry.coordinates[1];
+                            newValue.lon = feature.geometry.coordinates[0];
+                        }
 
                         context.sandbox.dataStorage.addData({
                             "datasetId": layerId,
@@ -143,4 +184,5 @@ define([
     }
 
     return exposed;
+
 });

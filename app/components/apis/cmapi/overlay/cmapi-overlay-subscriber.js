@@ -1,3 +1,7 @@
+/**
+ * subscriber for cmapi-overlay
+ * Does nothing for now.
+ */
 define([
 ], function () {
     var context,

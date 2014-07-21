@@ -1,6 +1,6 @@
 /**
  * Points the parent channels to the correct function.
- * Uses the CMAPI categor
+ * Uses the CMAPI category
  */
 define([
     './view/cmapi-view',
@@ -12,7 +12,10 @@ define([
         defaultLayerId = 'cmapi',
         processing = {};
 
-    var exposed = { 
+    var exposed = {
+        /**
+         * Starts up all the sub-modules and adds the postMessage callback
+         */
         initialize: function() {
             context = this;
             
@@ -30,7 +33,6 @@ define([
         }
     };
 
-    return exposed;
 
     /**
      * Takes in the message and tries to parse it.
@@ -81,6 +83,11 @@ define([
         }else{} //Error?
     }
 
+    /**
+     * Sends messages back to the parent
+     * @param channel - Channel to send the message on
+     * @param message
+     */
     function emit(channel, message){
         context.sandbox.external.postMessageToParent({
             "channel": channel,
@@ -89,7 +96,7 @@ define([
     }
 
     /**
-     * help function to send errors to the parent
+     * Help function to send errors to the parent
      * @param message
      */
     function sendError(failedChannel, msg, err){
@@ -102,6 +109,8 @@ define([
         emit('map.error', payload);
     }
 
+
+    return exposed;
 
     /* //TODO this is for KML; not using right now; might use in the future?
     function parseXMLString(text){//TODO move to Utils?

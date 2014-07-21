@@ -1,3 +1,7 @@
+/**
+ * Subscriber for cmapi-feature
+ * Doesn't do anything right now, but might in the future
+ */
 define([
 ], function () {
     var context,

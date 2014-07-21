@@ -29,22 +29,35 @@ define([], function(){
 
     function generateHeatmap(params) {
         var heatLayer = params.map.getLayersBy('layerId', 'static_heatmap')[0],
-            newData = [];
+            newData = [],
+            geoJsonParser;
+
+        geoJsonParser = new OpenLayers.Format.GeoJSON({
+            "ignoreExtraDims": false,
+            "internalProjection": params.map.projection,
+            "externalProjection": params.map.projectionWGS84
+        });
 
         heatLayer.destroyFeatures();
 
         context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, collection) {
             if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible && collection.models) {
                 collection.models.forEach(function(model){
-                    newData.push(new OpenLayers.Feature.Vector(
-                        new OpenLayers.Geometry.Point(
-                            model.attributes.lon, 
-                            model.attributes.lat
-                        ).transform(
-                            params.map.projectionWGS84,
-                            params.map.projection
-                        )
-                    ));
+                    var geometry = model.attributes.geometry;
+                    if(geometry.type === "Point"){
+                        newData.push(new OpenLayers.Feature.Vector(
+                            new OpenLayers.Geometry.Point(
+                                geometry.coordinates[0],
+                                geometry.coordinates[1]
+                            ).transform(
+                                params.map.projectionWGS84,
+                                params.map.projection
+                            )
+                        ));
+                    }else{ //TODO The heatmap library only handles points.
+                      //  var feature = geoJsonParser.parseFeature(model.attributes);
+                      //  newData.push(feature);
+                    }
                 });
             }                
         });

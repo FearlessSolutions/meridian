@@ -202,18 +202,23 @@ define([], function(){
                         for(i=0; i<this.features.length; ++i) {
                             feature = this.features[i];
                             if(feature.geometry) {
-                                clustered = false;
-                                for(j=clusters.length-1; j>=0; --j) {
-                                    cluster = clusters[j];
-                                    if(this.shouldCluster(cluster, feature)) {
-                                        this.addToCluster(cluster, feature);
-                                        clustered = true;
-                                        break;
+                                if(feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point"){
+                                    clustered = false;
+                                    for(j=clusters.length-1; j>=0; --j) {
+                                        cluster = clusters[j];
+                                        if(this.shouldCluster(cluster, feature)) {
+                                            this.addToCluster(cluster, feature);
+                                            clustered = true;
+                                            break;
+                                        }
                                     }
-                                }
-                                if(!clustered) {
+                                    if(!clustered) {
+                                        clusters.push(this.createCluster(this.features[i]));
+                                    }
+                                }else{
                                     clusters.push(this.createCluster(this.features[i]));
                                 }
+
                             }
                         }
                     }

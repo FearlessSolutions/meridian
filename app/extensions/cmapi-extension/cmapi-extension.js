@@ -9,6 +9,13 @@ define([
     "handlebars"
 ], function(cmapiHBS, cmapiCSS, cmpiConfiguration) {   
     var exposed = {
+        /**
+         * Initialize the extension:
+         * -Set up the availible pu and sub postMessage channels
+         * -Put the helper functions in the sandbox
+         * -Set up a mock cmapi "dataService'
+         * @param app
+         */
         initialize: function(app) {
             app.sandbox.utils.addCSS(cmapiCSS, 'cmapi-extension-style');
 
