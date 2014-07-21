@@ -6,7 +6,7 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishPlotFeature: function(message){
+        publishPlotFeature: function(message) {
           context.sandbox.emit('map.features.plot', message);
         },
         publishPlotFinish: function(params) {

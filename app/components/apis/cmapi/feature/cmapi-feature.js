@@ -7,61 +7,61 @@ define([
         sendError,
         emit;
 
-    //Map channels to functions, and error if a channel is not supported
-    var receiveChannels= {
-		"map.feature.plot": function(message){
-            if(message === ''){
-                return;
-            }else if(!message.format || message.format === 'geojson'){
-                plotGeoJSON(message);
-            }else if(message.format === 'kml'){
-                sendError('map.feature.unplot', message, 'KML is not currently supported');
-            }else{
-                sendError('map.feature.unplot', message, 'Must be in geoJSON format');
-            }
-		},
-		"map.feature.plot.url": function(message){
-            sendError('map.feature.plot.url', message, 'Channel not supported');
-		},
-		"map.feature.unplot": function(message){
-            sendError('map.feature.unplot', message, 'Channel not supported');
-		},
-		"map.feature.hide": function(message){
-            sendError('map.feature.hide', message, 'Channel not supported');
-		},
-		"map.feature.show": function(message){
-            sendError('map.feature.show', message, 'Channel not supported');
-		},
-		"map.feature.selected": function(message){
-            sendError('map.feature.selected', message, 'Channel not supported');
-		},
-		"map.feature.deselected": function(message){
-            sendError('map.feature.deselected', message, 'Channel not supported');
-		},
-		"map.feature.update": function(message){
-            sendError('map.feature.update', message, 'Channel not supported');
-		}
-    };
-
-	var exposed = {
-		init: function(thisContext, layerId, errorChannel) {
-			context = thisContext;
-			defaultLayerId = layerId;
+    var exposed = {
+        init: function(thisContext, layerId, errorChannel) {
+            context = thisContext;
+            defaultLayerId = layerId;
             sendError = errorChannel;
             publisher.init(context);
             subscriber.init(context, exposed);
         },
-        receive: function(channel, message){
-        	if(receiveChannels[channel]){
-        		receiveChannels[channel](message);
-        	}else{
-        		//error?
-        	}
+        receive: function(channel, message) {
+            if(receiveChannels[channel]) {
+                receiveChannels[channel](message);
+            } else {
+                sendError(channel, message, 'Channel not supported');
+            }
         },
-        emit: function(channel, message){
+        emit: function(channel, message) {
             emit(channel, message);
         }
-	};
+    };
+
+    //Map channels to functions, and error if a channel is not supported
+    var receiveChannels= {
+		"map.feature.plot": function(message) { // TODO: if featureId already exists, remove it and replot
+            if(message === '') {
+                return;
+            } else if(!message.format || message.format === 'geojson') {
+                plotGeoJSON(message);
+            } else if(message.format === 'kml') {
+                sendError('map.feature.unplot', message, 'KML is not currently supported');
+            } else {
+                sendError('map.feature.unplot', message, 'GeoJSON is the only supported format, for now.');
+            }
+		},
+		"map.feature.plot.url": function(message) {
+            sendError('map.feature.plot.url', message, 'Channel not supported');
+		},
+		"map.feature.unplot": function(message) {
+            sendError('map.feature.unplot', message, 'Channel not supported');
+		},
+		"map.feature.hide": function(message) {
+            sendError('map.feature.hide', message, 'Channel not supported');
+		},
+		"map.feature.show": function(message) {
+            sendError('map.feature.show', message, 'Channel not supported');
+		},
+		"map.feature.selected": function(message) {
+            sendError('map.feature.selected', message, 'Channel not supported');
+		},
+		"map.feature.deselected": function(message) {
+            sendError('map.feature.deselected', message, 'Channel not supported');
+		},
+		"map.feature.update": function(message) {
+            sendError('map.feature.update', message, 'Channel not supported');
+		}
+    };
 
     /**
      * Plot passed in geoJSON
@@ -92,31 +92,31 @@ define([
     }
      *Note that name and selectable will only be used if there was no overlay with the given id
      */
-    function plotGeoJSON(message){
+    function plotGeoJSON(message) {
         var postOptions,
-            layerId,
-            layerOptions;
+            layerId;
 
-        if(!message.feature ||
+        if(
             !message.feature ||
+            !message.feature.features ||
             !Array.isArray(message.feature.features) ||
-            message.feature.features.length === 0){
+            message.feature.features.length === 0
+        ){
             return false;
         }
+
         layerId = message.overlayId || defaultLayerId;
 
         if(!context.sandbox.dataStorage.datasets[layerId]) {
             context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
-            layerOptions = {
+
+            publisher.publishCreateLayer({
                 "layerId": layerId,
-                "name": message.name || ""
-            };
-
-            ('selectable' in message) ?
-                layerOptions.selectable = message.selectable :
-                true; //Default to true
-
-            publisher.publishCreateLayer(layerOptions);
+                "name": message.name || layerId,
+                "selectable": ('selectable' in message) ? message.selectable : true,
+                "coords": message.coords
+                // TODO: Add styleMap
+            });
         }
 
         postOptions = {
@@ -133,19 +133,21 @@ define([
 
         // Save the features and plot them.
         var newAJAX = context.sandbox.utils.ajax(postOptions)
-            .done(function(data){
+            .done(function(data) {
                 var newData = [];
-                if(data){
+                if(data) {
 
-                    message.feature.features.forEach(function(feature, index){
+                    message.feature.features.forEach(function(feature, index) {
                         var newValue = {};
 
+                        // Using local copy of attributes becuase server doesnt give them back
                         newValue.dataService = 'cmapi';
-                        newValue.id = data.items[index].index._id; //TODO this should change serverside
+                        newValue.id = data.items[index].index._id; //TODO: this should change serverside to return all of what is saved, not just ID
                         newValue.geometry = feature.geometry;
                         newValue.type = feature.type;
                         newValue.properties = feature.properties;
-                        if(feature.geometry.type === 'Point'){
+                        if(feature.geometry.type === 'Point') {
+                            // Adding properties for other conponents to use
                             newValue.lat = feature.geometry.coordinates[1];
                             newValue.lon = feature.geometry.coordinates[0];
                         }
@@ -170,7 +172,7 @@ define([
 
                 }
 
-            }).error(function(){
+            }).error(function() {
                 publisher.publishPlotError({"layerId": layerId});
                 sendError('map.feature.plot', message, 'Server not available or malformed geoJSON');
 
@@ -178,8 +180,8 @@ define([
 
         context.sandbox.ajax.addActiveAJAX(newAJAX, layerId);
 
-        //TODO collection-wide style map?
-        //TODO modify format more?
+        //TODO: collection-wide style map?
+        //TODO: modify format more?
 
     }
 

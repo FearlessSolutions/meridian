@@ -4,11 +4,11 @@ define([
         parent;
 
 	var exposed = {
-        init: function(thisContext, thisParent){
+        init: function(thisContext, thisParent) {
             context = thisContext;
             parent = thisParent;
 
-//            context.sandbox.on('map.view.status', parent.emitViewStatus);
+            // context.sandbox.on('map.view.status', parent.emitViewStatus);
         }
     };	
 

@@ -39,15 +39,12 @@ define([
             });
 
         },
-        stop: function(params){
-           //Now handled in the AJAX handler
-        },
-        clear: function(){
+        clear: function() {// TODO: look at the alternate solution for clearing single dataset
             context.sandbox.dataStorage.clear();
 
         },
-        deleteDataset: function(params) {
-            // delete context.sandbox.dataStorage.datasets[params.layerId]; 
+        deleteDataset: function(params) { 
+            // delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delet directly
         }
     };
 

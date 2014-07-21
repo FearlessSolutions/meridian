@@ -7,7 +7,24 @@ define([
         sendError,
         DEFAULT_SELECTABLE = true;
 
-    var receiveChannels= {
+    var exposed = {
+        init: function(thisContext, layerId, errorChannel) {
+            context = thisContext;
+            defaultLayerId = layerId;
+            sendError = errorChannel;
+            publisher.init(context);
+            subscriber.init(context, exposed);
+        },
+        receive: function(channel, message) {
+            if(receiveChannels[channel]) {
+                receiveChannels[channel](message);
+            } else {
+                sendError(channel, message, 'Channel not supported');
+            }
+        }
+    };
+
+    var receiveChannels = {
         /**
          * Creates an overlay with given params.
          * If a layer already exists with the given id, that call is ignored
@@ -17,25 +34,31 @@ define([
          * message.selectable - If the features in the layer should be selectable (optional)(default: true)
          * message.bounds{maxLat:INT, maxLon:INT, minLat:INT, minLon:INT} - The AOI box to be created with the layer (optional)
          */
-		"map.overlay.create": function(message){
+		"map.overlay.create": function(message) {
 			if(message === '') {
 				message = {
 					"layerId": defaultLayerId,
                     "selectable": DEFAULT_SELECTABLE
 				};
-			}else{
+			} else {
                 message.layerId = message.overlayId || defaultLayerId; //Ensure that there is a layerId
-                if(!('selectable' in message)){
+                if(!('selectable' in message)) {
                     message.selectable = DEFAULT_SELECTABLE;
                 }
             }
 
-            if(context.sandbox.dataStorage.datasets[message.layerId]){
+            if(context.sandbox.dataStorage.datasets[message.layerId]) {
                 sendError('map.overlay.create', message, 'Layer already made');
                 return; //Layer already made; ignore this request
-            }else{
+            } else {
                 context.sandbox.dataStorage.datasets[message.layerId] = new Backbone.Collection();
-                publisher.publishCreateLayer(message);
+                publisher.publishCreateLayer({
+                    "layerId": message.layerId,
+                    "name": message.name,
+                    "selectable": message.selectable,
+                    "coords": message.coords
+                    // TODO: Add styleMap
+                });
             }
 		},
         /**
@@ -44,9 +67,10 @@ define([
          * @param message
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
-		"map.overlay.remove": function(message){
-            message.layerId = message.overlayId || defaultLayerId;
-            publisher.publishRemoveLayer(message);
+		"map.overlay.remove": function(message) {
+            publisher.publishRemoveLayer({
+                "layerId": message.overlayId || defaultLayerId
+            });
 		},
         /**
          * Hides overlay with the given id.
@@ -54,9 +78,10 @@ define([
          * @param message
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
-		"map.overlay.hide": function(message){
-			message.layerId = message.overlayId || defaultLayerId;
-			publisher.publishHideLayer(message);
+		"map.overlay.hide": function(message) {
+			publisher.publishHideLayer({
+                "layerId": message.overlayId || defaultLayerId
+            });
 		},
         /**
          * Removes overlay with the given id.
@@ -64,35 +89,19 @@ define([
          * @param message
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
-		"map.overlay.show": function(message){
-			message.layerId = message.overlayId || defaultLayerId;
-			publisher.publishShowLayer(message);
+		"map.overlay.show": function(message) {
+			publisher.publishShowLayer({
+                "layerId": message.overlayId || defaultLayerId
+            });
 		},
         /**
          * @notImplemented
          * @param message
          */
-		"map.overlay.update": function(message){
+		"map.overlay.update": function(message) {
             sendError('map.overlay.update', message, 'Channel not supported');
         }
     };
-
-	var exposed = {
-		init: function(thisContext, layerId, errorChannel) {
-			context = thisContext;
-			defaultLayerId = layerId;
-            sendError = errorChannel;
-            publisher.init(context);
-            subscriber.init(context, exposed);
-        },
-        receive: function(channel, message){
-        	if(receiveChannels[channel]){
-        		receiveChannels[channel](message);
-        	}else{
-        		//error?
-        	}
-        }
-	};
 
     return exposed;
 });

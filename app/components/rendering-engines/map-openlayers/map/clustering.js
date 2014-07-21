@@ -1,4 +1,4 @@
-define([], function(){
+define([], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -15,11 +15,11 @@ define([], function(){
             populateRules();
             overrideDefaultClustering();
         },
-        enable: function(){
+        enable: function() {
             enabled = true;
-            layerOptionsCollection.forEach(function(layerOptions){
-                layerOptions.strategies.forEach(function(strat){
-                    if (strat.clusters){
+            layerOptionsCollection.forEach(function(layerOptions) {
+                layerOptions.strategies.forEach(function(strat) {
+                    if (strat.clusters) {
                         strat.distance = config.thresholds.clustering.distance;
                         strat.threshold = config.thresholds.clustering.threshold;
                         strat.recluster();
@@ -27,11 +27,11 @@ define([], function(){
                 });
             });
         },
-        disable: function(){
+        disable: function() {
             enabled = false;
-            layerOptionsCollection.forEach(function(layerOptions){
-                layerOptions.strategies.forEach(function(strat){
-                    if (strat.clusters){
+            layerOptionsCollection.forEach(function(layerOptions) {
+                layerOptions.strategies.forEach(function(strat) {
+                    if (strat.clusters) {
                         strat.distance = config.thresholds.noClustering.distance;
                         strat.threshold = config.thresholds.noClustering.threshold;
                         strat.recluster();
@@ -63,13 +63,13 @@ define([], function(){
             }, OpenLayers.Feature.Vector.style["default"]), {
                 rules: rules,
                 context: {
-                    width: function(feature){
+                    width: function(feature) {
                         return feature.cluster ? 0 : feature.attributes.width;
                     },
-                    height: function(feature){
+                    height: function(feature) {
                         return feature.cluster ? 0 : feature.attributes.height;
                     },
-                    icon: function(feature){
+                    icon: function(feature) {
                         return feature.cluster ? "" : feature.attributes.icon;
                     }
                 }
@@ -85,14 +85,14 @@ define([], function(){
                     config.thresholds.clustering : config.thresholds.noClustering)
             ];
             layerOptions.rendererOptions = {zIndexing: true};
-            layerOptions.recluster = function(){
+            layerOptions.recluster = function() {
                 this.strategies[0].recluster();
             };
 
             layerOptionsCollection.push(layerOptions);
         },
         deleteClusteringLayerOptions: function(params) {
-            context.sandbox.utils.each(layerOptionsCollection, function(key, value){
+            context.sandbox.utils.each(layerOptionsCollection, function(key, value) {
                 if(value.layerId === params.layerId) {
                     layerOptionsCollection.splice(key, 1);
                     return false;
@@ -117,7 +117,7 @@ define([], function(){
         }
     };
 
-    function populateRules(){
+    function populateRules() {
         var lowRule,
             midRule,
             highRule,
@@ -168,14 +168,14 @@ define([], function(){
      * Change the default clustering logic to use our own
      * Does not cluster polygons (leaves them unclustered and visible)
      */
-    function overrideDefaultClustering(){
+    function overrideDefaultClustering() {
 
         // Override
         OpenLayers.Strategy.Cluster.prototype.cacheFeatures = function(event) {
             var propagate = true;
             if(!this.clustering) {
                 //this.clearCache();
-                if(this.features === null){
+                if(this.features === null) {
                     this.features = [];
                 }
                 this.features = this.features.concat(event.features);
@@ -186,7 +186,7 @@ define([], function(){
         };
 
         // New Function
-        OpenLayers.Strategy.Cluster.prototype.recluster = function(){
+        OpenLayers.Strategy.Cluster.prototype.recluster = function() {
             var event={"recluster":true};
             this.cluster(event);
         };
@@ -206,11 +206,11 @@ define([], function(){
 
                 if((event && event.recluster) || resolution != this.resolution || !this.clustersExist()) {
                     this.resolution = resolution;
-                    if (this.features){
+                    if (this.features) {
                         for(i=0; i<this.features.length; ++i) {
                             feature = this.features[i];
                             if(feature.geometry) {
-                                if(feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point"){
+                                if(feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point") {
                                     clustered = false;
                                     for(j=clusters.length-1; j>=0; --j) {
                                         cluster = clusters[j];
@@ -223,7 +223,7 @@ define([], function(){
                                     if(!clustered) {
                                         clusters.push(this.createCluster(this.features[i]));
                                     }
-                                }else{
+                                } else {
                                     clusters.push(this.createCluster(this.features[i]));
                                 }
 

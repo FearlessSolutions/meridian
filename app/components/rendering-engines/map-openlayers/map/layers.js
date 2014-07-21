@@ -5,7 +5,7 @@ define([
     './heatmap',
     './../libs/openlayers-2.13.1/OpenLayers',
     './../libs/Heatmap/Heatmap'
-], function(publisher, mapBase, mapClustering, mapHeatmap){
+], function(publisher, mapBase, mapClustering, mapHeatmap) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -193,7 +193,6 @@ define([
          * Delete layer with given layerId and all of the features in it
          * @param params
          */
-
         deleteLayer: function(params) {
             var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0],
                 layers = selector.layers,
@@ -210,7 +209,7 @@ define([
             params.map.removeLayer(params.map.getLayersBy('layerId', params.layerId)[0]);
 
 
-            context.sandbox.utils.each(layers, function(key, value){
+            context.sandbox.utils.each(layers, function(key, value) {
                 if(value.layerId === params.layerId) {
                     layers.splice(key, 1);
                     return false;
@@ -309,7 +308,7 @@ define([
          */
         clear: function(params) {
             var layers = params.map.getLayersByClass('OpenLayers.Layer.Vector');
-            layers.forEach(function(layer){
+            layers.forEach(function(layer) {
                 layer.destroy();              
             });
             context.sandbox.stateManager.layers = {};
@@ -318,7 +317,7 @@ define([
                 "map": params.map
             });
         },
-        addEventListenersToLayer: function(params){
+        addEventListenersToLayer: function(params) {
             if(params.eventListeners) {
                 params.layer.events.on(params.eventListeners);
             } else {
@@ -336,10 +335,10 @@ define([
         loadBasemaps: function(params) {
             var basemapLayers = {};
 
-            context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(basemap){
+            context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(basemap) {
                 var baseLayer;
 
-                switch (context.sandbox.mapConfiguration.basemaps[basemap].type){
+                switch (context.sandbox.mapConfiguration.basemaps[basemap].type) {
                     case "osm":
                         baseLayer = exposed.createOSMLayer({
                             "map": params.map,
@@ -369,7 +368,7 @@ define([
                         context.sandbox.logger.error('Did not load basemap. No support for basemap type:', context.sandbox.mapConfiguration.basemaps[basemap].type);
                         break;
                 }
-                if(baseLayer){
+                if(baseLayer) {
                     basemapLayers[context.sandbox.mapConfiguration.basemaps[basemap].basemap] = baseLayer;
                 }
             });
@@ -423,11 +422,11 @@ define([
                             popup;
 
                         context.sandbox.utils.each(fullFeature.properties, 
-                            function(k, v){
-                                if((context.sandbox.utils.type(v) === "string" ||
-                                    context.sandbox.utils.type(v) === "number" ||
-                                    context.sandbox.utils.type(v) === "boolean")) {
-                                    formattedAttributes[k] = v;
+                            function(key, value) {
+                                if((context.sandbox.utils.type(value) === "string" ||
+                                    context.sandbox.utils.type(value) === "number" ||
+                                    context.sandbox.utils.type(value) === "boolean")) {
+                                    formattedAttributes[key] = value;
                                 }
                         });
                         popup = new OpenLayers.Popup.FramedCloud('popup',
@@ -477,11 +476,12 @@ define([
                 context.sandbox.dataStorage.getFeatureById({"featureId": feature.featureId}, function(fullFeature) {
                     infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
                     context.sandbox.utils.each(fullFeature.properties,
-                        function(k, v){
-                            if((context.sandbox.utils.type(v) === "string" ||
-                                context.sandbox.utils.type(v) === "number" ||
-                                context.sandbox.utils.type(v) === "boolean")) {
-                                formattedAttributes[k] = v;
+                        function(key, value) {
+                            if((context.sandbox.utils.type(value) === "string" ||
+                                context.sandbox.utils.type(value) === "number" ||
+                                context.sandbox.utils.type(value) === "boolean"
+                            )) {
+                                formattedAttributes[key] = value;
                             }
                     });
                     
@@ -601,42 +601,45 @@ define([
                     zoom,
                     maxAuto;
 
-                if (!feature.cluster){
+                if(!feature.cluster) {
 
-                    context.sandbox.dataStorage.getFeatureById({"featureId": feature.featureId}, function(fullFeature){
-                        infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
-                        context.sandbox.utils.each(fullFeature.properties,
-                            function(k, v){
-                                if((context.sandbox.utils.type(v) === "string" ||
-                                    context.sandbox.utils.type(v) === "number" ||
-                                    context.sandbox.utils.type(v) === "boolean")) {
-                                    formattedAttributes[k] = v;
+                    context.sandbox.dataStorage.getFeatureById({
+                        "featureId": feature.featureId}, 
+                        function(fullFeature) {
+                            infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
+                            context.sandbox.utils.each(fullFeature.properties,
+                                function(k, v) {
+                                    if((context.sandbox.utils.type(v) === "string" ||
+                                        context.sandbox.utils.type(v) === "number" ||
+                                        context.sandbox.utils.type(v) === "boolean")) {
+                                        formattedAttributes[k] = v;
+                                    }
+                            });
+
+                            anchor= {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, -(feature.attributes.height/2))};
+                            popup = new OpenLayers.Popup.FramedCloud('popup',
+                                OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                                null,
+                                infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
+                                anchor,
+                                true,
+                                function() {
+                                    mapBase.clearMapSelection({
+                                        "map": params.map
+                                    });
+                                    mapBase.clearMapPopups({
+                                        "map": params.map
+                                    });
                                 }
-                        });
-
-                        anchor= {"size": new OpenLayers.Size(0,0), "offset": new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
-                        popup = new OpenLayers.Popup.FramedCloud('popup',
-                            OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
-                            null,
-                            infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
-                            anchor,
-                            true,
-                            function() {
-                                mapBase.clearMapSelection({
-                                    "map": params.map
-                                });
-                                mapBase.clearMapPopups({
-                                    "map": params.map
-                                });
-                            }
-                        );
-                        feature.popup = popup;
-                        params.map.addPopup(popup);
-                        infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
-                    });
+                            );
+                            feature.popup = popup;
+                            params.map.addPopup(popup);
+                            infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
+                        }
+                    );
                 } else {
                     bounds = feature.geometry.getBounds();
-                    feature.cluster.forEach(function(point){
+                    feature.cluster.forEach(function(point) {
                         bounds.extend(point.geometry.getBounds());
                     });
                     zoom = params.map.getZoomForExtent(bounds);
@@ -647,7 +650,7 @@ define([
                     //
                     // Clicking a cluster should never zoom the user out.
                     maxAuto = context.sandbox.mapConfiguration.maxAutoZoomLevel;
-                    if (zoom > maxAuto){
+                    if(zoom > maxAuto) {
                         zoom = params.map.zoom > maxAuto ? params.map.zoom : maxAuto;
                         publisher.publishMessage({
                             messageType: 'warning',
@@ -660,7 +663,7 @@ define([
             },
             featureunselected: function(evt) {
                 var feature = evt.feature;
-                if (!feature.cluster){
+                if(!feature.cluster) {
                     params.map.removePopup(feature.popup);
                     feature.popup.destroy();
                     feature.popup = null;

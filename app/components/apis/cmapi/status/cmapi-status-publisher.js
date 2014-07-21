@@ -6,7 +6,7 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        getStatus: function(message){
+        getStatus: function(message) {
           context.sandbox.emit('map.get.status');   
         }
     };

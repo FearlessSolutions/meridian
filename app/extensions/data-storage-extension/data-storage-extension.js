@@ -20,7 +20,7 @@ define([
                     }
                 },
                 updateColumns: function(params) {
-                    $.each(params.data, function(k, v){
+                    $.each(params.data, function(k, v) {
                         // Skipping id field because it is for backbone modeling
                         if(($.type(v) === "string" || $.type(v) === "number" || $.type(v) === "boolean") && k !== "id") {
                             if(!dataStorage.columns[k]) {
@@ -32,7 +32,7 @@ define([
                 getColumns: function() {
                     return dataStorage.columns;
                 },
-                clear: function(){
+                clear: function() {
                     dataStorage.datasets = {};
                 },
                 getFeatureById: function(params, callback) {

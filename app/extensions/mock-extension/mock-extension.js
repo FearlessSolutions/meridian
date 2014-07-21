@@ -12,7 +12,7 @@ define([
             }
             app.sandbox.dataServices.mock = {};
             app.sandbox.dataServices.mock.infoWinTemplate = {
-                buildInfoWinTemplate: function(attributes){
+                buildInfoWinTemplate: function(attributes) {
                     var mockTemplate = Handlebars.compile(mockHbs);
                     var html = mockTemplate({
                         thumbnail: "./extensions/map-configuration-extension/images/markerIcons/marker-2x.png",

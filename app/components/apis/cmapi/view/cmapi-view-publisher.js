@@ -9,13 +9,13 @@ define([
         publishMessage: function(args) {
             context.sandbox.emit('message.publish', args); 
         },
-        publishSetCenter: function(args){
+        publishSetCenter: function(args) {
             context.sandbox.emit('map.center.set', args);
         },
-        publishZoomToLayer: function(args){
+        publishZoomToLayer: function(args) {
             context.sandbox.emit('map.zoom.toLayer', args);
         },
-        publishCenterOnBounds: function(args){
+        publishCenterOnBounds: function(args) {
             context.sandbox.emit('map.zoom.toLocation', args);
         }
     };

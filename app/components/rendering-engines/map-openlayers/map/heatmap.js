@@ -1,4 +1,4 @@
-define([], function(){
+define([], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -50,7 +50,7 @@ define([], function(){
             if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible && collection.models) {
                 collection.models.forEach(function(model){
                     var geometry = model.attributes.geometry;
-                    if(geometry.type === "Point"){
+                    if(geometry.type === "Point") {
                         newData.push(new OpenLayers.Feature.Vector(
                             new OpenLayers.Geometry.Point(
                                 geometry.coordinates[0],
@@ -60,7 +60,7 @@ define([], function(){
                                 params.map.projection
                             )
                         ));
-                    }else{ //TODO The heatmap library only handles points.
+                    } else { //TODO The heatmap library only handles points.
                       //  var feature = geoJsonParser.parseFeature(model.attributes);
                       //  newData.push(feature);
                     }

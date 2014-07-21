@@ -6,7 +6,7 @@ define([
 	var context;
 
 	var exposed = {
-        init: function(thisContext){
+        init: function(thisContext) {
 			context = thisContext;
             context.sandbox.on('query.stop', context.sandbox.ajax.stopQuery);
             context.sandbox.on('data.clear.all', context.sandbox.ajax.clear);

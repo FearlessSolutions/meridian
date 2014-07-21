@@ -16,9 +16,9 @@ define([
                  * @param newAJAX
                  * @param queryId
                  */
-                "addActiveAJAX": function (newAJAX, queryId){
-                    if(queryId){
-                        newAJAX.queryId = queryId;00
+                "addActiveAJAX": function (newAJAX, queryId) {
+                    if(queryId) {
+                        newAJAX.queryId = queryId;
                     }
 
                     activeAJAXs.push(newAJAX);
@@ -26,9 +26,9 @@ define([
                 /**
                  * Remove finished AJAX from list
                  */
-                "clean": function(){
-                    activeAJAXs.forEach(function(ajax, index){
-                        if(ajax.readyState === 4){ //4 is "complete" status
+                "clean": function() {
+                    activeAJAXs.forEach(function(ajax, index) {
+                        if(ajax.readyState === 4) { //4 is "complete" status
                             activeAJAXs.splice(index, 1);
                         }
                     });
@@ -36,9 +36,9 @@ define([
                 /**
                  * Abort ALL open AJAX
                  */
-                "clear": function(){
-                    activeAJAXs.forEach(function(ajax, index){
-                        if(ajax.queryId === params.queryId){ //This was set in queryData
+                "clear": function() {
+                    activeAJAXs.forEach(function(ajax, index) {
+                        if(ajax.queryId === params.queryId) { //This was set in queryData
                             ajax.abort();
                             activeAJAXs.splice(index, 1);
                         }
@@ -48,9 +48,9 @@ define([
                  * Aborts AJAX based on queryId
                  * @param queryId
                  */
-                "stopQuery": function(queryId){
-                    activeAJAXs.forEach(function(ajax, index){
-                        if(ajax.queryId === queryId){
+                "stopQuery": function(queryId) {
+                    activeAJAXs.forEach(function(ajax, index) {
+                        if(ajax.queryId === queryId) {
                             ajax.abort();
                             activeAJAXs.splice(index, 1);
                         }

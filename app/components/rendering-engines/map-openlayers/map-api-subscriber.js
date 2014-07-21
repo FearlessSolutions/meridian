@@ -4,12 +4,12 @@ define([
     var context;
 
 	var exposed = {
-        init: function(thisContext){
+        init: function(thisContext) {
             context = thisContext;
 
             exposed.subscribeOn();
         },
-        subscribeOn: function(){
+        subscribeOn: function() {
             context.sandbox.on('map.features.plot', mapCore.plotFeatures);
             context.sandbox.on('map.basemap.change', mapCore.setBasemap);
             context.sandbox.on('map.center.set', mapCore.setCenter);
@@ -28,7 +28,7 @@ define([
             context.sandbox.on('map.feature.identify', mapCore.identifyRecord);
             context.sandbox.on('data.clear.all', mapCore.clear);
         },
-        subscribeOff: function(){
+        subscribeOff: function() {
             context.sandbox.off('map.features.plot', mapCore.plotFeatures);
             context.sandbox.off('map.basemap.change', mapCore.setBasemap);
             context.sandbox.off('map.center.set', mapCore.setCenter);

@@ -39,14 +39,14 @@ define([
      * Passes that message to the correct module
      * @param e
      */
-    function receive(e){
+    function receive(e) {
         var channel = e.data.channel,
             category = channel.split('.')[1], //0 is always "map"
             message = e.data.message;
-        try{
-            if(message !== ''){
+        try {
+            if(message !== '') {
                 message = JSON.parse(message);
-                if(!message.origin){
+                if(!message.origin) {
                     message.origin = defaultLayerId;
                 }
                 /* //TODO this is for handling kml also; not doing right now
@@ -71,16 +71,17 @@ define([
                     message = JSON.parse(message);    
                 }  
             
-                if(!message.origin)
-                    message.origin = 'cmapi';*/
+                if(!message.origin){
+                    message.origin = 'cmapi';
+                }*/
             }            
-        }catch(parseE){
+        } catch(parseE) {
             console.debug(parseE);
         } //This might not be an actual error?
 
-        if(processing[category]){
+        if(processing[category]) {
             processing[category].receive(channel, message);
-        }else{} //Error?
+        } else {} //Error?
     }
 
     /**
@@ -88,7 +89,7 @@ define([
      * @param channel - Channel to send the message on
      * @param message
      */
-    function emit(channel, message){
+    function emit(channel, message) {
         context.sandbox.external.postMessageToParent({
             "channel": channel,
             "message": message
@@ -99,7 +100,7 @@ define([
      * Help function to send errors to the parent
      * @param message
      */
-    function sendError(failedChannel, msg, err){
+    function sendError(failedChannel, msg, err) {
         var payload = {
             "sender": context.sandbox.cmapi.thisName,
             "type": failedChannel,
