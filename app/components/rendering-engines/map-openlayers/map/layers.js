@@ -15,9 +15,15 @@ define([
 
         },
         createStaticLayers: function(params) {
+            var geolocatorParams,
+                geolocatorLayer,
+                drawParams,
+                drawLayer,
+                heatmapParams,
+                heatmapLayer;
 
             //Create geolocator layer options
-            var geolocatorParams = {
+            geolocatorParams = {
                 "map": params.map,
                 "layerId": "static_geolocator",
                 "static": true,
@@ -28,14 +34,14 @@ define([
                     "graphicYOffset": context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
                 }
             };
-            var geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
+            geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
             addGeoLocatorListeners({
                 "map": params.map,
                 "layer": geolocatorLayer
             });
 
             //Create draw layer options
-            var drawParams = {
+            drawParams = {
                 "map": params.map,
                 "layerId": "static_draw",
                 "static": true,
@@ -46,14 +52,14 @@ define([
                     }
                 }
             };
-            var drawLayer = exposed.createVectorLayer(drawParams);
+            drawLayer = exposed.createVectorLayer(drawParams);
             addDrawListeners({
                 "map": params.map,
                 "layer": drawLayer
             });
 
             //Create heatmap layer options
-            var heatmapParams = {
+            heatmapParams = {
                 "map": params.map,
                 "layerId": "static_heatmap",
                 "renderers": ['Heatmap'],
@@ -83,7 +89,7 @@ define([
                     })
                 }
             };
-            var heatmapLayer = exposed.createVectorLayer(heatmapParams);
+            heatmapLayer = exposed.createVectorLayer(heatmapParams);
 
             params.map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]);
             mapBase.addLayerToSelector({
@@ -93,8 +99,12 @@ define([
 
         },
         createVectorLayer: function(params) {
+            var options,
+                newVectorLayer,
+                selector,
+                layers;
 
-            var options = { 
+            options = {
                 "layerId": params.layerId, // set as layerId, is not present its null
                 "styleMap": null  // set as null for default of not providing a stylemap
             };
@@ -106,7 +116,7 @@ define([
 
             delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
 
-            var newVectorLayer = new OpenLayers.Layer.Vector(
+            newVectorLayer = new OpenLayers.Layer.Vector(
                 params.layerId,
                 options
             );
@@ -118,8 +128,8 @@ define([
             params.map.addLayers([newVectorLayer]);
 
             if(params.selectable) {
-                var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-                var layers = selector.layers;
+                selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                layers = selector.layers;
                 layers.push(newVectorLayer);
                 selector.setLayer(layers);
             }
@@ -157,6 +167,10 @@ define([
             params.map.setLayerIndex(params.map.getLayersBy('layerId', params.layerId)[0], params.layerIndex);
         },
         deleteLayer: function(params) {
+            var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0],
+                layers = selector.layers,
+                index;
+
             mapBase.clearMapSelection({
                 "map": params.map
             });
@@ -166,8 +180,8 @@ define([
 
             delete context.sandbox.stateManager.layers[params.layerId];
             params.map.removeLayer(params.map.getLayersBy('layerId', params.layerId)[0]);
-            var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-            var layers = selector.layers;
+
+
             context.sandbox.utils.each(layers, function(key, value){
                 if(value.layerId === params.layerId) {
                     layers.splice(key, 1);
@@ -187,6 +201,10 @@ define([
                 "map": params.map
             });
         },
+        /**
+         * Remove all of the features from a layer, but leave the layer
+         * @param params
+         */
         clearLayer: function(params) {
             params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
         },
@@ -274,6 +292,11 @@ define([
                 });
             }
         },
+        /**
+         * Load basemaps, as defined in the map configuration. Accepts OSM and WMTS
+         * @param params
+         * @returns {{}}
+         */
         loadBasemaps: function(params) {
             var basemapLayers = {};
 
@@ -320,17 +343,20 @@ define([
         setBasemap: function(params) {
             params.map.setBaseLayer(params.basemapLayer);
         },
+        /**
+         * Add popup to feature, even if it is in a cluster
+         * @param params
+         */
         identifyFeature: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
-            var feature = layer.getFeatureBy('featureId', params.featureId);
+            var layer = params.map.getLayersBy('layerId', params.layerId)[0],
+                feature = layer.getFeatureBy('featureId', params.featureId),
+                clusterFeatureId,
+                clusterFeatureCount,
+                record,
+                currentDataService;
 
             //If no feature is found, it is most likely because it was hidden in a cluster
             if(!feature) {
-                var clusterFeatureId,
-                    clusterFeatureCount,
-                    record,
-                    currentDataService;
-
                 context.sandbox.utils.each(layer.features, function(k1, v1) {
                     if(v1.cluster) {
                         context.sandbox.utils.each(v1.cluster, function(k2, v2) {
@@ -530,7 +556,10 @@ define([
                     infoWinTemplateRef,
                     feature = evt.feature,
                     formattedAttributes = {},
-                    anchor;
+                    anchor,
+                    bounds,
+                    zoom,
+                    maxAuto;
 
                 if (!feature.cluster){
 
@@ -566,18 +595,18 @@ define([
                         infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
                     });
                 } else {
-                    var bounds = feature.geometry.getBounds();
+                    bounds = feature.geometry.getBounds();
                     feature.cluster.forEach(function(point){
                         bounds.extend(point.geometry.getBounds());
                     });
-                    var zoom = params.map.getZoomForExtent(bounds);
+                    zoom = params.map.getZoomForExtent(bounds);
 
                     // To prevent zooming in too far
                     // Sources don't always provide the correct information
                     // as to what levels they have imagery for.
                     //
                     // Clicking a cluster should never zoom the user out.
-                    var maxAuto = context.sandbox.mapConfiguration.maxAutoZoomLevel;
+                    maxAuto = context.sandbox.mapConfiguration.maxAutoZoomLevel;
                     if (zoom > maxAuto){
                         zoom = params.map.zoom > maxAuto ? params.map.zoom : maxAuto;
                         publisher.publishMessage({

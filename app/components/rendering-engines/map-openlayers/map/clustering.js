@@ -48,6 +48,10 @@ define([], function(){
                 params.map.getLayersBy('layerId', layerId)[0].setVisibility(visibility);
             });
         },
+        /**
+         * Add the clustering stylesheets to a layer
+         * @param layerOptions
+         */
         addClusteringToLayerOptions: function(layerOptions) {
             var style = new OpenLayers.Style(OpenLayers.Util.applyDefaults({
                 externalGraphic: "${icon}",
@@ -160,6 +164,10 @@ define([], function(){
 
     }
 
+    /**
+     * Change the default clustering logic to use our own
+     * Does not cluster polygons (leaves them unclustered and visible)
+     */
     function overrideDefaultClustering(){
 
         // Override

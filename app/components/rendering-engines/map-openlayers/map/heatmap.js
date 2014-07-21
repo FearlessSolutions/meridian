@@ -27,6 +27,12 @@ define([], function(){
         }
     };
 
+    /**
+     * Generate heatmap based on sandbox.dataStorage layer visibility
+     * Ignores polygons
+     * @param params
+     * //TODO polygons
+     */
     function generateHeatmap(params) {
         var heatLayer = params.map.getLayersBy('layerId', 'static_heatmap')[0],
             newData = [],
