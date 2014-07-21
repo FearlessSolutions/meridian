@@ -8,6 +8,10 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
+        /**
+         * Plot features given in geoJSON format
+         * @param params
+         */
         plotFeatures: function(params) {
             var layerId = params.layerId,
                 data = params.data,

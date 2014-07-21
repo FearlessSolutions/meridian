@@ -9,6 +9,11 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
+        /**
+         * Create the basic map and set default values for initial viewport
+         * @param params
+         * @returns {OpenLayers.Map}
+         */
         createMap: function(params) {
             var mapElement,
                 map,

@@ -14,10 +14,18 @@ define([
         zoomOut: function(params) {
             params.map.zoomOut();
         },
+        /**
+         * Zoom to bbox
+         * @param params
+         */
         zoomToExtent: function(params) {
             var bounds = new OpenLayers.Bounds(params.minLon, params.minLat, params.maxLon, params.maxLat);
             params.map.zoomToExtent(bounds.transform(params.map.projectionWGS84, params.map.projection), true);
         },
+        /**
+         * Zoom to extent of layer DATA
+         * @param params
+         */
         zoomToLayer: function(params) {
             var queryLayer = params.map.getLayersBy('layerId', params.layerId)[0];
 
@@ -25,6 +33,10 @@ define([
                 params.map.zoomToExtent(queryLayer.getDataExtent());
             }
         },
+        /**
+         * Pan to given point and zoom to zoom-level-8
+         * @param params
+         */
         setCenter: function(params) {
             var centerPoint,
                 lat = params.lat,
