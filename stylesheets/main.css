@@ -10,7 +10,10 @@ body {
 	text-align: center;
 	padding-top: 33px; /*modifying jumbotron padding to be smaller*/
 	padding-bottom: 33px; /*modifying jumbotron padding to be smaller*/
-	background-image: url("../images/meridian-app.png")
+	background-image: url("../images/meridian-banner.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+
 }
 
 .logo {
