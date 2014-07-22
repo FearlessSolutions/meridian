@@ -5,7 +5,7 @@ define([
     './heatmap',
     './../libs/openlayers-2.13.1/OpenLayers',
     './../libs/Heatmap/Heatmap'
-], function(publisher, mapBase, mapClustering, mapHeatmap){
+], function(publisher, mapBase, mapClustering, mapHeatmap) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -14,10 +14,20 @@ define([
             context = thisContext;
 
         },
+        /**
+         * Create layers that are not accessible to the user, and that don't go away
+         * @param params
+         */
         createStaticLayers: function(params) {
+            var geolocatorParams,
+                geolocatorLayer,
+                drawParams,
+                drawLayer,
+                heatmapParams,
+                heatmapLayer;
 
             //Create geolocator layer options
-            var geolocatorParams = {
+            geolocatorParams = {
                 "map": params.map,
                 "layerId": "static_geolocator",
                 "static": true,
@@ -28,14 +38,14 @@ define([
                     "graphicYOffset": context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
                 }
             };
-            var geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
+            geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
             addGeoLocatorListeners({
                 "map": params.map,
                 "layer": geolocatorLayer
             });
 
             //Create draw layer options
-            var drawParams = {
+            drawParams = {
                 "map": params.map,
                 "layerId": "static_draw",
                 "static": true,
@@ -46,14 +56,14 @@ define([
                     }
                 }
             };
-            var drawLayer = exposed.createVectorLayer(drawParams);
+            drawLayer = exposed.createVectorLayer(drawParams);
             addDrawListeners({
                 "map": params.map,
                 "layer": drawLayer
             });
 
             //Create heatmap layer options
-            var heatmapParams = {
+            heatmapParams = {
                 "map": params.map,
                 "layerId": "static_heatmap",
                 "renderers": ['Heatmap'],
@@ -83,7 +93,7 @@ define([
                     })
                 }
             };
-            var heatmapLayer = exposed.createVectorLayer(heatmapParams);
+            heatmapLayer = exposed.createVectorLayer(heatmapParams);
 
             params.map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]);
             mapBase.addLayerToSelector({
@@ -92,9 +102,22 @@ define([
             });
 
         },
+        /**
+         * Create new vector layer
+         * @param params {
+         *      styleMap - Style map for just this layer
+         *      layerId - Id for this layer (must be unique).
+         *      selectable - If this layer's features should be interactive
+         * }
+         * @returns {OpenLayers.Layer.Vector}
+         */
         createVectorLayer: function(params) {
+            var options,
+                newVectorLayer,
+                selector,
+                layers;
 
-            var options = { 
+            options = {
                 "layerId": params.layerId, // set as layerId, is not present its null
                 "styleMap": null  // set as null for default of not providing a stylemap
             };
@@ -106,7 +129,7 @@ define([
 
             delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
 
-            var newVectorLayer = new OpenLayers.Layer.Vector(
+            newVectorLayer = new OpenLayers.Layer.Vector(
                 params.layerId,
                 options
             );
@@ -118,8 +141,8 @@ define([
             params.map.addLayers([newVectorLayer]);
 
             if(params.selectable) {
-                var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-                var layers = selector.layers;
+                selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                layers = selector.layers;
                 layers.push(newVectorLayer);
                 selector.setLayer(layers);
             }
@@ -129,11 +152,21 @@ define([
 
             return newVectorLayer;
         },
+        /**
+         * Add base layer of OSM format
+         * @param params
+         * @returns {OpenLayers.Layer.OSM}
+         */
         createOSMLayer: function(params) {
             var baseLayer = new OpenLayers.Layer.OSM(params.label,params.url);
             params.map.addLayer(baseLayer);
             return baseLayer;
         },
+        /**
+         * Create baselayer of WMTS format
+         * @param params
+         * @returns {OpenLayers.Layer.WMTS}
+         */
         createWMTSLayer: function(params) {
             var baseLayer = new OpenLayers.Layer.WMTS({
                 "name": params.name,
@@ -156,7 +189,15 @@ define([
         setLayerIndex: function(params) {
             params.map.setLayerIndex(params.map.getLayersBy('layerId', params.layerId)[0], params.layerIndex);
         },
+        /**
+         * Delete layer with given layerId and all of the features in it
+         * @param params
+         */
         deleteLayer: function(params) {
+            var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0],
+                layers = selector.layers,
+                index;
+
             mapBase.clearMapSelection({
                 "map": params.map
             });
@@ -166,9 +207,9 @@ define([
 
             delete context.sandbox.stateManager.layers[params.layerId];
             params.map.removeLayer(params.map.getLayersBy('layerId', params.layerId)[0]);
-            var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-            var layers = selector.layers;
-            context.sandbox.utils.each(layers, function(key, value){
+
+
+            context.sandbox.utils.each(layers, function(key, value) {
                 if(value.layerId === params.layerId) {
                     layers.splice(key, 1);
                     return false;
@@ -187,6 +228,10 @@ define([
                 "map": params.map
             });
         },
+        /**
+         * Remove all of the features from a layer, but leave the layer
+         * @param params
+         */
         clearLayer: function(params) {
             params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
         },
@@ -240,6 +285,10 @@ define([
                 }
             }
         },
+        /**
+         * Change which visual mode the map is in by activating the proper sub-module
+         * @param params
+         */
         visualModeChanged: function(params) {
             var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
             selector.unselectAll();
@@ -253,9 +302,13 @@ define([
                 "map": params.map
             });
         },
+        /**
+         * Clear all features and feature layers
+         * @param params
+         */
         clear: function(params) {
             var layers = params.map.getLayersByClass('OpenLayers.Layer.Vector');
-            layers.forEach(function(layer){
+            layers.forEach(function(layer) {
                 layer.destroy();              
             });
             context.sandbox.stateManager.layers = {};
@@ -264,7 +317,7 @@ define([
                 "map": params.map
             });
         },
-        addEventListenersToLayer: function(params){
+        addEventListenersToLayer: function(params) {
             if(params.eventListeners) {
                 params.layer.events.on(params.eventListeners);
             } else {
@@ -274,13 +327,18 @@ define([
                 });
             }
         },
+        /**
+         * Load basemaps, as defined in the map configuration. Accepts OSM and WMTS
+         * @param params
+         * @returns {{}}
+         */
         loadBasemaps: function(params) {
             var basemapLayers = {};
 
-            context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(basemap){
+            context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(basemap) {
                 var baseLayer;
 
-                switch (context.sandbox.mapConfiguration.basemaps[basemap].type){
+                switch (context.sandbox.mapConfiguration.basemaps[basemap].type) {
                     case "osm":
                         baseLayer = exposed.createOSMLayer({
                             "map": params.map,
@@ -310,7 +368,7 @@ define([
                         context.sandbox.logger.error('Did not load basemap. No support for basemap type:', context.sandbox.mapConfiguration.basemaps[basemap].type);
                         break;
                 }
-                if(baseLayer){
+                if(baseLayer) {
                     basemapLayers[context.sandbox.mapConfiguration.basemaps[basemap].basemap] = baseLayer;
                 }
             });
@@ -320,17 +378,20 @@ define([
         setBasemap: function(params) {
             params.map.setBaseLayer(params.basemapLayer);
         },
+        /**
+         * Add popup to feature, even if it is in a cluster
+         * @param params
+         */
         identifyFeature: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
-            var feature = layer.getFeatureBy('featureId', params.featureId);
+            var layer = params.map.getLayersBy('layerId', params.layerId)[0],
+                feature = layer.getFeatureBy('featureId', params.featureId),
+                clusterFeatureId,
+                clusterFeatureCount,
+                record,
+                currentDataService;
 
             //If no feature is found, it is most likely because it was hidden in a cluster
             if(!feature) {
-                var clusterFeatureId,
-                    clusterFeatureCount,
-                    record,
-                    currentDataService;
-
                 context.sandbox.utils.each(layer.features, function(k1, v1) {
                     if(v1.cluster) {
                         context.sandbox.utils.each(v1.cluster, function(k2, v2) {
@@ -361,11 +422,11 @@ define([
                             popup;
 
                         context.sandbox.utils.each(fullFeature.properties, 
-                            function(k, v){
-                                if((context.sandbox.utils.type(v) === "string" ||
-                                    context.sandbox.utils.type(v) === "number" ||
-                                    context.sandbox.utils.type(v) === "boolean")) {
-                                    formattedAttributes[k] = v;
+                            function(key, value) {
+                                if((context.sandbox.utils.type(value) === "string" ||
+                                    context.sandbox.utils.type(value) === "number" ||
+                                    context.sandbox.utils.type(value) === "boolean")) {
+                                    formattedAttributes[key] = value;
                                 }
                         });
                         popup = new OpenLayers.Popup.FramedCloud('popup',
@@ -415,11 +476,12 @@ define([
                 context.sandbox.dataStorage.getFeatureById({"featureId": feature.featureId}, function(fullFeature) {
                     infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
                     context.sandbox.utils.each(fullFeature.properties,
-                        function(k, v){
-                            if((context.sandbox.utils.type(v) === "string" ||
-                                context.sandbox.utils.type(v) === "number" ||
-                                context.sandbox.utils.type(v) === "boolean")) {
-                                formattedAttributes[k] = v;
+                        function(key, value) {
+                            if((context.sandbox.utils.type(value) === "string" ||
+                                context.sandbox.utils.type(value) === "number" ||
+                                context.sandbox.utils.type(value) === "boolean"
+                            )) {
+                                formattedAttributes[key] = value;
                             }
                     });
                     
@@ -456,6 +518,10 @@ define([
 
     };
 
+    /**
+     * Add mouse position listener
+     * @param params
+     */
     function addGeoLocatorListeners(params) {
         params.layer.events.on({
             beforefeatureselected: function(evt) {
@@ -530,55 +596,61 @@ define([
                     infoWinTemplateRef,
                     feature = evt.feature,
                     formattedAttributes = {},
-                    anchor;
+                    anchor,
+                    bounds,
+                    zoom,
+                    maxAuto;
 
-                if (!feature.cluster){
+                if(!feature.cluster) {
 
-                    context.sandbox.dataStorage.getFeatureById({"featureId": feature.featureId}, function(fullFeature){
-                        infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
-                        context.sandbox.utils.each(fullFeature.properties,
-                            function(k, v){
-                                if((context.sandbox.utils.type(v) === "string" ||
-                                    context.sandbox.utils.type(v) === "number" ||
-                                    context.sandbox.utils.type(v) === "boolean")) {
-                                    formattedAttributes[k] = v;
+                    context.sandbox.dataStorage.getFeatureById({
+                        "featureId": feature.featureId}, 
+                        function(fullFeature) {
+                            infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
+                            context.sandbox.utils.each(fullFeature.properties,
+                                function(k, v) {
+                                    if((context.sandbox.utils.type(v) === "string" ||
+                                        context.sandbox.utils.type(v) === "number" ||
+                                        context.sandbox.utils.type(v) === "boolean")) {
+                                        formattedAttributes[k] = v;
+                                    }
+                            });
+
+                            anchor= {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, -(feature.attributes.height/2))};
+                            popup = new OpenLayers.Popup.FramedCloud('popup',
+                                OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                                null,
+                                infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
+                                anchor,
+                                true,
+                                function() {
+                                    mapBase.clearMapSelection({
+                                        "map": params.map
+                                    });
+                                    mapBase.clearMapPopups({
+                                        "map": params.map
+                                    });
                                 }
-                        });
-
-                        anchor= {"size": new OpenLayers.Size(0,0), "offset": new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
-                        popup = new OpenLayers.Popup.FramedCloud('popup',
-                            OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
-                            null,
-                            infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
-                            anchor,
-                            true,
-                            function() {
-                                mapBase.clearMapSelection({
-                                    "map": params.map
-                                });
-                                mapBase.clearMapPopups({
-                                    "map": params.map
-                                });
-                            }
-                        );
-                        feature.popup = popup;
-                        params.map.addPopup(popup);
-                        infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
-                    });
+                            );
+                            feature.popup = popup;
+                            params.map.addPopup(popup);
+                            infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
+                        }
+                    );
                 } else {
-                    var bounds = feature.geometry.getBounds();
-                    feature.cluster.forEach(function(point){
+                    bounds = feature.geometry.getBounds();
+                    feature.cluster.forEach(function(point) {
                         bounds.extend(point.geometry.getBounds());
                     });
-                    var zoom = params.map.getZoomForExtent(bounds);
+                    zoom = params.map.getZoomForExtent(bounds);
 
                     // To prevent zooming in too far
                     // Sources don't always provide the correct information
                     // as to what levels they have imagery for.
                     //
                     // Clicking a cluster should never zoom the user out.
-                    var maxAuto = context.sandbox.mapConfiguration.maxAutoZoomLevel;
-                    if (zoom > maxAuto){
+                    maxAuto = context.sandbox.mapConfiguration.maxAutoZoomLevel;
+                    if(zoom > maxAuto) {
                         zoom = params.map.zoom > maxAuto ? params.map.zoom : maxAuto;
                         publisher.publishMessage({
                             messageType: 'warning',
@@ -591,7 +663,7 @@ define([
             },
             featureunselected: function(evt) {
                 var feature = evt.feature;
-                if (!feature.cluster){
+                if(!feature.cluster) {
                     params.map.removePopup(feature.popup);
                     feature.popup.destroy();
                     feature.popup = null;

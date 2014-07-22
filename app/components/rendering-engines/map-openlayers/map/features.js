@@ -1,6 +1,6 @@
 define([
     './../libs/openlayers-2.13.1/OpenLayers'
-], function(){
+], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -8,6 +8,10 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
+        /**
+         * Plot features given in geoJSON format
+         * @param params
+         */
         plotFeatures: function(params) {
             var layerId = params.layerId,
                 data = params.data,

@@ -1,49 +1,107 @@
 define([
 ], function() { 
-  var pubConfiguration = {
-    "channels":{
-      "map.overlay.create":{
-        valid:true
-      },
-      "map.overlay.remove":{
-        valid: false
-      },
-      "map.overlay.hide":{
-        valid: true
-      },
-      "map.overlay.show":{
-        valid: true
-      },
-      "map.feature.plot":{
-        valid: true,
-        sample: {
-           "overlayId":"2d882141-0d9e-59d4-20bb-58e6d0460699.1",
-           "featureId":"example.geojson.1",
-           "format":"geojson",
-           "feature":{
-              "type":"FeatureCollection",
-              "features":[
-                 {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [0.0, 10.0]
-                    },
-                    "properties": {
-                       "style":{
-                          "fillColor":"red"
-                       }
+    var pubConfiguration = {
+        "channels":{
+            "map.overlay.create":{
+                valid:true,
+                sample: {
+                    "name": "Test Name 1",
+                    "overlayId": "testOverlayId1",
+                    "coords": {
+                        "minLat": "7.602108",
+                        "minLon": "-13.908691",
+                        "maxLat": "11.587669",
+                        "maxLon": "-8.283691"
                     }
-                 }
-              ]
-           },
-           "name":"Sample GeoJSON Feature Collection",
-           "zoom":"true",
-           "readOnly":"false"
-        }
-      }      
-    }
-  };
+                }
+            },
+            "map.overlay.remove":{
+                valid: true,
+                sample: {
+                    "overlayId": "testOverlayId1"
+                }
+            },
+            "map.overlay.hide":{
+                valid: true,
+                sample: {
+                    "overlayId": "testOverlayId1"
+                }
+            },
+            "map.overlay.show":{
+                valid: true,
+                sample: {
+                    "overlayId": "testOverlayId1"
+                }
+            },
+            "map.feature.plot":{
+                valid: true,
+                sample: {
+                    "overlayId":"testOverlayId1",
+                    "name":"Test Name 1",
+                    "format":"geojson",
+                    "feature":{
+                        "type":"FeatureCollection",
+                        "features":[
+                            {
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [0.0, 10.0]
+                                },
+                                "properties": {
+                                    "featureId": "f1"
+                                }
+                            }
+                        ]
+                    },
+                    "name":"Sample GeoJSON Feature Collection",
+                    "zoom":"true",
+                    "readOnly":"false"
+                }
+            },
+            "map.view.zoom":{
+                "valid": true
+            },
+            "map.view.center.overlay":{
+                "valid": true,
+                "sample": {
+                    "overlayId": "testOverlayId1"
+                }
+            },
+            "map.view.center.feature":{
+                "valid": true,
+                "sample": {
+                    "featureId": "f1"
+                }
+            },
+            "map.view.center.location":{
+                "valid": true,
+                "sample": {
+                    "location": {
+                        "lat": 30,
+                        "lon": 30
 
-  return pubConfiguration;
+                    }
+                }
+            },
+            "map.view.center.bounds":{ //TODO support zoom, or just best fit?
+                "valid": true,
+                "sample": {
+                    "bounds": {
+                        "southWest":{
+                            "lat": 24.5,
+                            "lon": -124
+                        },
+                        "northEast": {
+                            "lat": 50.5,
+                            "lon": -79
+                        }
+
+                    }
+                }
+            }
+        }
+    };
+
+    return pubConfiguration;
 });

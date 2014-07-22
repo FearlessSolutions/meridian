@@ -13,7 +13,7 @@ define([
         stopDrawing: function(params) {
             context.sandbox.emit('map.draw.stop', params);
         },
-        publishMousePosition: function(params){
+        publishMousePosition: function(params) {
             context.sandbox.emit('mouse.position.change', params);
         }
     };

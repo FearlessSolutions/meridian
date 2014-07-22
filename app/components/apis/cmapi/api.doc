@@ -1,0 +1,120 @@
+﻿Meridian CMAPI documentation
+
+***map.overlay***
+**map.overlay.create**
+*Payload*:
+{
+	"name": "STRING", //optional; default = ""
+	"overlayId": "STRING", //optional; default = "cmapi"
+      "coords": { //optional
+      	"minLat": DECIMAL_DEGREES,
+            "minLon": DECIMAL_DEGREES,
+            "maxLat": DECIMAL_DEGREES,
+            "maxLon": DECIMAL_DEGREES
+      },
+      "selectable": true //optional; default true
+      //TODO stylemap
+}
+*Notes*:
+-An empty payload will create a layer with overlayId=”cmapi”, name=””, and no AOI
+-Trying to make two layers with the same id will ignore the second try
+
+**map.overlay.remove**
+Payload
+    {
+        "overlayId": "STRING", //optional; default = "cmapi"       
+    }
+Notes
+-an empty payload will attempt to remove the default overlay “cmapi”
+-THIS IS NOT FINISHED YET
+
+**map.overlay.hide**
+Payload
+    {
+        "overlayId": "STRING", //optional; default = "cmapi"       
+    }
+Notes
+-an empty payload will hide the default overlay “cmapi”
+
+**map.overlay.remove**
+Payload
+    {
+        "overlayId": "STRING", //optional; default = "cmapi"       
+    }
+Notes
+-an empty payload will attempt to remove the default overlay “cmapi”
+-THIS IS NOT FINISHED YET
+
+**map.overlay.show**
+Payload
+    {
+        "overlayId": "STRING", //optional; default = "cmapi"       
+    }
+Notes
+-an empty payload will show the default overlay “cmapi”
+
+***map.feature***
+**map.feature.plot**
+
+
+payload
+{
+        "overlayId": "STRING", //optional; default = "cmapi"
+        "format":"geojson", //required
+        "feature":{ //required
+            "type":"FeatureCollection", //required
+            "features":[ //An array of geoJSON
+                {
+                    "type": "Feature", //required
+                    "geometry": { //required
+                        "type": "Point", //A valid geoJSON geometry type is required
+                        "coordinates": [DECIMAL_DEGREES, DECIMAL_DEGREES] //Valid coordinates for the geometry type are required
+                    },
+                    "properties": {//optional
+                        "featureId": "STRING", //recommended
+                        "otherData": "ANYTHING" //optional
+                    }
+                }
+            ]
+        },
+        "name": "STRING" //optional; default = ""
+ }
+Notes
+-If the requested layer has not been created yet, one will be created
+-All valid geoJSON feature type are accepted
+-The feature collection can be as large as required
+-If a featureId is not given, a random one will be created, but not shown to the user
+-In order for the user to use a feature as an argument in other channels, a unique featureId must be given at creation
+-Any attributes put into “properties” will be saved and displayed in popups and the datagrid
+
+***map.view***
+**map.view.center.overlay**
+payload
+{
+        "overlayId": "STRING" //optional; default = "cmapi"
+}
+Notes
+-Centers on AOI, or the extent of the data if no AOI
+
+**map.view.center.feature”
+payload
+{
+	"featureId": "STRING" //required
+}
+Notes
+-The feature must exist and have been given a specified featureId
+
+**map.view.center.bounds**
+payload (all required)
+{
+        "bounds": {
+            "southWest": {
+                "lat": DECIMAL_DEGREES,
+                "lon": DECIMAL_DEGREES
+            },
+            "northEast":{
+                "lat": DECIMAL_DEGREES,
+                "lon": DECIMAL_DEGREES
+            }
+        }
+}

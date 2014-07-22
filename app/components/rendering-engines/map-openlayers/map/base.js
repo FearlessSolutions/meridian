@@ -1,7 +1,7 @@
 define([
     './../map-api-publisher',
     './../libs/openlayers-2.13.1/OpenLayers'
-], function(publisher){
+], function(publisher) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -9,6 +9,11 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
+        /**
+         * Create the basic map and set default values for initial viewport
+         * @param params
+         * @returns {OpenLayers.Map}
+         */
         createMap: function(params) {
             var mapElement,
                 map,
@@ -26,12 +31,18 @@ define([
             });
 
             // Check user settings for default setting to display cursor location
-            if(context.sandbox.cursorLocation && 
-                typeof context.sandbox.cursorLocation.defaultDisplay !== undefined) {
+            if(
+                context.sandbox.cursorLocation && 
+                typeof context.sandbox.cursorLocation.defaultDisplay !== undefined
+            ){
                 showCursorLocationDefault = context.sandbox.cursorLocation.defaultDisplay; 
             }
 
-            if(context.sandbox.mapConfiguration.cursorLocation && context.sandbox.mapConfiguration.cursorLocation.defaultDisplay && showCursorLocationDefault){
+            if(
+                context.sandbox.mapConfiguration.cursorLocation && 
+                context.sandbox.mapConfiguration.cursorLocation.defaultDisplay && 
+                showCursorLocationDefault
+            ){
                 exposed.trackMousePosition({
                     "map": map
                 });
@@ -110,7 +121,7 @@ define([
             });
         },
         trackMousePosition: function(params) {
-            params.map.events.register('mousemove', params.map, function(e){
+            params.map.events.register('mousemove', params.map, function(e) {
                 var position = this.events.getMousePosition(e);
                 var latlon = exposed.getMouseLocation({
                     "map": params.map,
@@ -136,7 +147,7 @@ define([
                 anchor;
 
 
-            anchor= {"size": new OpenLayers.Size(0,0), "offset": new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
+            anchor = {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, -(feature.attributes.height/2))};
             popup = new OpenLayers.Popup.FramedCloud(
                 'popup',
                 OpenLayers.LonLat.fromString(feature.geometry.toShortString()),

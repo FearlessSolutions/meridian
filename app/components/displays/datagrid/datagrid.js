@@ -49,7 +49,7 @@ define([
             context.sandbox.utils.each(storedColumns, function(k, v){
                 columnsArray.push(v);
             });
-
+            
             if(!myTable) {
                 myTable = $datagridContainer.Datatable({
                     "sortable": true,

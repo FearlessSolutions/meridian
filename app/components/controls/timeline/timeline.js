@@ -91,7 +91,7 @@ define([
                         $this = context.$(this),
                         $thisBtns = $this.find('.btn');
 
-                    if ($this.find('.btn-primary').size()>0) {
+                    if($this.find('.btn-primary').size()>0) {
                         $thisBtns.toggleClass('btn-primary');
                     }
 
@@ -120,21 +120,25 @@ define([
 
             }
         },
-        hideTimeline: function(params){
+        hideTimeline: function(params) {
             $timeline.hide();
         },
-        showTimeline: function(params){
+        showTimeline: function(params) {
 			$timeline.show();	
 		},
-		clear: function(){
+		clear: function() {
 			context.$('#timeline-container').html('');
             $timeline.hide();
 		},
-        updateCount: function(params){
+        updateCount: function(params) {
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
                     count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
-            
+                if($badge.length === 0) {
+                    console.error("update fail", $badge);
+                    $badge = context.$('#snapshot-' + params.layerId + ' .badge');
+                }
+
                 $badge.text(context.sandbox.utils.trimNumber(count));
                 exposed.setTooltip({
                     "layerId": params.layerId,
@@ -142,9 +146,9 @@ define([
                 });
             }
         },
-        markFinished: function(params){
+        markFinished: function(params) {
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
-            if(!$badge.hasClass("error")){
+            if(!$badge.hasClass("error")) {
                 $badge.addClass('finished');
                 exposed.setTooltip({
                     "layerId": params.layerId,
@@ -153,9 +157,9 @@ define([
                 snapshotMenu.disableOption(params.layerId, 'stopQuery');
             }
         },
-        markStopped: function(params){
+        markStopped: function(params) {
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
-            if(!$badge.hasClass('error') && !$badge.hasClass('finished')){
+            if(!$badge.hasClass('error') && !$badge.hasClass('finished')) {
                 $badge.addClass('stopped');
                 exposed.setTooltip({
                     "layerId": params.layerId,
@@ -164,7 +168,7 @@ define([
                 snapshotMenu.disableOption(params.layerId, 'stopQuery');
             }
         },
-        markError: function(params){
+        markError: function(params) {
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
 
             $badge.addClass('error');
@@ -174,7 +178,7 @@ define([
                 });
             snapshotMenu.disableOption(params.layerId, 'stopQuery');
         },
-        setTooltip: function(params){
+        setTooltip: function(params) {
             var $owner = context.$('#snapshot-' + params.layerId),
                 name = $owner.attr('data-title'),
                 count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
@@ -192,12 +196,12 @@ define([
                 }
             });
         },
-        timelinePlaybackStart: function(params){
+        timelinePlaybackStart: function(params) {
             if(checkLayerCount() > 1) {
                 stopTimelinePlayback = false;
 
                 var tempArray = [];
-                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(layerId, collections){
+                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(layerId, collections) {
                     tempArray.push(layerId);
                     context.sandbox.stateManager.layers[layerId].visible = false;
                     exposed.hideSnapshotLayerGroup({
@@ -216,7 +220,7 @@ define([
                 var i = 1;
                 var timer = setInterval(function() {
                     if(!stopTimelinePlayback && context.sandbox.dataStorage.datasets[tempArray[i]]) {
-                        if(i > 3){
+                        if(i > 3) {
                             var leftPos = $timeline.scrollLeft();
                             $timeline.animate({scrollLeft: leftPos + 120});
                         }
@@ -270,9 +274,9 @@ define([
                 });
             }
         },
-        deleteLayer: function(params){
+        deleteLayer: function(params) {
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
-                //do not use deleteDataLayer since the renderer is already receiving the call.
+                // TODO: do not use deleteDataLayer since the renderer is already receiving the call.
                 delete context.sandbox.dataStorage.datasets[params.layerId];
                 // Take care of AOI and toggleBtn state
                 exposed.deleteAOILayer({
@@ -330,12 +334,16 @@ define([
             publisher.deleteLayer({"layerId": params.layerId});
         },
         showAOILayer: function(params) {
-            context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
-            publisher.showLayer({"layerId": params.layerId + '_aoi'});
+            if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
+                context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
+                publisher.showLayer({"layerId": params.layerId + '_aoi'});
+            }
         },
         hideAOILayer: function(params) {
-            context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
-            publisher.hideLayer({"layerId": params.layerId + '_aoi'});
+            if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
+                context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
+                publisher.hideLayer({"layerId": params.layerId + '_aoi'});
+            }
         },
         deleteAOILayer: function(params) {
             publisher.deleteLayer({"layerId": params.layerId + '_aoi'});
@@ -356,7 +364,7 @@ define([
             //destroy tooltip.
             $owner.tooltip('destroy');
             //make sure layer query is finished. If not, stop query before deleting.
-            if(!$badge.hasClass('error') || !$badge.hasClass('finished') || !$badge.hasClass('stopped')){
+            if(!$badge.hasClass('error') || !$badge.hasClass('finished') || !$badge.hasClass('stopped')) {
                 publisher.stopQuery({"layerId": params.layerId});
             }
             //delete timeline snapshot
@@ -364,7 +372,7 @@ define([
             //delete layer menu.
             $timeline.siblings('#snapshot-' + params.layerId + '-settings-menu').remove();
             //hide timeline if no other layers are present.
-            if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0){
+            if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0) {
                 exposed.hideTimeline();
             }
         }

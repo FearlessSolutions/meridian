@@ -17,8 +17,7 @@ define([
         $dialog,
         $file,
         $dummyFile,
-        $submit,
-        openAjaxs;
+        $submit;
 
     var exposed = {
         init: function(thisContext) {
@@ -94,16 +93,13 @@ define([
                         });
 
                         /**
-                         * Try the upload. Add the AJAX to our array of open AJAX
-                         * so that we can abort them on cancel/clear
+                         * Try the upload.
                          */
                         newAjax = context.sandbox.csv.upload(text, queryId, queryName,
                             function(data){ //Success function; publish the data
-                                cleanOpenAJAXs();
                                 publishData(data, queryId, queryName);
                             },
                             function(status, jqXHR){ //Error callback; publish the error
-                                cleanOpenAJAXs();
                                 publisher.publishMessage({
                                     "messageType": "error",
                                     "messageTitle": "CSV Upload",
@@ -114,7 +110,8 @@ define([
                             }
                         );
 
-                        openAjaxs.push(newAjax);
+                        context.sandbox.ajax.addActiveAJAX(newAjax, null);
+
                         close();
                     });
                 }
@@ -181,38 +178,6 @@ define([
         });
 
         publisher.publishFinished({"queryId": queryId});
-    }
-
-    function stopAllAJAX(){
-        openAjaxs.forEach(function(ajax){
-            ajax.abort();
-        });
-
-        openAjaxs = [];
-    }
-
-    /**
-     * Stop a query's ajax call,
-     * This function requires that ajax.queryId was set when the query was created.
-     */
-    function abortQuery(queryId){
-        openAjaxs.forEach(function(ajax, index){
-            if(ajax.queryId === queryId){ //This was set in queryData
-                ajax.abort();
-                openAjaxs.splice(index, 1);
-            }
-        });
-    }
-
-    /**
-     * Clean up all finished ajax calls from the activeAJAXs array
-     */
-    function cleanOpenAJAXs(){
-        openAjaxs.forEach(function(ajax, index){
-            if(ajax.readyState === 4){ //4 is "complete" status
-                openAjaxs.splice(index, 1);
-            }
-        });
     }
 
 });
