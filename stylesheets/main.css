@@ -2,7 +2,7 @@
 @import url("./icomoon/style.css");
 
 body { 
-	padding-top: 50px; /*taking into account the fixed nav bar*/
+	padding-top: 65px; /*taking into account the fixed nav bar*/
 }
 
 .main-banner {
@@ -21,7 +21,7 @@ body {
 	background-image: url("../images/meridian-banner.png");
 	background-repeat: no-repeat;
 	background-position: center center;
-	margin-top: 75px;
+	margin-top: 60px;
 }
 
 .logo {
