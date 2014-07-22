@@ -133,23 +133,34 @@ define([
 
         // Save the features and plot them.
         var newAJAX = context.sandbox.utils.ajax(postOptions)
-            .done(function(data) {
-                var newData = [];
-                if(data) {
-
-                    message.feature.features.forEach(function(feature, index) {
+            .done(function(data, status) {
+                var newData = [],
+                    layerQuery;
+                    
+                if(status === "success") {
+                    context.sandbox.utils.each(data, function(key, value){
                         var newValue = {};
 
-                        // Using local copy of attributes becuase server doesnt give them back
                         newValue.dataService = 'cmapi';
-                        newValue.id = data.items[index].index._id; //TODO: this should change serverside to return all of what is saved, not just ID
-                        newValue.geometry = feature.geometry;
-                        newValue.type = feature.type;
-                        newValue.properties = feature.properties;
-                        if(feature.geometry.type === 'Point') {
-                            // Adding properties for other conponents to use
-                            newValue.lat = feature.geometry.coordinates[1];
-                            newValue.lon = feature.geometry.coordinates[0];
+                        newValue.id = value.featureId;
+                        newValue.featureId = value.featureId;
+                        newValue.layerId = value.queryId;
+                        newValue.geometry = value.geometry;
+                        newValue.type = value.type;
+
+                        context.sandbox.utils.each(value.properties, function(key, value){
+                            newValue[key] = value;
+                        });
+
+                        delete newValue.queryId;
+
+                        if(value.geometry.type === 'Point') {
+                            // Adding fields for lat/lon for other conponents to use
+                            newValue.lat = value.geometry.coordinates[1];
+                            newValue.lon = value.geometry.coordinates[0];
+                        } else {
+                            newValue.lat = 'N/A';
+                            newValue.lon = 'N/A';
                         }
 
                         context.sandbox.dataStorage.addData({

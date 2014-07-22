@@ -39,6 +39,7 @@ exports.init = function(context){
                 res.send(err);
             } else {
                 res.status(200);
+                console.log(response);
                 res.send(response.hits.hits.map(function(ele){return ele._source;}));
             }
         });
@@ -83,16 +84,23 @@ exports.init = function(context){
         var geoJSON = req.body.data;
         var userName = res.get('Parsed-User');
         var sessionId = res.get('Parsed-SessionId');
-        save.writeGeoJSON(userName, sessionId, req.body.queryId || uuid.v4(),
-            req.body.type || 'UNKNOWN', geoJSON, function(err, results){
+        var queryId = req.body.queryId || uuid.v4();
+        save.writeGeoJSON(
+            userName,
+            sessionId,
+            queryId,
+            req.body.type || 'UNKNOWN',
+            geoJSON,
+            function(err, results){
                 if (err){
                     res.status(500);
                     res.send(err);
                 } else {
                     res.status(200);
-                    res.send(results);
+                    res.send(geoJSON);
                 }
-            });
+            }
+        );
     });
 
     app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){

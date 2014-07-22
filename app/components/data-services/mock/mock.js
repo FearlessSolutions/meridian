@@ -91,6 +91,7 @@ define([
                     });
 
                     newValue.dataService = data[key].dataService = "mock";
+                    newValue.layerId = layerId;
                     newValue.id = data[key].id = value.properties.featureId;
                     newValue.geometry = value.geometry;
                     newValue.type = value.type;

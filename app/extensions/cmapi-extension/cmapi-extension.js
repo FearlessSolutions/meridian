@@ -38,7 +38,7 @@ define([
                     var cmapiTemplate = Handlebars.compile(cmapiHBS);
                     var html = cmapiTemplate({
                         "thumbnail": "./extensions/map-configuration-extension/images/markerIcons/marker.png",
-                        "classification": attributes.classification || "????", //TODO make this dynamic?
+                        "classification": attributes.classification || "", //TODO make this dynamic?
                         "name": attributes.name,
                         "attributes": attributes
                     });

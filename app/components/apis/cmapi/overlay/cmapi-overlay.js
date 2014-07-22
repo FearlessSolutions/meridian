@@ -79,6 +79,7 @@ define([
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
 		"map.overlay.hide": function(message) {
+            context.sandbox.stateManager.layers[message.overlayId].visible = false;
 			publisher.publishHideLayer({
                 "layerId": message.overlayId || defaultLayerId
             });
@@ -90,6 +91,7 @@ define([
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
 		"map.overlay.show": function(message) {
+            context.sandbox.stateManager.layers[message.overlayId].visible = true;
 			publisher.publishShowLayer({
                 "layerId": message.overlayId || defaultLayerId
             });

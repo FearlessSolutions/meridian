@@ -28,7 +28,7 @@ define([
             };
             app.sandbox.dataServices.mock.keys = [
                 "classification",
-                "queryId",
+                "layerId",
                 "featureId",
                 "lat",
                 "lon",
