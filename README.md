@@ -2,55 +2,91 @@
 
 The project uses Grunt for task management. Use of Grunt is optional, but highly recommended.
 
+To install grunt, make sure the Node Packaged Module is installed by installing [Node.js](http://nodejs.org/).
+
 To use the command-line version of Grunt you will need to install the global [Grunt CLI](http://gruntjs.com/getting-started) module.
 
-Run `npm install -g grunt-cli` if needed
+- Run `npm install -g grunt-cli` if needed
 
 To host the database locally (which will be populated with mock data), you will need to install ElasticSearch.
-Visit the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
+Download ElasticSearch in the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/).
 
-If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`
+To use and install ElasticSearch, make sure:
 
-If you don't want to set it up for Grunt, just follow the installation instrcuctions on the ElasticSearch Download page.
+1. The JAVA_HOME variable is defined. 
+
+1. Import the given user.p12 certificate into your browser:
+    
+    *Mac OS: Make sure to import the certificate in the login section of Keychain Access and not in the System section.*
+  - Password: 'password'
+  - Chrome: Settings>Show Advanced Settings>(HTTPS/SSL)Manage certificates>Import
+  - FireFox: Options>Advanced>Certificates>View Certificates>Import
+
+1. You might need to restart the browser after importing the certificate.
+
+If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the Grunt Support Setup instructions.
 
 
 ## Setup
 
-You have two options for getting up an running, with or without the Grunt support
+You have two options for getting up an running, with or without the Grunt support.
 
 **Option 1 -** Without Grunt support:
 
-Clone the repo and get started.
+1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
 
-`git clone https://github.com/ozone-development/meridian.git`
+1. Change into the project directory: `cd meridian`.
+
+1. Run `npm install` to make sure everything is up to date. 
+
+1. Follow the installation instrcuctions on the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/):
+  1. Download and unzip the latest Elasticsearch distribution.
+  1. Start Elastic Search and test it out.
+  1. Change into the ElasticSearch directory (wherever you just extracted it):
+	1. Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
+	1. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
+
+1. Start the App Server:
+    1. To start the local server run: `node app.js`
+    1. Now open your browser and visit ([https://localhost:3000](https://localhost:3000)) to see Meridian in action.
 
 **Option 2 -** With Grunt Support:
 
-1. Get Grunt's global CLI module. Run `npm install -g grunt-cli`
+1. Get Grunt's global CLI module. Run `npm install -g grunt-cli`.
 
-2. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`
+1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
 
-3. Change into the project directory: `cd meridian`
+1. Change into the project directory: `cd meridian`.
 
-4. Run `npm install` to make sure everything is up to date. 
+1. Run `npm install` to make sure everything is up to date. 
 
-At this point, you will be able to run the Grunt tasks.
+ At this point, you will be able to run the Grunt tasks.
 
-*Some Node Modules have been checked into the repo (not a normal best practice),
+ *Some Node Modules have been checked into the repo (not a normal best practice),
 The node_modules directory will be removed from the project at a later point, 
 when the team is comfortable with the process. In the future, 
 developers will be responsible for running `npm install` to get the dependencies.*
 
+1. Follow the installation instrcuctions on the [ElasticSearch Downloads Page](http://www.elasticsearch.org/overview/elkdownloads/):
+  1. Download and unzip the latest Elasticsearch distribution.
+  1. Unpack the contents of the ElasticSearch download into `meridian/data`. When done, the following path should be valid, `meridian/data/bin/elasticseacrch`.
+  1. Make sure ElasticSearch starts okay, even though you will be using grunt to start it for you:
+    1. Change into the `meridian` directory, if you are not already there.
+    1. Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
+    1. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
 
-**Starting the App**
+1. Start the App Server:
+    1. To start the local server run: `grunt server`
+    1. This will open the main page ([https://localhost:3000](https://localhost:3000)) in your default browser.
 
-The easiest was is to use the Grunt tasks.
+NOTE: If when starting elastic search you recieve warnings regarding multicasting you most likely have been added to an already exsisting elastic search cluster and may recieve unintended outcomes from the application.  You can disable multicasting by navigating to the directory you extracted elastic search to and then navigating to the config/elasticsearch.yml file. In there uncomment the line `discovery.zen.ping.multicast.enabled: false` and save the file. You can now restart elastic search.
 
-To start the local server run: `grunt server`
+**Resources within the running App**
 
-This will open the main page ([https://localhost:3000](https://localhost:3000)) in your default browser.
+The main page ([https://localhost:3000](https://localhost:3000)).
 
 To view the documentation page, go to [https://localhost:3000/docs/meridian](https://localhost:3000/docs/meridian).
+
 
 ## Guides
 
@@ -83,3 +119,5 @@ Contributions to the baseline project from outside the US Federal Government sho
 Contributions from government agencies do not need to have a CLA on file, but do require verification that the government has unlimited rights to the contribution.  An email to goss-support@owfgoss.org is sufficient, stating that the contribution was developed by an employee of the United States Government in the course of his or her duties. Alternatively, if the contribution was developed by a contractor, the email should provide the name of the Contractor, Contract number, and an assertion that the contract included the standard "Unlimited rights" clause specified by [DFARS 252.227.7014](http://www.acq.osd.mil/dpap/dars/dfars/html/current/252227.htm#252.227-7014) "Rights in noncommercial computer software and noncommercial computer software documentation".
  
 Government agencies are encouraged to submit contributions as pull requests on GitHub.
+
+More information about contributions can be found in our [Contributing documentation](./contributing.md#contributing).

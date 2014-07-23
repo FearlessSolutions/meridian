@@ -1,15 +1,36 @@
 define([
     './datagrid-toggle-publisher',
+    'bootstrap'
 ], function (publisher) {
-    var context;
+    var context,
+        $dataGridToggleButton;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            context.$('#dataGridToggleButton').on('click', function(event) {
+            $dataGridToggleButton = context.$('#dataGridToggleButton');
+
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            $dataGridToggleButton.tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
+            $dataGridToggleButton.on('click', function(event) {
                 event.preventDefault();
-                
-                if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets) && context.sandbox.utils.first(context.sandbox.dataStorage.datasets).length >0) {
+                var validDataFound = false;
+
+                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value){
+                    if(value.length > 0) {
+                        validDataFound = true;
+                        return;
+                    }
+                });
+
+                if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets) && validDataFound) {
                     publisher.toogleGrid();
                     if(context.$(this).hasClass('active')) {
                         context.$(this).removeClass('active');
@@ -27,7 +48,7 @@ define([
 
         },
         clear: function(){
-            context.$('#dataGridToggleButton').removeClass('active');
+            $dataGridToggleButton.removeClass('active');
         }
     };
 

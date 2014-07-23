@@ -12,20 +12,23 @@ define([
             }
             app.sandbox.dataServices.mock = {};
             app.sandbox.dataServices.mock.infoWinTemplate = {
-                buildInfoWinTemplate: function(attributes){
+                buildInfoWinTemplate: function(attributes) {
                     var mockTemplate = Handlebars.compile(mockHbs);
                     var html = mockTemplate({
-                        thumbnail: "./extensions/map-configuration-extension/images/markerIcons/marker.png",
+                        thumbnail: "./extensions/map-configuration-extension/images/markerIcons/marker-2x.png",
                         classification: attributes.classification,
                         name: attributes.name,
                         attributes: attributes
                     });
                     return html;
+                },
+                postRenderingAction: function(feature, layerId) {
+                    return;
                 }
             };
             app.sandbox.dataServices.mock.keys = [
                 "classification",
-                "queryId",
+                "layerId",
                 "featureId",
                 "lat",
                 "lon",

@@ -7,11 +7,11 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        toogleGrid: function(args) {
-            context.sandbox.emit('map.datagrid.toggle', args);
+        toogleGrid: function(params) {
+            context.sandbox.emit('map.datagrid.toggle', params);
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args);
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params);
         }
     };
 

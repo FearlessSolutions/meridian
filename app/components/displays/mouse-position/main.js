@@ -10,12 +10,22 @@ define([
         initialize: function() {
             this.sandbox.utils.addCSS(mousePositionCSS, 'display-mouse-position-component-style');
 
-            var mousePositionTemplate = Handlebars.compile(mousePositionHBS);
-            var html = mousePositionTemplate();
-            this.html(html);
+            var showCursorLocationDefault = true;
 
-            mousePosition.init(this);
-            mousePositionSubscriber.init(this);
+            if(this.sandbox.cursorLocation && 
+                typeof this.sandbox.cursorLocation.defaultDisplay !== undefined) {
+                showCursorLocationDefault = this.sandbox.cursorLocation.defaultDisplay; 
+            }
+
+            // If showCursorLocationDefault is true, start the UI side of the feature
+            if(showCursorLocationDefault) {
+                var mousePositionTemplate = Handlebars.compile(mousePositionHBS);
+                var html = mousePositionTemplate();
+                this.html(html);
+                
+                mousePosition.init(this);
+                mousePositionSubscriber.init(this);
+            }
         }
     };
                 

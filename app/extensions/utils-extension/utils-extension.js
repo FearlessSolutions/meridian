@@ -39,7 +39,7 @@ define([
                 error: $.error, // for help see jquery.error
                 extend: $.extend, // for help see jquery.extend
                 /**
-                 * first: returns first thing in the item passed in. Works for Objects as well as arrays and strings, but items in obects have no guarenteed order.
+                 * first: returns first thing in the item passed in. Works for Objects as well as arrays and strings, but items in obects have NO GUARENTEED ORDER.
                  * @param  {object/array/string} item - thing you want to look in, to find for first item
                  * @return {object/array/string} - returns macthing item, or undefined if not found
                  */
@@ -142,6 +142,15 @@ define([
                         return String(number);
                     }
                 },
+                getAsText: function(file, callback){
+                    var reader = new FileReader();
+
+                    reader.readAsText(file, 'UTF-8');
+                    reader.onloadend = function(e){
+                        var text = e.target.result;
+                        callback(text);
+                    };
+                },
                 pageHeight: function(el){
                     if(el) {
                         return $(el).height();
@@ -158,6 +167,9 @@ define([
                 },
                 onWindowResize: function(callback){
                     $(window).on('resize', callback);
+                },
+                size: function(obj){
+                    return _.size(obj);
                 }
             };
 

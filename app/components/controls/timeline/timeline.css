@@ -38,18 +38,6 @@ div[data-aura-component='controls/timeline'] #timeline .snapshot .btn-toggle .bt
     line-height: 1.5;
     border-radius: 3px;
 }
-
-/*div[data-aura-component='controls/timeline'] #timeline .badge{
-    right: -6px;
-    top: -8px;
-    background-color: #2f96b4;
-    color: white;
-    -moz-box-shadow: 0 0 12px #999999;
-    -webkit-box-shadow: 0 0 12px #999999;
-    box-shadow: 0 0 12px #999999;    
-    position: relative;
-}*/
-
 div[data-aura-component='controls/timeline'] #timeline .badgePlacement{
     right: -18px;
     top: -26px;
@@ -75,6 +63,9 @@ div[data-aura-component='controls/timeline'] #timeline .badge.finished{
 }
 div[data-aura-component='controls/timeline'] #timeline .badge.error{
     background-color: #bd362f;
+}
+div[data-aura-component='controls/timeline'] #timeline .badge.stopped{
+    background-color: #f89406;
 }
 div[data-aura-component='controls/timeline'] .snapshot.selected{
     box-shadow: 0 7px 10px rgba(0, 0, 0, 0.50);

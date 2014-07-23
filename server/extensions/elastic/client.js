@@ -1,6 +1,14 @@
 var elasticsearch = require('elasticsearch');
 var fs = require('fs');
 
+
+var context;
+
+exports.init = function(thisContext){
+    context = thisContext;
+};
+
+
 /**
  * Config options we allow:
  *
@@ -16,9 +24,10 @@ exports.newClient = function(options){
 
     // If no options are provided, use the default ones
     if (!options) {
-        options = require('../utils/Config').getConfig().client;
+        options = context.sandbox.config.getConfig().client;
     }
 
+    console.log(options);
     var esOptions = {host:{}, agentConfig:{}};
     if (options.protocol) { esOptions.host.protocol = options.protocol; }
     if (options.host) { esOptions.host.host = options.host; }

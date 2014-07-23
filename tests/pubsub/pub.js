@@ -55,7 +55,7 @@ define([
         var toSend = {
             channel: channel,
             message: message
-        }
-        geoMeridian.postMessage(toSend, "http://localhost:9032");
+        };
+        geoMeridian.postMessage(toSend, "https://localhost:3000");
     }
 });

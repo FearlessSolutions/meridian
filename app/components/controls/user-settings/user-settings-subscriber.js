@@ -7,7 +7,6 @@ define([
     var exposed = {
         init: function(thisContext){
             context = thisContext;
-            context.sandbox.on('map.view.extent', userSettings.populateCoordinates);
             context.sandbox.on('menu.opening', userSettings.handleMenuOpening);
         }
     };

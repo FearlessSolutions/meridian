@@ -14,6 +14,15 @@ define([
         init:function(thisContext) {
             context = thisContext;
 
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            context.$('#internalPubsubTesterToggleButton').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
             context.$('#internalPubsubTesterToggleButton').on('click', function(event) {
                 event.preventDefault();
                 context.$('#internalPubsubTesterDialog').dialog('toggle');
@@ -76,10 +85,10 @@ define([
         publishMessage: function() {
             var channelValue = context.$('#internal-pub-channel').val(),
                 payloadValue = context.$('#internal-pub-message').val(),
-                args = context.sandbox.utils.parseJSON(payloadValue);
-                args.channel = channelValue;
+                params = context.sandbox.utils.parseJSON(payloadValue);
+                params.channel = channelValue;
 
-            context.sandbox.emit(channelValue, args);
+            context.sandbox.emit(channelValue, params);
         },
         updateSubscriptions: function(params) {
 

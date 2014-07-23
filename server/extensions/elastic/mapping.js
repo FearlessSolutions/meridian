@@ -1,9 +1,8 @@
-var config = require('../utils/Config').getConfig();
-var client = require('./client.js').newClient();
+exports.init = function(context){
 
-var mappings = config.mapping;
-
-exports.init = function(){
+    var config = context.sandbox.config.getConfig();
+    var client = context.sandbox.elastic.client.newClient();
+    var mappings = config.mapping;
 
 
     var mappingCallback = function(err, results){

@@ -1,5 +1,5 @@
 define([
-	'./locator-configuration.js'
+	'./locator-configuration'
 ], function(locatorConfiguration){
 
     var exposed = {
@@ -25,7 +25,11 @@ define([
                 data = {};
                 if(param.status === 'ZERO_RESULTS') {
                     if(locatorConfiguration.noResultsMsg !== ""){
-                        app.sandbox.emit('message.publish', locatorConfiguration.noResultsMsg); 
+                        app.sandbox.emit("message.publish", {
+                            "messageType": 'warning',
+                            "messageTitle": 'Location Service',
+                            "messageText": locatorConfiguration.noResultsMsg
+                        }); 
                     }
                 }else {
                     app.sandbox.utils.each(param.results, function(i,value){

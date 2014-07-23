@@ -16,15 +16,16 @@ define([
     var exposed = {
         init: function(thisContext) {
             var paddingInt;
+
             context = thisContext;
             $basemapGallery = context.$('#basemap-gallery');
             $basemap = context.$('.basemap');
             $dropdown = context.$('#basemap-selection');
             $toggle = context.$('.dropdown-toggle');
-            
+
             //Cacluate css
             defaultBasemapCSS = {
-                width: parseInt($dropdown.width(), 10)
+                "width": parseInt($dropdown.width(), 10)
             };
             defaultToggleCSS = {
                 "padding-right" : parseInt($toggle.css('padding-right').replace('px', ''), 10)
@@ -44,7 +45,11 @@ define([
                 //destroy old tooltip and then add new information of the new value selected.
                 $toggle.tooltip('destroy');
                 $toggle.tooltip({
-                    'title': $this.find('.bs-tooltip').attr('data-title')
+                    'title': $this.find('.img-rounded').attr('data-title'),
+                    "container": "body",
+                    "delay": {
+                        "show": 500
+                    }
                 });
             });
 
@@ -52,7 +57,7 @@ define([
             $basemapGallery.on('show.bs.dropdown', function(){
                 adjustCSSVars();
                 $basemapGallery.css(openBasemapCSS);
-                $toggle.css(openToggleCSS);      
+                $toggle.css(openToggleCSS);  
             });
             $basemapGallery.on('hide.bs.dropdown', function(){
                 adjustCSSVars();
@@ -62,18 +67,33 @@ define([
 
             //On window resize, close selector. This solves resizing isses.
             context.sandbox.utils.onWindowResize(function(e) {
-                if($basemapGallery.hasClass("open")) {
-                    $toggle.click();
-                }
+                hideBasemapGallery();
             });
 
             //start tooltips for the values inside the dropdown
             context.$('.img-rounded').tooltip({
-                "container": "body"
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
             });
-            //start the tooltip for the selected image.
+
+            //Activate bootstrap tooltip for the selected image. 
+            //Specify container to make the tooltip appear in one line.
             //FF doesn't like tooltips inside buttons, so the entire button has the tooltip information. 
-            $toggle.tooltip();
+            $toggle.tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+            
+            //Toggle menu on hover
+            $basemapGallery.hover(
+                showBasemapGallery, //mouseenter
+                hideBasemapGallery //mouseleave
+            );
+
         }
     };
 
@@ -99,9 +119,7 @@ define([
             var dropdownHeightPercent = parseInt(dropdownMaxHeight.replace('%', ''), 10) / 100;
             dropdownMaxHeight = pageHeight * dropdownHeightPercent;
         } else {
-            console.warn('Basemap Gallery Dropdown Max Height not defined');
             dropdownMaxHeight = dropdownMaxHeight;
-        
             return;
         }
 
@@ -128,6 +146,17 @@ define([
         } else {
             openBasemapCSS = defaultBasemapCSS;
             openToggleCSS = defaultToggleCSS;
+        }
+    }
+
+    function hideBasemapGallery(){
+        if($basemapGallery.hasClass('open')) {
+            $toggle.click();
+        }
+    }
+    function showBasemapGallery(){
+        if(!$basemapGallery.hasClass('open')) {
+            $toggle.click();
         }
     }
 

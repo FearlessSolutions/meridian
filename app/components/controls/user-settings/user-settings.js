@@ -9,18 +9,29 @@ define([
     var context,
         MENU_DESIGNATION = 'user-settings',
         menuDisabled, //If the whole menu is disabled
-        drawOnDefault = true,
+        queryDrawOnDefault = true,
+        showCursorLocationDefault = true,
         $minLat,
         $minLon,
         $maxLat,
         $maxLon,
-        $buttonToggleContainer,
-        $userSettingsDialog;
+        $userSettingsDialog,
+        $queryToolDefaultToggle,
+        $cursorLocationDefaultToggle;
     
     var exposed = {
         init:function(thisContext) {
             context = thisContext;
             $userSettingsDialog = context.$("#userSettingsDialog");
+
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            context.$('#userSettings').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
 
             if(context.options.label && context.options.label === true) {
                 exposed.makeUserLabel();
@@ -32,17 +43,23 @@ define([
             }            
         },
         makeUserLabel: function() {
-            //removed unwanted html and adds the required css files that give the looc and location of the button.
+            //removed unwanted html and adds the required css files that give the look and location of the button.
             context.$('.caret').remove();
             $userSettingsDialog.remove(); //to have a cleaner html.
             context.$('#userSettings').addClass('disabled');
         },
         loadUserSettings: function() {
-            drawOnDefault = true;
+            queryDrawOnDefault = true;
+            showCursorLocationDefault = true;
 
             if(context.sandbox.queryConfiguration && 
-                typeof context.sandbox.queryConfiguration.drawOnDefault !== undefined) {
-                drawOnDefault = context.sandbox.queryConfiguration.drawOnDefault; 
+                typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
+                queryDrawOnDefault = context.sandbox.queryConfiguration.queryDrawOnDefault; 
+            }
+
+            if(context.sandbox.cursorLocation && 
+                typeof context.sandbox.cursorLocation.defaultDisplay !== undefined) {
+                showCursorLocationDefault = context.sandbox.cursorLocation.defaultDisplay; 
             }
 
             /**
@@ -84,7 +101,8 @@ define([
             $minLon = context.$('#user-settings-minLon');
             $maxLat = context.$('#user-settings-maxLat');
             $maxLon = context.$('#user-settings-maxLon');
-            $buttonToggleContainer = context.$('.btn-toggle-container');
+            $queryToolDefaultToggle = context.$('#query-tool-default .btn-toggle-container');
+            $cursorLocationDefaultToggle = context.$('#cursor-location-default .btn-toggle-container');
 
             //auto-select the loaded base map in the drop down.
             context.$('option[value='+
@@ -152,10 +170,16 @@ define([
                     errorFree = false;
                 }
 
-                if($buttonToggleContainer.find('.btn-on').hasClass('btn-primary')) {
-                    drawOnDefault = true;
+                if($queryToolDefaultToggle.find('.btn-on').hasClass('btn-primary')) {
+                    queryDrawOnDefault = true;
                 }else {
-                    drawOnDefault = false;
+                    queryDrawOnDefault = false;
+                }
+
+                if($cursorLocationDefaultToggle.find('.btn-on').hasClass('btn-primary')) {
+                    showCursorLocationDefault = true;
+                }else {
+                    showCursorLocationDefault = false;
                 }
 
                 if(errorFree) {
@@ -171,7 +195,10 @@ define([
                             "defaultBaseMap": context.$('#basemap-list').val()
                         },
                         "queryConfiguration": {
-                            "drawOnDefault": drawOnDefault
+                            "queryDrawOnDefault": queryDrawOnDefault
+                        },
+                        "cursorLocation": {
+                            "defaultDisplay": showCursorLocationDefault
                         }
                     });
 
@@ -202,41 +229,57 @@ define([
              */
             context.$('.form-horizontal button[type="extent"]').on('click', function(event) {
                 event.preventDefault();
-                publisher.getExtent({"target":"userSettings"});
+                exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
             });
 
             /**
              * user-settings default query tool button listener.
              */
-            $buttonToggleContainer.find('.btn-toggle').on('click', function(event) {
+            $queryToolDefaultToggle.find('.btn-toggle').on('click', function(event) {
                 event.preventDefault();
                 if(context.$(this).find('.btn-primary').size()>0) {
                     context.$(this).find('.btn').toggleClass('btn-primary');
                 }
             });
 
-            if(drawOnDefault) {
-                $buttonToggleContainer.find('.btn-on').addClass('btn-primary');
-                $buttonToggleContainer.find('.btn-off').removeClass('btn-primary');
+            if(queryDrawOnDefault) {
+                $queryToolDefaultToggle.find('.btn-on').addClass('btn-primary');
+                $queryToolDefaultToggle.find('.btn-off').removeClass('btn-primary');
             } else {
-                $buttonToggleContainer.find('.btn-on').removeClass('btn-primary');
-                $buttonToggleContainer.find('.btn-off').addClass('btn-primary');
+                $queryToolDefaultToggle.find('.btn-on').removeClass('btn-primary');
+                $queryToolDefaultToggle.find('.btn-off').addClass('btn-primary');
+            }
+
+            /**
+             * user-settings cursor location default button listener.
+             */
+            $cursorLocationDefaultToggle.find('.btn-toggle').on('click', function(event) {
+                event.preventDefault();
+                if(context.$(this).find('.btn-primary').size()>0) {
+                    context.$(this).find('.btn').toggleClass('btn-primary');
+                }
+            });
+
+            if(showCursorLocationDefault) {
+                $cursorLocationDefaultToggle.find('.btn-on').addClass('btn-primary');
+                $cursorLocationDefaultToggle.find('.btn-off').removeClass('btn-primary');
+            } else {
+                $cursorLocationDefaultToggle.find('.btn-on').removeClass('btn-primary');
+                $cursorLocationDefaultToggle.find('.btn-off').addClass('btn-primary');
             }
         },
-        populateCoordinates: function(args) {
-            if(args.target === 'userSettings') {
-                removeCssError();
-                $minLon.val(args.minLon);
-                $maxLat.val(args.maxLat);
-                $maxLon.val(args.maxLon);
-                $minLat.val(args.minLat);
+        populateCoordinates: function(params) {
+            removeCssError();
+            $minLon.val(params.minLon);
+            $maxLat.val(params.maxLat);
+            $maxLon.val(params.maxLon);
+            $minLat.val(params.minLat);
 
-                publisher.publishMessage({
-                    "messageType": "success",
-                    "messageTitle": "User Settings",
-                    "messageText": "Extent loaded. Remember to save."
-                });
-            }
+            publisher.publishMessage({
+                "messageType": "success",
+                "messageTitle": "User Settings",
+                "messageText": "Extent loaded. Remember to save."
+            });
         },
         closeMenu: function(){
             if(menuDisabled){
@@ -246,8 +289,8 @@ define([
 
             resetDialog();
         },
-        handleMenuOpening: function(args){
-            if(args.componentOpening === MENU_DESIGNATION){
+        handleMenuOpening: function(params){
+            if(params.componentOpening === MENU_DESIGNATION){
                 return;
             }else{
                 exposed.closeMenu();
@@ -279,12 +322,20 @@ define([
         //set the default dropdown basemap value.
         context.$('option[value=' + context.sandbox.mapConfiguration.defaultBaseMap + ']').attr('selected', 'selected');
         //set the correct state of the query tool toggle button.
-        if(drawOnDefault) {
-            $buttonToggleContainer.find('.btn-on').addClass('btn-primary');
-            $buttonToggleContainer.find('.btn-off').removeClass('btn-primary');
+        if(queryDrawOnDefault) {
+            $queryToolDefaultToggle.find('.btn-on').addClass('btn-primary');
+            $queryToolDefaultToggle.find('.btn-off').removeClass('btn-primary');
         }else {
-            $buttonToggleContainer.find('.btn-on').removeClass('btn-primary');
-            $buttonToggleContainer.find('.btn-off').addClass('btn-primary');
+            $queryToolDefaultToggle.find('.btn-on').removeClass('btn-primary');
+            $queryToolDefaultToggle.find('.btn-off').addClass('btn-primary');
+        }
+        //set the correct state of the cursor location display toggle button.
+        if(showCursorLocationDefault) {
+            $cursorLocationDefaultToggle.find('.btn-on').addClass('btn-primary');
+            $cursorLocationDefaultToggle.find('.btn-off').removeClass('btn-primary');
+        }else {
+            $cursorLocationDefaultToggle.find('.btn-on').removeClass('btn-primary');
+            $cursorLocationDefaultToggle.find('.btn-off').addClass('btn-primary');
         }
     }
 

@@ -14,23 +14,28 @@ describe("Elastic Search Integration Test Suite", function(){
         save,
         query,
         metadataManager,
-        testResultId = '17DF16AFE6CA626D6EF18746DEBC',
+        testResultId = 'A7478FB8AB254F608335D1D2F6DE960F',
         testQueryId;
 
     before(function(done){
-        config = require('../../../server/extensions/utils/Config').setProfile("local-test").getConfig();
+        config = require('../../../server/extensions/config/Config').setProfile("local-test").getConfig();
+
+        require('../../../server/app').init({
+            get:function(){},
+            post:function(){},
+            all:function(){}
+        });
+
         save = require('../../../server/extensions/elastic/save');
         query = require('../../../server/extensions/elastic/query');
         metadataManager = require('../../../server/extensions/elastic/metadata');
 
-        require('../../../server/extensions/elastic/mapping').init();
-
         // Only required the first time for the mapping
         // It would be better to properly do callbacks within the mapping function
         setTimeout(function(){
-            var testUsers = [{'user':'spines', 'sessionId':'17DF16AFE6CA626D6EF18746DEBC'},
-                {'user':'eherman', 'sessionId':'8DEFBAC7337475D67E6F76E76C76'},
-                {'user':'happydogswag', 'sessionId':'ABC6D7EFC7A6D6EF7C7EA7D7F'}];
+            var testUsers = [{'user':'testUser1', 'sessionId':'A7478FB8AB254F608335D1D2F6DE960F'},
+                {'user':'testUser2', 'sessionId':'8DEFBAC7337475D67E6F76E76C76'},
+                {'user':'testUser3', 'sessionId':'ABC6D7EFC7A6D6EF7C7EA7D7F'}];
 
 
             testUsers.forEach(function(user){
@@ -89,7 +94,7 @@ describe("Elastic Search Integration Test Suite", function(){
 
 //        testResultId = uuid.v4().split("-").join("");
         testQueryId = uuid.v4().split("-").join("");
-        save.writeGeoJSON("spines", testResultId, testQueryId, "test", geoJSON, function(err){
+        save.writeGeoJSON("testUser1", testResultId, testQueryId, "test", geoJSON, function(err){
             expect(err).to.be.not.ok;
         });
 
@@ -97,7 +102,7 @@ describe("Elastic Search Integration Test Suite", function(){
     });
 
     it("should be able to retrieve a result set (session)", function(done){
-        query.executeQuery('spines', testResultId, {query:{"match_all":{}}}, function(err, results){
+        query.executeQuery('testUser1', testResultId, {query:{"match_all":{}}}, function(err, results){
             expect(err).to.be.not.ok;
             expect(results.hits.hits.length).to.equal(10);
             done();
@@ -105,7 +110,7 @@ describe("Elastic Search Integration Test Suite", function(){
     });
 
     it("should be able to query a result set (session) for a key/value pair", function(done){
-        query.executeQuery('spines', testResultId, {query:{"match":{"lon":8}}}, function(err, results){
+        query.executeQuery('testUser1', testResultId, {query:{"match":{"lon":8}}}, function(err, results){
             expect(err).to.be.not.ok;
             expect(results.hits.hits.length).to.equal(1);
             done();
@@ -115,7 +120,7 @@ describe("Elastic Search Integration Test Suite", function(){
     it("should be able to page a result set (session)", function(done){
         var count = 0;
 
-        query.streamQuery('spines', testResultId, {query:{"match_all":{}}}, 2, function(err, results){
+        query.streamQuery('testUser1', testResultId, {query:{"match_all":{}}}, 2, function(err, results){
             expect(err).to.be.not.ok;
             count += results.hits.hits.length;
             if (results.hits.hits.length === 0){
@@ -126,7 +131,7 @@ describe("Elastic Search Integration Test Suite", function(){
     });
 
     it("should be able to search for an arbitrary term within a result set (session)", function(done){
-        query.executeQuery('spines', testResultId, {query:{"match":{"_all":"CLASSA"}}}, function(err, results){
+        query.executeQuery('testUser1', testResultId, {query:{"match":{"_all":"CLASSA"}}}, function(err, results){
             expect(err).to.be.not.ok;
             expect(results.hits.hits.length).to.equal(6);
             done();
@@ -135,7 +140,7 @@ describe("Elastic Search Integration Test Suite", function(){
 
     it("should be able to sort a result set (session)", function(done){
         var myQuery = {query: {"match_all": {}}, sort: {"properties.heading": "desc"}};
-        query.executeQuery('spines', testResultId, myQuery, function(err, results){
+        query.executeQuery('testUser1', testResultId, myQuery, function(err, results){
             expect(err).to.be.not.ok;
             expect(results.hits.hits.length).to.equal(10);
             expect(results.hits.hits[0]._source.properties.heading).to.equal(46);
@@ -172,8 +177,8 @@ describe("Elastic Search Integration Test Suite", function(){
             expect(err).to.be.not.ok;
             expect(meta[testQueryId]).to.be.defined;
             expect(meta[testQueryId].keys.lon).to.be.defined;
-            expect(meta['17DF16AFE6CA626D6EF18746DEBC']).to.be.defined;
-            expect(meta['17DF16AFE6CA626D6EF18746DEBC'].keys.num).to.be.defined;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F']).to.be.defined;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F'].keys.num).to.be.defined;
             done();
         });
     });
@@ -190,7 +195,7 @@ describe("Elastic Search Integration Test Suite", function(){
             },
             end: function(chunk){
                 this.buffer += chunk;
-                expect(this.buffer.length).to.be.above(0);
+                expect(this.buffer.length).to.equal(1045);
                 expect(this.headers['Content-Type']).to.be.defined;
                 expect(this.headers['Content-Disposition']).to.be.defined;
                 done();
@@ -200,6 +205,6 @@ describe("Elastic Search Integration Test Suite", function(){
             }
         };
 
-        require('../../../server/extensions/elastic/download').pipeCSVToResponse('spines', testResultId, mockRes);
+        require('../../../server/extensions/elastic/download').pipeCSVToResponse('testUser1', testResultId, mockRes);
     });
 });

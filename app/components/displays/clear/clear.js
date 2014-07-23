@@ -30,7 +30,7 @@ define([
                 publisher.publishClear();
             });
         },
-        open: function(args){
+        open: function(params){
             publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
             $modal.modal('show');
         },
