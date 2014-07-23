@@ -189,7 +189,10 @@ define([
 
             });
 
-        context.sandbox.ajax.addActiveAJAX(newAJAX, layerId);
+        context.sandbox.ajax.addActiveAJAX({
+            "newAJAX": newAJAX,
+            "layerId": layerId
+        });
 
         //TODO: collection-wide style map?
         //TODO: modify format more?

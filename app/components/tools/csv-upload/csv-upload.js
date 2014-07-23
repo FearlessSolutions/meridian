@@ -110,7 +110,10 @@ define([
                             }
                         );
 
-                        context.sandbox.ajax.addActiveAJAX(newAjax, null);
+                        context.sandbox.ajax.addActiveAJAX({
+                            "newAJAX": newAJAX, 
+                            "layerId": layerId
+                        });
 
                         close();
                     });
