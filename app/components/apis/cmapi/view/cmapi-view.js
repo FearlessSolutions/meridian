@@ -66,7 +66,7 @@ define([
                         "lat": data.geometry.coordinates[0]
                     });
                 } else {
-                    extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
+                    extent = context.sandbox.utils.getMaxExtent(data.geometry.coordinates);
                     publisher.publishCenterOnBounds(extent);
                 }
             });

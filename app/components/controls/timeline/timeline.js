@@ -23,51 +23,12 @@ define([
                 coords = params.coords,
                 thumnailURL;
 
+            //TODO make sure this is in line with updates
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
 
                 if(coords) {
 
                     thumnailURL = context.sandbox.snapshot.thumbnailURL(coords);
-
-                    publisher.createLayer({
-                        "layerId": layerId + "_aoi",
-                        "name": name + "_aoi",
-                        "initialVisibility": true,
-                        "styleMap": {
-                            "default": {
-                                "strokeColor": '#000',
-                                "strokeOpacity": 0.3,
-                                "strokeWidth": 2,
-                                "fillColor": 'gray',
-                                "fillOpacity": 0.3
-                            }
-                        }
-                    });
-                        
-                    publisher.setLayerIndex({
-                        "layerId": layerId + "_aoi",
-                        "layerIndex": 0
-                    });
-
-                    publisher.plotFeatures({
-                        "layerId": layerId + "_aoi",
-                        "data": [{
-                            "layerId": layerId + "_aoi",
-                            "featureId": "_aoi",
-                            "dataService": "",
-                            "id": "_aoi",
-                            "geometry": {
-                                "type": "Polygon",
-                                "coordinates": [[
-                                    [coords.minLon, coords.maxLat],
-                                    [coords.maxLon, coords.maxLat],
-                                    [coords.maxLon, coords.minLat],
-                                    [coords.minLon, coords.minLat]
-                                ]]
-                            },
-                            "type": "Feature"
-                        }]
-                    });
 
                 } else {
                     thumnailURL = context.sandbox.snapshot.thumbnailURL();

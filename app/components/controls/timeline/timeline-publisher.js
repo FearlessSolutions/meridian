@@ -33,7 +33,7 @@ define([
         },
         publishMessage: function(params) {
             context.sandbox.emit('message.publish', params); 
-        },
+        }
     };
 
     return exposed;
