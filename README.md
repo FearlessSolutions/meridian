@@ -12,3 +12,6 @@ To use the command-line version of Grunt you will need to install the global [Gr
 After cloning the repo, run `npm install` to install the web server dependencies. 
 
 Once eveything is installed, run `grunt server` to have the web page open in your preffered browser.
+
+The current gh-pages branch can be accessed in: http://ozone-development.github.io/meridian
+If running a local web server, the webpage can be accessed in: http://localhost:3000

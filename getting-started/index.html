@@ -20,18 +20,71 @@
       </div>
       <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="./getting-started">Getting Started</a></li>
+          <li class="active"><a href=".">Getting Started</a></li>
           <li><a href="./contribute">Contribute</a></li>
           <li><a href="./examples">Examples</a></li>
         </ul>
       </div>
     </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 container">
+            <h2 id="requirements">Requirements</h2>
+              <p> Instructions can also be found on our <a href="//github.com/ozone-development/meridian">Github</a> page.</p>
+
+            <h4 class="page-header" id="meridian">Meridian</h4>
+              <p> Code base can be cloned from <a href="//github.com/ozone-development/meridian"> Github</a> or downloaded as a <a href="//github.com/ozone-development/meridian/archive/master.zip"> zip file</a>.</p>
+                <ul>
+                  <li><a href="//git-scm.com/book/en/Git-Basics-Getting-a-Git-Repository#Cloning-an-Existing-Repository"> How to clone an existing repository using Git</a>.</li>
+                </ul>
+              <p>  
+              
+            
+            <h4 class="page-header" id="grunt"> Grunt </h4>
+              <p>The project uses Grunt for task management. Use of Grunt is optional, but highly recommended.</p>
+
+            <h4 class="page-header"> Node JS </h4>
+              <p>To install grunt, make sure the Node Packaged Module is installed by installing <a href="http://nodejs.org"> Node.js</a>.</p>
+              <p>To use the command-line version of Grunt you will need to install the global <a href="http://gruntjs.com/getting-started"> Grunt CLI </a> module.
+                <ul>
+                  <li> Run <code> npm install -g grunt-cli </code> if needed.</li>
+                </ul>
+              </p>
+
+            <h4 class="page-header" id="ellastic"> Ellastic Search </h4>
+              <p> The application utilizes mock data To host the database locally (which will be populated with mock data), you will need to install ElasticSearch.
+              Download ElasticSearch in the <a href="http://www.elasticsearch.org/overview/elkdownloads/">ElasticSearch Downloads Page</a>.</p>
+
+              <p>To use and install ElasticSearch, make sure:
+                <ul>
+                  <li>The <code>JAVA_HOME</code> variable is defined.</li>
+                  <li>Import the given user.p12 certificate into your browser:</li>
+                    <code>
+                      Mac OS: Make sure to import the certificate in the login section of Keychain Access and not in the System section.
+                    </code>
+                  <li>Chrome: Settings>Show Advanced Settings>(HTTPS/SSL)Manage certificates>Import</li>
+                  <li>FireFox: Options>Advanced>Certificates>View Certificates>Import</li>
+                  <li>Cert password: <code>password</code></li>
+                  <li>You might need to restart the browser after importing the certificate.</li>
+                </ul>
+              </p>
+
+              <p>If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the Grunt  Setup instructions.</p>
+
+
+            <h2 class="page-header" id="setup">Setup</h2>
+        </div><!-- md-9 container -->
+
+        <div class="col-md-3"> </div>
+      </div><!-- row -->
+    </div>
+    
+    
 
 
 
 
-
-
+    <hr>
     <div class="footer text-center">
         <div class="container">
           <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian/archive/master.zip"><i class="glyphicon glyphicon-cloud-download"></i> Download Meridian</a>
