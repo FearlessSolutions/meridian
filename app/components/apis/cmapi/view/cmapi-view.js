@@ -49,14 +49,14 @@ define([
             publisher.publishZoomToLayer(params);
 		},
 		"map.view.center.feature": function(message) { // TODO: ensure supoort for zoom parameter to overlay (CMAPI calls for using meters or 'auto')
-            var newAjax;
+            var newAJAX;
             if(message === '' || !message.featureId) {
                 sendError('map.view.center.feature', message, 'Must include "featureId"');
                 return;
             }
 
             //Get feature from server, then go to it
-            newAjax = context.sandbox.dataStorage.getFeatureById(message, function(data) {
+            newAJAX = context.sandbox.dataStorage.getFeatureById(message, function(data) {
                 var extent;
 
                 //If the feature is a point, set center; else, zoom to extent
@@ -71,7 +71,10 @@ define([
                 }
             });
 
-            context.sandbox.ajax.addActiveAJAX(newAjax, null); //Keep track of current AJAX calls
+            context.sandbox.ajax.addActiveAJAX({
+                "newAJAX": newAJAX, 
+                "layerId": layerId
+            }); //Keep track of current AJAX calls
 		},
 		"map.view.center.location": function(message) {
 			if('location' in message &&

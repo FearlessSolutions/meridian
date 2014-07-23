@@ -14,19 +14,18 @@ define([
                  * Add a new AJAX to the list.
                  * If it is a query, add the property to the call
                  * @param newAJAX
-                 * @param queryId
+                 * @param layerId
                  */
-                "addActiveAJAX": function (newAJAX, queryId) {
-                    if(queryId) {
-                        newAJAX.queryId = queryId;
+                addActiveAJAX: function (params) {
+                    if(params.layerId) {
+                        params.newAJAX.layerId = params.layerId;
                     }
-
-                    activeAJAXs.push(newAJAX);
+                    activeAJAXs.push(params.newAJAX);
                 },
                 /**
                  * Remove finished AJAX from list
                  */
-                "clean": function() {
+                clean: function() {
                     activeAJAXs.forEach(function(ajax, index) {
                         if(ajax.readyState === 4) { //4 is "complete" status
                             activeAJAXs.splice(index, 1);
@@ -36,21 +35,22 @@ define([
                 /**
                  * Abort ALL open AJAX
                  */
-                "clear": function() {
+                clear: function(params) {
                     activeAJAXs.forEach(function(ajax, index) {
-                        if(ajax.queryId === params.queryId) { //This was set in queryData
+                        if(ajax.layerId === params.layerId) { //This was set in queryData
                             ajax.abort();
                             activeAJAXs.splice(index, 1);
                         }
                     });
                 },
                 /**
-                 * Aborts AJAX based on queryId
-                 * @param queryId
+                 * Aborts AJAX based on layerId
+                 * @param layerId
                  */
-                "stopQuery": function(queryId) {
+                stopQuery: function(params) {
+                    console.debug(params);
                     activeAJAXs.forEach(function(ajax, index) {
-                        if(ajax.queryId === queryId) {
+                        if(ajax.layerId === params.layerId) {
                             ajax.abort();
                             activeAJAXs.splice(index, 1);
                         }
@@ -59,7 +59,7 @@ define([
             };
 
             //Register a listener so that clean is automatically called after each ajax call
-            $(document).ajaxComplete( app.sandbox.ajax.clean);
+            $(document).ajaxComplete(app.sandbox.ajax.clean);
         }
     };
 

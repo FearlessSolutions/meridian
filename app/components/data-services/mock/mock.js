@@ -147,7 +147,10 @@ define([
             return false;
         });
 
-        context.sandbox.ajax.addActiveAJAX(newAJAX, params.queryId);
+        context.sandbox.ajax.addActiveAJAX({
+            "newAJAX": newAJAX, 
+            "layerId": params.queryId
+        });
     }
 
 
