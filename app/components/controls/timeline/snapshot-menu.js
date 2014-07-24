@@ -61,19 +61,15 @@ define([
                 });
             });
         },
+        /**
+         * [disableOption description]
+         * @param {object} params - JSON parameters
+         * @param {string} params.layerId - id of layer
+         * @param {string} params.channel - internal pubsub channel
+         * @return N/A
+         */
         disableOption: function(params){
-            var $option;
-            // var options = {
-            //     "zoomToLayer": "map.zoom.toLayer",
-            //     "showLayer": "timeline.menu.layer.show",
-            //     "hideLayer": "timeline.menu.layer.hide",
-            //     "deleteLayer": "timeline.menu.layer.delete",
-            //     "stopQuery": "query.stop"
-            // };
-            // $option = context.$('#snapshot-' + layerId + '-settings-menu a[data-channel="' + options[optionName] + '"]');
-            // $option.parent().remove();
-
-            $option = context.$('#snapshot-' + params.layerId + '-settings-menu a[data-channel="'+ params.channel + '"]').parent('li').addClass('disabled');
+            var $option = context.$('#snapshot-' + params.layerId + '-settings-menu a[data-channel="'+ params.channel + '"]').parent('li').addClass('disabled');
         },
         menuCallback: function(params) {
             context.sandbox.emit(params.menuChannel, params.payload);  // dynamically emit publish messages
