@@ -52,13 +52,143 @@ define([
                 return; //Layer already made; ignore this request
             } else {
                 context.sandbox.dataStorage.datasets[message.layerId] = new Backbone.Collection();
+
+                //***** HACK *****
+                var config = {
+                    "symbolizers": {
+                        "lowSymbolizer": {
+                          "fillColor": "rgb(0, 0, 0)",
+                          "fillOpacity": 0.9,
+                          "strokeColor": "rgb(0, 0, 0)",
+                          "strokeOpacity": 0.5,
+                          "strokeWidth": 12,
+                          "pointRadius": 10,
+                          "label": "${count}",
+                          "labelOutlineWidth": 1,
+                          "labelYOffset": 0,
+                          "fontColor": "#ffffff",
+                          "fontOpacity": 0.8,
+                          "fontSize": "12px"
+                        },
+                        "midSymbolizer": {
+                          "fillColor": "rgb(0, 0, 0)",
+                          "fillOpacity": 0.9,
+                          "strokeColor": "rgb(0, 0, 0)",
+                          "strokeOpacity": 0.5,
+                          "strokeWidth": 12,
+                          "pointRadius": 15,
+                          "label": "${count}",
+                          "labelOutlineWidth": 1,
+                          "labelYOffset": 0,
+                          "fontColor": "#ffffff",
+                          "fontOpacity": 0.8,
+                          "fontSize": "12px"
+                        },
+                        "highSymbolizer": {
+                          "fillColor": "rgb(0, 0, 0)",
+                          "fillOpacity": 0.9,
+                          "strokeColor": "rgb(0, 0, 0)",
+                          "strokeOpacity": 0.5,
+                          "strokeWidth": 12,
+                          "pointRadius": 20,
+                          "label": "${count}",
+                          "labelOutlineWidth": 1,
+                          "labelYOffset": 0,
+                          "fontColor": "#ffffff",
+                          "fontOpacity": 0.8,
+                          "fontSize": "12px"
+                        },
+                        "noClusterSymbolizer": {
+                          "externalGraphic": "${icon}",
+                          "graphicOpacity": 1,
+                          "pointRadius": 15,
+                          "graphicHeight": "${height}",
+                          "graphicWidth": "${width}"
+                        }
+                    }
+                };
+                
+                var rules = [],
+                    lowRule,
+                    midRule,
+                    highRule,
+                    noClusterRule;
+
+                lowRule = new OpenLayers.Rule({
+                    filter : new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.LESS_THAN,
+                        property: "count",
+                        value: 10
+                    }),
+                    symbolizer: config.symbolizers.lowSymbolizer
+                });
+
+                midRule = new OpenLayers.Rule({
+                    filter : new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.BETWEEN,
+                        property: "count",
+                        lowerBoundary: 10,
+                        upperBoundary: 99
+                    }),
+                    symbolizer: config.symbolizers.midSymbolizer
+                });
+
+                highRule = new OpenLayers.Rule({
+                    filter : new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.GREATER_THAN,
+                        property: "count",
+                        value: 99
+                    }),
+                    symbolizer: config.symbolizers.highSymbolizer
+                });
+
+                noClusterRule = new OpenLayers.Rule({
+                    filter : new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.GREATER_THAN,
+                        property: "height",
+                        value: 0
+                    }),
+                    symbolizer: config.symbolizers.noClusterSymbolizer
+                });
+
+                rules.push(lowRule, midRule, highRule, noClusterRule);
+
+                var style = new OpenLayers.Style(OpenLayers.Util.applyDefaults({
+                    externalGraphic: "${icon}",
+                    graphicOpacity: 1,
+                    pointRadius: 15,
+                    graphicHeight: "{height}",
+                    graphicWidth: "{width",
+                    graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
+                }, OpenLayers.Feature.Vector.style["default"]), {
+                    rules: rules,
+                    context: {
+                        width: function(feature) {
+                            return feature.cluster ? 0 : feature.attributes.width;
+                        },
+                        height: function(feature) {
+                            return feature.cluster ? 0 : feature.attributes.height;
+                        },
+                        icon: function(feature) {
+                            return feature.cluster ? "" : feature.attributes.icon;
+                        }
+                    }
+                });
+                // ***** END HACK *****
+
                 publisher.publishCreateLayer({
                     "layerId": message.layerId,
                     "name": message.name,
                     "selectable": message.selectable,
-                    "coords": message.coords
-                    // TODO: Add styleMap
+                    "coords": message.coords,
+                    //"styleMap": message.styleMap || ""
+                    // ***** HACK *****
+                    "styleMap": {
+                       "default": style,
+                       "select": style
+                    }
                 });
+
             }
 		},
         /**
