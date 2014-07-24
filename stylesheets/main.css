@@ -47,3 +47,64 @@ a.text-primary {
 	margin-bottom: 0px;
 }
 
+/*Makes the href from sideNav account for the nav bar at the top of the page.*/
+h2:before, h4:before{
+	display: block;
+	content: " ";
+	height: 75px;
+	margin-top: -75px;
+	visibility:hidden;
+}
+
+/*Separates menu from navigation bar in the top of the page*/
+.nav.affix {
+	padding-top: 15px;
+}
+
+/*Only select the first value, not the entire set of values. That is why <a> is used.*/
+.nav.affix > li.active > a {
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: #134fb8;
+	color: #134fb8;
+}
+
+/*Set border so that <a> elements do not shift slightly when not active.*/
+.nav.affix > li > a {
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: transparent;
+}
+
+/*Indent values nested inside the <ul>*/
+.nav.affix  ul.nav > li {
+	padding-left: 20px;
+	font-size: small;
+}
+
+/*Select all <a> elements and make the padding smaller than default values.*/
+.nav.affix li > a {
+	padding-top: 3px;
+	padding-bottom: 3px;
+
+}
+
+/*Indented links use the li border. Set transparent border to all nested <li> elements to prevent shift*/
+.nav.affix li ul.nav li {
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: transparent;
+}
+
+/*Selects each individual active li inside a nester ul*/
+.nav.affix li ul.nav li.active {
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: #134fb8;
+}
+
+/*Make active <a> darker*/
+.nav.affix li ul.nav li.active > a {
+	color: #134fb8;
+}
+

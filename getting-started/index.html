@@ -8,7 +8,7 @@
     <script src="../javascripts/jquery-1.11.1/jquery.js"></script>
     <script src="../javascripts/bootstrap-3.2.0/bootstrap.js"></script>
   </head>
-  <body>
+  <body data-spy="scroll" data-target="#sideNav">
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
@@ -28,7 +28,7 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col-md-9 container" data-spy="scroll" data-target="">
+        <div class="col-md-9 container">
             <h2 id="requirements">Requirements</h2>
               <p> Instructions can also be found on our <a href="//github.com/ozone-development/meridian">Github</a> page.</p>
 
@@ -73,19 +73,26 @@
 
 
             <h2 class="page-header" id="setup">Setup</h2>
+
+            
+            <h2 class="page-header" id="contributing">Contributing</h2>
         </div><!-- md-9 container -->
 
         <div class="col-md-3">
-          <div class="hidden-print hidden-xs hidden-sm affix">
-            <ul class="nav">
+          <div class="hidden-print hidden-xs hidden-sm" id="sideNav">
+            <ul class="nav affix">
               <li><a href="#requirements">Requirements</a>
                 <ul class="nav">
-                    <li><a href="#meridian">Meridian</a></li>
-                    <li><a href="#grunt">Grunt</a></li>
-                    <li><a href="#node">Node JS</a></li>
-                    <li><a href="#ellastic">Ellastic Search</a></li>
+                  <li><a href="#meridian">Meridian</a></li>
+                  <li><a href="#grunt">Grunt</a></li>
+                  <li><a href="#node">Node JS</a></li>
+                  <li><a href="#ellastic">Ellastic Search</a></li>
                 </ul>
               </li>
+              <li><a href="#setup">Setup</a></li>
+              <li><a href="#contributing">Contributing</a></li>
+                
+              
             </ul>
           </div>
         </div><!-- md-3 -->
