@@ -3,6 +3,7 @@
 
 body { 
 	padding-top: 65px; /*taking into account the fixed nav bar*/
+	position: relative;
 }
 
 .main-banner {
