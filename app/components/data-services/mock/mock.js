@@ -44,7 +44,13 @@ define([
 
         },
         deleteDataset: function(params) { 
-            // delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delet directly
+            delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delet directly
+            
+            publisher.publishMessage({
+                "messageType": "success",
+                "messageTitle": "Data Service",
+                "messageText": params.name + " query layer was removed"
+            });
         }
     };
 
