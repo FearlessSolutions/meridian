@@ -192,8 +192,7 @@ define([
                 "title": 
                     '<div class="snapshot-tooltip-content">Name: ' + name + '<br/>' +
                     'Status: '+ params.status + '<br/>' +
-                    'Features: ' + count + '</div>',
-                "delay": {"show": 300}
+                    'Features: ' + count + '</div>'
             });
         },
         updateTooltip: function(params) {
