@@ -154,7 +154,10 @@ define([
                     "layerId": params.layerId,
                     "status": "Finished"
                 });
-                snapshotMenu.disableOption(params.layerId, 'stopQuery');
+                snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "query.stop"
+                });
             }
         },
         markStopped: function(params) {
@@ -165,7 +168,10 @@ define([
                     "layerId": params.layerId,
                     "status": "Stopped"
                 });
-                snapshotMenu.disableOption(params.layerId, 'stopQuery');
+                snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "query.stop"
+                });
             }
         },
         markError: function(params) {
@@ -176,7 +182,10 @@ define([
                     "layerId": params.layerId,
                     "status": "Error"
                 });
-            snapshotMenu.disableOption(params.layerId, 'stopQuery');
+            snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "query.stop"
+                });
         },
         setTooltip: function(params) {
             var $owner = context.$('#snapshot-' + params.layerId),
