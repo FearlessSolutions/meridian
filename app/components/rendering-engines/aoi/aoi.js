@@ -16,12 +16,11 @@ define([
         createAOI: function(args){
             var layerId = args.layerId,
                 name = args.name,
-                coords = args.coords,
-                autoUpdate = args.autoUpdate;
+                coords = args.coords;
 
             if(!layerId ||
                 !context.sandbox.dataStorage.datasets[layerId] ||
-                (!coords && !autoUpdate)){
+                !coords){
                 return;
             }
 
@@ -41,34 +40,21 @@ define([
                 }
             });
 
-//TODO remove after testing
-            coords = null;
-
             if(coords){
-                //TODO delete the old feature if it already exists (this should probably be done in the renderer/via pub)
                 createNewAOIFeature(layerId, coords);
             }
         },
         updateAOI: function(args){
             var layerId = args.layerId,
-                coords = args.coords,
-                data = context.sandbox.dataStorage.datasets[layerId],
-                state = context.sandbox.stateManager.getLayerStateById({"layerId": layerId});
+                coords = args.coords;
 
-            if(coords){
-                createNewAOIFeature(layerId, coords);
-
-            }else if(state.autoUpdate){
-                data.models.forEach(function(feature){
-                    console.debug(feature);
-                })
-            }else{
+            if(!layerId ||
+                !context.sandbox.dataStorage.datasets[layerId] ||
+                !coords){
                 return;
             }
 
-
-
-
+            createNewAOIFeature(layerId, coords);
         },
         clear: function() {
            //TODO?
@@ -76,7 +62,7 @@ define([
     };
 
     function createNewAOIFeature(layerId, coords){
-        publisher.publishData({
+        publisher.publishUpdateData({
             "layerId": layerId + "_aoi",
             "data": [{
                 "layerId": layerId + "_aoi",

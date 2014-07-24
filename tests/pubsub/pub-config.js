@@ -56,7 +56,8 @@ define([
                     },
                     "name":"Sample GeoJSON Feature Collection",
                     "zoom":"true",
-                    "readOnly":"false"
+                    "readOnly":"false",
+                    "autoUpdate": true
                 }
             },
             "map.view.zoom":{

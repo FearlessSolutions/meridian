@@ -113,9 +113,14 @@ define([
          */
         createVectorLayer: function(params) {
             var options,
-                newVectorLayer,
+                newVectorLayer = params.map.getLayersBy('layerId', params.layerId)[0],
                 selector,
                 layers;
+
+            //If the layer already exists, just return existing layer
+            if (newVectorLayer){
+                return newVectorLayer;
+            }
 
             options = {
                 "layerId": params.layerId, // set as layerId, is not present its null

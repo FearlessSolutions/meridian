@@ -9,8 +9,8 @@ define([
         createLayer: function(args){
             context.sandbox.emit('map.layer.create', args);
         },
-        publishData: function(args){
-            context.sandbox.emit('map.features.plot', args);
+        publishUpdateData: function(args){
+            context.sandbox.emit('map.features.update', args);
         },
         publishMessage: function(args){
             context.sandbox.emit('message.publish', args);

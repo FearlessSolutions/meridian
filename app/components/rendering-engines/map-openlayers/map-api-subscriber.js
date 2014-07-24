@@ -11,6 +11,7 @@ define([
         },
         subscribeOn: function() {
             context.sandbox.on('map.features.plot', mapCore.plotFeatures);
+            context.sandbox.on('map.features.update', mapCore.updateFeatures);
             context.sandbox.on('map.basemap.change', mapCore.setBasemap);
             context.sandbox.on('map.center.set', mapCore.setCenter);
             context.sandbox.on('map.draw.clear', mapCore.clearDrawing);

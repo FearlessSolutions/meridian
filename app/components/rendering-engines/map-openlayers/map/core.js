@@ -233,6 +233,23 @@ define([
             }
         },
         /**
+         * Update Features
+         * @param {object} params - JSON parameters
+         * @param {string} params.layerId - id of layer
+         */
+        updateFeatures: function(params){
+            mapFeatures.updateFeatures({
+                "map": map,
+                "layerId": params.layerId,
+                "data": params.data
+            });
+            if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
+                mapHeatmap.update({
+                    "map": map
+                });
+            }
+        },
+        /**
          * Hide Layer
          * @param {object} params - JSON parameters
          * @param {string} params.layerId - id of layer

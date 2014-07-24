@@ -88,13 +88,16 @@ define([
         },
         "name":"STRING",                (optional)(default: '')
         "zoom":"true",                  (optional)(default: true)(If it should center and zoom after plotting)
-        "selectable":BOOLEAN            (optional)(default: true)
+        "selectable":BOOLEAN            (optional)(default: true),
+        "coords": { "minLat", "minLon", "maxLat", "maxLon" },
+        "autoUpdate": BOOLEAN           (optional)(default: false)(if the AOI should be calculated based on data)
     }
      *Note that name and selectable will only be used if there was no overlay with the given id
      */
     function plotGeoJSON(message) {
         var postOptions,
-            layerId;
+            layerId,
+            coords = message.coords;
 
         if(
             !message.feature ||
@@ -114,7 +117,7 @@ define([
                 "layerId": layerId,
                 "name": message.name || layerId,
                 "selectable": ('selectable' in message) ? message.selectable : true,
-                "coords": message.coords
+                "coords": coords
                 // TODO: Add styleMap
             });
         }
@@ -171,9 +174,16 @@ define([
                         newData.push(newValue);
                     });
 
+                    if(!coords && message.autoUpdate){
+                        context.sandbox.dataStorage.datasets[layerId].forEach(function(feature){
+                            coords = context.sandbox.utils.getMaxExtent(feature.attributes.geometry.coordinates, coords);
+                        });
+                    }
+
                     publisher.publishPlotFeature({
                         "layerId": layerId,
-                        "data": newData
+                        "data": newData,
+                        "coords": coords
                     });
 
                     publisher.publishPlotFinish({"layerId": layerId});
