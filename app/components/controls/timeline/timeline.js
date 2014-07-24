@@ -186,11 +186,11 @@ define([
 
             // Must destroy existing tooltip to be able to add modify it
             $owner.tooltip('destroy'); 
-            // Add new tooltip
+            // Add new tooltip with div id in the HTML to uniquely identify teh tooltip
             $owner.tooltip({
                 "html": true,
                 "title": 
-                    '<div class="snapshot-tooltip-content">Name: ' + name + '<br/>' +
+                    '<div id="snapshot-' + params.layerId + '-tooltip-content">Name: ' + name + '<br/>' +
                     'Status: '+ params.status + '<br/>' +
                     'Features: ' + count + '</div>'
             });
@@ -199,13 +199,13 @@ define([
             var $owner = context.$('#snapshot-' + params.layerId),
                 name = $owner.attr('name'),
                 count = context.sandbox.dataStorage.datasets[params.layerId].length || 0,
-                tooltipContent = '<div class="snapshot-tooltip-content">Name: ' + name + '<br/>' + 'Status: '+ params.status + '<br/>' + 'Features: ' + count + '</div>';
+                tooltipContent = '<div id="snapshot-' + params.layerId + '-tooltip-content">Name: ' + name + '<br/>' + 'Status: '+ params.status + '<br/>' + 'Features: ' + count + '</div>';
 
             // Some hoops to jump through to dynamically update the tooltip:
             // Set data-original-title with new content, then run fixtitle to make bootstrap update the value
             $owner.attr('data-original-title', tooltipContent).tooltip('fixTitle');
-            // To refresh an open tooltip: check if a snapshot tooltip is open, close and reopen
-            if($('.tooltip').find('.snapshot-tooltip-content').length > 0 && $('.tooltip').find('.snapshot-tooltip-content').css('display') != 'none') {
+            // Extra steps to refresh if tooltip is open: check if this snapshot's tooltip is open, close and reopen
+            if($('.tooltip').find('#snapshot-' + params.layerId + '-tooltip-content').length > 0 && $('.tooltip').find('#snapshot-' + params.layerId + '-tooltip-content').css('display') != 'none') {
                 $owner.tooltip('hide').tooltip('show');
             }
         },
