@@ -310,15 +310,15 @@ define([
             });
         },
         deleteSnapshotLayerGroup: function (params) {
+            exposed.deleteSnapshot({
+                 "layerId": params.layerId
+            });
             exposed.deleteDataLayer({
                  "layerId": params.layerId
             });
             exposed.deleteAOILayer({
                  "layerId": params.layerId
             });
-            exposed.deleteSnapshot({
-                 "layerId": params.layerId
-             });
         },
         showDataLayer: function(params) {
             context.sandbox.stateManager.layers[params.layerId].visible = true;
@@ -329,8 +329,6 @@ define([
             publisher.hideLayer({"layerId": params.layerId});
         },
         deleteDataLayer: function(params) {
-            //delete data from datastorage.
-            delete context.sandbox.dataStorage.datasets[params.layerId];
             publisher.deleteLayer({"layerId": params.layerId});
         },
         showAOILayer: function(params) {
@@ -359,13 +357,22 @@ define([
             $querySnapshot.find('.btn-off').addClass('btn-primary');
         },
         deleteSnapshot: function(params) {
-            var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
+            var layerState,
+                $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
                 $owner = context.$('#snapshot-' + params.layerId);
             //destroy tooltip.
             $owner.tooltip('destroy');
             //make sure layer query is finished. If not, stop query before deleting.
-            if(!$badge.hasClass('error') || !$badge.hasClass('finished') || !$badge.hasClass('stopped')) {
-                publisher.stopQuery({"layerId": params.layerId});
+            layerState = context.sandbox.stateManager.getLayerStateById({
+                "layerId": params.layerId
+            });
+            if(layerState) {
+                dataTransferState = layerState.dataTransferState;
+                if(dataTransferState !== 'error' && dataTransferState !== 'stopped' && dataTransferState !== 'finished') {
+                    publisher.stopQuery({
+                        "layerId": params.layerId
+                    });
+                }
             }
             //delete timeline snapshot
             context.$('#snapshot-' + params.layerId).parent().remove();
