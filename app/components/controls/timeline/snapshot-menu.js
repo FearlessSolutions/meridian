@@ -53,12 +53,37 @@ define([
                 });
             // set menu item callback control
             context.$('#snapshot-' + layerId + '-settings-menu li a').click(function(){
-                exposed.menuCallback({
-                    "menuChannel": this.getAttribute('data-channel'),
-                    "payload": {
-                        "layerId": layerId
-                    }
+                var channel,
+                    layerState;
+
+                channel = this.getAttribute('data-channel');
+                layerState = context.sandbox.stateManager.getLayerStateById({
+                    "layerId": layerId
                 });
+
+                if(channel !== 'query.stop') {
+                    exposed.menuCallback({
+                        "menuChannel": channel,
+                        "payload": {
+                            "layerId": layerId
+                        }  
+                    });
+                } else {
+                    if(
+                        layerState &&
+                        layerState.dataTransferState !== 'error' &&
+                        layerState.dataTransferState !== 'stopped' &&
+                        layerState.dataTransferState !== 'finished'
+                    ){
+                        exposed.menuCallback({
+                        "menuChannel": channel,
+                        "payload": {
+                            "layerId": layerId
+                        }  
+                    });
+                    }
+                
+                }
             });
         },
         /**

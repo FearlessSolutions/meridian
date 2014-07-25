@@ -80,11 +80,11 @@ define([
                 });
 
                 context.sandbox.stateManager.setLayerStateById({
-                        "layerId": layerId,
-                        "state": {
-                            "dataTransferState": 'running'
-                        }
-                    });
+                    "layerId": layerId,
+                    "state": {
+                        "dataTransferState": 'running'
+                    }
+                });
 
                 context.sandbox.utils.each(data, function(key, value){
                     var newValue = {};
@@ -131,11 +131,11 @@ define([
                 });
 
                 context.sandbox.stateManager.setLayerStateById({
-                        "layerId": layerId,
-                        "state": {
-                            "dataTransferState": 'finished'
-                        }
-                    });
+                    "layerId": params.queryId,
+                    "state": {
+                        "dataTransferState": 'finished'
+                    }
+                });
 
                 publisher.publishFinish({
                     "layerId": params.queryId
