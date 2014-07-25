@@ -291,6 +291,13 @@ define([
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 // TODO: do not use deleteDataLayer since the renderer is already receiving the call.
                 delete context.sandbox.dataStorage.datasets[params.layerId];
+
+                publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
+                    "messageType": "success",
+                    "messageTitle": "Data Service",
+                    "messageText": params.name + " query layer was removed"
+                });
+
                 // Take care of AOI and toggleBtn state
                 exposed.deleteAOILayer({
                     "layerId": params.layerId
@@ -344,6 +351,11 @@ define([
         deleteDataLayer: function(params) {
             //delete data from datastorage.
             delete context.sandbox.dataStorage.datasets[params.layerId];
+            publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
+                "messageType": "success",
+                "messageTitle": "Data Service",
+                "messageText": params.name + " query layer was removed"
+            });
             publisher.deleteLayer({"layerId": params.layerId});
         },
         showAOILayer: function(params) {
