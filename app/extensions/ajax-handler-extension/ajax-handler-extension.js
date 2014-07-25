@@ -35,12 +35,10 @@ define([
                 /**
                  * Abort ALL open AJAX
                  */
-                clear: function(params) {
+                clear: function() {
                     activeAJAXs.forEach(function(ajax, index) {
-                        if(ajax.layerId === params.layerId) { //This was set in queryData
-                            ajax.abort();
-                            activeAJAXs.splice(index, 1);
-                        }
+                        ajax.abort();
+                        activeAJAXs.splice(index, 1);
                     });
                 },
                 /**
@@ -48,7 +46,6 @@ define([
                  * @param layerId
                  */
                 stopQuery: function(params) {
-                    console.debug(params);
                     activeAJAXs.forEach(function(ajax, index) {
                         if(ajax.layerId === params.layerId) {
                             ajax.abort();
