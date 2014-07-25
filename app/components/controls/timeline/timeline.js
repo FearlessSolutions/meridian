@@ -113,6 +113,7 @@ define([
                     }
                 });
                 
+                // Build custom tooltip to hold dynamic information
                 exposed.setTooltip({
                     "layerId": layerId,
                     "status": "Starting"
@@ -140,7 +141,7 @@ define([
                 }
 
                 $badge.text(context.sandbox.utils.trimNumber(count));
-                exposed.setTooltip({
+                exposed.updateTooltip({
                     "layerId": params.layerId,
                     "status": "Running"
                 });
@@ -150,7 +151,7 @@ define([
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
             if(!$badge.hasClass("error")) {
                 $badge.addClass('finished');
-                exposed.setTooltip({
+                exposed.updateTooltip({
                     "layerId": params.layerId,
                     "status": "Finished"
                 });
@@ -161,7 +162,7 @@ define([
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
             if(!$badge.hasClass('error') && !$badge.hasClass('finished')) {
                 $badge.addClass('stopped');
-                exposed.setTooltip({
+                exposed.updateTooltip({
                     "layerId": params.layerId,
                     "status": "Stopped"
                 });
@@ -172,7 +173,7 @@ define([
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
 
             $badge.addClass('error');
-            exposed.setTooltip({
+            exposed.updateTooltip({
                     "layerId": params.layerId,
                     "status": "Error"
                 });
@@ -180,21 +181,33 @@ define([
         },
         setTooltip: function(params) {
             var $owner = context.$('#snapshot-' + params.layerId),
-                name = $owner.attr('data-title'),
+                name = $owner.attr('name'),
                 count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
 
-            //must destroy to add and modify tooltip
+            // Must destroy existing tooltip to be able to add modify it
             $owner.tooltip('destroy'); 
-            //add new tooltip
+            // Add new tooltip with div id in the HTML to uniquely identify teh tooltip
             $owner.tooltip({
                 "html": true,
-                "title": 'Name: ' + name + '<br/>' +
+                "title": 
+                    '<div id="snapshot-' + params.layerId + '-tooltip-content">Name: ' + name + '<br/>' +
                     'Status: '+ params.status + '<br/>' +
-                    'Features: ' + count,
-                "delay": {
-                    "show": 500
-                }
+                    'Features: ' + count + '</div>'
             });
+        },
+        updateTooltip: function(params) {
+            var $owner = context.$('#snapshot-' + params.layerId),
+                name = $owner.attr('name'),
+                count = context.sandbox.dataStorage.datasets[params.layerId].length || 0,
+                tooltipContent = '<div id="snapshot-' + params.layerId + '-tooltip-content">Name: ' + name + '<br/>' + 'Status: '+ params.status + '<br/>' + 'Features: ' + count + '</div>';
+
+            // Some hoops to jump through to dynamically update the tooltip:
+            // Set data-original-title with new content, then run fixtitle to make bootstrap update the value
+            $owner.attr('data-original-title', tooltipContent).tooltip('fixTitle');
+            // Extra steps to refresh if tooltip is open: check if this snapshot's tooltip is open, close and reopen
+            if($('.tooltip').find('#snapshot-' + params.layerId + '-tooltip-content').length > 0 && $('.tooltip').find('#snapshot-' + params.layerId + '-tooltip-content').css('display') != 'none') {
+                $owner.tooltip('hide').tooltip('show');
+            }
         },
         timelinePlaybackStart: function(params) {
             if(checkLayerCount() > 1) {
