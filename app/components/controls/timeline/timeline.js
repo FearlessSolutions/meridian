@@ -329,6 +329,8 @@ define([
             publisher.hideLayer({"layerId": params.layerId});
         },
         deleteDataLayer: function(params) {
+            //delete data from datastorage.
+            delete context.sandbox.dataStorage.datasets[params.layerId];
             publisher.deleteLayer({"layerId": params.layerId});
         },
         showAOILayer: function(params) {
