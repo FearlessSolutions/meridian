@@ -40,7 +40,8 @@ define([
                         "thumbnail": "./extensions/map-configuration-extension/images/markerIcons/marker.png",
                         "classification": attributes.classification || "", //TODO make this dynamic?
                         "name": attributes.name,
-                        "attributes": attributes
+                        "attributes": attributes,
+                        "namespace": "cmapi-extension"
                     });
                     return html;
                 },
