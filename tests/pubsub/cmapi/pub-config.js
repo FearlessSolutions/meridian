@@ -12,6 +12,57 @@ define([
                         "minLon": "-13.908691",
                         "maxLat": "11.587669",
                         "maxLon": "-8.283691"
+                    },
+                    "symbolizers": {
+                        "lowSymbolizer": {
+                            "fillColor": "rgb(0, 0, 0)",
+                            "fillOpacity": 0.9,
+                            "strokeColor": "rgb(0, 0, 0)",
+                            "strokeOpacity": 0.5,
+                            "strokeWidth": 12,
+                            "pointRadius": 10,
+                            "label": "${count}",
+                            "labelOutlineWidth": 1,
+                            "labelYOffset": 0,
+                            "fontColor": "#ffffff",
+                            "fontOpacity": 0.8,
+                            "fontSize": "12px"
+                        },
+                        "midSymbolizer": {
+                            "fillColor": "rgb(0, 0, 0)",
+                            "fillOpacity": 0.9,
+                            "strokeColor": "rgb(0, 0, 0)",
+                            "strokeOpacity": 0.5,
+                            "strokeWidth": 12,
+                            "pointRadius": 15,
+                            "label": "${count}",
+                            "labelOutlineWidth": 1,
+                            "labelYOffset": 0,
+                            "fontColor": "#ffffff",
+                            "fontOpacity": 0.8,
+                            "fontSize": "12px"
+                        },
+                        "highSymbolizer": {
+                            "fillColor": "rgb(0, 0, 0)",
+                            "fillOpacity": 0.9,
+                            "strokeColor": "rgb(0, 0, 0)",
+                            "strokeOpacity": 0.5,
+                            "strokeWidth": 12,
+                            "pointRadius": 20,
+                            "label": "${count}",
+                            "labelOutlineWidth": 1,
+                            "labelYOffset": 0,
+                            "fontColor": "#ffffff",
+                            "fontOpacity": 0.8,
+                            "fontSize": "12px"
+                        },
+                        "noClusterSymbolizer": {
+                            "externalGraphic": "${icon}",
+                            "graphicOpacity": 1,
+                            "pointRadius": 15,
+                            "graphicHeight": "${height}",
+                            "graphicWidth": "${width}"
+                        }
                     }
                 }
             },
@@ -54,9 +105,59 @@ define([
                             }
                         ]
                     },
-                    "name":"Sample GeoJSON Feature Collection",
                     "zoom":"true",
-                    "readOnly":"false"
+                    "readOnly":"false",
+                    "symbolizers": {
+                        "lowSymbolizer": {
+                            "fillColor": "rgb(0, 0, 0)",
+                            "fillOpacity": 0.9,
+                            "strokeColor": "rgb(0, 0, 0)",
+                            "strokeOpacity": 0.5,
+                            "strokeWidth": 12,
+                            "pointRadius": 10,
+                            "label": "${count}",
+                            "labelOutlineWidth": 1,
+                            "labelYOffset": 0,
+                            "fontColor": "#ffffff",
+                            "fontOpacity": 0.8,
+                            "fontSize": "12px"
+                        },
+                        "midSymbolizer": {
+                            "fillColor": "rgb(0, 0, 0)",
+                            "fillOpacity": 0.9,
+                            "strokeColor": "rgb(0, 0, 0)",
+                            "strokeOpacity": 0.5,
+                            "strokeWidth": 12,
+                            "pointRadius": 15,
+                            "label": "${count}",
+                            "labelOutlineWidth": 1,
+                            "labelYOffset": 0,
+                            "fontColor": "#ffffff",
+                            "fontOpacity": 0.8,
+                            "fontSize": "12px"
+                        },
+                        "highSymbolizer": {
+                            "fillColor": "rgb(0, 0, 0)",
+                            "fillOpacity": 0.9,
+                            "strokeColor": "rgb(0, 0, 0)",
+                            "strokeOpacity": 0.5,
+                            "strokeWidth": 12,
+                            "pointRadius": 20,
+                            "label": "${count}",
+                            "labelOutlineWidth": 1,
+                            "labelYOffset": 0,
+                            "fontColor": "#ffffff",
+                            "fontOpacity": 0.8,
+                            "fontSize": "12px"
+                        },
+                        "noClusterSymbolizer": {
+                            "externalGraphic": "${icon}",
+                            "graphicOpacity": 1,
+                            "pointRadius": 15,
+                            "graphicHeight": "${height}",
+                            "graphicWidth": "${width}"
+                        }
+                    }
                 }
             },
             "map.view.zoom":{

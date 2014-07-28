@@ -176,6 +176,12 @@ define([
             layerOptions.map = map;
             mapClustering.addClusteringToLayerOptions(layerOptions);
 
+            // If a symbolizers were provided, overwrite the default symbolizers from clustering
+            if(params.symbolizers) {
+                layerOptions.styleMap = mapClustering.applyCustomSymbolizers({
+                    "symbolizers": params.symbolizers
+                });
+            }
             // If a styleMap was provided, overwrite the default style from clustering
             if(params.styleMap) {
                 layerOptions.styleMap = params.styleMap;
