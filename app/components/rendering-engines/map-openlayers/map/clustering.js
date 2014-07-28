@@ -114,6 +114,84 @@ define([], function() {
         },
         clear: function() {
             layerOptionsCollection = [];
+        },
+        applyCustomSymbolizers: function(params) {
+            var symbolizers = params.symbolizers;
+
+            var styleMap = {},
+                rules = [],
+                lowRule,
+                midRule,
+                highRule,
+                noClusterRule;
+
+            lowRule = new OpenLayers.Rule({
+                filter : new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.LESS_THAN,
+                    property: "count",
+                    value: 10
+                }),
+                symbolizer: symbolizers.lowSymbolizer
+            });
+
+            midRule = new OpenLayers.Rule({
+                filter : new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.BETWEEN,
+                    property: "count",
+                    lowerBoundary: 10,
+                    upperBoundary: 99
+                }),
+                symbolizer: symbolizers.midSymbolizer
+            });
+
+            highRule = new OpenLayers.Rule({
+                filter : new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.GREATER_THAN,
+                    property: "count",
+                    value: 99
+                }),
+                symbolizer: symbolizers.highSymbolizer
+            });
+
+            noClusterRule = new OpenLayers.Rule({
+                filter : new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.GREATER_THAN,
+                    property: "height",
+                    value: 0
+                }),
+                symbolizer: symbolizers.noClusterSymbolizer
+            });
+
+            rules.push(lowRule, midRule, highRule, noClusterRule);
+
+            var style = new OpenLayers.Style(OpenLayers.Util.applyDefaults({
+                externalGraphic: "${icon}",
+                graphicOpacity: 1,
+                pointRadius: 15,
+                graphicHeight: "{height}",
+                graphicWidth: "{width",
+                graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
+            }, OpenLayers.Feature.Vector.style["default"]), {
+                rules: rules,
+                context: {
+                    width: function(feature) {
+                        return feature.cluster ? 0 : feature.attributes.width;
+                    },
+                    height: function(feature) {
+                        return feature.cluster ? 0 : feature.attributes.height;
+                    },
+                    icon: function(feature) {
+                        return feature.cluster ? "" : feature.attributes.icon;
+                    }
+                }
+            });
+
+            styleMap = {
+               "default": style,
+               "select": style
+            };
+
+            return styleMap;
         }
     };
 

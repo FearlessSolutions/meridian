@@ -114,8 +114,9 @@ define([
                 "layerId": layerId,
                 "name": message.name || layerId,
                 "selectable": ('selectable' in message) ? message.selectable : true,
-                "coords": message.coords
-                // TODO: Add styleMap
+                "coords": message.coords,
+                // Temporary overwrite of symbolizers
+                "symbolizers": message.symbolizers
             });
         }
 
