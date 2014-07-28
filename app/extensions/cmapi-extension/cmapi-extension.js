@@ -37,10 +37,11 @@ define([
                 "buildInfoWinTemplate": function(attributes) {
                     var cmapiTemplate = Handlebars.compile(cmapiHBS);
                     var html = cmapiTemplate({
-                        "thumbnail": "./extensions/map-configuration-extension/images/markerIcons/marker.png",
+                        "thumbnail": "./extensions/map-configuration-extension/images/markerIcons/marker-2x-80x80.png",
                         "classification": attributes.classification || "", //TODO make this dynamic?
                         "name": attributes.name,
-                        "attributes": attributes
+                        "attributes": attributes,
+                        "namespace": "cmapi-extension"
                     });
                     return html;
                 },
