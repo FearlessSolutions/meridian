@@ -20,6 +20,7 @@ app.use(connect.urlencoded());
 
 // Server static content
 app.use('/', express.static(__dirname + '/app'));
+app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));
 
 // Initiate routes
 require('./server/app').init(app);

@@ -1,10 +1,10 @@
 require.config({
     //baseUrl: "../../app",
     paths: {
-        handlebars: '../../app/bower_components/handlebars/handlebars',
-        underscore: '../../app/bower_components/underscore/underscore',
-        jquery: '../../app/bower_components/jquery/dist/jquery',
-        bootstrap: '../../app/libs/bootstrap-3.0.3/bootstrap',
+        handlebars: '../bower_components/handlebars/handlebars',
+        underscore: '../bower_components/underscore/underscore',
+        jquery: '../bower_components/jquery/dist/jquery',
+        bootstrap: '../libs/bootstrap-3.0.3/bootstrap',
         pubConfig: './pub-config',
         subConfig: './sub-config'
     },

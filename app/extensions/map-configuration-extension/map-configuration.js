@@ -39,7 +39,8 @@ define([
         "type" : "wmts",
         "url" : "http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/WMTS",
         "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/satellite.png",
-        "label" : "USGS Imagery"
+        "label" : "USGS Imagery",
+        "wrapDateLine": true
       }
     ],
     "markerIcons" : {

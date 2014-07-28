@@ -178,6 +178,7 @@ define([
                 "requestEncoding": params.requestEncoding || 'KVP',
                 "format": params.format || 'image/jpeg',
                 "resolutions": params.resolutions || null,
+                "wrapDateLine": ("wrapDateLine" in params) ? params.wrapDateLine : true,
                 "tileSize": new OpenLayers.Size(
                     params.tileWidth || 256,
                     params.tileHeight || 256
@@ -358,6 +359,7 @@ define([
                             "requestEncoding": context.sandbox.mapConfiguration.basemaps[basemap].requestEncoding || 'KVP',
                             "format": context.sandbox.mapConfiguration.basemaps[basemap].format || 'image/jpeg',
                             "resolutions": context.sandbox.mapConfiguration.basemaps[basemap].resolutions || null,
+                            "wrapDateLine": ("wrapDateLine" in context.sandbox.mapConfiguration.basemaps[basemap]) ? context.sandbox.mapConfiguration.basemaps[basemap].wrapDateLine : true,
                             "tileSize": new OpenLayers.Size(
                                 context.sandbox.mapConfiguration.basemaps[basemap].tileWidth || 256,
                                 context.sandbox.mapConfiguration.basemaps[basemap].tileHeight || 256
