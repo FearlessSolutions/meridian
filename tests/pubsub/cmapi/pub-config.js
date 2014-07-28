@@ -25,7 +25,7 @@ define([
                             "graphicWidth": 36,
                             "label": "${count}",
                             "labelOutlineWidth": 3,
-                            "labelYOffset": 7,
+                            "labelYOffset": 5,
                             "pointRadius": 10
                         },
                         "midSymbolizer": {
