@@ -15,8 +15,8 @@ exports.init = function(context){
 
     var createCallback = function(err, results){
 
-        if (err){
-            console.log(err);
+        if (err && err.message && err.message.indexOf("IndexAlreadyExistsException") === -1){
+            console.log("Elastic Create Error: " + err.message);
         }
 
         client.indices.putMapping(this.mapping, mappingCallback.bind({source: this.source}));

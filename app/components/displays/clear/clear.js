@@ -1,7 +1,8 @@
 define([
+    'jquery',
     './clear-publisher',
     'bootstrap'
-], function (publisher) {
+], function ($, publisher) {
 
     var context,
         MENU_DESIGNATION = 'clear',
@@ -27,6 +28,13 @@ define([
             });
 
             $clearButton.on('click', function(e){
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/clear',
+                    headers: {
+                        'x-meridian-session-id': context.sandbox.sessionId
+                    }
+                });
                 publisher.publishClear();
             });
         },

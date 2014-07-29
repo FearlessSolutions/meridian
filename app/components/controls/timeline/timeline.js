@@ -1,10 +1,11 @@
 define([
+    'jquery',
     './timeline-publisher',
     'text!./snapshot.hbs',
     './snapshot-menu',
     'bootstrap',
     'handlebars'
-], function (publisher, snapshotHBS, snapshotMenu) {
+], function ($, publisher, snapshotHBS, snapshotMenu) {
     var context,
         snapshotTemplate,
         $timeline,
@@ -300,6 +301,14 @@ define([
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 // TODO: do not use deleteDataLayer since the renderer is already receiving the call.
                 delete context.sandbox.dataStorage.datasets[params.layerId];
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/clear/' + params.layerId,
+                    headers: {
+                        'x-meridian-session-id': context.sandbox.sessionId
+                    }
+                });
 
                 publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
                     "messageType": "success",
