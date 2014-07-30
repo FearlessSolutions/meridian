@@ -21,10 +21,10 @@ define([
             exposed.subscribeOff();
         },
         subscribeOn: function() {
-         //   context.sandbox.on('data.add', olMapRenderer.plotFeatures);
+         //   context.sandbox.on('map.features.plot', olMapRenderer.plotFeatures);
         },
         subscribeOff: function() {
-            //context.sandbox.off('data.add', olMapRenderer.plotFeatures);           
+            //context.sandbox.off('map.features.plot', olMapRenderer.plotFeatures);           
         }
     };	
 
