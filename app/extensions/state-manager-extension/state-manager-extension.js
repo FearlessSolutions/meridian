@@ -13,19 +13,8 @@ define([], function(){
                 "layers": {
                     // "SomeLayer": {   
                     //     "visibility": false,
-                    //     "cluster": true
+                    //     "hiddenFeatures": ["featureId1", "featureId2", ..., "featureIdN"]
                     // }
-                },
-                getLayerStateById: function(params) {
-                    return stateManager.layers[params.layerId];
-                },
-                setLayerStateById: function(params) {
-                    if(!stateManager.layers[params.layerId]) {
-                        stateManager.layers[params.layerId] = params.state;
-                    } else {
-                        app.sandbox.utils.extend(true, stateManager.layers[params.layerId], params.state);
-                    }
-                    return stateManager.layers[params.layerId];
                 },
                 getMapState: function() {
                     return stateManager.map;
@@ -38,6 +27,36 @@ define([], function(){
                 },
                 setMapExtent: function(params) {
                     stateManager.map.extent = params.extent;
+                },
+                getLayerStateById: function(params) {
+                    return stateManager.layers[params.layerId];
+                },
+                setLayerStateById: function(params) {
+                    if(!stateManager.layers[params.layerId]) {
+                        stateManager.layers[params.layerId] = params.state;
+                    } else {
+                        app.sandbox.utils.extend(true, stateManager.layers[params.layerId], params.state);
+                    }
+                    return stateManager.layers[params.layerId];
+                },
+                getAllHiddenFeatures: function(params) {
+                    app.sandbox.utils.each(stateManager.layers, function(k, v){
+
+                    });
+                },
+                getFeatureVisibility: function(params) {
+
+                },
+                getHiddenFeaturesByLayerId: function(params) {
+
+                },
+                /**
+                 * Store array of featureIds associated with layer
+                 * @param {Array} params.features - Array of featureIds to be hidden
+                 * @param {string} params.layerId - Id of layer
+                 */
+                setHiddenFeaturesByLayerId: function(params) {
+
                 }
 			};
 
