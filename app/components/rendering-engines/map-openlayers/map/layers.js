@@ -436,7 +436,7 @@ define([
                             null,
                             headerHTML + infoWinTemplateRef.buildInfoWinTemplate(
                                 formattedAttributes,
-                                record.attributes.icon
+                                fullFeature
                             ),
                             null,
                             true,
@@ -622,7 +622,10 @@ define([
                             popup = new OpenLayers.Popup.FramedCloud('popup',
                                 OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
                                 null,
-                                infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
+                                infoWinTemplateRef.buildInfoWinTemplate(
+                                    formattedAttributes,
+                                    fullFeature
+                                ),
                                 anchor,
                                 true,
                                 function() {
