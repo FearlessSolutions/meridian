@@ -38,7 +38,7 @@ define([
                     currentFeature.attributes.width = iconData.width;
                     currentFeature.attributes.dataService = value.dataService || '';
 
-                    newFeatures[key] = currentFeature;
+                    newFeatures.push(currentFeature);
                 });
 
                 layer.addFeatures(newFeatures);
