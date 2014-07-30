@@ -31,7 +31,7 @@ define([
                         var currentFeature = geoJsonParser.parseFeature(value),
                         iconData;
                     
-                    iconData = context.sandbox.icons.getIconForFeature({"properties": value.properties}) || context.sandbox.mapConfiguration.markerIcons.default;
+                    iconData = context.sandbox.icons.getIconForFeature(value) || context.sandbox.mapConfiguration.markerIcons.default;
                     currentFeature.featureId = value.id || '';
                     currentFeature.attributes.icon = iconData.icon;
                     currentFeature.attributes.height = iconData.height;
