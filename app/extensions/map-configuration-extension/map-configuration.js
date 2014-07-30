@@ -12,6 +12,8 @@ define([
     "maxAutoZoomLevel": 13,
     "projection": "EPSG:900913",
     "defaultVisualMode": "cluster",
+    "defaultTileWidth": 256,
+    "defaultTileHeight": 256,
     "basemaps" : [
       {
         "basemap" : "landscape",

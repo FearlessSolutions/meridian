@@ -360,10 +360,8 @@ define([
                             "format": context.sandbox.mapConfiguration.basemaps[basemap].format || 'image/jpeg',
                             "resolutions": context.sandbox.mapConfiguration.basemaps[basemap].resolutions || null,
                             "wrapDateLine": ("wrapDateLine" in context.sandbox.mapConfiguration.basemaps[basemap]) ? context.sandbox.mapConfiguration.basemaps[basemap].wrapDateLine : true,
-                            "tileSize": new OpenLayers.Size(
-                                context.sandbox.mapConfiguration.basemaps[basemap].tileWidth || 256,
-                                context.sandbox.mapConfiguration.basemaps[basemap].tileHeight || 256
-                            )
+                            "tileWidth": context.sandbox.mapConfiguration.basemaps[basemap].tileWidth || context.sandbox.mapConfiguration.defaultTileWidth,
+                            "tileHeight": context.sandbox.mapConfiguration.basemaps[basemap].tileHeight || context.sandbox.mapConfiguration.defaultTileHeight
                         });
                         break;
                     default:
