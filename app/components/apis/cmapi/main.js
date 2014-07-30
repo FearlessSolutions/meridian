@@ -41,47 +41,53 @@ define([
      */
     function receive(e) {
         var channel = e.data.channel,
-            category = channel.split('.')[1], //0 is always "map"
+            category,
+            message;
+
+        if(channel && typeof channel === 'string') {
+            category = channel.split('.')[1]; //0 is always "map"
             message = e.data.message;
-        try {
-            if(message !== '') {
-                message = JSON.parse(message);
-                if(!message.origin) {
-                    message.origin = defaultLayerId;
-                }
-                /* //TODO this is for handling kml also; not doing right now
-                var split = message.split('<');
-                if(split.length > 1){                    
-                    message = split.shift();
-                    var kml = '';
 
-                    while(split.length > 1){
-                        kml += '<' + split.shift();
-                    }
-
-                    var end = split[0].split('>');
-                    kml += '<' + end[0] + '>';
-                    message += end[1];
-
+            try {
+                if(message !== '') {
                     message = JSON.parse(message);
+                    if(!message.origin) {
+                        message.origin = defaultLayerId;
+                    }
+                    /* //TODO this is for handling kml also; not doing right now
+                    var split = message.split('<');
+                    if(split.length > 1){                    
+                        message = split.shift();
+                        var kml = '';
 
-                    message.feature = kml;
-                    message.format = 'kml';
-                }else{
-                    message = JSON.parse(message);    
-                }  
-            
-                if(!message.origin){
-                    message.origin = 'cmapi';
-                }*/
-            }            
-        } catch(parseE) {
-            console.debug(parseE);
-        } //This might not be an actual error?
+                        while(split.length > 1){
+                            kml += '<' + split.shift();
+                        }
 
-        if(processing[category]) {
-            processing[category].receive(channel, message);
-        } else {} //Error?
+                        var end = split[0].split('>');
+                        kml += '<' + end[0] + '>';
+                        message += end[1];
+
+                        message = JSON.parse(message);
+
+                        message.feature = kml;
+                        message.format = 'kml';
+                    }else{
+                        message = JSON.parse(message);    
+                    }  
+                
+                    if(!message.origin){
+                        message.origin = 'cmapi';
+                    }*/
+                }            
+            } catch(parseE) {
+                console.debug(parseE);
+            } //This might not be an actual error?
+
+            if(processing[category]) {
+                processing[category].receive(channel, message);
+            } else {} //Error?
+        }
     }
 
     /**
