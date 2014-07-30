@@ -59,7 +59,8 @@ define([
                     "selectable": message.selectable,
                     "coords": message.coords,
                     // Temporary overwrite of symbolizers
-                    "symbolizers": message.symbolizers
+                    "symbolizers": message.symbolizers,
+                    "styleMap": message.styleMap
                 });
 
             }
