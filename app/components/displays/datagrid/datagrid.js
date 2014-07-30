@@ -1,6 +1,6 @@
 define([
     './datagrid-publisher',
-    'datatable',
+    'datatable'
 ], function (publisher) {
 
     var context,
