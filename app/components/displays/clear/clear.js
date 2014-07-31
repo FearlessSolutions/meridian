@@ -1,8 +1,7 @@
 define([
-    'jquery',
     './clear-publisher',
     'bootstrap'
-], function ($, publisher) {
+], function (publisher) {
 
     var context,
         MENU_DESIGNATION = 'clear',
@@ -23,12 +22,12 @@ define([
                 "show": false
              });
 
-            $cancelButton.on('click', function(e){
+            $cancelButton.on('click', function(e) {
                 closeMenu();
             });
 
-            $clearButton.on('click', function(e){
-                $.ajax({
+            $clearButton.on('click', function(e) {
+                context.sandbox.utils.ajax({
                     type: 'DELETE',
                     url: '/clear',
                     headers: {
@@ -38,7 +37,7 @@ define([
                 publisher.publishClear();
             });
         },
-        open: function(params){
+        open: function(params) {
             publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
             $modal.modal('show');
         },
@@ -54,7 +53,7 @@ define([
       * Since clicking the button will toggle the button after this is 
       * finished, don't toggle the class here if it is bubbling
       */
-    function closeMenu(){
+    function closeMenu() {
         $modal.modal('hide');
     }
 });

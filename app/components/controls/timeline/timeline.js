@@ -1,11 +1,10 @@
 define([
-    'jquery',
     './timeline-publisher',
     'text!./snapshot.hbs',
     './snapshot-menu',
     'bootstrap',
     'handlebars'
-], function ($, publisher, snapshotHBS, snapshotMenu) {
+], function (publisher, snapshotHBS, snapshotMenu) {
     var context,
         snapshotTemplate,
         $timeline,
@@ -18,7 +17,7 @@ define([
             snapshotTemplate = Handlebars.compile(snapshotHBS);
             $timeline = context.$('#timeline');
         },
-        createSnapshot: function(params){
+        createSnapshot: function(params) {
             var layerId = params.layerId,
                 name = params.name,
                 coords = params.coords,
@@ -300,7 +299,7 @@ define([
         deleteLayer: function(params) {
 
             //TODO: Move this to some kind of elastic-specific component that listens to the event
-            $.ajax({
+            context.sandbox.utils.ajax({
                 type: 'DELETE',
                 url: '/clear/' + params.layerId,
                 headers: {
