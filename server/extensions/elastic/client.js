@@ -27,12 +27,14 @@ exports.newClient = function(options){
         options = context.sandbox.config.getConfig().client;
     }
 
-    console.log(options);
     var esOptions = {host:{}, agentConfig:{}};
     if (options.protocol) { esOptions.host.protocol = options.protocol; }
     if (options.host) { esOptions.host.host = options.host; }
     if (options.port) { esOptions.host.port = options.port; }
     if (options.pfxLocation) { esOptions.agentConfig.pfx = fs.readFileSync(options.pfxLocation); }
+    if (options.passphraseLocation) {
+        esOptions.agentConfig.passphrase = fs.readFileSync(options.passphraseLocation, 'utf-8').trim();
+    }
     if (options.rejectUnauthorized !== 'undefined') { esOptions.agentConfig.rejectUnauthorized = options.rejectUnauthorized; }
 
     return new elasticsearch.Client(esOptions);

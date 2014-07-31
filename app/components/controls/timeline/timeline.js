@@ -17,7 +17,7 @@ define([
             snapshotTemplate = Handlebars.compile(snapshotHBS);
             $timeline = context.$('#timeline');
         },
-        createSnapshot: function(params){
+        createSnapshot: function(params) {
             var layerId = params.layerId,
                 name = params.name,
                 coords = params.coords,
@@ -113,6 +113,7 @@ define([
                     }
                 });
                 
+                // Build custom tooltip to hold dynamic information
                 exposed.setTooltip({
                     "layerId": layerId,
                     "status": "Starting"
@@ -140,7 +141,7 @@ define([
                 }
 
                 $badge.text(context.sandbox.utils.trimNumber(count));
-                exposed.setTooltip({
+                exposed.updateTooltip({
                     "layerId": params.layerId,
                     "status": "Running"
                 });
@@ -150,51 +151,72 @@ define([
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
             if(!$badge.hasClass("error")) {
                 $badge.addClass('finished');
-                exposed.setTooltip({
+                exposed.updateTooltip({
                     "layerId": params.layerId,
                     "status": "Finished"
                 });
-                snapshotMenu.disableOption(params.layerId, 'stopQuery');
+                snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "query.stop"
+                });
             }
         },
         markStopped: function(params) {
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
             if(!$badge.hasClass('error') && !$badge.hasClass('finished')) {
                 $badge.addClass('stopped');
-                exposed.setTooltip({
+                exposed.updateTooltip({
                     "layerId": params.layerId,
                     "status": "Stopped"
                 });
-                snapshotMenu.disableOption(params.layerId, 'stopQuery');
+                snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "query.stop"
+                });
             }
         },
         markError: function(params) {
             var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
 
             $badge.addClass('error');
-            exposed.setTooltip({
+            exposed.updateTooltip({
                     "layerId": params.layerId,
                     "status": "Error"
                 });
-            snapshotMenu.disableOption(params.layerId, 'stopQuery');
+            snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "query.stop"
+                });
         },
         setTooltip: function(params) {
             var $owner = context.$('#snapshot-' + params.layerId),
-                name = $owner.attr('data-title'),
+                name = $owner.attr('name'),
                 count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
 
-            //must destroy to add and modify tooltip
+            // Must destroy existing tooltip to be able to add modify it
             $owner.tooltip('destroy'); 
-            //add new tooltip
+            // Add new tooltip with div id in the HTML to uniquely identify teh tooltip
             $owner.tooltip({
                 "html": true,
-                "title": 'Name: ' + name + '<br/>' +
+                "title": 
+                    '<div id="snapshot-' + params.layerId + '-tooltip-content">Name: ' + name + '<br/>' +
                     'Status: '+ params.status + '<br/>' +
-                    'Features: ' + count,
-                "delay": {
-                    "show": 500
-                }
+                    'Features: ' + count + '</div>'
             });
+        },
+        updateTooltip: function(params) {
+            var $owner = context.$('#snapshot-' + params.layerId),
+                name = $owner.attr('name'),
+                count = context.sandbox.dataStorage.datasets[params.layerId].length || 0,
+                tooltipContent = '<div id="snapshot-' + params.layerId + '-tooltip-content">Name: ' + name + '<br/>' + 'Status: '+ params.status + '<br/>' + 'Features: ' + count + '</div>';
+
+            // Some hoops to jump through to dynamically update the tooltip:
+            // Set data-original-title with new content, then run fixtitle to make bootstrap update the value
+            $owner.attr('data-original-title', tooltipContent).tooltip('fixTitle');
+            // Extra steps to refresh if tooltip is open: check if this snapshot's tooltip is open, close and reopen
+            if($('.tooltip').find('#snapshot-' + params.layerId + '-tooltip-content').length > 0 && $('.tooltip').find('#snapshot-' + params.layerId + '-tooltip-content').css('display') != 'none') {
+                $owner.tooltip('hide').tooltip('show');
+            }
         },
         timelinePlaybackStart: function(params) {
             if(checkLayerCount() > 1) {
@@ -275,9 +297,26 @@ define([
             }
         },
         deleteLayer: function(params) {
+
+            // TODO: Move this to be handled by the data services (will require reasonable refactor)
+            context.sandbox.utils.ajax({
+                type: 'DELETE',
+                url: '/clear/' + params.layerId,
+                headers: {
+                    'x-meridian-session-id': context.sandbox.sessionId
+                }
+            });
+
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 // TODO: do not use deleteDataLayer since the renderer is already receiving the call.
                 delete context.sandbox.dataStorage.datasets[params.layerId];
+
+                publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
+                    "messageType": "success",
+                    "messageTitle": "Data Service",
+                    "messageText": params.name + " query layer was removed"
+                });
+
                 // Take care of AOI and toggleBtn state
                 exposed.deleteAOILayer({
                     "layerId": params.layerId
@@ -310,15 +349,15 @@ define([
             });
         },
         deleteSnapshotLayerGroup: function (params) {
+            exposed.deleteSnapshot({
+                 "layerId": params.layerId
+            });
             exposed.deleteDataLayer({
                  "layerId": params.layerId
             });
             exposed.deleteAOILayer({
                  "layerId": params.layerId
             });
-            exposed.deleteSnapshot({
-                 "layerId": params.layerId
-             });
         },
         showDataLayer: function(params) {
             context.sandbox.stateManager.layers[params.layerId].visible = true;
@@ -331,6 +370,11 @@ define([
         deleteDataLayer: function(params) {
             //delete data from datastorage.
             delete context.sandbox.dataStorage.datasets[params.layerId];
+            publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
+                "messageType": "success",
+                "messageTitle": "Data Service",
+                "messageText": params.name + " query layer was removed"
+            });
             publisher.deleteLayer({"layerId": params.layerId});
         },
         showAOILayer: function(params) {
@@ -359,13 +403,22 @@ define([
             $querySnapshot.find('.btn-off').addClass('btn-primary');
         },
         deleteSnapshot: function(params) {
-            var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
+            var layerState,
+                $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
                 $owner = context.$('#snapshot-' + params.layerId);
             //destroy tooltip.
             $owner.tooltip('destroy');
             //make sure layer query is finished. If not, stop query before deleting.
-            if(!$badge.hasClass('error') || !$badge.hasClass('finished') || !$badge.hasClass('stopped')) {
-                publisher.stopQuery({"layerId": params.layerId});
+            layerState = context.sandbox.stateManager.getLayerStateById({
+                "layerId": params.layerId
+            });
+            if(layerState) {
+                dataTransferState = layerState.dataTransferState;
+                if(dataTransferState !== 'error' && dataTransferState !== 'stopped' && dataTransferState !== 'finished') {
+                    publisher.stopQuery({
+                        "layerId": params.layerId
+                    });
+                }
             }
             //delete timeline snapshot
             context.$('#snapshot-' + params.layerId).parent().remove();

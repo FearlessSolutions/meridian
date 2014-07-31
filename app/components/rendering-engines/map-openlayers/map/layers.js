@@ -178,6 +178,7 @@ define([
                 "requestEncoding": params.requestEncoding || 'KVP',
                 "format": params.format || 'image/jpeg',
                 "resolutions": params.resolutions || null,
+                "wrapDateLine": ("wrapDateLine" in params) ? params.wrapDateLine : true,
                 "tileSize": new OpenLayers.Size(
                     params.tileWidth || 256,
                     params.tileHeight || 256
@@ -358,10 +359,9 @@ define([
                             "requestEncoding": context.sandbox.mapConfiguration.basemaps[basemap].requestEncoding || 'KVP',
                             "format": context.sandbox.mapConfiguration.basemaps[basemap].format || 'image/jpeg',
                             "resolutions": context.sandbox.mapConfiguration.basemaps[basemap].resolutions || null,
-                            "tileSize": new OpenLayers.Size(
-                                context.sandbox.mapConfiguration.basemaps[basemap].tileWidth || 256,
-                                context.sandbox.mapConfiguration.basemaps[basemap].tileHeight || 256
-                            )
+                            "wrapDateLine": ("wrapDateLine" in context.sandbox.mapConfiguration.basemaps[basemap]) ? context.sandbox.mapConfiguration.basemaps[basemap].wrapDateLine : true,
+                            "tileWidth": context.sandbox.mapConfiguration.basemaps[basemap].tileWidth || context.sandbox.mapConfiguration.defaultTileWidth,
+                            "tileHeight": context.sandbox.mapConfiguration.basemaps[basemap].tileHeight || context.sandbox.mapConfiguration.defaultTileHeight
                         });
                         break;
                     default:
@@ -434,7 +434,7 @@ define([
                             null,
                             headerHTML + infoWinTemplateRef.buildInfoWinTemplate(
                                 formattedAttributes,
-                                record.attributes.icon
+                                fullFeature
                             ),
                             null,
                             true,
@@ -606,36 +606,41 @@ define([
                     context.sandbox.dataStorage.getFeatureById({
                         "featureId": feature.featureId}, 
                         function(fullFeature) {
-                            infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
-                            context.sandbox.utils.each(fullFeature.properties,
-                                function(k, v) {
-                                    if((context.sandbox.utils.type(v) === "string" ||
-                                        context.sandbox.utils.type(v) === "number" ||
-                                        context.sandbox.utils.type(v) === "boolean")) {
-                                        formattedAttributes[k] = v;
-                                    }
-                            });
+                            if(fullFeature.geometry.type === 'Point') { // TODO: remove check when we support identifying non-point features
+                                infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
+                                context.sandbox.utils.each(fullFeature.properties,
+                                    function(k, v) {
+                                        if((context.sandbox.utils.type(v) === "string" ||
+                                            context.sandbox.utils.type(v) === "number" ||
+                                            context.sandbox.utils.type(v) === "boolean")) {
+                                            formattedAttributes[k] = v;
+                                        }
+                                });
 
-                            anchor= {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, -(feature.attributes.height/2))};
-                            popup = new OpenLayers.Popup.FramedCloud('popup',
-                                OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
-                                null,
-                                infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes),
-                                anchor,
-                                true,
-                                function() {
-                                    mapBase.clearMapSelection({
-                                        "map": params.map
-                                    });
-                                    mapBase.clearMapPopups({
-                                        "map": params.map
-                                    });
-                                }
-                            );
-                            feature.popup = popup;
-                            params.map.addPopup(popup);
-                            infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
-                        }
+                                anchor= {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, -(feature.attributes.height/2))};
+                                popup = new OpenLayers.Popup.FramedCloud('popup',
+                                    OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                                    null,
+                                    infoWinTemplateRef.buildInfoWinTemplate(
+                                        formattedAttributes,
+                                        fullFeature
+                                    ),
+                                    anchor,
+                                    true,
+                                    function() {
+                                        mapBase.clearMapSelection({
+                                            "map": params.map
+                                        });
+                                        mapBase.clearMapPopups({
+                                            "map": params.map
+                                        });
+                                    }
+                                );
+                                feature.popup = popup;
+                                params.map.addPopup(popup);
+                                infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
+                            }
+                        } 
                     );
                 } else {
                     bounds = feature.geometry.getBounds();
@@ -663,10 +668,18 @@ define([
             },
             featureunselected: function(evt) {
                 var feature = evt.feature;
+
                 if(!feature.cluster) {
-                    params.map.removePopup(feature.popup);
-                    feature.popup.destroy();
-                    feature.popup = null;
+                    context.sandbox.dataStorage.getFeatureById({
+                        "featureId": feature.featureId}, 
+                        function(fullFeature) {
+                            if(fullFeature.geometry.type === 'Point') { // TODO: remove check when we support identifying non-point features
+                                params.map.removePopup(feature.popup);
+                                feature.popup.destroy();
+                                feature.popup = null;
+                            }
+                        }
+                    );
                 }
             }
         });

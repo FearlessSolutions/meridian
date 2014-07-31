@@ -25,6 +25,7 @@ define([], function(){
                     } else {
                         app.sandbox.utils.extend(true, stateManager.layers[params.layerId], params.state);
                     }
+                    return stateManager.layers[params.layerId];
                 },
                 getMapState: function() {
                     return stateManager.map;

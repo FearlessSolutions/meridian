@@ -1,22 +1,62 @@
-// SP: Note none of this code has been tested, please properly test before utilizing.
-//
-// var config = require('../utils/Config').getConfig();
-//var client = require('./client.js').newClient();
-//
-//exports.deleteRecordsForUserSessionId = function(user, sessionId, callback){
-//    client.deleteByQuery({
-//        index: config.index.data,
-//        routing: user+""+sessionId,
-//        body: {
-//            query: {
-//                "match_all": {}
-//            }
-//        }
-//    }, callback);
-//};
-//
-//exports.deleteAllRecords = function(callback){
-//    client.indices.delete({
-//        index: config.index.data
-//    }, callback);
-//};
+var config,
+    client;
+
+exports.init = function(context){
+    config = context.sandbox.config.getConfig();
+    client = context.sandbox.elastic.client.newClient();
+}
+
+exports.deleteRecordsByQueryId = function(user, sessionId, queryId, callback){
+    client.deleteByQuery({
+        index: "_all",
+        routing: user+""+sessionId,
+        body: {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "term": {
+                                "sessionId": sessionId
+                            }
+                        },
+                        {
+                            "term": {
+                                "userId": user
+                            }
+                        },
+                        {
+                            "term": {
+                                "queryId": queryId
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }, callback);
+};
+
+exports.deleteRecordsForUserSessionId = function(user, sessionId, callback){
+    client.deleteByQuery({
+        index: "_all",
+        routing: user+""+sessionId,
+        body: {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "term": {
+                                "sessionId": sessionId
+                            }
+                        },
+                        {
+                            "term": {
+                                "userId": user
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }, callback);
+};
