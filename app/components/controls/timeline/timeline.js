@@ -298,7 +298,7 @@ define([
         },
         deleteLayer: function(params) {
 
-            //TODO: Move this to some kind of elastic-specific component that listens to the event
+            // TODO: Move this to be handled by the data services (will require reasonable refactor)
             context.sandbox.utils.ajax({
                 type: 'DELETE',
                 url: '/clear/' + params.layerId,
