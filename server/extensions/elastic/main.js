@@ -4,6 +4,7 @@ var download = require('./download');
 var mapping = require('./mapping');
 var client = require('./client');
 var stream = require('./stream');
+var purge = require('./purge');
 
 var uuid = require('node-uuid');
 
@@ -17,7 +18,8 @@ exports.init = function(context){
         download: download,
         mapping: mapping,
         client: client,
-        stream: stream
+        stream: stream,
+        purge: purge
     };
 
     // Init sub-modules as necessary
@@ -26,6 +28,7 @@ exports.init = function(context){
     context.sandbox.elastic.query.init(context);
     context.sandbox.elastic.save.init(context);
     context.sandbox.elastic.stream.init(context);
+    context.sandbox.elastic.purge.init(context);
 
     var auth = context.sandbox.auth;
 
@@ -105,5 +108,20 @@ exports.init = function(context){
 
     app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         download.pipeCSVToResponse(res.get('Parsed-User'), res.get('Parsed-SessionId'), res);
+    });
+
+    app.delete('/clear', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+       purge.deleteRecordsForUserSessionId(res.get('Parsed-User'), res.get('Parsed-SessionId'), function(err, results){
+           res.status(err ? 500 : 200);
+           res.send(err ? err : results);
+       });
+    });
+
+    app.delete('/clear/:queryId', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+        purge.deleteRecordsByQueryId(res.get('Parsed-User'), res.get('Parsed-SessionId'),
+            req.params.queryId, function(err, results){
+            res.status(err ? 500 : 200);
+            res.send(err ? err : results);
+        });
     });
 };

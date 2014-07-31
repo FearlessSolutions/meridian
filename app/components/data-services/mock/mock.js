@@ -44,7 +44,7 @@ define([
 
         },
         deleteDataset: function(params) { 
-            // delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delet directly
+            // delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delete directly
         }
     };
 
@@ -79,6 +79,13 @@ define([
                     "messageText": data.length+ " events have been added to " + params.name + " query layer."
                 });
 
+                context.sandbox.stateManager.setLayerStateById({
+                    "layerId": layerId,
+                    "state": {
+                        "dataTransferState": 'running'
+                    }
+                });
+
                 context.sandbox.utils.each(data, function(key, value){
                     var newValue = {};
 
@@ -95,11 +102,19 @@ define([
                     newValue.id = data[key].id = value.properties.featureId;
                     newValue.geometry = value.geometry;
                     newValue.type = value.type;
+                    newValue.properties = {};
 
                     context.sandbox.dataStorage.addData({
                         "datasetId": layerId,
                         "data": newValue
                     });
+
+                    // Add style properties for map features, but not for local dataset storage
+                    if(value.style) {
+                        context.sandbox.utils.each(value.style, function(styleKey, styleValue){
+                            newValue.properties[styleKey] = styleValue;
+                        });
+                    }
 
                     newData.push(newValue);
                 });
@@ -122,6 +137,14 @@ define([
                     "messageTitle": "Data Service",
                     "messageText": params.name + " query complete"
                 });
+
+                context.sandbox.stateManager.setLayerStateById({
+                    "layerId": params.queryId,
+                    "state": {
+                        "dataTransferState": 'finished'
+                    }
+                });
+
                 publisher.publishFinish({
                     "layerId": params.queryId
                 });
@@ -138,6 +161,13 @@ define([
                 "messageType": "error",
                 "messageTitle": "Data Service",
                 "messageText": "Connection to data service failed."
+            });
+
+            context.sandbox.stateManager.setLayerStateById({
+                "layerId": layerId,
+                "state": {
+                    "dataTransferState": 'error'
+                }
             });
 
             publisher.publishError({

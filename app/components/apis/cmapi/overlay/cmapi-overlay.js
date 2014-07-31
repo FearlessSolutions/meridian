@@ -52,13 +52,17 @@ define([
                 return; //Layer already made; ignore this request
             } else {
                 context.sandbox.dataStorage.datasets[message.layerId] = new Backbone.Collection();
+
                 publisher.publishCreateLayer({
                     "layerId": message.layerId,
                     "name": message.name,
                     "selectable": message.selectable,
-                    "coords": message.coords
-                    // TODO: Add styleMap
+                    "coords": message.coords,
+                    // Temporary overwrite of symbolizers
+                    "symbolizers": message.symbolizers,
+                    "styleMap": message.styleMap
                 });
+
             }
 		},
         /**

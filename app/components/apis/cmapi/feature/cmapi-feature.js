@@ -114,8 +114,10 @@ define([
                 "layerId": layerId,
                 "name": message.name || layerId,
                 "selectable": ('selectable' in message) ? message.selectable : true,
-                "coords": message.coords
-                // TODO: Add styleMap
+                "coords": message.coords,
+                // Temporary overwrite of symbolizers
+                "symbolizers": message.symbolizers,
+                "styleMap": message.styleMap
             });
         }
 
@@ -147,6 +149,7 @@ define([
                         newValue.layerId = value.queryId;
                         newValue.geometry = value.geometry;
                         newValue.type = value.type;
+                        newValue.properties = {};
 
                         context.sandbox.utils.each(value.properties, function(key, value){
                             newValue[key] = value;
@@ -167,6 +170,13 @@ define([
                             "datasetId": layerId,
                             "data": newValue
                         });
+
+                        // Add style properties for map features, but not for local dataset storage
+                        if(value.style) {
+                            context.sandbox.utils.each(value.style, function(styleKey, styleValue){
+                                newValue.properties[styleKey] = styleValue;
+                            });
+                        }
 
                         newData.push(newValue);
                     });
