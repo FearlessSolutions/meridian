@@ -298,17 +298,19 @@ define([
             }
         },
         deleteLayer: function(params) {
+
+            //TODO: Move this to some kind of elastic-specific component that listens to the event
+            $.ajax({
+                type: 'DELETE',
+                url: '/clear/' + params.layerId,
+                headers: {
+                    'x-meridian-session-id': context.sandbox.sessionId
+                }
+            });
+
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 // TODO: do not use deleteDataLayer since the renderer is already receiving the call.
                 delete context.sandbox.dataStorage.datasets[params.layerId];
-
-                $.ajax({
-                    type: 'DELETE',
-                    url: '/clear/' + params.layerId,
-                    headers: {
-                        'x-meridian-session-id': context.sandbox.sessionId
-                    }
-                });
 
                 publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
                     "messageType": "success",
