@@ -102,11 +102,19 @@ define([
                     newValue.id = data[key].id = value.properties.featureId;
                     newValue.geometry = value.geometry;
                     newValue.type = value.type;
+                    newValue.properties = {};
 
                     context.sandbox.dataStorage.addData({
                         "datasetId": layerId,
                         "data": newValue
                     });
+
+                    // Add style properties for map features, but not for local dataset storage
+                    if(value.style) {
+                        context.sandbox.utils.each(value.style, function(styleKey, styleValue){
+                            newValue.properties[styleKey] = styleValue;
+                        });
+                    }
 
                     newData.push(newValue);
                 });

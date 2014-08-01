@@ -13,12 +13,14 @@ exports.init = function(context){
 
 exports.writeMetadata = function(userName, sessionId, queryId, metadata, callback){
 
+    var routingStr = userName+""+sessionId;
+
     var meta = {
         id: queryId,
         data: metadata
     };
 
-    writeJSON(userName, sessionId, null, config.index.metadata, "metadata", meta, callback);
+    writeJSON(userName, sessionId, routingStr, config.index.metadata, "metadata", meta, callback);
 };
 
 
@@ -33,6 +35,7 @@ exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON,
         if (!meta || meta.status === 404 && meta.message === 'Not Found'){
             meta = {
                 queryId: queryId,
+                environment: process.env.NODE_ENV,
                 numRecords: 0
             };
         }

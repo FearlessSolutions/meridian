@@ -22,15 +22,23 @@ define([
                 "show": false
              });
 
-            $cancelButton.on('click', function(e){
+            $cancelButton.on('click', function(e) {
                 closeMenu();
             });
 
-            $clearButton.on('click', function(e){
+            $clearButton.on('click', function(e) {
+                // TODO: Move this to be handled by the data services (will require reasonable refactor)
+                context.sandbox.utils.ajax({
+                    type: 'DELETE',
+                    url: '/clear',
+                    headers: {
+                        'x-meridian-session-id': context.sandbox.sessionId
+                    }
+                });
                 publisher.publishClear();
             });
         },
-        open: function(params){
+        open: function(params) {
             publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
             $modal.modal('show');
         },
@@ -46,7 +54,7 @@ define([
       * Since clicking the button will toggle the button after this is 
       * finished, don't toggle the class here if it is bubbling
       */
-    function closeMenu(){
+    function closeMenu() {
         $modal.modal('hide');
     }
 });

@@ -17,7 +17,7 @@ define([
             snapshotTemplate = Handlebars.compile(snapshotHBS);
             $timeline = context.$('#timeline');
         },
-        createSnapshot: function(params){
+        createSnapshot: function(params) {
             var layerId = params.layerId,
                 name = params.name,
                 coords = params.coords,
@@ -297,6 +297,16 @@ define([
             }
         },
         deleteLayer: function(params) {
+
+            // TODO: Move this to be handled by the data services (will require reasonable refactor)
+            context.sandbox.utils.ajax({
+                type: 'DELETE',
+                url: '/clear/' + params.layerId,
+                headers: {
+                    'x-meridian-session-id': context.sandbox.sessionId
+                }
+            });
+
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 // TODO: do not use deleteDataLayer since the renderer is already receiving the call.
                 delete context.sandbox.dataStorage.datasets[params.layerId];
