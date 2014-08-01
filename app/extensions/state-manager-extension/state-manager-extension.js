@@ -47,7 +47,7 @@ define([], function(){
                     return hiddenFeatures;
                 },
                 getFeatureVisibility: function(params) {
-                    if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(featureId) === -1) {
+                    if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(params.featureId) === -1) {
                         return true;
                     } else {
                         return false;
@@ -61,7 +61,7 @@ define([], function(){
                  * @param {Array} params.featureIds - Array of featureIds to be hidden
                  * @param {string} params.layerId - Id of layer
                  */
-                setHiddenFeaturesByLayerId: function(params) { // TODO: also ensure the array is a unique set
+                setHiddenFeaturesByLayerId: function(params) {
                     stateManager.layers[params.layerId].hiddenFeatures = [];
                     app.sandbox.utils.each(params.featureIds, function(index, featureId) {
                         if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(featureId) === -1) {
@@ -73,6 +73,14 @@ define([], function(){
                     app.sandbox.utils.each(params.featureIds, function(index, featureId) {
                         if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(featureId) === -1) {
                             stateManager.layers[params.layerId].hiddenFeatures.push(featureId);
+                        }
+                    });
+                },
+                removeHiddenFeaturesByLayerId: function(params) {
+                    var hiddenFeatures = stateManager.layers[params.layerId].hiddenFeatures;
+                    app.sandbox.utils.each(params.featureIds, function(index, featureId) {
+                        if(hiddenFeatures.indexOf(featureId) !== -1) {
+                            hiddenFeatures.splice(hiddenFeatures.indexOf(featureId), 1);
                         }
                     });
                 }
