@@ -39,24 +39,42 @@ define([], function(){
                     }
                     return stateManager.layers[params.layerId];
                 },
-                getAllHiddenFeatures: function(params) {
-                    app.sandbox.utils.each(stateManager.layers, function(k, v){
-
+                getAllHiddenFeatures: function() {
+                    var hiddenFeatures = [];
+                    app.sandbox.utils.each(stateManager.layers, function(layerId, layerState){
+                        hiddenFeatures.concat(layerState.hiddenFeatures);
                     });
+                    return hiddenFeatures;
                 },
                 getFeatureVisibility: function(params) {
-
+                    if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(featureId) === -1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 },
                 getHiddenFeaturesByLayerId: function(params) {
-
+                    return stateManager.layers[params.layerId].hiddenFeatures;
                 },
                 /**
-                 * Store array of featureIds associated with layer
-                 * @param {Array} params.features - Array of featureIds to be hidden
+                 * Overwrite array of featureIds associated with layer
+                 * @param {Array} params.featureIds - Array of featureIds to be hidden
                  * @param {string} params.layerId - Id of layer
                  */
-                setHiddenFeaturesByLayerId: function(params) {
-
+                setHiddenFeaturesByLayerId: function(params) { // TODO: also ensure the array is a unique set
+                    stateManager.layers[params.layerId].hiddenFeatures = [];
+                    app.sandbox.utils.each(params.featureIds, function(index, featureId) {
+                        if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(featureId) === -1) {
+                            stateManager.layers[params.layerId].hiddenFeatures.push(featureId);
+                        }
+                    });
+                },
+                addHiddenFeaturesByLayerId: function(params) {
+                    app.sandbox.utils.each(params.featureIds, function(index, featureId) {
+                        if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(featureId) === -1) {
+                            stateManager.layers[params.layerId].hiddenFeatures.push(featureId);
+                        }
+                    });
                 }
 			};
 
