@@ -28,8 +28,8 @@ define([
 
             if(layer) {
                 context.sandbox.utils.each(data, function(key, value) {
-                        var currentFeature = geoJsonParser.parseFeature(value),
-                        iconData;
+                    var currentFeature = geoJsonParser.parseFeature(value),
+                    iconData;
                     
                     iconData = context.sandbox.icons.getIconForFeature(value) || context.sandbox.mapConfiguration.markerIcons.default;
                     currentFeature.featureId = value.id || '';
@@ -42,6 +42,94 @@ define([
                 });
 
                 layer.addFeatures(newFeatures);
+                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                    layer.recluster();
+                }
+                layer.refresh({
+                    "force": true,
+                    "forces": true
+                });
+            }
+        },
+        hideFeatures: function(params) {
+            var layerId = params.layerId,
+                featureIds = params.featureIds,
+                layer = params.map.getLayersBy('layerId', layerId)[0];
+
+            if(layer) {
+                context.sandbox.stateManager.addHiddenFeaturesByLayerId({
+                    "layerId": layerId,
+                    "featureIds": featureIds
+                });
+
+                context.sandbox.utils.each(featureIds, function(index, featureId) {
+                    var feature = layer.getFeatureBy('featureId', featureId);
+                    if(feature) {
+                        if(!feature.style) {
+                            feature.style = {}; 
+                        }
+                        feature.style.display = "none";
+                    } else {
+                        context.sandbox.utils.each(layer.features, function(index, clusterFeature) {
+                            if(clusterFeature.cluster) {
+                                context.sandbox.utils.each(clusterFeature.cluster, function(index, feature) {
+                                    if(feature.featureId === featureId) {
+                                        if(!feature.style) {
+                                            feature.style = {}; 
+                                        }
+                                        feature.style.display = "none"; 
+                                        clusterFeature.attributes.count --;
+                                        return;
+                                    }
+                                });
+                            }
+                            return;
+                        });
+                    }
+                });
+
+                layer.redraw();
+                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                    layer.recluster();
+                }
+                layer.refresh({
+                    "force": true,
+                    "forces": true
+                });
+            }
+        },
+        showFeatures: function(params) {
+            var layerId = params.layerId,
+                featureIds = params.featureIds,
+                layer = params.map.getLayersBy('layerId', layerId)[0];
+
+            if(layer) {
+                context.sandbox.stateManager.removeHiddenFeaturesByLayerId({
+                    "layerId": layerId,
+                    "featureIds": featureIds
+                });
+
+                context.sandbox.utils.each(featureIds, function(index, featureId) {
+                    var feature = layer.getFeatureBy('featureId', featureId);
+                    if(feature) {
+                        feature.style = null; 
+                    } else {
+                        context.sandbox.utils.each(layer.features, function(index, clusterFeature) {
+                            if(clusterFeature.cluster) {
+                                context.sandbox.utils.each(clusterFeature.cluster, function(index, feature) {
+                                    if(feature.featureId === featureId) {
+                                        feature.style = null; 
+                                        clusterFeature.attributes.count ++;
+                                        return;
+                                    }
+                                });
+                            }
+                            return;
+                        });
+                    }
+                });
+
+                layer.redraw();
                 if(context.sandbox.stateManager.map.visualMode === 'cluster') {
                     layer.recluster();
                 }

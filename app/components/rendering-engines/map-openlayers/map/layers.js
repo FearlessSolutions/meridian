@@ -147,8 +147,11 @@ define([
                 selector.setLayer(layers);
             }
 
-            // Default of new layer is visible = true
-            context.sandbox.stateManager.layers[params.layerId] = {"visible": true};
+            // Default state manager settings for a new layer
+            context.sandbox.stateManager.layers[params.layerId] = {
+                "visible": true,
+                "hiddenFeatures": []
+            };
 
             return newVectorLayer;
         },
