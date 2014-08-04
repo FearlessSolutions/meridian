@@ -79,12 +79,10 @@ define([
                                             feature.style = {}; 
                                         }
                                         feature.style.display = "none"; 
-                                        clusterFeature.attributes.count --;
                                         return;
                                     }
                                 });
                             }
-                            return;
                         });
                     }
                 });
@@ -129,6 +127,10 @@ define([
                     "featureIds": featureIds
                 });
 
+                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                    layer.recluster();
+                }
+
                 context.sandbox.utils.each(featureIds, function(index, featureId) {
                     var feature = layer.getFeatureBy('featureId', featureId);
                     if(feature) {
@@ -139,20 +141,15 @@ define([
                                 context.sandbox.utils.each(clusterFeature.cluster, function(index, feature) {
                                     if(feature.featureId === featureId) {
                                         feature.style = null; 
-                                        clusterFeature.attributes.count ++;
                                         return;
                                     }
                                 });
                             }
-                            return;
                         });
                     }
                 });
 
                 layer.redraw();
-                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
-                    layer.recluster();
-                }
                 layer.refresh({
                     "force": true,
                     "forces": true
