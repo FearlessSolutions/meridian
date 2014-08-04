@@ -308,7 +308,14 @@ define([], function() {
                                         clusters.push(this.createCluster(this.features[i]));
                                     }
                                 } else {
-                                    clusters.push(this.createCluster(this.features[i]));
+                                    if(
+                                        context.sandbox.stateManager.getFeatureVisibility({
+                                            "layerId": this.layer.layerId,
+                                            "featureId": feature.featureId
+                                        })
+                                    ){
+                                        clusters.push(this.createCluster(this.features[i]));
+                                    }
                                 }
 
                             }

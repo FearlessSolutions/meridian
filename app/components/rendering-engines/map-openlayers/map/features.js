@@ -1,6 +1,7 @@
 define([
+    './base',
     './../libs/openlayers-2.13.1/OpenLayers'
-], function() {
+], function(mapBase) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -95,6 +96,25 @@ define([
                 layer.refresh({
                     "force": true,
                     "forces": true
+                });
+
+                var identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
+                    "layerId": layer.layerId
+                });
+
+                
+                context.sandbox.utils.each(identifiedFeatures, function(i1, identifiedfid){
+                    context.sandbox.utils.each(featureIds, function(i2, fid){
+                        if(fid === identifiedfid) {
+                            mapBase.clearMapSelection({
+                                "map": params.map
+                            });
+                            mapBase.clearMapPopups({
+                                "map": params.map
+                            });
+                            return;
+                        }
+                    });   
                 });
             }
         },

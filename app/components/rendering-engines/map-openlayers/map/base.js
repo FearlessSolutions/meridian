@@ -140,8 +140,10 @@ define([
             while(params.map.popups.length) {
                 params.map.removePopup(params.map.popups[0]);
             }
+
+            context.sandbox.stateManager.removeAllIdentifiedFeatures();
         },
-        identifyFeature: function(params) {
+        identifyFeature: function(params) { // TODO: what is this being used by?
             var popup,
                 feature = params.feature,
                 anchor;
