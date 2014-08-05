@@ -101,63 +101,17 @@ define([
                                 },
                                 "properties": {
                                     "featureId": "f1"
+                                },
+                                "style": {
+                                    "height": 20,
+                                    "width": 30,
+                                    "icon": "http://www.projectpawsitive.com/wp-content/uploads/2013/08/CAt_No-Background1.png"
                                 }
                             }
                         ]
                     },
                     "zoom":"true",
-                    "readOnly":"false",
-                    "symbolizers": {
-                        "lowSymbolizer": {
-                            "externalGraphic": "/cmapi/payloads/images/customCluster.png",
-                            "fontColor": "rgb(130, 37, 251)",
-                            "fontOpacity": 1,
-                            "fontSize": "12",
-                            "fontWeight": "bold",
-                            "graphicHeight": 36,
-                            "graphicOpacity": 1,
-                            "graphicWidth": 36,
-                            "label": "${count}",
-                            "labelOutlineWidth": 3,
-                            "labelYOffset": 5,
-                            "pointRadius": 10
-                        },
-                        "midSymbolizer": {
-                            "externalGraphic": "/cmapi/payloads/images/customCluster.png",
-                            "fontColor": "rgb(130, 37, 251)",
-                            "fontOpacity": 1,
-                            "fontSize": "13",
-                            "fontWeight": "bold",
-                            "graphicHeight": 48,
-                            "graphicOpacity": 1,
-                            "graphicWidth": 48,
-                            "label": "${count}",
-                            "labelOutlineWidth": 3,
-                            "labelYOffset": 0,
-                            "pointRadius": 15
-                        },
-                        "highSymbolizer": {
-                            "externalGraphic": "/cmapi/payloads/images/customCluster.png",
-                            "fontColor": "rgb(130, 37, 251)",
-                            "fontOpacity": 1,
-                            "fontSize": "14",
-                            "fontWeight": "bold",
-                            "graphicHeight": 60,
-                            "graphicOpacity": 1,
-                            "graphicWidth": 60,
-                            "label": "${count}",
-                            "labelOutlineWidth": 3,
-                            "labelYOffset": -7,
-                            "pointRadius": 20
-                        },
-                        "noClusterSymbolizer": {
-                            "externalGraphic": "${icon}",
-                            "graphicOpacity": 1,
-                            "pointRadius": 15,
-                            "graphicHeight": "${height}",
-                            "graphicWidth": "${width}"
-                        }
-                    }
+                    "readOnly":"false"
                 }
             },
             "map.view.zoom":{
