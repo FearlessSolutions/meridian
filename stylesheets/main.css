@@ -3,7 +3,7 @@
 
 body { 
 	padding-top: 65px; /*taking into account the fixed nav bar*/
-	position: relative;
+	position: relative; /*need for the side nav bar*/
 }
 
 .main-banner {
@@ -30,6 +30,7 @@ body {
 	width: 300px;
 }
 
+/*Making text primary the blue theme color instead of black.*/
 a.text-primary {
   color: #4582ec;
 }

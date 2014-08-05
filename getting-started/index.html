@@ -28,7 +28,7 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col-md-9 container">
+        <div class="col-md-10 container">
             <h2 id="requirements">Requirements</h2>
               <p> Instructions can also be found on our <a href="//github.com/ozone-development/meridian">Github</a> page.</p>
 
@@ -51,7 +51,7 @@
                 </ul>
               </p>
 
-            <h4 class="page-header" id="ellastic"> Ellastic Search </h4>
+            <h4 class="page-header" id="elastic"> Ellastic Search </h4>
               <p> The application utilizes mock data To host the database locally (which will be populated with mock data), you will need to install ElasticSearch.
               Download ElasticSearch in the <a href="http://www.elasticsearch.org/overview/elkdownloads/">ElasticSearch Downloads Page</a>.</p>
 
@@ -62,23 +62,48 @@
                     <code>
                       Mac OS: Make sure to import the certificate in the login section of Keychain Access and not in the System section.
                     </code>
-                  <li>Chrome: Settings>Show Advanced Settings>(HTTPS/SSL)Manage certificates>Import</li>
-                  <li>FireFox: Options>Advanced>Certificates>View Certificates>Import</li>
-                  <li>Cert password: <code>password</code></li>
-                  <li>You might need to restart the browser after importing the certificate.</li>
+                  <ul>
+                    <li>Chrome: Settings>Show Advanced Settings>(HTTPS/SSL)Manage certificates>Import</li>
+                    <li>FireFox: Options>Advanced>Certificates>View Certificates>Import</li>
+                    <li>Cert password: <code>password</code></li>
+                    <li>You might need to restart the browser after importing the certificate.</li>
+                  </ul>
                 </ul>
               </p>
 
-              <p>If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the Grunt  Setup instructions.</p>
+              <p>If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the <a href="#withGrunt">Grunt Setup</a> instructions.</p>
 
 
             <h2 class="page-header" id="setup">Setup</h2>
+              <p>You have two options for getting up an running, with or without the Grunt support.</p>
+
+            <h4 class="page-header" id="withoutGrunt">Option 1 - Without Grunt Support </h4>
+               <ul>
+                  <li>Clone the repo: <code>git clone https://github.com/ozone-development/meridian.git</code>.</li>
+                  <li>Change into the project directory: <code>cd meridian</code>.</li>
+                  <li>Run <code>npm install</code> to make sure everything is up to date.</li>
+                  <li>Install Elastic Search: (Instructions also found on their <a href="http://www.elasticsearch.org/overview/elkdownloads/">ElasticSearch Downloads Page</a>)</li>
+                    <ul>
+                      <li>Download and unzip the latest Elasticsearch distribution.</li>
+                      <li>Change into the ElasticSearch directory (wherever it was extracted)</li>
+                      <li>Run <code>bin/elasticsearch</code> on Unix, or <code>bin/elasticsearch.bat</code> on Windows.</li>
+                      <li>Run <code>curl -X GET http://localhost:9200</code> or visit <code>http://localhost:9200</code> to make sure elasticsearch is running.</li>
+                    </ul>
+                  <li>Start the application:</li>
+                    <ul>
+                      <li>Run: <code>node app.js</code> from the root of the Meridian folder.</li>
+                      <li>Open a web browser and visit <a href="https://localhost:3000">https://localhost:3000</a> to see Meridian in action.</li>
+                    </ul>
+                </ul>
+
+            <h4 class="page-header" id="withGrunt">Option 2 - With Grunt Support </h4>
 
             
             <h2 class="page-header" id="contributing">Contributing</h2>
         </div><!-- md-9 container -->
 
-        <div class="col-md-3">
+
+        <div class="col-md-2">
           <div class="hidden-print hidden-xs hidden-sm" id="sideNav">
             <ul class="nav affix">
               <li><a href="#requirements">Requirements</a>
@@ -86,15 +111,13 @@
                   <li><a href="#meridian">Meridian</a></li>
                   <li><a href="#grunt">Grunt</a></li>
                   <li><a href="#node">Node JS</a></li>
-                  <li><a href="#ellastic">Ellastic Search</a></li>
+                  <li><a href="#elastic">Elastic Search</a></li>
                 </ul>
               </li>
               <li><a href="#setup">Setup</a></li>
               <li><a href="#contributing">Contributing</a></li>
-                
-              
             </ul>
-          </div>
+          </div> <!-- sideNav -->
         </div><!-- md-3 -->
       </div><!-- row -->
     </div>
