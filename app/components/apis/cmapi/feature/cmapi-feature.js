@@ -172,7 +172,7 @@ define([
                         });
 
                         // Add style properties for map features, but not for local dataset storage
-                        context.sandbox.utils.each(value.style, function(styleKey, styleValue){
+                        context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(value), function(styleKey, styleValue){
                             newValue.properties[styleKey] = styleValue;
                         });
 

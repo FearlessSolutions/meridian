@@ -101,11 +101,13 @@ define([
                                 },
                                 "properties": {
                                     "featureId": "f1"
+                                // }
                                 },
                                 "style": {
-                                    "height": 20,
-                                    "width": 30,
-                                    "icon": "http://www.projectpawsitive.com/wp-content/uploads/2013/08/CAt_No-Background1.png"
+                                    "height": 24,
+                                    "width": 24,
+                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
                                 }
                             }
                         ]
