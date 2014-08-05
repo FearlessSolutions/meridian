@@ -37,10 +37,6 @@ define([
             context.$('button.close').on('click', function(){
                 exposed.hide();
             });
-
-            exposed.update({
-                "image": "/extensions/legend-extension/images/legend.png"
-            })
         },
         update: function(params){
 
