@@ -12,13 +12,14 @@ define([
             }
             app.sandbox.dataServices.mock = {};
             app.sandbox.dataServices.mock.infoWinTemplate = {
-                buildInfoWinTemplate: function(attributes){
+                buildInfoWinTemplate: function(attributes) {
                     var mockTemplate = Handlebars.compile(mockHbs);
                     var html = mockTemplate({
-                        thumbnail: "./extensions/map-configuration-extension/images/markerIcons/marker.png",
-                        classification: attributes.classification,
-                        name: attributes.name,
-                        attributes: attributes
+                        "thumbnail": "./extensions/map-configuration-extension/images/markerIcons/marker-2x-80x80.png",
+                        "classification": attributes.classification,
+                        "name": attributes.name,
+                        "attributes": attributes,
+                        "namespace": "mock-extension"
                     });
                     return html;
                 },
@@ -28,7 +29,7 @@ define([
             };
             app.sandbox.dataServices.mock.keys = [
                 "classification",
-                "queryId",
+                "layerId",
                 "featureId",
                 "lat",
                 "lon",

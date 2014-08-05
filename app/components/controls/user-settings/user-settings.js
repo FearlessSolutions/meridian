@@ -24,6 +24,15 @@ define([
             context = thisContext;
             $userSettingsDialog = context.$("#userSettingsDialog");
 
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            context.$('#userSettings').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
             if(context.options.label && context.options.label === true) {
                 exposed.makeUserLabel();
                 menuDisabled = true;
@@ -34,7 +43,7 @@ define([
             }            
         },
         makeUserLabel: function() {
-            //removed unwanted html and adds the required css files that give the looc and location of the button.
+            //removed unwanted html and adds the required css files that give the look and location of the button.
             context.$('.caret').remove();
             $userSettingsDialog.remove(); //to have a cleaner html.
             context.$('#userSettings').addClass('disabled');
@@ -220,7 +229,7 @@ define([
              */
             context.$('.form-horizontal button[type="extent"]').on('click', function(event) {
                 event.preventDefault();
-                publisher.getExtent({"target":"userSettings"});
+                exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
             });
 
             /**
@@ -259,20 +268,18 @@ define([
                 $cursorLocationDefaultToggle.find('.btn-off').addClass('btn-primary');
             }
         },
-        populateCoordinates: function(args) {
-            if(args.target === 'userSettings') {
-                removeCssError();
-                $minLon.val(args.minLon);
-                $maxLat.val(args.maxLat);
-                $maxLon.val(args.maxLon);
-                $minLat.val(args.minLat);
+        populateCoordinates: function(params) {
+            removeCssError();
+            $minLon.val(params.minLon);
+            $maxLat.val(params.maxLat);
+            $maxLon.val(params.maxLon);
+            $minLat.val(params.minLat);
 
-                publisher.publishMessage({
-                    "messageType": "success",
-                    "messageTitle": "User Settings",
-                    "messageText": "Extent loaded. Remember to save."
-                });
-            }
+            publisher.publishMessage({
+                "messageType": "success",
+                "messageTitle": "User Settings",
+                "messageText": "Extent loaded. Remember to save."
+            });
         },
         closeMenu: function(){
             if(menuDisabled){
@@ -282,8 +289,8 @@ define([
 
             resetDialog();
         },
-        handleMenuOpening: function(args){
-            if(args.componentOpening === MENU_DESIGNATION){
+        handleMenuOpening: function(params){
+            if(params.componentOpening === MENU_DESIGNATION){
                 return;
             }else{
                 exposed.closeMenu();

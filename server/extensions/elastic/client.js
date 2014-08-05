@@ -32,6 +32,9 @@ exports.newClient = function(options){
     if (options.host) { esOptions.host.host = options.host; }
     if (options.port) { esOptions.host.port = options.port; }
     if (options.pfxLocation) { esOptions.agentConfig.pfx = fs.readFileSync(options.pfxLocation); }
+    if (options.passphraseLocation) {
+        esOptions.agentConfig.passphrase = fs.readFileSync(options.passphraseLocation, 'utf-8').trim();
+    }
     if (options.rejectUnauthorized !== 'undefined') { esOptions.agentConfig.rejectUnauthorized = options.rejectUnauthorized; }
 
     return new elasticsearch.Client(esOptions);

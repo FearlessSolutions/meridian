@@ -9,7 +9,7 @@ define([
                 },
                 "columns": {
                     "featureId":"Feature ID",
-                    "queryId":"Query ID",
+                    "layerId":"Layer ID",
                     "lat": "Lat",
                     "lon": "Lon"
                 },
@@ -20,7 +20,7 @@ define([
                     }
                 },
                 updateColumns: function(params) {
-                    $.each(params.data, function(k, v){
+                    $.each(params.data, function(k, v) {
                         // Skipping id field because it is for backbone modeling
                         if(($.type(v) === "string" || $.type(v) === "number" || $.type(v) === "boolean") && k !== "id") {
                             if(!dataStorage.columns[k]) {
@@ -32,18 +32,20 @@ define([
                 getColumns: function() {
                     return dataStorage.columns;
                 },
-                clear: function(){
+                clear: function() {
                     dataStorage.datasets = {};
                 },
                 getFeatureById: function(params, callback) {
                     var featureId = params.featureId;
                     var feature = {};
-                    $.ajax({
+                    var ajax = $.ajax({
                         type: "GET",
                         url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + featureId
                     }).done(function(data){
                         callback(data);
                     });
+
+                    return ajax;
                 }
 			};
 

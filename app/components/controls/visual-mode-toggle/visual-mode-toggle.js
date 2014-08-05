@@ -22,6 +22,27 @@ define([
             context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
             context.$('#visual-mode-toggle-container [data-visual-mode="' + currentVisualMode + '"]').addClass('active');
 
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            context.$('#cluster-toggle-btn').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+            context.$('#feature-toggle-btn').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+            context.$('#heatmap-toggle-btn').tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
             context.$('#visual-mode-toggle-container .btn').on('click', function() {
                 $target = context.$(this);
                 targetVisualMode = $target.attr('data-visual-mode');
@@ -54,8 +75,8 @@ define([
                 });
             }
         },
-        setFeatureMode: function(args) {
-            if(args.origin !== CONTROL_DESIGNATION) {
+        setFeatureMode: function(params) {
+            if(params.origin !== CONTROL_DESIGNATION) {
                 return;
             }
             userNotified = true;
@@ -71,10 +92,10 @@ define([
         },
         clear: function() {
             // Setting the current visual mode locally and in state manager from the config
-            currentVisualMode = context.sandbox.mapConfiguration.defaultVisualMode;
-            context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
-            context.$('#visual-mode-toggle-container').children('.btn').removeClass('active');
-            context.$('#visual-mode-toggle-container [data-visual-mode="' + currentVisualMode + '"]').addClass('active');
+            // currentVisualMode = context.sandbox.mapConfiguration.defaultVisualMode;
+            // context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
+            // context.$('#visual-mode-toggle-container').children('.btn').removeClass('active');
+            // context.$('#visual-mode-toggle-container [data-visual-mode="' + currentVisualMode + '"]').addClass('active');
         }
     };
 

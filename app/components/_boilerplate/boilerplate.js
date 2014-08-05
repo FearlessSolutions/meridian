@@ -13,7 +13,7 @@ define([
             // The 'context' provides a reference to 'sandbox' using 'context.sandbox'
             context = thisContext;
         },
-        dummyFunction: function(args) {
+        dummyFunction: function(params) {
             // Example of an extension being used
             var msg = context.sandbox.dummyMessage;
 

@@ -8,10 +8,10 @@ define([
             context = thisContext;
         },
         publishClear: function(){
-            context.sandbox.emit('system.clear');
+            context.sandbox.emit('data.clear.all');
         },
-        publishOpening: function(args){
-            context.sandbox.emit('menu.opening', args);
+        publishOpening: function(params){
+            context.sandbox.emit('menu.opening', params);
         }
     };
 

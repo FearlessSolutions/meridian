@@ -1,6 +1,6 @@
 define([
     './datagrid-publisher',
-    'datatable',
+    'datatable'
 ], function (publisher) {
 
     var context,
@@ -49,7 +49,7 @@ define([
             context.sandbox.utils.each(storedColumns, function(k, v){
                 columnsArray.push(v);
             });
-
+            
             if(!myTable) {
                 myTable = $datagridContainer.Datatable({
                     "sortable": true,
@@ -61,8 +61,8 @@ define([
                     "clickable": true,
                     "afterRowClick": function(target) {
                         publisher.identifyRecord({
-                            "recordId": target['Feature ID'],
-                            "queryId": target['Query ID']
+                            "featureId": target['Feature ID'],
+                            "layerId": target['Layer ID']
                         });
                     }
                 });

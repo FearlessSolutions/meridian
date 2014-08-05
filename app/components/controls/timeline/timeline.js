@@ -17,174 +17,248 @@ define([
             snapshotTemplate = Handlebars.compile(snapshotHBS);
             $timeline = context.$('#timeline');
         },
-        createSnapshot: function(args){
-            var queryId = args.queryId,
-                name = args.name,
-                coords = args.coords,
-                thumnailURL = context.sandbox.snapshot.thumbnailURL(coords);
+        createSnapshot: function(params) {
+            var layerId = params.layerId,
+                name = params.name,
+                coords = params.coords,
+                thumnailURL;
 
-            var	snapshotHTML = snapshotTemplate({
-                "queryId": queryId,
-                "name": name,
-                "thumbnailURL": thumnailURL
-            });
+            if(context.sandbox.dataStorage.datasets[params.layerId]) {
 
-            context.$('#timeline-container').append(snapshotHTML);
-            $timeline.show();
-            $timeline.scrollLeft(5000);
-            $timeline.fadeIn();
+                if(coords) {
 
-            snapshotMenu.createMenu({'queryId': queryId});
+                    thumnailURL = context.sandbox.snapshot.thumbnailURL(coords);
 
-            context.$('#snapshot-' + queryId).find('.btn-toggle').on('click', function() {
-                var collection = context.sandbox.dataStorage.datasets[queryId],
-                    $this = context.$(this),
-                    $thisBtns = $this.find('.btn');
+                    publisher.createLayer({
+                        "layerId": layerId + "_aoi",
+                        "name": name + "_aoi",
+                        "initialVisibility": true,
+                        "styleMap": {
+                            "default": {
+                                "strokeColor": '#000',
+                                "strokeOpacity": 0.3,
+                                "strokeWidth": 2,
+                                "fillColor": 'gray',
+                                "fillOpacity": 0.3
+                            }
+                        }
+                    });
+                        
+                    publisher.setLayerIndex({
+                        "layerId": layerId + "_aoi",
+                        "layerIndex": 0
+                    });
 
+                    publisher.plotFeatures({
+                        "layerId": layerId + "_aoi",
+                        "data": [{
+                            "layerId": layerId + "_aoi",
+                            "featureId": "_aoi",
+                            "dataService": "",
+                            "id": "_aoi",
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": [[
+                                    [coords.minLon, coords.maxLat],
+                                    [coords.maxLon, coords.maxLat],
+                                    [coords.maxLon, coords.minLat],
+                                    [coords.minLon, coords.minLat]
+                                ]]
+                            },
+                            "type": "Feature"
+                        }]
+                    });
 
-                if ($this.find('.btn-primary').size()>0) {
-                    $thisBtns.toggleClass('btn-primary');
-                }
-
-                /** These Lines can probably be removed. Eric/Steve say they need to be here,
-                    so I will leave them, but I didn't see any problems when I removed them**/
-                if ($this.find('.btn-danger').size()>0) {
-                    $thisBtns.toggleClass('btn-danger');
-                }
-                if ($this.find('.btn-success').size()>0) {
-                    $thisBtns.toggleClass('btn-success');
-                }
-                if ($this.find('.btn-info').size()>0) {
-                    $thisBtns.toggleClass('btn-info');
-                }
-                /** End remove lines **/
-
-
-                if($this.find('.btn-on').hasClass('btn-primary')) {
-                    context.sandbox.stateManager.layers[queryId].visible = true;
-                    publisher.showLayer({"layerId": queryId});
                 } else {
-                    context.sandbox.stateManager.layers[queryId].visible = false;
-                    publisher.hideLayer({"layerId": queryId});
+                    thumnailURL = context.sandbox.snapshot.thumbnailURL();
                 }
-            });
-            
-            exposed.setTooltip(queryId, 'Starting', 0);
-        },
-        /*A message to hide all layers was emitted. Toggles buttons to the off position.*/
-        allSnapshotsOff: function(args){
-            //this will iterate through every backbone collection. Each collection is a query layer with the key being the queryId.
-            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(queryId, collections){
-                var $querySnapshot = context.$('#snapshot-' + queryId);
-                if($querySnapshot.find('.btn-primary').size()>0){
-                    //only toggle class if ON button is active.
-                    if($querySnapshot.find('.active').hasClass('btn-primary')){
-                        $querySnapshot.find('.btn').toggleClass('btn-primary'); //Two buttons
+
+                var	snapshotHTML = snapshotTemplate({
+                    "layerId": layerId,
+                    "name": name,
+                    "thumbnailURL": thumnailURL
+                });
+
+                context.$('#timeline-container').append(snapshotHTML);
+                $timeline.show();
+                $timeline.scrollLeft(5000);
+                $timeline.fadeIn();
+
+                snapshotMenu.createMenu({'layerId': layerId});
+
+                context.$('#snapshot-' + layerId).find('.btn-toggle').on('click', function() {
+                    var collection = context.sandbox.dataStorage.datasets[layerId],
+                        $this = context.$(this),
+                        $thisBtns = $this.find('.btn');
+
+                    if($this.find('.btn-primary').size()>0) {
+                        $thisBtns.toggleClass('btn-primary');
                     }
-                }
-            });
+
+                    if($this.find('.btn-on').hasClass('btn-primary')) {
+                        // Does not call showLayer to avoid duplicate effort to toggleBtn change
+                        exposed.showDataLayer({
+                            "layerId": layerId
+                        });
+                        exposed.showAOILayer({
+                            "layerId": layerId
+                        });
+                    } else {
+                        exposed.hideDataLayer({
+                            "layerId": layerId
+                        });
+                        exposed.hideAOILayer({
+                            "layerId": layerId
+                        });
+                    }
+                });
+                
+                // Build custom tooltip to hold dynamic information
+                exposed.setTooltip({
+                    "layerId": layerId,
+                    "status": "Starting"
+                });
+
+            }
         },
-        layerToggleOn: function(args){
-            var $querySnapshot = context.$('#snapshot-' + args.layerId);
-            $querySnapshot.find('.btn-on').addClass('btn-primary');
-            $querySnapshot.find('.btn-off').removeClass('btn-primary');
-        },
-        layerToggleOff: function(args){
-            var $querySnapshot = context.$('#snapshot-' + args.layerId);
-            $querySnapshot.find('.btn-on').removeClass('btn-primary');
-            $querySnapshot.find('.btn-off').addClass('btn-primary');
-        },
-        hideTimeline: function(args){
+        hideTimeline: function(params) {
             $timeline.hide();
         },
-        showTimeline: function(args){
+        showTimeline: function(params) {
 			$timeline.show();	
 		},
-		clear: function(){
+		clear: function() {
 			context.$('#timeline-container').html('');
             $timeline.hide();
 		},
-        addCount: function(args){
-            var $badge = context.$('#snapshot-' + args.queryId + ' .badge'),
-                count = $badge.data('count') || 0;
+        updateCount: function(params) {
+            if(context.sandbox.dataStorage.datasets[params.layerId]) {
+                var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
+                    count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
+                if($badge.length === 0) {
+                    console.error("update fail", $badge);
+                    $badge = context.$('#snapshot-' + params.layerId + ' .badge');
+                }
 
-            count += args.data.length;
-            $badge.text(context.sandbox.utils.trimNumber(count));
-            $badge.data('count', count);
-            exposed.setTooltip(args.queryId,'Running', count);
+                $badge.text(context.sandbox.utils.trimNumber(count));
+                exposed.updateTooltip({
+                    "layerId": params.layerId,
+                    "status": "Running"
+                });
+            }
         },
-        markFinished: function(args){
-            var $badge = context.$('#snapshot-' + args.queryId + ' .badge');
-            if(!$badge.hasClass("error")){
+        markFinished: function(params) {
+            var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
+            if(!$badge.hasClass("error")) {
                 $badge.addClass('finished');
-                exposed.setTooltip(args.queryId,'Finished', $badge.data('count'));
-                snapshotMenu.disableOption(args.queryId, 'stopQuery');
+                exposed.updateTooltip({
+                    "layerId": params.layerId,
+                    "status": "Finished"
+                });
+                snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "query.stop"
+                });
             }
         },
-        markStopped: function(args){
-            var $badge = context.$('#snapshot-' + args.queryId + ' .badge'),
-                count = $badge.data('count') || 0;
-            if(!$badge.hasClass('error') && !$badge.hasClass('finished')){
+        markStopped: function(params) {
+            var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
+            if(!$badge.hasClass('error') && !$badge.hasClass('finished')) {
                 $badge.addClass('stopped');
-                exposed.setTooltip(args.queryId, 'Stopped', count);
-                snapshotMenu.disableOption(args.queryId, 'stopQuery');
+                exposed.updateTooltip({
+                    "layerId": params.layerId,
+                    "status": "Stopped"
+                });
+                snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "query.stop"
+                });
             }
         },
-        markError: function(args){
-            var $badge = context.$('#snapshot-' + args.queryId + ' .badge'),
-                count = $badge.data('count') || 0;
+        markError: function(params) {
+            var $badge = context.$('#snapshot-' + params.layerId + ' .badge');
 
             $badge.addClass('error');
-            exposed.setTooltip(args.queryId, 'Error', count);
-            snapshotMenu.disableOption(args.queryId, 'stopQuery');
+            exposed.updateTooltip({
+                    "layerId": params.layerId,
+                    "status": "Error"
+                });
+            snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "query.stop"
+                });
         },
-        setTooltip: function(queryId, status, recordCount){
-            var $owner = context.$('#snapshot-' + queryId),
-                name = $owner.attr('data-title');
+        setTooltip: function(params) {
+            var $owner = context.$('#snapshot-' + params.layerId),
+                name = $owner.attr('name'),
+                count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
 
-            //must destroy to add and modify tooltip
+            // Must destroy existing tooltip to be able to add modify it
             $owner.tooltip('destroy'); 
-            //add new tooltip
+            // Add new tooltip with div id in the HTML to uniquely identify teh tooltip
             $owner.tooltip({
                 "html": true,
-                "title": 'Name: ' + name + '<br/>' +
-                    'Status: '+ status + '<br/>' +
-                    'Features: ' + recordCount
+                "title": 
+                    '<div id="snapshot-' + params.layerId + '-tooltip-content">Name: ' + name + '<br/>' +
+                    'Status: '+ params.status + '<br/>' +
+                    'Features: ' + count + '</div>'
             });
         },
-        timelinePlaybackStart: function(args){
+        updateTooltip: function(params) {
+            var $owner = context.$('#snapshot-' + params.layerId),
+                name = $owner.attr('name'),
+                count = context.sandbox.dataStorage.datasets[params.layerId].length || 0,
+                tooltipContent = '<div id="snapshot-' + params.layerId + '-tooltip-content">Name: ' + name + '<br/>' + 'Status: '+ params.status + '<br/>' + 'Features: ' + count + '</div>';
+
+            // Some hoops to jump through to dynamically update the tooltip:
+            // Set data-original-title with new content, then run fixtitle to make bootstrap update the value
+            $owner.attr('data-original-title', tooltipContent).tooltip('fixTitle');
+            // Extra steps to refresh if tooltip is open: check if this snapshot's tooltip is open, close and reopen
+            if($('.tooltip').find('#snapshot-' + params.layerId + '-tooltip-content').length > 0 && $('.tooltip').find('#snapshot-' + params.layerId + '-tooltip-content').css('display') != 'none') {
+                $owner.tooltip('hide').tooltip('show');
+            }
+        },
+        timelinePlaybackStart: function(params) {
             if(checkLayerCount() > 1) {
-                context.sandbox.utils.each(context.sandbox.stateManager.layers, function(key, value){
-                    if(value.visible) {
-                        console.log(key);
-                    }
-                });
-
-
                 stopTimelinePlayback = false;
 
                 var tempArray = [];
-                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(queryId, collections){
-                    tempArray.push(queryId);
-                    context.sandbox.stateManager.layers[queryId].visible = false;
+                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(layerId, collections) {
+                    tempArray.push(layerId);
+                    context.sandbox.stateManager.layers[layerId].visible = false;
+                    exposed.hideSnapshotLayerGroup({
+                        "layerId": layerId
+                    });
                 });
+                
+                exposed.showSnapshotLayerGroup({
+                    "layerId": tempArray[0]
+                });
+                var $querySnapshot = context.$('#snapshot-' + tempArray[0]);
+                $querySnapshot.addClass('selected');
 
-
-                publisher.hideAllLayers();
-                exposed.allSnapshotsOff();
-                exposed.showLayer(tempArray[0]);
                 $timeline.animate({scrollLeft: 0});
 
                 var i = 1;
                 var timer = setInterval(function() {
                     if(!stopTimelinePlayback && context.sandbox.dataStorage.datasets[tempArray[i]]) {
-                        if(i > 3){
+                        if(i > 3) {
                             var leftPos = $timeline.scrollLeft();
-                            //console.log(context.$('#snapshot-' + tempArray[i).width);
                             $timeline.animate({scrollLeft: leftPos + 120});
                         }
-                        exposed.hideLayer(tempArray[i-1]);
-                        exposed.showLayer(tempArray[i]);
+
+                        exposed.hideSnapshotLayerGroup({
+                            "layerId": tempArray[i-1]
+                        });
+                        var $querySnapshotOld = context.$('#snapshot-' + tempArray[i-1]);
+                        $querySnapshotOld.removeClass('selected');
+
+                        exposed.showSnapshotLayerGroup({
+                            "layerId": tempArray[i]
+                        });
+                        var $querySnapshotNew = context.$('#snapshot-' + tempArray[i]);
+                        $querySnapshotNew.addClass('selected');
+
                         i++;
                     } else {
                         if(!context.sandbox.dataStorage.datasets[tempArray[i]]) {
@@ -196,39 +270,170 @@ define([
                 }, 4000);
             }
         },
-        timelinePlaybackStop: function(args) {
+        timelinePlaybackStop: function(params) {
             stopTimelinePlayback = true;
             context.$('.snapshot').removeClass('selected');
         },
-        showLayer: function(queryId){
-            context.sandbox.stateManager.layers[queryId].visible = true;
-            publisher.showLayer({"layerId": queryId});
-            var $querySnapshot = context.$('#snapshot-' + queryId);
-            $querySnapshot.addClass('selected');
-            if($querySnapshot.find('.btn-primary').size()>0){
-                //only toggle class if ON button is active.
-                if(!$querySnapshot.find('.active').hasClass('btn-primary')){
-                    $querySnapshot.find('.btn').toggleClass('btn-primary'); //Two buttons
-                }
+        showLayer: function(params) {
+            if(context.sandbox.dataStorage.datasets[params.layerId]) {
+                // Take care of AOI and toggleBtn state
+                exposed.showAOILayer({
+                    "layerId": params.layerId
+                });
+                exposed.layerToggleOn({
+                    "layerId": params.layerId
+                });
             }
         },
-        hideLayer: function(queryId){
-            context.sandbox.stateManager.layers[queryId].visible = false;
-            publisher.hideLayer({"layerId": queryId});
-            var $querySnapshot = context.$('#snapshot-' + queryId);
-            $querySnapshot.removeClass('selected');
-            if($querySnapshot.find('.btn-primary').size()>0){
-                //only toggle class if ON button is active.
-                if($querySnapshot.find('.active').hasClass('btn-primary')){
-                    $querySnapshot.find('.btn').toggleClass('btn-primary'); //Two buttons
+        hideLayer: function(params) {
+            if(context.sandbox.dataStorage.datasets[params.layerId]) {
+                // Take care of AOI and toggleBtn state
+                exposed.hideAOILayer({
+                    "layerId": params.layerId
+                });
+                exposed.layerToggleOff({
+                    "layerId": params.layerId
+                });
+            }
+        },
+        deleteLayer: function(params) {
+
+            // TODO: Move this to be handled by the data services (will require reasonable refactor)
+            context.sandbox.utils.ajax({
+                type: 'DELETE',
+                url: '/clear/' + params.layerId,
+                headers: {
+                    'x-meridian-session-id': context.sandbox.sessionId
                 }
+            });
+
+            if(context.sandbox.dataStorage.datasets[params.layerId]) {
+                // TODO: do not use deleteDataLayer since the renderer is already receiving the call.
+                delete context.sandbox.dataStorage.datasets[params.layerId];
+
+                publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
+                    "messageType": "success",
+                    "messageTitle": "Data Service",
+                    "messageText": params.name + " query layer was removed"
+                });
+
+                // Take care of AOI and toggleBtn state
+                exposed.deleteAOILayer({
+                    "layerId": params.layerId
+                });
+                exposed.deleteSnapshot({
+                    "layerId": params.layerId
+                });
+            }
+        },
+        showSnapshotLayerGroup: function(params) {
+            exposed.showDataLayer({
+                "layerId": params.layerId
+            });
+            exposed.showAOILayer({
+                "layerId": params.layerId
+            });
+            exposed.layerToggleOn({
+                "layerId": params.layerId
+            });
+        },
+        hideSnapshotLayerGroup: function(params) {
+            exposed.hideDataLayer({
+                "layerId": params.layerId
+            });
+            exposed.hideAOILayer({
+                "layerId": params.layerId
+            });
+            exposed.layerToggleOff({
+                "layerId": params.layerId
+            });
+        },
+        deleteSnapshotLayerGroup: function (params) {
+            exposed.deleteSnapshot({
+                 "layerId": params.layerId
+            });
+            exposed.deleteDataLayer({
+                 "layerId": params.layerId
+            });
+            exposed.deleteAOILayer({
+                 "layerId": params.layerId
+            });
+        },
+        showDataLayer: function(params) {
+            context.sandbox.stateManager.layers[params.layerId].visible = true;
+            publisher.showLayer({"layerId": params.layerId});
+        },
+        hideDataLayer: function(params) {
+            context.sandbox.stateManager.layers[params.layerId].visible = false;
+            publisher.hideLayer({"layerId": params.layerId});
+        },
+        deleteDataLayer: function(params) {
+            //delete data from datastorage.
+            delete context.sandbox.dataStorage.datasets[params.layerId];
+            publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
+                "messageType": "success",
+                "messageTitle": "Data Service",
+                "messageText": params.name + " query layer was removed"
+            });
+            publisher.deleteLayer({"layerId": params.layerId});
+        },
+        showAOILayer: function(params) {
+            if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
+                context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
+                publisher.showLayer({"layerId": params.layerId + '_aoi'});
+            }
+        },
+        hideAOILayer: function(params) {
+            if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
+                context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
+                publisher.hideLayer({"layerId": params.layerId + '_aoi'});
+            }
+        },
+        deleteAOILayer: function(params) {
+            publisher.deleteLayer({"layerId": params.layerId + '_aoi'});
+        },
+        layerToggleOn: function(params) {
+            var $querySnapshot = context.$('#snapshot-' + params.layerId);
+            $querySnapshot.find('.btn-on').addClass('btn-primary');
+            $querySnapshot.find('.btn-off').removeClass('btn-primary');
+        },
+        layerToggleOff: function(params) {
+            var $querySnapshot = context.$('#snapshot-' + params.layerId);
+            $querySnapshot.find('.btn-on').removeClass('btn-primary');
+            $querySnapshot.find('.btn-off').addClass('btn-primary');
+        },
+        deleteSnapshot: function(params) {
+            var layerState,
+                $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
+                $owner = context.$('#snapshot-' + params.layerId);
+            //destroy tooltip.
+            $owner.tooltip('destroy');
+            //make sure layer query is finished. If not, stop query before deleting.
+            layerState = context.sandbox.stateManager.getLayerStateById({
+                "layerId": params.layerId
+            });
+            if(layerState) {
+                dataTransferState = layerState.dataTransferState;
+                if(dataTransferState !== 'error' && dataTransferState !== 'stopped' && dataTransferState !== 'finished') {
+                    publisher.stopQuery({
+                        "layerId": params.layerId
+                    });
+                }
+            }
+            //delete timeline snapshot
+            context.$('#snapshot-' + params.layerId).parent().remove();
+            //delete layer menu.
+            $timeline.siblings('#snapshot-' + params.layerId + '-settings-menu').remove();
+            //hide timeline if no other layers are present.
+            if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0) {
+                exposed.hideTimeline();
             }
         }
     };
 
     function checkLayerCount() {
         if(context.sandbox.stateManager.layers) {
-            return _.size(context.sandbox.stateManager.layers);
+            return context.sandbox.utils.size(context.sandbox.stateManager.layers);
         } else {
             return 0;
         }

@@ -6,8 +6,8 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishOpening: function(args){
-            context.sandbox.emit('menu.opening', args);
+        publishOpening: function(params){
+            context.sandbox.emit('menu.opening', params);
         }
     };
 

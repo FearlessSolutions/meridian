@@ -12,6 +12,15 @@ define([
             context = thisContext;
             $playbackButton = context.$('#playback');
 
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            $playbackButton.tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
             $playbackButton.on('click', function(event) {
                 // if there is more than one layer, handle event
                 if(checkLayerCount() > 1) {
@@ -61,7 +70,7 @@ define([
 
     function checkLayerCount() {
         if(context.sandbox.stateManager.layers) {
-            return _.size(context.sandbox.stateManager.layers);
+            return _.size(context.sandbox.dataStorage.datasets);
         } else {
             return 0;
         }

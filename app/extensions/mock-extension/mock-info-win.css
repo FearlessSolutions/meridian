@@ -1,34 +1,35 @@
-.info-win-dialog{
+.mock-extension.info-win-dialog{
 	font-size: .8em;
 }
 
-.info-win-dialog .title{
+.mock-extension.info-win-dialog .title{
 	font-weight: bold;
 	font-size: 14px;
 	text-align: center;
 	margin-left: 30px;
 }
 
-.info-win-dialog .content{
+.mock-extension.info-win-dialog .content{
 	position: relative;
 	margin-left: 15px;
 	width: 500px;
 	height: 135px;
 }
 
-.info-win-dialog .imgDiv{
+.mock-extension.info-win-dialog .imgDiv{
 	float: left;
 	width: 80px;
-	height: 80px;
+	height: auto;
 	vertical-align: top;
+	text-align: center;
 }
 
-.info-win-dialog img{
+.mock-extension.info-win-dialog img{
 	width: 80px;
 	height: 80px;
 }
 
-.info-win-dialog .tableDiv{
+.mock-extension.info-win-dialog .tableDiv{
 	float: right;
 	vertical-align: top;
 	margin-left: 15px;
@@ -39,10 +40,10 @@
 	border: 1px solid lightgray;
 }
 
-.info-win-dialog table.table{
+.mock-extension.info-win-dialog table.table{
 	margin-bottom: 0px;
 }
 
-.info-win-dialog table.table td{
+.mock-extension.info-win-dialog table.table td{
 	padding: 5px;
 }

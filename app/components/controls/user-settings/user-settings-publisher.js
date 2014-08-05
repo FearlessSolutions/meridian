@@ -7,20 +7,17 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args);
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params);
         },
-        publishOpening: function(args){
-            context.sandbox.emit('menu.opening', args);
+        publishOpening: function(params){
+            context.sandbox.emit('menu.opening', params);
         },
-        zoomToLocation: function(args){
-            context.sandbox.emit('map.zoom.location',args);
+        zoomToLocation: function(params){
+            context.sandbox.emit('map.zoom.toLocation',params);
         },
-        changeBasemap: function(args) {
-            context.sandbox.emit('map.basemap.change', args);
-        },
-        getExtent: function(args) {
-            context.sandbox.emit('map.get.extent',args);
+        changeBasemap: function(params) {
+            context.sandbox.emit('map.basemap.change', params);
         }
     };
 

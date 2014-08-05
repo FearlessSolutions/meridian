@@ -12,6 +12,8 @@ define([
     "maxAutoZoomLevel": 13,
     "projection": "EPSG:900913",
     "defaultVisualMode": "cluster",
+    "defaultTileWidth": 256,
+    "defaultTileHeight": 256,
     "basemaps" : [
       {
         "basemap" : "landscape",
@@ -39,14 +41,17 @@ define([
         "type" : "wmts",
         "url" : "http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/WMTS",
         "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/satellite.png",
-        "label" : "USGS Imagery"
+        "label" : "USGS Imagery",
+        "wrapDateLine": true
       }
     ],
     "markerIcons" : {
       "default" : {
         "icon": "/extensions/map-configuration-extension/images/markerIcons/marker.png",
-        "height": 25,
-        "width": 25
+        "iconLarge": "/extensions/map-configuration-extension/images/markerIcons/marker-2x-80x80.png",
+        "height": 24,
+        "width": 15,
+        "graphicYOffset": -24
       }
     },
     "clustering": {
@@ -112,8 +117,8 @@ define([
       }
     },
     "basemapGalleryMaxHeight": "40%",
-    "coordinates": {
-      "startOn": true
+    "cursorLocation": {
+      "defaultDisplay": true
     }
   };
 

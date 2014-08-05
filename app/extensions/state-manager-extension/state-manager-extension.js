@@ -7,7 +7,8 @@ define([], function(){
                     // Other properties that could be in Map.Status
                     "status": {
                         "ready": false
-                    }
+                    },
+                    "extent": {}
                 },
                 "layers": {
                     // "SomeLayer": {   
@@ -24,12 +25,19 @@ define([], function(){
                     } else {
                         app.sandbox.utils.extend(true, stateManager.layers[params.layerId], params.state);
                     }
+                    return stateManager.layers[params.layerId];
                 },
                 getMapState: function() {
                     return stateManager.map;
                 },
                 setMapState: function(params) {
                     app.sandbox.utils.extend(true, stateManager.map, params.state);
+                },
+                getMapExtent: function() {
+                    return stateManager.map.extent;
+                },
+                setMapExtent: function(params) {
+                    stateManager.map.extent = params.extent;
                 }
 			};
 

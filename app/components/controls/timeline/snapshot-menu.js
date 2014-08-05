@@ -9,19 +9,19 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        createMenu: function(args){
-            var queryId = args.queryId,
+        createMenu: function(params){
+            var layerId = params.layerId,
                 $currentMenu,
                 snapshotMenuTemplate = Handlebars.compile(snapshotMenuHBS);
             var snapshotMenuHTML = snapshotMenuTemplate({
-                "queryId": queryId
+                "layerId": layerId
             });
 
             context.$('#timeline').after(snapshotMenuHTML);
 
-            $currentMenu = context.$('#snapshot-' + queryId + '-settings-menu');
+            $currentMenu = context.$('#snapshot-' + layerId + '-settings-menu');
 
-            context.$('#snapshot-' + queryId + '-settings').on("click", function (e) {
+            context.$('#snapshot-' + layerId + '-settings').on("click", function (e) {
                 var $settingsButton = context.$(this);
 
                 if($currentMenu.css('display') !== 'none') {
@@ -30,7 +30,7 @@ define([
                     // hide all open snapshot menus
                     context.$('.snapshot-menu').hide();
                     //open menu
-                    context.$('#snapshot-' + queryId + '-settings-menu')
+                    context.$('#snapshot-' + layerId + '-settings-menu')
                         .data("invokedOn", context.$(e.target))
                         .show()
                         .css({
@@ -40,48 +40,70 @@ define([
                         });
                     
                     //add click listener on menu
-                    contextMenuClickHandler('#snapshot-' + queryId + '-settings-menu');
+                    contextMenuClickHandler('#snapshot-' + layerId + '-settings-menu');
                 }
                 e.preventDefault();
             });
 
             // close menu on hover out
-            context.$('#snapshot-' + queryId + '-settings-menu').hover(
+            context.$('#snapshot-' + layerId + '-settings-menu').hover(
                 function(){return;},
                 function(){
-                    exposed.hideMenu({"queryId": queryId});
+                    exposed.hideMenu({"layerId": layerId});
                 });
             // set menu item callback control
-            context.$('#snapshot-' + queryId + '-settings-menu li a').click(function(){
-                exposed.menuCallback({
-                    "menuChannel": this.getAttribute('data-channel'),
-                    "payload": {
-                        "layerId": queryId,
-                        "queryId": queryId
-                    }
+            context.$('#snapshot-' + layerId + '-settings-menu li a').click(function(){
+                var channel,
+                    layerState;
+
+                channel = this.getAttribute('data-channel');
+                layerState = context.sandbox.stateManager.getLayerStateById({
+                    "layerId": layerId
                 });
+
+                if(channel !== 'query.stop') {
+                    exposed.menuCallback({
+                        "menuChannel": channel,
+                        "payload": {
+                            "layerId": layerId
+                        }  
+                    });
+                } else {
+                    if(
+                        layerState &&
+                        layerState.dataTransferState !== 'error' &&
+                        layerState.dataTransferState !== 'stopped' &&
+                        layerState.dataTransferState !== 'finished'
+                    ){
+                        exposed.menuCallback({
+                        "menuChannel": channel,
+                        "payload": {
+                            "layerId": layerId
+                        }  
+                    });
+                    }
+                
+                }
             });
         },
-        disableOption: function(queryId, optionName){
-            var $option;
-            var options = {
-                "zoomToLayer": "map.zoom.layer",
-                "showLayer": "map.layer.show",
-                "hideLayer": "map.layer.hide",
-                "stopQuery": "query.stop"
-            };
-            $option = context.$('#snapshot-' + queryId + '-settings-menu a[data-channel="' + options[optionName] + '"]');
-            $option.parent().remove();
-
+        /**
+         * [disableOption description]
+         * @param {object} params - JSON parameters
+         * @param {string} params.layerId - id of layer
+         * @param {string} params.channel - internal pubsub channel
+         * @return N/A
+         */
+        disableOption: function(params){
+            var $option = context.$('#snapshot-' + params.layerId + '-settings-menu a[data-channel="'+ params.channel + '"]').parent('li').addClass('disabled');
         },
-        menuCallback: function(args) {
-            context.sandbox.emit(args.menuChannel, args.payload);  // dynamically emit publish messages
+        menuCallback: function(params) {
+            context.sandbox.emit(params.menuChannel, params.payload);  // dynamically emit publish messages
         },
-        showMenu: function(args) {
-            context.$('#snapshot-' + args.queryId + '-settings-menu').show();
+        showMenu: function(params) {
+            context.$('#snapshot-' + params.layerId + '-settings-menu').show();
         },
-        hideMenu: function(args) {
-            context.$('#snapshot-' + args.queryId + '-settings-menu').hide();
+        hideMenu: function(params) {
+            context.$('#snapshot-' + params.layerId + '-settings-menu').hide();
         }
     };
 

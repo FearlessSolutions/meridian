@@ -7,8 +7,8 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishMessage: function(args) {
-            context.sandbox.emit('message.publish', args); 
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
         }
     };
 

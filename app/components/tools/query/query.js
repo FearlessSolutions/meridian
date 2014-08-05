@@ -6,6 +6,7 @@ define([
 ], function (publisher) {
     var context,
         MENU_DESIGNATION = 'query-tool',
+        $queryButton,
         $queryDialog,
         $maxLon,
         $maxLat,
@@ -15,11 +16,22 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            $queryButton = context.$('#Query');
             $queryDialog = context.$('#QueryDialog');
             $minLon = context.$('.query-form #query-location-minLon');
             $minLat = context.$('.query-form #query-location-minLat');
             $maxLon = context.$('.query-form #query-location-maxLon');
             $maxLat = context.$('.query-form #query-location-maxLat');
+
+
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            $queryButton.tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
 
             context.$('.show-query').click(function(event) {
                 event.preventDefault();
@@ -134,7 +146,7 @@ define([
                 publisher.drawBBox();
             });
             
-            context.$('#Query').on('click', function(event) {
+            $queryButton.on('click', function(event) {
                 event.preventDefault();
 
                 var drawOnDefault = true;
@@ -151,21 +163,21 @@ define([
                     $queryDialog.dialog('toggle');
 
                     publisher.removeBBox();
-                    publisher.getExtent({"target":"queryTool"});
+                    exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
                 }
             });
         },
-        bboxAdded: function(args) {
+        bboxAdded: function(params) {
             $queryDialog.dialog('show');
-            exposed.populateCoordinates(args);   
+            exposed.populateCoordinates(params);   
         },
-        populateCoordinates: function(args) {
-            $minLon.val(args.minLon);
-            $minLat.val(args.minLat);
-            $maxLon.val(args.maxLon);
-            $maxLat.val(args.maxLat);
+        populateCoordinates: function(params) {
+            $minLon.val(params.minLon);
+            $minLat.val(params.minLat);
+            $maxLon.val(params.maxLon);
+            $maxLat.val(params.maxLat);
         },
-        clearQueryForm: function(args) {
+        clearQueryForm: function(params) {
                 $minLon.val('');
                 $minLat.val('');
                 $maxLon.val('');
@@ -180,8 +192,8 @@ define([
             exposed.clearQueryForm();
             $queryDialog.dialog('hide');
         },
-        handleMenuOpening: function(args){
-            if(args.componentOpening === MENU_DESIGNATION){
+        handleMenuOpening: function(params){
+            if(params.componentOpening === MENU_DESIGNATION){
                 return;
             }else{
                 closeMenu();
