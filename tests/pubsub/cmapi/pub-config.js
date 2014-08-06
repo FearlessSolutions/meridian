@@ -3,8 +3,8 @@ define([
     var pubConfiguration = {
         "channels":{
             "map.overlay.create":{
-                valid:true,
-                sample: {
+                "valid":true,
+                "sample": {
                     "name": "Test Name 1",
                     "overlayId": "testOverlayId1",
                     "coords": {
@@ -67,26 +67,26 @@ define([
                 }
             },
             "map.overlay.remove":{
-                valid: true,
-                sample: {
+                "valid": true,
+                "sample": {
                     "overlayId": "testOverlayId1"
                 }
             },
             "map.overlay.hide":{
-                valid: true,
-                sample: {
+                "valid": true,
+                "sample": {
                     "overlayId": "testOverlayId1"
                 }
             },
             "map.overlay.show":{
-                valid: true,
-                sample: {
+                "valid": true,
+                "sample": {
                     "overlayId": "testOverlayId1"
                 }
             },
             "map.feature.plot":{
-                valid: true,
-                sample: {
+                "valid": true,
+                "sample": {
                     "overlayId":"testOverlayId1",
                     "name":"Test Name 1",
                     "format":"geojson",
@@ -158,6 +158,20 @@ define([
                             "graphicWidth": "${width}"
                         }
                     }
+                }
+            },
+            "map.feature.hide":{
+                "valid": true,
+                "sample": {
+                    "overlayId": "testOverlayId1",
+                    "featureId": "f1"
+                }
+            },
+            "map.feature.show":{
+                "valid": true,
+                "sample": {
+                    "overlayId": "testOverlayId1",
+                    "featureId": "f1"
                 }
             },
             "map.view.zoom":{

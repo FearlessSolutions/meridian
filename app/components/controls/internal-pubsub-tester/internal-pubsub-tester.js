@@ -88,6 +88,13 @@ define([
                 params = context.sandbox.utils.parseJSON(payloadValue);
                 params.channel = channelValue;
 
+            if(channelValue === 'map.features.hide') {
+                context.sandbox.stateManager.addHiddenFeaturesByLayerId(params);
+            }
+            if(channelValue === 'map.features.show') {
+                context.sandbox.stateManager.removeHiddenFeaturesByLayerId(params);
+            }
+
             context.sandbox.emit(channelValue, params);
         },
         updateSubscriptions: function(params) {

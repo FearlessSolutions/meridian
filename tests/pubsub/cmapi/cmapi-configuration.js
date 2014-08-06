@@ -3,41 +3,41 @@ define([
 	var cmapiConfiguration = {
 		"subscribeChannels":{
       "map.overlay.create":{
-        valid:true
+        "valid":true
       },
       "map.overlay.remove":{
-        valid: true
+        "valid": true
       },
       "map.overlay.hide":{
-        valid: true
+        "valid": true
       },
       "map.overlay.show":{
-        valid: true
+        "valid": true
       },
       "map.feature.plot": {
           "valid": true
       },
-      /*"map.feature.plot.url":{
-       "valid": false
-      },
-      "map.feature.unplot":{
-       "valid": false
-      },
+      // "map.feature.plot.url":{
+      //  "valid": false
+      // },
+      // "map.feature.unplot":{
+      //  "valid": false
+      // },
       "map.feature.hide":{
-       "valid": false
+       "valid": true
       },
       "map.feature.show":{
-       "valid": false
+       "valid": true
       },
-      "map.feature.selected":{
-       "valid": false
-      },
-      "map.feature.deselected":{
-       "valid": false
-      },
-      "map.feature.update":{
-       "valid": false
-      },*/
+      // "map.feature.selected":{
+      //  "valid": false
+      // },
+      // "map.feature.deselected":{
+      //  "valid": false
+      // },
+      // "map.feature.update":{
+      //  "valid": false
+      // },
       "map.view.zoom":{
         "valid": true
       },
@@ -102,7 +102,7 @@ define([
           "valid": true
       },
       "error":{
-      "valid": true
+          "valid": true
       }
     }
 	};
