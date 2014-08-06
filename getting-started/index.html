@@ -77,12 +77,12 @@
             <h2 class="page-header" id="setup">Setup</h2>
               <p>You have two options for getting up an running, with or without the Grunt support.</p>
 
-            <h4 class="page-header" id="withoutGrunt">Option 1 - Without Grunt Support </h4>
+            <h4 class="page-header" id="withoutGrunt">Option 1 - Without Grunt Support</h4>
                <ul>
                   <li>Clone the repo: <code>git clone https://github.com/ozone-development/meridian.git</code>.</li>
                   <li>Change into the project directory: <code>cd meridian</code>.</li>
                   <li>Run <code>npm install</code> to make sure everything is up to date.</li>
-                  <li>Install Elastic Search: (Instructions also found on their <a href="http://www.elasticsearch.org/overview/elkdownloads/">ElasticSearch Downloads Page</a>)</li>
+                  <li>Install and start Elastic Search: (Instructions also found on their <a href="http://www.elasticsearch.org/overview/elkdownloads/">ElasticSearch Downloads Page</a>)</li>
                     <ul>
                       <li>Download and unzip the latest Elasticsearch distribution.</li>
                       <li>Change into the ElasticSearch directory (wherever it was extracted)</li>
@@ -92,16 +92,47 @@
                   <li>Start the application:</li>
                     <ul>
                       <li>Run: <code>node app.js</code> from the root of the Meridian folder.</li>
-                      <li>Open a web browser and visit <a href="https://localhost:3000">https://localhost:3000</a> to see Meridian in action.</li>
+                      <li>Open a web browser and visit <a href="http://localhost:3000">http://localhost:3000</a> to see Meridian in action.</li>
                     </ul>
                 </ul>
 
-            <h4 class="page-header" id="withGrunt">Option 2 - With Grunt Support </h4>
+            <h4 class="page-header" id="withGrunt">Option 2 - With Grunt Support</h4>
+              <ul>
+                <li>Get Grunt's global CLI module. Run <code>npm install -g grunt-cli</code>.</li>
+                <li>Clone the repo: <code>git clone https://github.com/ozone-development/meridian.git</code>.</li>
+                <li>Change into the project directory: <code>cd meridian</code>.</li>
+                <li>Run <code>npm install</code> to make sure everything is up to date.</li>
+                  <ul>
+                    <li>At this point, you will be able to run the Grunt tasks.</li>
+                    <em>Some Node Modules have been checked into the repo (not a normal best practice), The node_modules directory will be removed from the project at a later point, when the team is comfortable with the process. In the future, developers will be responsible for running <code>npm install</code> to get the dependencies.</em>
+                  </ul>
+                  
+                <li>Install Elastic Search: (Instructions also found on their <a href="http://www.elasticsearch.org/overview/elkdownloads/">ElasticSearch Downloads Page</a>)</li>
+                    <ul>
+                      <li>Download and unzip the latest Elasticsearch distribution.</li>
+                      <li>Unpack the contents of the ElasticSearch download into <code>meridian/data</code>. When done, the following path should be valid, <code>meridian/data/bin/elasticseacrch</code>.</li>
+                      <li>Make sure ElasticSearch starts okay, even though you will be using grunt to start it for you:</li>
+                        <ul>
+                          <li>Change into the <code>meridian</code> directory, if you are not already there.</li>
+                          <li>Run <code>bin/elasticsearch</code> on Unix, or <code>bin/elasticsearch.bat</code> on Windows.</li>
+                          <li>Run <code>curl -X GET http://localhost:9200</code> or visit <code>http://localhost:9200</code> to make sure elasticsearch is running.</li>
+                          <li>Stop the process after confirming ElasticSearch starts.</li>
+                        </ul>
+                    </ul>
+                <li>Start the application:</li>
+                  <ul>
+                    <li>To start the local server run: <code>grunt server</code>.</li>
+                    <li>This will open the main page <a href="http://localhost:3000">http://localhost:3000</a> in your default browser.</li>
+                  </ul>
+                  <br><p><strong>NOTE:</strong> If when starting elastic search, you recieve warnings regarding multicasting you most likely have been added to an already exsisting elastic search cluster and may recieve unintended outcomes from the application. You can disable multicasting by navigating to the directory you extracted elastic search to and then navigating to the config/elasticsearch.yml file. In there, uncomment the line <code>discovery.zen.ping.multicast.enabled: false</code> and save the file. You can now restart elastic search.</p>
+              </ul>
 
-            
-            <h2 class="page-header" id="contributing">Contributing</h2>
+            <h4 class="page-header" id="resourses">Resourses</h4>
+              <ul>
+                <li>The application page <a href="http://localhost:3000">http://localhost:3000</a>.</li>
+                <li>To view the documentation page, go to <a href="http://localhost:3000/docs/meridian">http://localhost:3000/docs/meridian</a>.</li>
+              </ul>
         </div><!-- md-9 container -->
-
 
         <div class="col-md-2">
           <div class="hidden-print hidden-xs hidden-sm" id="sideNav">
@@ -114,20 +145,21 @@
                   <li><a href="#elastic">Elastic Search</a></li>
                 </ul>
               </li>
-              <li><a href="#setup">Setup</a></li>
-              <li><a href="#contributing">Contributing</a></li>
+              <li><a href="#setup">Setup</a>
+                <ul class="nav">
+                  <li><a href="#withoutGrunt">Without Grunt Support</a></li>
+                  <li><a href="#withGrunt">With Grunt Support</a></li>
+                  <li><a href="#resourses">Resourses</a></li>
+                </ul>
+              </li>
             </ul>
           </div> <!-- sideNav -->
         </div><!-- md-3 -->
       </div><!-- row -->
     </div>
     
-    
-
-
-
-
     <hr>
+
     <div class="footer text-center">
         <div class="container">
           <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian/archive/master.zip"><i class="glyphicon glyphicon-cloud-download"></i> Download Meridian</a>
