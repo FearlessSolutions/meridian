@@ -28,14 +28,9 @@ define([
 
             if(layer) {
                 context.sandbox.utils.each(data, function(key, value) {
-                        var currentFeature = geoJsonParser.parseFeature(value),
-                        iconData;
+                    var currentFeature = geoJsonParser.parseFeature(value);
                     
-                    iconData = context.sandbox.icons.getIconForFeature(value) || context.sandbox.mapConfiguration.markerIcons.default;
                     currentFeature.featureId = value.id || '';
-                    currentFeature.attributes.icon = iconData.icon;
-                    currentFeature.attributes.height = iconData.height;
-                    currentFeature.attributes.width = iconData.width;
                     currentFeature.attributes.dataService = value.dataService || '';
 
                     newFeatures.push(currentFeature);

@@ -34,10 +34,10 @@ define([
 
             app.sandbox.dataServices.cmapi = {};
             app.sandbox.dataServices.cmapi.infoWinTemplate = {
-                "buildInfoWinTemplate": function(attributes) {
+                "buildInfoWinTemplate": function(attributes, fullFeature) {
                     var cmapiTemplate = Handlebars.compile(cmapiHBS);
                     var html = cmapiTemplate({
-                        "thumbnail": "./extensions/map-configuration-extension/images/markerIcons/marker-2x-80x80.png",
+                        "thumbnail": fullFeature.style.iconLarge || fullFeature.style.icon,
                         "classification": attributes.classification || "", //TODO make this dynamic?
                         "name": attributes.name,
                         "attributes": attributes,
