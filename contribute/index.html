@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Meridian</title>
+    <meta charset="utf-8" />
+    <link rel='shortcut icon' type='image/x-icon' href='../images/logos/meridthumb.png'/>
+    <link href="../stylesheets/main.css" rel="stylesheet" type="text/css"/>
+    <script src="../javascripts/jquery-1.11.1/jquery.js"></script>
+    <script src="../javascripts/bootstrap-3.2.0/bootstrap.js"></script>
+  </head>
+  <body data-spy="scroll" data-target="#sideNav">
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="..">Meridian</a>
+      </div>
+      <div class="navbar-collapse collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="../getting-started">Getting Started</a></li>
+          <li class="active"><a href=".">Contribute</a></li>
+          <li><a href="./examples">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-md-10 container">
+
+          <h2 class="page-header" id="community">Community</h2>
+
+          <h4 class="page-header" id="gossBoard">OWF GOSS Board</h4>
+            <p>OWF started as a project at a single US Government agency, but developed into a collaborative project spanning multiple federal agencies. Overall project direction is managed by "The OWF Government Open Source Software Board"; i.e. what features should the core team work on next, what patches should get accepted, etc. Gov't agencies wishing to be represented on the board should check <a href="http://owfgoss.org">http://owfgoss.org</a> for more details. Membership on the board is currently limited to Government agencies that are using OWF and have demonstrated willingness to invest their own energy and resources into developing it as a shared resource of the community. At this time, the board is not considering membership for entities that are not US Government Agencies, but we would be willing to discuss proposals.</p>
+
+          <h4 class="page-header" id="nonGovernment">Non-Government</h4>
+            <p>Contributions to the baseline project from outside the US Federal Government should be submitted as a pull request to the core project on GitHub. Before patches will be accepted by the core project, contributors have a signed <a href="https://www.ozoneplatform.org/ContributorLicenseAgreement1-3OZONE.docx">Contributor License Agreement</a> on file with the core team. If you or your company wish your copyright in your contribution to be annotated in the project documentation (such as this README), then your pull request should include that annotation.</p>
+
+          <h4 class="page-header" id="government">Government</h4>
+            <p>Contributions from government agencies do not need to have a CLA on file, but do require verification that the government has unlimited rights to the contribution. An email to <a href="mailto:goss-support@owfgoss.org">goss-support@owfgoss.org</a> is sufficient, stating that the contribution was developed by an employee of the United States Government in the course of his or her duties. Alternatively, if the contribution was developed by a contractor, the email should provide the name of the Contractor, Contract number, and an assertion that the contract included the standard "Unlimited rights" clause specified by <a href="http://www.acq.osd.mil/dpap/dars/dfars/html/current/252227.htm#252.227-7014">DFARS 252.227.7014</a> "Rights in noncommercial computer software and noncommercial computer software documentation".</p>
+
+          <p>Government agencies are encouraged to submit contributions as pull requests on GitHub.</p>
+
+          <h2 class="page-header" id="pullRequest">Pull Request Guidelines</h2>
+            <li>Make sure to comply with our <a href="#nonGovernment">Non-Government</a> and <a href="#government">Government</a> instructions for contributions</li>
+            <li>Please check to make sure that there aren't existing pull requests attempting to address the issue mentioned. We also recommend checking for related issues on the tracker, as a team member may be working on the issue in a branch or fork</li>
+            <li>Non-trivial changes should be discussed in an issue first</li>
+            <li>All branches should address an open issue found on the <a href="https://github.com/ozone-development/meridian/issues?state=open">tracker</a></li>
+            <li>Always create your branch from the latest develop branch, not master or any other branch. To do this, switch to the develop branch before creating the branch and github handles the rest.</li>
+            <li>Branches should follow this naming convention: <em>{type of issue}/{issue number}/{short description} => enhancement/1/update-documentation</em>; all lower case character and hyphens where spaces are needed.</li>
+              <ul>
+                <li>Accepted type of issues:</li>
+                  <ul>
+                    <li>bug</li>
+                    <li>enhancement</li>
+                    <li>tech-debt</li>
+                    <li>feature</li>
+                  </ul>
+              </ul>
+            <li>Follow the <a href="https://github.com/ozone-development/meridian/blob/develop/app/docs/javascript-styleguide#meridian-javascript-style-guide-forked-from-airbnb">Meridian JavaScript Style Guide</a> closely</li>
+            <li>Lint the code</li>
+            <li>To create the pull request, access the <a href="https://github.com/ozone-development/meridian/branches">branches</a> page and click on <code>New pull request</code> on the desired branch.</li>
+            <li>Before clicking Create pull request, make sure that:</li>
+              <ul>
+                <li>Title is the branch name to be merged. (It may have the name of your last commit)</li>
+                <li>You are asking to merge branch into develop.</li>
+              </ul>
+
+          <h2 class="page-header" id="issues">Issue Submission</h2>
+            <p>In order for us to help you please check that you've completed the following steps:</p>
+              <li>Made sure you're on the latest version.</li>
+              <li>Used the search feature to ensure that the issue (enhancement, bug, etc.) hasn't been reported before.</li>
+              <li>Included as much information about the issue as possible, including any output you've received, what OS and version you're on, screenshots, etc.</li>
+              <li>Selected the <code>0 - Backlog label</code>, the type of issue label (enhancement, bug, etc.) and any other label that best describes the issue</li>
+              <br>
+              <p>Click <a href="https://github.com/ozone-development/meridian/issues/new">HERE</a> to submit an issue.</p>
+
+
+
+
+          
+
+          
+        </div><!-- md-10 container -->
+
+        <div class="col-md-2">
+          <div class="hidden-print hidden-xs hidden-sm" id="sideNav">
+            <ul class="nav affix">
+              <li><a href="#community">Community</a>
+                <ul class="nav">
+                  <li><a href="#gossBoard">OWF GOSS Board</a></li>
+                  <li><a href="#nonGovernment">Non-Government</a></li>
+                  <li><a href="#government">Government</a></li>
+                </ul>
+              </li>
+              <li><a href="#pullRequest">Pull Request Guidelines</a></li>
+              <li><a href="#issues">Issue Submission</a></li>
+            </ul>
+          </div> <!-- sideNav -->
+        </div><!-- md-2 -->
+      </div><!-- row -->
+    </div><!--container-->
+    
+    <hr>
+
+    <div class="footer text-center">
+      <div class="container">
+        <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian/archive/master.zip"><i class="glyphicon glyphicon-cloud-download"></i> Download Meridian</a>
+        <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian"><i class="icon-github3"></i> View on Github</a>
+      </div>
+        
+      <div class="container new-section small">
+        <p>Software (c) 2014 <a href="http://www.boeing.com/" title="Boeing">The Boeing Company</a></p>
+        <p>The United States Government has unlimited rights in this software, pursuant to the contracts under which it was developed.</p>
+     
+        <p>The AML Center (under OZONE) is released to the public as Open Source Software as required by <a href="http://www.gpo.gov/fdsys/pkg/PLAW-112publ81/pdf/PLAW-112publ81.pdf" title="NDAA FY12">Section 924 of the 2012 National Defense Authorization Act</a>.</p>
+
+        <p>Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html" title="Apache License v2.0">Apache License v2.0</a>.</p>
+
+        <p>Forked from the Open Source Project: <a href="http://aurajs.com/"> Aura JS</a>.</p>
+      </div>
+    </div>
+  </body>
+</html>
