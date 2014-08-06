@@ -144,6 +144,17 @@ define([
         "map.layer.toggle": {
             "payload": {}
         },
+        "map.legend.update": {
+          "payload": {
+            "image": "http://www.trailsrus.com/breathittcounty/images/trails-legend.jpg"
+          }
+        },
+        "map.legend.show": {
+            "payload": {}
+        },
+        "map.legend.hide": {
+            "payload": {}
+        },
         "map.uncluster": {
             "payload": {}
         },
@@ -198,26 +209,6 @@ define([
             "payload": {
                 "layerId": "test"
             }
-        },
-        "legend.update": {
-            "payload": {
-                "entries":[
-                    {
-                        "image": "http://www.cats.org.uk/uploads/images/pages/photo_latest14.jpg",
-                        "description": "An adorable cat that might need a long description to do a test on and things like that."
-                    },
-                    {
-                        "image": "http://thumbs.dreamstime.com/z/ugly-dog-13813608.jpg",
-                        "description": "An ugly dog."
-                    }
-                ]
-            }
-        },
-        "legend.show": {
-            "payload": {}
-        },
-        "legend.hide": {
-            "payload": {}
         }
     };
 

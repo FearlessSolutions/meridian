@@ -4,12 +4,12 @@ define([
     var context;
 
 	var exposed = {
-        init: function(thisContext){
+        init: function(thisContext) {
             context = thisContext;
-            context.sandbox.on('legend.update', legend.update);
-            context.sandbox.on('legend.show', legend.show);
-            context.sandbox.on('legend.hide', legend.hide);
-            context.sandbox.on('system.clear', legend.clear);
+            context.sandbox.on('map.legend.update', legend.update);
+            context.sandbox.on('map.legend.show', legend.show);
+            context.sandbox.on('map.legend.hide', legend.hide);
+            context.sandbox.on('data.clear.all', legend.clear);
         }
     };	
 

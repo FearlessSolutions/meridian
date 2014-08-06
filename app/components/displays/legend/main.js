@@ -3,8 +3,9 @@ define([
     'text!./legend.hbs',
     './legend',
     './legend-subscriber',
+    './legend-publisher',
     'handlebars'
-], function (legendCSS, legendHBS, legend, legendSubscriber) {
+], function (legendCSS, legendHBS, legend, legendSubscriber, legendPublisher) {
 
     return {
         initialize: function() {
@@ -15,6 +16,7 @@ define([
 
             legend.init(this);
             legendSubscriber.init(this);
+            legendPublisher.init(this);
         }
     };
                 

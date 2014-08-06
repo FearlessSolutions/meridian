@@ -83,7 +83,6 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/mock-extension/mock-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
 //    .use('extensions/csv-upload-extension/csv-upload-extension')
-//    .use('extensions/legend-extension/legend-extension')
     .start({ components: 'body' });
 
 });
