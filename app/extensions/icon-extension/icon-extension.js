@@ -8,31 +8,31 @@ define([
         initialize: function(app) {
             context = app;
             app.sandbox.icons = {
-                getIconForFeature: function(feature){
+                getIconForFeature: function(feature) {
                     var iconData = calculateIcon(feature);
                     if (!currentIcons[iconData.icon]){
                         currentIcons[iconData.icon] = iconData;
                     }
                     return iconData;
                 },
-                getCurrentIcons: function(){
+                getCurrentIcons: function() {
                     return currentIcons;
                 },
-                clearCurrentIcons: function(){
+                clearCurrentIcons: function() {
                     currentIcons = {};
                 }
             };
         }
     };
 
-    function calculateIcon(feature){
-        // If a style is provided on the feature, use it
-        if (feature.properties && feature.properties.style){
-            return feature.properties.style;
+    function calculateIcon(feature) {
+        if(feature.style) {
+            // If a style is provided on the feature, use it
+            return feature.style;
+        } else {
+            // Otherwise use a default configuration
+            return context.sandbox.mapConfiguration.markerIcons.default;
         }
-
-        // Otherwise use a default configuration
-        return context.sandbox.mapConfiguration.markerIcons.default;
     }
 
     return exposed;

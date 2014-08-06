@@ -80,7 +80,7 @@ define([
                 "componentName" : "internalPubsubTesterToggleButton",
                 "placement" : "bottom",
                 "width" : "250px",
-                "title": "Interal Pub/Sub Tester",
+                "title": "Internal Pub/Sub Tester",
                 "content" : "Test internal messages being sent."
             },
             {

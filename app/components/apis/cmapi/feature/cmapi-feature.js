@@ -189,7 +189,7 @@ define([
                         delete newValue.queryId;
 
                         if(value.geometry.type === 'Point') {
-                            // Adding fields for lat/lon for other conponents to use
+                            // Adding fields for lat/lon for other components to use
                             newValue.lat = value.geometry.coordinates[1];
                             newValue.lon = value.geometry.coordinates[0];
                         } else {
@@ -203,11 +203,9 @@ define([
                         });
 
                         // Add style properties for map features, but not for local dataset storage
-                        if(value.style) {
-                            context.sandbox.utils.each(value.style, function(styleKey, styleValue){
-                                newValue.properties[styleKey] = styleValue;
-                            });
-                        }
+                        context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(value), function(styleKey, styleValue){
+                            newValue.properties[styleKey] = styleValue;
+                        });
 
                         newData.push(newValue);
                     });
