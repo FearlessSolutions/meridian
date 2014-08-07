@@ -16,9 +16,49 @@
     <script data-main="app" src="./bower_components/requirejs/require.js"></script>
   </head>
   <body>
+      <div class="banner">(U//FOUO)</div>
+      <div data-aura-component="tools/ajax-handler"></div>
       <div id="mapContainer">
+        <div data-aura-component="displays/splash-screen"></div>
+        <div data-aura-component="displays/notification-modal"></div>
+        <div data-aura-component="displays/clear"></div>
+        <div data-aura-component="data-services/mock"></div>
         <div data-aura-component="apis/cmapi"></div>
         <div data-aura-component="rendering-engines/map-openlayers"></div>
+        <div data-aura-component="controls/basemap-gallery"></div>
+        <div data-aura-component="controls/timeline"></div>
+        <div class="container-fluid">
+            <nav id="header-nav" class="navbar navbar-default" role="navigation">
+                <div id="header-left">
+                  <div data-aura-component="tools/locator"></div> 
+                </div>
+                <div id="header-right">
+                    <div id="left-buttons-container">
+                        <div data-aura-component="tools/query"></div>
+                        <!--<div data-aura-component="tools/csv-upload"></div>-->
+                        <div data-aura-component="controls/visual-mode-toggle"></div>
+                        <div data-aura-component="controls/datagrid-toggle"></div>
+                        <div data-aura-component="controls/download"></div>
+                        <div data-aura-component="controls/legend-toggle"></div>
+                        <div data-aura-component="controls/clear-toggle"></div>
+                        <div data-aura-component="tools/support"></div>
+                        <div data-aura-component="controls/internal-pubsub-tester"></div>
+                        <div data-aura-component="controls/playback"></div>
+                    </div>
+                    <div id="right-buttons-container">
+                        <div data-aura-component="displays/event-counter"></div>
+                        <div data-aura-component="controls/user-settings"></div>
+                    </div>
+                </div>
+            </nav>
+            <div data-aura-component="controls/zoom"></div>
+            <div data-aura-component="displays/mouse-position"></div>
+            <div data-aura-component="displays/notifications"></div>
+        </div>
+        <div data-aura-component="displays/label"></div>
+        <div data-aura-component="displays/legend"></div>
       </div>
+      <div data-aura-component="displays/datagrid"></div>
+      <div class="banner">(U//FOUO)</div>
   </body>
 </html>
