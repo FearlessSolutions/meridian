@@ -72,6 +72,8 @@ define([
                 "map": map
             });
             
+            context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
+            
             context.sandbox.stateManager.map.status.ready = true;
         },
         /**
