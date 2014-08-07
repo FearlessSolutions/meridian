@@ -288,7 +288,13 @@ define([], function() {
                         for(i=0; i<this.features.length; ++i) {
                             feature = this.features[i];
                             if(feature.geometry) {
-                                if(feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point") {
+                                if(
+                                    feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point" && 
+                                    context.sandbox.stateManager.getFeatureVisibility({
+                                        "layerId": this.layer.layerId,
+                                        "featureId": feature.featureId
+                                    })
+                                ){
                                     clustered = false;
                                     for(j=clusters.length-1; j>=0; --j) {
                                         cluster = clusters[j];
@@ -302,7 +308,14 @@ define([], function() {
                                         clusters.push(this.createCluster(this.features[i]));
                                     }
                                 } else {
-                                    clusters.push(this.createCluster(this.features[i]));
+                                    if(
+                                        context.sandbox.stateManager.getFeatureVisibility({
+                                            "layerId": this.layer.layerId,
+                                            "featureId": feature.featureId
+                                        })
+                                    ){
+                                        clusters.push(this.createCluster(this.features[i]));
+                                    }
                                 }
 
                             }

@@ -50,7 +50,13 @@ define([], function() {
             if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible && collection.models) {
                 collection.models.forEach(function(model){
                     var geometry = model.attributes.geometry;
-                    if(geometry.type === "Point") {
+                    if(
+                        geometry.type === "Point" && 
+                        context.sandbox.stateManager.getFeatureVisibility({
+                            "layerId": model.attributes.layerId,
+                            "featureId": model.attributes.featureId
+                        })
+                    ){
                         newData.push(new OpenLayers.Feature.Vector(
                             new OpenLayers.Geometry.Point(
                                 geometry.coordinates[0],

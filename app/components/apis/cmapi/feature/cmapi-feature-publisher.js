@@ -17,6 +17,12 @@ define([
         },
         publishCreateLayer: function(args) {
             context.sandbox.emit('map.layer.create', args);
+        },
+        publishHideFeatures: function(args) {
+            context.sandbox.emit('map.features.hide', args);
+        },
+        publishShowFeatures: function(args) {
+            context.sandbox.emit('map.features.show', args);
         }
     };
 

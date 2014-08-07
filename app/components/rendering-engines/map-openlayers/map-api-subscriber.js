@@ -11,6 +11,8 @@ define([
         },
         subscribeOn: function() {
             context.sandbox.on('map.features.plot', mapCore.plotFeatures);
+            context.sandbox.on('map.features.show', mapCore.showFeatures);
+            context.sandbox.on('map.features.hide', mapCore.hideFeatures);
             context.sandbox.on('map.basemap.change', mapCore.setBasemap);
             context.sandbox.on('map.center.set', mapCore.setCenter);
             context.sandbox.on('map.draw.clear', mapCore.clearDrawing);
@@ -30,6 +32,8 @@ define([
         },
         subscribeOff: function() {
             context.sandbox.off('map.features.plot', mapCore.plotFeatures);
+            context.sandbox.off('map.features.show', mapCore.showFeatures);
+            context.sandbox.off('map.features.hide', mapCore.hideFeatures);
             context.sandbox.off('map.basemap.change', mapCore.setBasemap);
             context.sandbox.off('map.center.set', mapCore.setCenter);
             context.sandbox.off('map.draw.clear', mapCore.clearDrawing);

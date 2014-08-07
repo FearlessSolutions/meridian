@@ -64,7 +64,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     });
     
     Aura({
-        "debug": true,
+        "debug":true,
         sources: {default: 'components'} 
     })
     .use('extensions/utils-extension/utils-extension')

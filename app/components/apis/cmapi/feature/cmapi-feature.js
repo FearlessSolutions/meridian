@@ -47,10 +47,41 @@ define([
             sendError('map.feature.unplot', message, 'Channel not supported');
 		},
 		"map.feature.hide": function(message) {
-            sendError('map.feature.hide', message, 'Channel not supported');
+            if(message === '') {
+                return;
+            } else if(!message.format || message.format === 'geojson') {
+                context.sandbox.stateManager.addHiddenFeaturesByLayerId({
+                    "layerId": message.overlayId,
+                    "featureIds": [message.featureId]
+                });
+                publisher.publishHideFeatures({
+                    "layerId": message.overlayId,
+                    "featureIds": [message.featureId]
+                });
+            } else if(message.format === 'kml') {
+                sendError('map.feature.unplot', message, 'KML is not currently supported');
+            } else {
+                sendError('map.feature.unplot', message, 'GeoJSON is the only supported format, for now.');
+            }
 		},
 		"map.feature.show": function(message) {
-            sendError('map.feature.show', message, 'Channel not supported');
+            if(message === '') {
+                return;
+            } else if(!message.format || message.format === 'geojson') {
+                context.sandbox.stateManager.removeHiddenFeaturesByLayerId({
+                    "layerId": message.overlayId,
+                    "featureIds": [message.featureId]
+                });
+                publisher.publishShowFeatures({
+                    "layerId": message.overlayId,
+                    "featureIds": [message.featureId]
+                });
+                // TODO: add support for CMAPI allowing you to zoom to the feature passed in
+            } else if(message.format === 'kml') {
+                sendError('map.feature.unplot', message, 'KML is not currently supported');
+            } else {
+                sendError('map.feature.unplot', message, 'GeoJSON is the only supported format, for now.');
+            }
 		},
 		"map.feature.selected": function(message) {
             sendError('map.feature.selected', message, 'Channel not supported');
@@ -158,7 +189,7 @@ define([
                         delete newValue.queryId;
 
                         if(value.geometry.type === 'Point') {
-                            // Adding fields for lat/lon for other conponents to use
+                            // Adding fields for lat/lon for other components to use
                             newValue.lat = value.geometry.coordinates[1];
                             newValue.lon = value.geometry.coordinates[0];
                         } else {
@@ -172,11 +203,9 @@ define([
                         });
 
                         // Add style properties for map features, but not for local dataset storage
-                        if(value.style) {
-                            context.sandbox.utils.each(value.style, function(styleKey, styleValue){
-                                newValue.properties[styleKey] = styleValue;
-                            });
-                        }
+                        context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(value), function(styleKey, styleValue){
+                            newValue.properties[styleKey] = styleValue;
+                        });
 
                         newData.push(newValue);
                     });

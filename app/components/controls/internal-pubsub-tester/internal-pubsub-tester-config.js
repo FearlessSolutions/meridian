@@ -98,7 +98,40 @@ define([
                     ]
                   },
                   "type": "Feature"
+                },
+                {
+                  "classification": "U",
+                  "layerId": "TestLayer1",
+                  "featureId": "d3bc9d37-e683-4195-9475-bd4f37887123",
+                  "dataService": "mock",
+                  "id": "d3bc9d37-e683-4195-9475-bd4f37887123",
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                      -9,
+                      9
+                    ]
+                  },
+                  "type": "Feature"
                 }
+              ]
+            }
+        },
+        "map.features.hide": {
+            "payload": {
+              "layerId": "TestLayer1",
+              "featureIds": [
+                "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
+                "d3bc9d37-e683-4195-9475-bd4f37887d21"
+              ]
+            }
+        },
+        "map.features.show": {
+            "payload": {
+              "layerId": "TestLayer1",
+              "featureIds": [
+                "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
+                "d3bc9d37-e683-4195-9475-bd4f37887d21"
               ]
             }
         },
@@ -142,6 +175,17 @@ define([
             "payload": {}
         },
         "map.layer.toggle": {
+            "payload": {}
+        },
+        "map.legend.update": {
+          "payload": {
+            "image": "http://www.trailsrus.com/breathittcounty/images/trails-legend.jpg"
+          }
+        },
+        "map.legend.show": {
+            "payload": {}
+        },
+        "map.legend.hide": {
             "payload": {}
         },
         "map.uncluster": {
