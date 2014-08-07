@@ -15,7 +15,7 @@ define([
                 buildInfoWinTemplate: function(attributes, fullFeature) {
                     var mockTemplate = Handlebars.compile(mockHbs);
                     var html = mockTemplate({
-                        "thumbnail": fullFeature.style.iconLarge || fullFeature.style.icon,
+                        "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
                         "classification": attributes.classification,
                         "name": attributes.name,
                         "attributes": attributes,
