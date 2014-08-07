@@ -41,6 +41,45 @@
                 <p>Defines the structure of the UI and which components will be used. Components are placed in the HTML just like any other element. Just embed the custom data-aura-component attribute in the <code>div</code> element you want the component to load.</p>
               </ul>
 
+            <h4 class="page-header" id="startingExample"> File Examples</h4>
+
+              <span class="label label-primary"> &ltroot&gt/index.html </span>
+              <pre class="line-numbers"><code class="language-markup">
+&lthtml&gt
+  &lthead&gt
+  &lt/head&gt
+  &ltbody&gt
+  &lt/body&gt
+&lt/html&gt
+              </code></pre>
+
+              <span class="label label-primary"> &ltroot&gt/app.js </span>
+              <pre class="line-numbers"><code class="language-javascript">require.config({
+    paths: {
+      aura: 'bower_components/aura/lib',
+      handlebars: 'bower_components/handlebars/handlebars',
+      underscore: 'bower_components/underscore/underscore',
+      jquery: 'bower_components/jquery/dist/jquery',
+    },
+    shim: {
+      aura: {
+          deps: ['underscore', 'jquery']
+        },
+        backbone: {
+          deps: ['underscore', 'jquery']
+        },   }
+});    
+
+require(['jquery', 'aura/aura'], function($, Aura) { 
+  Aura({
+        "debug":true,
+        sources: {default: 'components'} 
+    })
+    .use('extensions/utils-extension/utils-extension')
+    .start({ components: 'body' });
+}); 
+              </code></pre>
+
           <h2 class="page-header" id="components">Components</h2>
             <p>A self contained element, usually tied to a HTML element, wrapped with functionality for the user and other components to interact with.</p>
 
