@@ -42,6 +42,11 @@ a.text-primary {
   color: #4582ec;
 }
 
+/*Override code color to the blue theme*/
+code {
+	color: #1863e6;
+}
+
 .new-section {
 	padding-top: 25px;
 }
