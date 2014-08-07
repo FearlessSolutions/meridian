@@ -147,8 +147,12 @@ define([
                 selector.setLayer(layers);
             }
 
-            // Default of new layer is visible = true
-            context.sandbox.stateManager.layers[params.layerId] = {"visible": true};
+            // Default state manager settings for a new layer
+            context.sandbox.stateManager.layers[params.layerId] = {
+                "visible": true,
+                "hiddenFeatures": [],
+                "identifiedFeatures": []
+            };
 
             return newVectorLayer;
         },
@@ -466,6 +470,13 @@ define([
                             record,
                             layer.layerId
                         );
+
+                        context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
+                            "layerId": layer.layerId,
+                            "featureIds": [
+                                record.featureId
+                            ]
+                        });
                     }
                 );
             } else {
@@ -512,6 +523,13 @@ define([
                     feature.popup = popup;
                     params.map.addPopup(popup);
                     infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
+
+                    context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
+                        "layerId": feature.layer.layerId,
+                        "featureIds": [
+                            feature.featureId
+                        ]
+                    });
                 });
             }
         }
@@ -639,6 +657,13 @@ define([
                                 feature.popup = popup;
                                 params.map.addPopup(popup);
                                 infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
+
+                                context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
+                                    "layerId": feature.layer.layerId,
+                                    "featureIds": [
+                                        feature.featureId
+                                    ]
+                                });
                             }
                         } 
                     );

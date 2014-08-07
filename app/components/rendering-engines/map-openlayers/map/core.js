@@ -239,6 +239,42 @@ define([
             }
         },
         /**
+         * Hide Features
+         * @param {object} params - JSON parameters
+         * @param {array} params.featureIds - ids of features to be hidden
+         * @param {string} params.layerId - layer id
+         */
+        hideFeatures: function(params) {
+            mapFeatures.hideFeatures({
+                "map": map,
+                "layerId": params.layerId,
+                "featureIds": params.featureIds
+            });
+            if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
+                mapHeatmap.update({
+                    "map": map
+                });
+            }
+        },
+        /**
+         * Show Features
+         * @param {object} params - JSON parameters
+         * @param {array} params.featureIds - ids of features to be shown
+         * @param {string} params.layerId - layer id
+         */
+        showFeatures: function(params) {
+            mapFeatures.showFeatures({
+                "map": map,
+                "layerId": params.layerId,
+                "featureIds": params.featureIds
+            });
+            if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
+                mapHeatmap.update({
+                    "map": map
+                });
+            }
+        },
+        /**
          * Hide Layer
          * @param {object} params - JSON parameters
          * @param {string} params.layerId - id of layer

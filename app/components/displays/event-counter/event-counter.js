@@ -20,9 +20,11 @@ define([
             totalCount = 0;
             displayedCount = 0;
             context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value) {
+                var currentLayerHiddenFeaturesCount = 0;
                 totalCount += value.length;
                 if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible) {
-                    displayedCount += value.length;
+                    currentLayerHiddenFeaturesCount = context.sandbox.stateManager.layers[key].hiddenFeatures.length || 0;
+                    displayedCount += value.length - currentLayerHiddenFeaturesCount;
                 }
             });
             $displayedBadge.html(displayedCount);
