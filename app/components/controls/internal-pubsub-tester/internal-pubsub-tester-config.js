@@ -144,6 +144,17 @@ define([
         "map.layer.toggle": {
             "payload": {}
         },
+        "map.legend.update": {
+          "payload": {
+            "image": "http://www.trailsrus.com/breathittcounty/images/trails-legend.jpg"
+          }
+        },
+        "map.legend.show": {
+            "payload": {}
+        },
+        "map.legend.hide": {
+            "payload": {}
+        },
         "map.uncluster": {
             "payload": {}
         },

@@ -64,11 +64,10 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     });
     
     Aura({
-        "debug": true,
+        "debug":true,
         sources: {default: 'components'} 
     })
     .use('extensions/utils-extension/utils-extension')
-    .use('extensions/ajax-handler-extension/ajax-handler-extension')
     .use('extensions/session-extension/session-extension')
     .use('extensions/external-pubsub-extension/external-pubsub-extension')
     .use('extensions/state-manager-extension/state-manager-extension')

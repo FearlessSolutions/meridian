@@ -1,0 +1,35 @@
+div[data-aura-component='displays/legend'] #legendDialog {
+    display: none;
+    position: absolute;
+    left: 50px;
+    top: 55px;
+}
+div[data-aura-component='displays/legend'] #legendDialog .dialog-dialog{
+    width: 400px;
+    position: absolute;
+    z-index: 2000;
+    margin: 0;
+    opacity: 0.80;
+}
+div[data-aura-component='displays/legend'] #legendDialog .dialog-body {
+    padding: 10px 10px 10px 10px;
+}
+div[data-aura-component='displays/legend'] #legendDialog .dialog-header {
+    background-color: #396A92;
+    color: white;
+    cursor: move;
+}
+div[data-aura-component='displays/legend'] #legendDialog .dialog-body p{
+    margin-top: 5px;
+}
+div[data-aura-component='displays/legend'] #legendDialog .empty-body {
+    text-align:center
+}
+div[data-aura-component='displays/legend'] #legendDialog img {
+    width: 100%
+}
+div[data-aura-component='displays/legend'] #legendDialog .dialog-header .close {
+    color: white;
+    opacity: .85;
+    text-shadow: none;
+}
