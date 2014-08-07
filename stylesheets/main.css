@@ -1,5 +1,12 @@
 @import url("./bootstrap-3.2.0/readable-theme/bootstrap.css");
 @import url("./icomoon/style.css");
+@import url("./prism.css");
+
+/*
+on hover: #1863e6;
+on hover border: #175fdd;
+primary and border color: #4582ec
+ */
 
 body { 
 	padding-top: 65px; /*taking into account the fixed nav bar*/
