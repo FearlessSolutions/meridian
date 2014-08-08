@@ -8,7 +8,7 @@ define([
             context = thisContext;
             context.sandbox.on('progress.queue.add', progressNotification.addToQueue);
             context.sandbox.on('progress.queue.remove', progressNotification.removeFromQueue);
-            context.sandbox.on('data.clear.all', progressNotification.removeActiveClass);
+            context.sandbox.on('data.clear.all', progressNotification.clearQueue);
         }
     };	
 

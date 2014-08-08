@@ -26,6 +26,10 @@ define([
             if(!progressQueue.length) {
                 $progressNotificationSpinner.removeClass('active');
             }
+        },
+        clearQueue: function() {
+            progressQueue = [];
+            $progressNotificationSpinner.removeClass('active');
         }
     };
 
