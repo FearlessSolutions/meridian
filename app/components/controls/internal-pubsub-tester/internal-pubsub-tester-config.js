@@ -200,10 +200,15 @@ define([
         "map.zoom.in": {
             "payload": {}
         },
-        "map.zoom.location": {
+        "map.zoom.out": {
             "payload": {}
         },
-        "map.zoom.out": {
+        "map.zoom.toLayer": {
+            "payload": {
+                "layerId": "TestLayer1"
+            }
+        },
+        "map.zoom.toLocation": {
             "payload": {}
         },
         "menu.opening": {
