@@ -8,7 +8,6 @@ define([
         init: function(thisContext) {
             context = thisContext;
             $progressNotificationSpinner = context.$('.spinner');
-            console.debug($progressNotificationSpinner);
         },
         addToQueue: function(params) {
             progressQueue.push(params.progressId);

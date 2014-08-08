@@ -48,3 +48,7 @@ div[data-aura-component='displays/progress-notification'] .spinner {
         transform:rotate(360deg);
     }
 }
+
+div[data-aura-component='displays/progress-notification'] .spinner.glyphicon:hover{
+    color: #396A92;
+}
