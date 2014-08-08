@@ -1,6 +1,7 @@
 define([
+    './../map-api-publisher',
     './../libs/openlayers-2.13.1/OpenLayers'
-], function() {
+], function(publisher) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -30,7 +31,16 @@ define([
             var queryLayer = params.map.getLayersBy('layerId', params.layerId)[0];
 
             if(queryLayer) {
-                params.map.zoomToExtent(queryLayer.getDataExtent());
+                if(context.sandbox.dataStorage.datasets[params.layerId].length > 0) {
+                    params.map.zoomToExtent(queryLayer.getDataExtent());
+                } else {
+                    console.debug(queryLayer);
+                    publisher.publishMessage({
+                        messageType: 'warning',
+                        messageTitle: 'Zoom to Layer',
+                        messageText: 'No data in layer to zoom to.'
+                    });
+                }
             }
         },
         /**
