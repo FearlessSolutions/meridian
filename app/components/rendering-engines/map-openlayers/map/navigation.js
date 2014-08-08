@@ -30,17 +30,14 @@ define([
         zoomToLayer: function(params) {
             var queryLayer = params.map.getLayersBy('layerId', params.layerId)[0];
 
-            if(queryLayer) {
-                if(context.sandbox.dataStorage.datasets[params.layerId].length > 0) {
-                    params.map.zoomToExtent(queryLayer.getDataExtent());
-                } else {
-                    console.debug(queryLayer);
-                    publisher.publishMessage({
-                        messageType: 'warning',
-                        messageTitle: 'Zoom to Layer',
-                        messageText: 'No data in layer to zoom to.'
-                    });
-                }
+            if(queryLayer && queryLayer.getDataExtent()) {
+                params.map.zoomToExtent(queryLayer.getDataExtent());
+            } else {
+                publisher.publishMessage({
+                    messageType: 'warning',
+                    messageTitle: 'Zoom to Layer',
+                    messageText: 'No data in layer to zoom to.'
+                });
             }
         },
         /**
