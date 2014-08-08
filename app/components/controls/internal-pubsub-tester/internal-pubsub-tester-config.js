@@ -209,7 +209,12 @@ define([
             }
         },
         "map.zoom.toLocation": {
-            "payload": {}
+            "payload": {
+                "minLon": -20,
+                "minLat": 20,
+                "maxLon": 20,
+                "maxLat": 40
+            }
         },
         "menu.opening": {
             "payload": {}
