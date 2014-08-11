@@ -22,5 +22,4 @@ define([
             progressNotificationSubscriber.init(this);
         }
     };
-
 });
