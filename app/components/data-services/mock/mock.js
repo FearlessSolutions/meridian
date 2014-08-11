@@ -37,6 +37,7 @@ define([
                 "messageTitle": "Data Service",
                 "messageText": params.name + " query initiated"
             });
+            publisher.addToProgressQueue();
 
         },
         clear: function() {// TODO: look at the alternate solution for clearing single dataset
@@ -146,6 +147,8 @@ define([
                 publisher.publishFinish({
                     "layerId": params.queryId
                 });
+
+                publisher.removeFromProgressQueue();
             }
 
         })

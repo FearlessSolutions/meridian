@@ -9,13 +9,13 @@ define([
             context = thisContext;
             $progressNotificationSpinner = context.$('.spinner');
         },
-        addToQueue: function(params) {
+        addToQueue: function() {
             progressQueueCount += 1;
             if(progressQueueCount) {
                 $progressNotificationSpinner.addClass('active');
             }
         },
-        removeFromQueue: function(params) {
+        removeFromQueue: function() {
             progressQueueCount -= 1;
             if(!progressQueueCount) {
                 $progressNotificationSpinner.removeClass('active');
