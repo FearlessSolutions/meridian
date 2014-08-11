@@ -20,7 +20,7 @@ define([
                     if(params.layerId) {
                         params.newAJAX.layerId = params.layerId;
                     }
-                    params.newAJAX.progressId = params.layerId || app.sandbox.utils.uuid(); // Use the Layer ID, else generate a new UUID
+                    params.newAJAX.progressId = params.layerId || app.sandbox.utils.UUID(); // Use the Layer ID, else generate a new UUID
                     activeAJAXs.push(params.newAJAX);
                     app.sandbox.emit('progress.queue.add', {"progressId": params.newAJAX.progressId});
                 },
