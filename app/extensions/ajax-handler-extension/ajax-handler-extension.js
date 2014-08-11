@@ -42,6 +42,7 @@ define([
                     activeAJAXs.forEach(function(ajax, index) {
                         ajax.abort();
                         activeAJAXs.splice(index, 1);
+                        app.sandbox.emit('progress.queue.remove', {"progressId": ajax.progressId});
                     });
                 },
                 /**
