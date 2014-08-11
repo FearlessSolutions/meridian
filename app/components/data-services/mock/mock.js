@@ -197,6 +197,8 @@ define([
                 "messageText": "Connection to data service failed."
             });
 
+            publisher.removeFromProgressQueue();
+
             context.sandbox.stateManager.setLayerStateById({
                 "layerId": layerId,
                 "state": {
