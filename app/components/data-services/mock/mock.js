@@ -40,9 +40,42 @@ define([
             publisher.addToProgressQueue();
 
         },
-        clear: function() {// TODO: look at the alternate solution for clearing single dataset
-            context.sandbox.dataStorage.clear();
+        stopQuery: function(params) {
+            var layerState,
+                dataTransferState;
 
+            context.sandbox.ajax.stopQuery({
+                "layerId": params.layerId
+            });
+
+            // Handle notifcations and state
+            layerState = context.sandbox.stateManager.getLayerStateById({"layerId": params.layerId});
+            if(layerState) {
+                // Check state manager for status of layer, if already stopped or finished don't publish message or change state
+                dataTransferState = layerState.dataTransferState;
+
+                if(dataTransferState !== 'stopped' && dataTransferState !== 'finished') {
+                    publisher.publishMessage({
+                        "messageType": "warning",
+                        "messageTitle": "Data Service",
+                        "messageText": "Query data transfer was stopped."
+                    });
+
+                    publisher.removeFromProgressQueue();
+
+                    context.sandbox.stateManager.setLayerStateById({
+                        "layerId": params.layerId,
+                        "state": {
+                            "dataTransferState": 'stopped'
+                        }
+                    });
+                }
+            }
+            
+        },
+        clear: function() {
+            context.sandbox.dataStorage.clear();
+            context.sandbox.ajax.clear();
         },
         deleteDataset: function(params) { 
             // delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delete directly
