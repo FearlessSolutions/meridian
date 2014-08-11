@@ -21,7 +21,6 @@ define([
                         params.newAJAX.layerId = params.layerId;
                     }
                     activeAJAXs.push(params.newAJAX);
-                    app.sandbox.emit('progress.queue.add');
                 },
                 /**
                  * Remove finished AJAX from list
@@ -30,7 +29,6 @@ define([
                     activeAJAXs.forEach(function(ajax, index) {
                         if(ajax.readyState === 4) { //4 is "complete" status
                             activeAJAXs.splice(index, 1);
-                            app.sandbox.emit('progress.queue.remove');
                         }
                     });
                 },
@@ -41,7 +39,6 @@ define([
                     activeAJAXs.forEach(function(ajax, index) {
                         ajax.abort();
                         activeAJAXs.splice(index, 1);
-                        app.sandbox.emit('progress.queue.remove');
                     });
                 },
                 /**
@@ -53,7 +50,6 @@ define([
                         if(ajax.layerId === params.layerId) {
                             ajax.abort();
                             activeAJAXs.splice(index, 1);
-                            app.sandbox.emit('progress.queue.remove');
                         }
                     });
                 }
