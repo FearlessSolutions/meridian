@@ -200,11 +200,21 @@ define([
         "map.zoom.in": {
             "payload": {}
         },
-        "map.zoom.location": {
-            "payload": {}
-        },
         "map.zoom.out": {
             "payload": {}
+        },
+        "map.zoom.toLayer": {
+            "payload": {
+                "layerId": "TestLayer1"
+            }
+        },
+        "map.zoom.toLocation": {
+            "payload": {
+                "minLon": -20,
+                "minLat": 20,
+                "maxLon": 20,
+                "maxLat": 40
+            }
         },
         "menu.opening": {
             "payload": {}
@@ -222,11 +232,21 @@ define([
               "geometry": {
                 "type": "point",
                 "coordinates": [
-                  0,
-                  0
+                    0,
+                    0
                 ]
               },
               "properties": {}
+            }
+        },
+        "progress.queue.add": {
+            "payload": {
+                "progressId": "something"
+            }
+        },
+        "progress.queue.remove": {
+            "payload": {
+                "progressId": "something"
             }
         },
         "timeline.playback.start": {

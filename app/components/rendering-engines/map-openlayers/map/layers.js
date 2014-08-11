@@ -203,12 +203,18 @@ define([
                 layers = selector.layers,
                 index;
 
-            mapBase.clearMapSelection({
-                "map": params.map
+            identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
+                "layerId": params.layerId
             });
-            mapBase.clearMapPopups({
-                "map": params.map
-            });
+
+            if(identifiedFeatures.length) {
+                mapBase.clearMapSelection({
+                    "map": params.map
+                });
+                mapBase.clearMapPopups({
+                    "map": params.map
+                });
+            }
 
             delete context.sandbox.stateManager.layers[params.layerId];
             params.map.removeLayer(params.map.getLayersBy('layerId', params.layerId)[0]);
@@ -241,14 +247,21 @@ define([
             params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
         },
         hideLayer: function(params) {
-            var currentLayer;
+            var currentLayer,
+                identifiedFeatures; 
 
-            mapBase.clearMapSelection({
-                "map": params.map
+            identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
+                "layerId": params.layerId
             });
-            mapBase.clearMapPopups({
-                "map": params.map
-            });
+
+            if(identifiedFeatures.length) {
+                mapBase.clearMapSelection({
+                    "map": params.map
+                });
+                mapBase.clearMapPopups({
+                    "map": params.map
+                });
+            }
 
             if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
                 context.sandbox.stateManager.layers[params.layerId].visible = false;
@@ -267,13 +280,6 @@ define([
         },
         showLayer: function(params) {
             var currentLayer;
-
-            mapBase.clearMapSelection({
-                "map": params.map
-            });
-            mapBase.clearMapPopups({
-                "map": params.map
-            });
 
             if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
                 context.sandbox.stateManager.layers[params.layerId].visible = true;
