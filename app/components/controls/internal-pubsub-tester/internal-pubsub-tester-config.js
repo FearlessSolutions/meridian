@@ -232,11 +232,21 @@ define([
               "geometry": {
                 "type": "point",
                 "coordinates": [
-                  0,
-                  0
+                    0,
+                    0
                 ]
               },
               "properties": {}
+            }
+        },
+        "progress.queue.add": {
+            "payload": {
+                "progressId": "something"
+            }
+        },
+        "progress.queue.remove": {
+            "payload": {
+                "progressId": "something"
             }
         },
         "timeline.playback.start": {
