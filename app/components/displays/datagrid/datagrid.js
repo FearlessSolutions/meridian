@@ -51,7 +51,7 @@ define([
                 context.sandbox.utils.each(storedColumns, function(k, v) {
                     columnsArray.push(v);
                 });
-                
+
                 if(!myTable) {
                     myTable = $datagridContainer.Datatable({
                         "sortable": true,
@@ -70,6 +70,7 @@ define([
                     });
                 } else {
                     myTable.removeAllData();
+                    myTable.updateColumns(columnsArray);
                     myTable.addData(compiledData);
                 }
                 datagridVisible = true;
