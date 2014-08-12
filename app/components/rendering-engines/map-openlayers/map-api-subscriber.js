@@ -39,7 +39,7 @@ define([
             context.sandbox.off('map.draw.clear', mapCore.clearDrawing);
             context.sandbox.off('map.draw.start', mapCore.startDrawing);
             context.sandbox.off('map.layer.create', mapCore.createLayer);
-            context.sandbox.off('map.layer.create', mapCore.deleteLayer);
+            context.sandbox.off('map.layer.delete', mapCore.deleteLayer);
             context.sandbox.off('map.layer.index.set', mapCore.setLayerIndex);
             context.sandbox.off('map.layer.hide', mapCore.hideLayer);
             context.sandbox.off('map.layer.show', mapCore.showLayer);
