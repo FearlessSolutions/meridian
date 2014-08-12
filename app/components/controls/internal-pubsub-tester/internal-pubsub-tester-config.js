@@ -240,14 +240,10 @@ define([
             }
         },
         "progress.queue.add": {
-            "payload": {
-                "progressId": "something"
-            }
+            "payload": {}
         },
         "progress.queue.remove": {
-            "payload": {
-                "progressId": "something"
-            }
+            "payload": {}
         },
         "timeline.playback.start": {
             "payload": {}

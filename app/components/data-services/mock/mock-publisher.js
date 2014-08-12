@@ -18,8 +18,14 @@ define([
         publishFinish: function(params) {
             context.sandbox.emit('data.finished', params);
         },
-        publishError: function(params){
+        publishError: function(params) {
             context.sandbox.emit('data.error', params);
+        },
+        addToProgressQueue: function() {
+            context.sandbox.emit('progress.queue.add');
+        },
+        removeFromProgressQueue: function() {
+            context.sandbox.emit('progress.queue.remove');
         }
     };
 

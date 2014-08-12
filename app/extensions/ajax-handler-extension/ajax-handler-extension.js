@@ -20,9 +20,7 @@ define([
                     if(params.layerId) {
                         params.newAJAX.layerId = params.layerId;
                     }
-                    params.newAJAX.progressId = params.layerId || app.sandbox.utils.UUID(); // Use the Layer ID, else generate a new UUID
                     activeAJAXs.push(params.newAJAX);
-                    app.sandbox.emit('progress.queue.add', {"progressId": params.newAJAX.progressId});
                 },
                 /**
                  * Remove finished AJAX from list
@@ -31,7 +29,6 @@ define([
                     activeAJAXs.forEach(function(ajax, index) {
                         if(ajax.readyState === 4) { //4 is "complete" status
                             activeAJAXs.splice(index, 1);
-                            app.sandbox.emit('progress.queue.remove', {"progressId": ajax.progressId});
                         }
                     });
                 },
@@ -42,7 +39,6 @@ define([
                     activeAJAXs.forEach(function(ajax, index) {
                         ajax.abort();
                         activeAJAXs.splice(index, 1);
-                        app.sandbox.emit('progress.queue.remove', {"progressId": ajax.progressId});
                     });
                 },
                 /**
@@ -54,7 +50,6 @@ define([
                         if(ajax.layerId === params.layerId) {
                             ajax.abort();
                             activeAJAXs.splice(index, 1);
-                            app.sandbox.emit('progress.queue.remove', {"progressId": ajax.progressId});
                         }
                     });
                 }
