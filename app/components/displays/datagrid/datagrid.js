@@ -69,7 +69,8 @@ define([
                                 "featureId": target['Feature ID'],
                                 "layerId": target['Layer ID']
                             });
-                        }
+                        },
+                        "addRowClasses": addCustomClasses
                     });
                 } else {
                     myTable.removeAllData();
@@ -102,6 +103,14 @@ define([
             }
         }
     };
+
+    function addCustomClasses(params) {
+        if(context.sandbox.stateManager.layers[params.record['Layer ID']].hiddenFeatures.indexOf(params.record['Feature ID']) > -1) {
+            return ["hiddenFeature"];
+        } else {
+            return [];
+        }
+    }
 
     return exposed;
     
