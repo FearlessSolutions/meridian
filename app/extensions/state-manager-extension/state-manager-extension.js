@@ -49,14 +49,18 @@ define([], function(){
                     return hiddenFeatures;
                 },
                 getFeatureVisibility: function(params) {
-                    if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(params.featureId) === -1) {
-                        return true;
-                    } else {
-                        return false;
+                    if(stateManager.layers[params.layerId]) {
+                        if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(params.featureId) === -1) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
                 },
                 getHiddenFeaturesByLayerId: function(params) {
-                    return stateManager.layers[params.layerId].hiddenFeatures;
+                    if(stateManager.layers[params.layerId]) {
+                        return stateManager.layers[params.layerId].hiddenFeatures;
+                    }
                 },
                 /**
                  * Overwrite array of featureIds associated with layer
@@ -64,27 +68,33 @@ define([], function(){
                  * @param {string} params.layerId - Id of layer
                  */
                 setHiddenFeaturesByLayerId: function(params) {
-                    stateManager.layers[params.layerId].hiddenFeatures = [];
-                    app.sandbox.utils.each(params.featureIds, function(index, featureId) {
-                        if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(featureId) === -1) {
-                            stateManager.layers[params.layerId].hiddenFeatures.push(featureId);
-                        }
-                    });
+                    if(stateManager.layers[params.layerId]) {
+                        stateManager.layers[params.layerId].hiddenFeatures = [];
+                        app.sandbox.utils.each(params.featureIds, function(index, featureId) {
+                            if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(featureId) === -1) {
+                                stateManager.layers[params.layerId].hiddenFeatures.push(featureId);
+                            }
+                        });
+                    }
                 },
                 addHiddenFeaturesByLayerId: function(params) {
-                    app.sandbox.utils.each(params.featureIds, function(index, featureId) {
-                        if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(featureId) === -1) {
-                            stateManager.layers[params.layerId].hiddenFeatures.push(featureId);
-                        }
-                    });
+                    if(stateManager.layers[params.layerId]) {
+                        app.sandbox.utils.each(params.featureIds, function(index, featureId) {
+                            if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(featureId) === -1) {
+                                stateManager.layers[params.layerId].hiddenFeatures.push(featureId);
+                            }
+                        });
+                    }
                 },
                 removeHiddenFeaturesByLayerId: function(params) {
-                    var hiddenFeatures = stateManager.layers[params.layerId].hiddenFeatures;
-                    app.sandbox.utils.each(params.featureIds, function(index, featureId) {
-                        if(hiddenFeatures.indexOf(featureId) !== -1) {
-                            hiddenFeatures.splice(hiddenFeatures.indexOf(featureId), 1);
-                        }
-                    });
+                    if(stateManager.layers[params.layerId]) {
+                        var hiddenFeatures = stateManager.layers[params.layerId].hiddenFeatures;
+                        app.sandbox.utils.each(params.featureIds, function(index, featureId) {
+                            if(hiddenFeatures.indexOf(featureId) !== -1) {
+                                hiddenFeatures.splice(hiddenFeatures.indexOf(featureId), 1);
+                            }
+                        });
+                    }
                 },
                 getAllIdentifiedFeatures: function(params) {
                     var identifiedFeatures = [];
@@ -94,30 +104,38 @@ define([], function(){
                     return identifiedFeatures;
                 },
                 getIdentifiedFeaturesByLayerId: function(params) {
-                    return stateManager.layers[params.layerId].identifiedFeatures;
+                    if(stateManager.layers[params.layerId]) {
+                        return stateManager.layers[params.layerId].identifiedFeatures;
+                    }
                 },
                 setIdentifiedFeaturesByLayerId: function(params) {
-                    stateManager.layers[params.layerId].identifiedFeatures = [];
-                    app.sandbox.utils.each(params.featureIds, function(index, featureId) {
-                        if(stateManager.layers[params.layerId].identifiedFeatures.indexOf(featureId) === -1) {
-                            stateManager.layers[params.layerId].identifiedFeatures.push(featureId);
-                        }
-                    });
+                    if(stateManager.layers[params.layerId]) {
+                        stateManager.layers[params.layerId].identifiedFeatures = [];
+                        app.sandbox.utils.each(params.featureIds, function(index, featureId) {
+                            if(stateManager.layers[params.layerId].identifiedFeatures.indexOf(featureId) === -1) {
+                                stateManager.layers[params.layerId].identifiedFeatures.push(featureId);
+                            }
+                        });
+                    }
                 },
                 addIdentifiedFeaturesByLayerId: function(params) {
-                    app.sandbox.utils.each(params.featureIds, function(index, featureId) {
-                        if(stateManager.layers[params.layerId].identifiedFeatures.indexOf(featureId) === -1) {
-                            stateManager.layers[params.layerId].identifiedFeatures.push(featureId);
-                        }
-                    });
+                    if(stateManager.layers[params.layerId]) {
+                        app.sandbox.utils.each(params.featureIds, function(index, featureId) {
+                            if(stateManager.layers[params.layerId].identifiedFeatures.indexOf(featureId) === -1) {
+                                stateManager.layers[params.layerId].identifiedFeatures.push(featureId);
+                            }
+                        });
+                    }
                 },
                 removeIdentifiedFeaturesByLayerId: function(params) {
-                    var identifiedFeatures = stateManager.layers[params.layerId].identifiedFeatures;
-                    app.sandbox.utils.each(params.featureIds, function(index, featureId) {
-                        if(identifiedFeatures.indexOf(featureId) !== -1) {
-                            identifiedFeatures.splice(identifiedFeatures.indexOf(featureId), 1);
-                        }
-                    });
+                    if(stateManager.layers[params.layerId]) {
+                        var identifiedFeatures = stateManager.layers[params.layerId].identifiedFeatures;
+                        app.sandbox.utils.each(params.featureIds, function(index, featureId) {
+                            if(identifiedFeatures.indexOf(featureId) !== -1) {
+                                identifiedFeatures.splice(identifiedFeatures.indexOf(featureId), 1);
+                            }
+                        });
+                    }
                 },
                 removeAllIdentifiedFeatures: function() {
                     app.sandbox.utils.each(stateManager.layers, function(layerId, layerState){
