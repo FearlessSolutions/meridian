@@ -31,7 +31,7 @@ define([
 
         },
         setActive: function() {
-            if(checkDataStorageHasData()) {
+            if(context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 $dataGridToggleButton.addClass('active');
             } else {
                 publisher.publishMessage({
@@ -48,19 +48,6 @@ define([
             $dataGridToggleButton.removeClass('active');
         }
     };
-
-    function checkDataStorageHasData() {
-        var validDataFound = false;
-
-        context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value){
-            if(value.length > 0) {
-                validDataFound = true;
-                return;
-            }
-        });
-
-        return validDataFound;
-    }
 
     return exposed;
 });

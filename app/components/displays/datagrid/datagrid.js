@@ -21,7 +21,7 @@ define([
             }
         },
         open: function() {
-            if(checkDataStorageHasData()) {
+            if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 var compiledData = [],
                     storedColumns,
                     datasets = context.sandbox.dataStorage.datasets;
@@ -98,19 +98,6 @@ define([
             }
         }
     };
-
-    function checkDataStorageHasData() {
-        var validDataFound = false;
-
-        context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value){
-            if(value.length > 0) {
-                validDataFound = true;
-                return;
-            }
-        });
-
-        return validDataFound;
-    }
 
     return exposed;
     
