@@ -5,7 +5,8 @@ define([
 
     var context,
         myTable,
-        $datagridContainer;
+        $datagridContainer,
+        datagridVisible = false;
 
     var exposed = {
         init: function(thisContext) {
@@ -71,8 +72,10 @@ define([
                     myTable.removeAllData();
                     myTable.addData(compiledData);
                 }
+                datagridVisible = true;
             } else {
                 publisher.closeDatagrid();
+                datagridVisible = false;
             }
         },
         close: function() {
@@ -81,6 +84,7 @@ define([
             if(myTable) {
                 myTable.removeAllData();
             }
+            datagridVisible = false;
         },
         clear: function() {
             if(myTable) { //In both untill refactor
@@ -89,7 +93,9 @@ define([
             exposed.close();
         },
         reload: function() {
-            exposed.open();
+            if(datagridVisible) {
+                exposed.open();
+            }
         }
     };
 
