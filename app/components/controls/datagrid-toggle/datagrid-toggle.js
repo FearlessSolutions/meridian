@@ -21,36 +21,46 @@ define([
 
             $dataGridToggleButton.on('click', function(event) {
                 event.preventDefault();
-                var validDataFound = false;
 
-                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value){
-                    if(value.length > 0) {
-                        validDataFound = true;
-                        return;
-                    }
-                });
-
-                if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets) && validDataFound) {
-                    publisher.toogleGrid();
-                    if(context.$(this).hasClass('active')) {
-                        context.$(this).removeClass('active');
-                    }else {
-                        context.$(this).addClass('active');
-                    }
+                if(context.$(this).hasClass('active')) {
+                    publisher.closeDatagrid();
                 } else {
-                    publisher.publishMessage({
-                        "messageType": "warning",
-                        "messageTitle": "Datatable",
-                        "messageText": "No data to display in datatable."
-                    });
+                    publisher.openDatagrid();
                 }
             });
 
+        },
+        setActive: function() {
+            if(checkDataStorageHasData()) {
+                $dataGridToggleButton.addClass('active');
+            } else {
+                publisher.publishMessage({
+                    "messageType": "warning",
+                    "messageTitle": "Datatable",
+                    "messageText": "No data to display in datatable."
+                });
+            }
+        },
+        removeActive: function() {
+            $dataGridToggleButton.removeClass('active');
         },
         clear: function(){
             $dataGridToggleButton.removeClass('active');
         }
     };
+
+    function checkDataStorageHasData() {
+        var validDataFound = false;
+
+        context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value){
+            if(value.length > 0) {
+                validDataFound = true;
+                return;
+            }
+        });
+
+        return validDataFound;
+    }
 
     return exposed;
 });

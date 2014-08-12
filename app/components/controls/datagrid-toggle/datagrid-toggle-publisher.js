@@ -7,8 +7,11 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        toogleGrid: function(params) {
-            context.sandbox.emit('map.datagrid.toggle', params);
+        closeDatagrid: function(params) {
+            context.sandbox.emit('datagrid.close', params);
+        },
+        openDatagrid: function(params) {
+            context.sandbox.emit('datagrid.open', params);
         },
         publishMessage: function(params) {
             context.sandbox.emit('message.publish', params);
