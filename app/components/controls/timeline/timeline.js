@@ -314,7 +314,7 @@ define([
                 publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
                     "messageType": "success",
                     "messageTitle": "Data Service",
-                    "messageText": params.name + " query layer was removed"
+                    "messageText": "Layer successfully removed"
                 });
 
                 // Take care of AOI and toggleBtn state
@@ -373,7 +373,7 @@ define([
             publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
                 "messageType": "success",
                 "messageTitle": "Data Service",
-                "messageText": params.name + " query layer was removed"
+                "messageText": "Layer successfully removed"
             });
             publisher.deleteLayer({"layerId": params.layerId});
         },
