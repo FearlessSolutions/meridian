@@ -8,10 +8,10 @@ define([
             context = thisContext;
         },
         closeDatagrid: function(params) {
-            context.sandbox.emit('datagrid.close', params);
+            context.sandbox.emit('datagrid.close');
         },
         openDatagrid: function(params) {
-            context.sandbox.emit('datagrid.open', params);
+            context.sandbox.emit('datagrid.open');
         },
         publishMessage: function(params) {
             context.sandbox.emit('message.publish', params);

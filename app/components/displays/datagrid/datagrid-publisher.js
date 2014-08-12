@@ -8,7 +8,7 @@ define([
             context = thisContext;
         },
         closeDatagrid: function(params) {
-            context.sandbox.emit('datagrid.close', params);
+            context.sandbox.emit('datagrid.close');
         },
         identifyRecord: function(params) {
             context.sandbox.emit('map.feature.identify', params);
