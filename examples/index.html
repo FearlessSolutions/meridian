@@ -2,11 +2,10 @@
 <html lang="en">
   <head>
     <title>Meridian</title>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <link rel='shortcut icon' type='image/x-icon' href='../images/logos/meridthumb.png'/>
     <link href="../stylesheets/main.css" rel="stylesheet" type="text/css"/>
-    <script src="../javascripts/jquery-1.11.1/jquery.js"></script>
-    <script src="../javascripts/bootstrap-3.2.0/bootstrap.js"></script>
+    <script data-main="app" src="../javascripts/requirejs-2.1.11/require.js"></script>
     <script src="../javascripts/prism/prism.js"></script>
   </head>
   <body data-spy="scroll" data-target="#sideNav">
@@ -33,41 +32,41 @@
         <div class="col-md-10 container">
 
           <h2 class="page-header" id="starting">Starting a Meridian Application</h2>
-            <p>So get an app started, there are only two required files:</p>
+            <p>To get Meridian started, there are only two required files:</p>
               <ul>
                 <li><code>app.js</code></li>
-                  <p>Initializes the app by setting up <code>Require</code> and starting the specified extensions.</p>
+                  <p>Initializes the app by setting up RequireJS and starting the specified extensions.</p>
                 <li><code>index.html</code></li>
                 <p>Defines the structure of the UI and which components will be used. Components are placed in the HTML just like any other element. Just embed the custom data-aura-component attribute in the <code>div</code> element you want the component to load.</p>
               </ul>
 
             <h4 class="page-header" id="startingExample"> File Examples</h4>
+              <div class="language-javascript">
+                <p>The first order of business is setting up RequireJS and passing in the Aura object:</p> 
+                  <p><li><code>require(['jquery', 'aura/aura'], function($, Aura) { ... });</code ></li></p>
+                <p>The object can be configured by passing a configurations object. Possible values can be:</p>
+                  <p><li><code>"debug" : true</code></li></p>
+                  <p><li><code>sources: { default: '&ltpath-to-folder-containing-all-components&gt'}</code></li></p>
 
-              <span class="label label-primary"> &ltroot&gt/index.html </span>
-              <pre class="line-numbers"><code class="language-markup">
-&lthtml&gt
-  &lthead&gt
-  &lt/head&gt
-  &ltbody&gt
-  &lt/body&gt
-&lt/html&gt
-              </code></pre>
+                <p>You can specify the extensions to be used by applying <code>.use('&ltpath-to-folder-containing-extension&gt')</code></p>
+                <p>After setting up the object, one simply starts the application by running <code>Aura().start();</code>. If you want to restrict the scope to your application to a particular element, or set of elements in your document, you can pass a selector to start. In this case, we want to search for components anywhere in the 'body' of our HTML: <code>Aura.start({ components: 'body' });</code></p>
+
+                <p>Everything together will look something like this:</p>
+              </div>
 
               <span class="label label-primary"> &ltroot&gt/app.js </span>
               <pre class="line-numbers"><code class="language-javascript">require.config({
     paths: {
-      aura: 'bower_components/aura/lib',
-      handlebars: 'bower_components/handlebars/handlebars',
-      underscore: 'bower_components/underscore/underscore',
-      jquery: 'bower_components/jquery/dist/jquery',
+      aura: 'javascripts/aura/lib',
+      handlebars: 'javascripts/handlebars-1.3.0/handlebars',
+      underscore: 'javascripts/underscore-1.6.0/underscore',
+      jquery: 'javascripts/jquery-1.11.1/dist/jquery'
     },
     shim: {
       aura: {
           deps: ['underscore', 'jquery']
-        },
-        backbone: {
-          deps: ['underscore', 'jquery']
-        },   }
+      }   
+    }
 });    
 
 require(['jquery', 'aura/aura'], function($, Aura) { 
@@ -79,6 +78,25 @@ require(['jquery', 'aura/aura'], function($, Aura) {
     .start({ components: 'body' });
 }); 
               </code></pre>
+
+
+
+
+              <span class="label label-primary"> &ltroot&gt/index.html </span>
+              <pre class="line-numbers"><code class="language-markup">&lt!DOCTYPE html&gt
+&lthtml&gt
+  &lthead&gt
+    &ltmeta charset="utf-8"&gt
+    &lttitle&gtMeridian Example&lt/title&gt
+    &lt!--add your css files and other .js files--&gt
+    &ltscript data-main="app" src="./bower_components/requirejs/require.js"&gt&lt/script&gt
+  &lt/head&gt
+  &ltbody&gt
+  &lt/body&gt
+&lt/html&gt
+              </code></pre>
+
+              
 
           <h2 class="page-header" id="components">Components</h2>
             <p>A self contained element, usually tied to a HTML element, wrapped with functionality for the user and other components to interact with.</p>

@@ -1,0 +1,3 @@
+div[data-aura-component='input-area'] #inputArea{
+	max-width: 500px;
+}

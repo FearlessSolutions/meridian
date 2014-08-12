@@ -121,3 +121,8 @@ h2:before, h4:before{
 	color: #134fb8;
 }
 
+/*Allow <code> to be inline and not take the entire width of the page.*/
+div.language-javascript code {
+	display: inline;
+}
+
