@@ -12,6 +12,9 @@ define([
         init: function(thisContext) {
             context = thisContext;
             $datagridContainer = context.$('#datagridContainer');
+            $('#datagridContainer .close').on('click', function(){
+                publisher.closeDatagrid();
+            });
         },
         toggleGrid: function() {
             if($datagridContainer.hasClass('hidden')) {
