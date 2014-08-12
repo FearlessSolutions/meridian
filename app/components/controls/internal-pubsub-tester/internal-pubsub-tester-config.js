@@ -15,6 +15,15 @@ define([
         "data.record.identify": {
             "payload": {}
         },
+        "datagrid.close": {
+            "payload": {}
+        },
+        "datagrid.open": {
+            "payload": {}
+        },
+        "datagrid.reload": {
+            "payload": {}
+        },
         "event.count.add": {
             "payload": {}
         },
@@ -25,9 +34,6 @@ define([
             "payload": {}
         },
         "map.cluster": {
-            "payload": {}
-        },
-        "map.datagrid.toggle": {
             "payload": {}
         },
         "map.draw.bbox.added": {

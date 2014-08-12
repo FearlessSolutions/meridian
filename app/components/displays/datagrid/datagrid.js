@@ -19,59 +19,63 @@ define([
                 exposed.close();
             }
         },
-        open:function(){
-            var compiledData = [],
-                storedColumns,
-                datasets = context.sandbox.dataStorage.datasets;
+        open: function() {
+            if(checkDataStorageHasData()) {
+                var compiledData = [],
+                    storedColumns,
+                    datasets = context.sandbox.dataStorage.datasets;
 
-            $datagridContainer.removeClass('hidden');
-            $datagridContainer.height(328);
+                $datagridContainer.removeClass('hidden');
+                $datagridContainer.height(328);
 
 
-            storedColumns = context.sandbox.dataStorage.getColumns();
-             _.each(datasets, function(collection) {
-                _.each(collection.models, function(model) {
+                storedColumns = context.sandbox.dataStorage.getColumns();
+                 _.each(datasets, function(collection) {
+                    _.each(collection.models, function(model) {
 
-                    var tempObject = {};
-                    $.each(storedColumns, function(k, v){
-                        if(model.attributes.hasOwnProperty(k)) {
-                            tempObject[v] = model.attributes[k];
-                        } else {
-                            tempObject[v] = '';
+                        var tempObject = {};
+                        $.each(storedColumns, function(k, v){
+                            if(model.attributes.hasOwnProperty(k)) {
+                                tempObject[v] = model.attributes[k];
+                            } else {
+                                tempObject[v] = '';
+                            }
+                        });
+                        compiledData.push(tempObject);
+
+                    });
+                });
+
+                var columnsArray = [];
+                context.sandbox.utils.each(storedColumns, function(k, v) {
+                    columnsArray.push(v);
+                });
+                
+                if(!myTable) {
+                    myTable = $datagridContainer.Datatable({
+                        "sortable": true,
+                        "pagination": true,
+                        "data": compiledData,
+                        "columns": columnsArray,
+                        "searchable": true,
+                        "closeable": false,
+                        "clickable": true,
+                        "afterRowClick": function(target) {
+                            publisher.identifyRecord({
+                                "featureId": target['Feature ID'],
+                                "layerId": target['Layer ID']
+                            });
                         }
                     });
-                    compiledData.push(tempObject);
-
-                });
-            });
-
-            var columnsArray = [];
-            context.sandbox.utils.each(storedColumns, function(k, v){
-                columnsArray.push(v);
-            });
-            
-            if(!myTable) {
-                myTable = $datagridContainer.Datatable({
-                    "sortable": true,
-                    "pagination": true,
-                    "data": compiledData,
-                    "columns": columnsArray,
-                    "searchable": true,
-                    "closeable": false,
-                    "clickable": true,
-                    "afterRowClick": function(target) {
-                        publisher.identifyRecord({
-                            "featureId": target['Feature ID'],
-                            "layerId": target['Layer ID']
-                        });
-                    }
-                });
+                } else {
+                    myTable.removeAllData();
+                    myTable.addData(compiledData);
+                }
             } else {
-                myTable.removeAllData();
-                myTable.addData(compiledData);
+                publisher.closeDatagrid();
             }
         },
-        close: function(){
+        close: function() {
             $datagridContainer.addClass('hidden');
             $datagridContainer.height(0);
             if(myTable) {
@@ -83,8 +87,24 @@ define([
                 myTable.removeAllData();
             }
             exposed.close();
+        },
+        reload: function() {
+            exposed.open();
         }
     };
+
+    function checkDataStorageHasData() {
+        var validDataFound = false;
+
+        context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value){
+            if(value.length > 0) {
+                validDataFound = true;
+                return;
+            }
+        });
+
+        return validDataFound;
+    }
 
     return exposed;
     
