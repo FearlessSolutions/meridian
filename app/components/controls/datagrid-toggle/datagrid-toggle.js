@@ -31,7 +31,7 @@ define([
 
         },
         setActive: function() {
-            if(context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
+            if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 $dataGridToggleButton.addClass('active');
             } else {
                 publisher.publishMessage({
