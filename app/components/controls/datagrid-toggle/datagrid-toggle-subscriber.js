@@ -6,8 +6,9 @@ define([
 	var exposed = {
         init: function(thisContext){
             context = thisContext;
+            context.sandbox.on('datagrid.close', datagridToggle.removeActive);
+            context.sandbox.on('datagrid.open', datagridToggle.setActive);
             context.sandbox.on('data.clear.all', datagridToggle.clear);
-            context.sandbox.on('map.layer.delete', datagridToggle.clear);
         }
     };	
 
