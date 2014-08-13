@@ -1,7 +1,8 @@
 define([
     './datagrid-publisher',
+    './datagrid-context-menu',
     'datatable'
-], function (publisher) {
+], function (publisher, datagridContextMenu) {
 
     var context,
         myTable,
@@ -11,6 +12,7 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
             $('#datagridContainer .close').on('click', function(){
                 publisher.closeDatagrid();
@@ -64,11 +66,19 @@ define([
                         "searchable": true,
                         "closeable": false,
                         "clickable": true,
-                        "afterRowClick": function(target) {
-                            publisher.identifyRecord({
-                                "featureId": target['Feature ID'],
-                                "layerId": target['Layer ID']
-                            });
+                        "afterRowClick": function(event, target) {
+                            if(event.which === 1) {
+                                publisher.identifyRecord({
+                                    "featureId": target['Feature ID'],
+                                    "layerId": target['Layer ID']
+                                });
+                            } else if (event.which === 3) {
+                                datagridContextMenu.showMenu({
+                                    "featureId": target['Feature ID'],
+                                    "layerId": target['Layer ID'],
+                                    "event": event
+                                });
+                            }
                         },
                         "addRowClasses": addCustomClasses
                     });
