@@ -15,7 +15,7 @@ define([
             this.html(html);
 
             modalDisplayToolPublisher.init(this);
-            //modalDisplayToolSubscriber.init(this);
+            modalDisplayToolSubscriber.init(this);
             modalDisplayTool.init(this);
         }
     };                

@@ -1,48 +1,30 @@
 define([
-    './inputArea-publisher',
+    './modalDisplay-publisher',
     'bootstrap'
 ], function (publisher) {
     var context;
 
     var exposed = {
         init: function(thisContext) {
-            context = thisContext,
-            $submitBtn = context.$('#inputArea .btn'),
-            $textArea = context.$('#inputArea input');
-           
-            $submitBtn.on('click', function(event){
-                var input = $textArea.val();
-                event.preventDefault();
-
-                console.log(input);
-                publisher.publishInput({
-                    "message":input
-                });
+            context = thisContext;
+            context.$('.modal').modal({
+                show: false
             });
 
-            // $locatorButton.on('click', function(event) {
-            //     var input = $locatorInput.val();
-            //     event.preventDefault();
+            context.$('.btn.btn-primary').on('click',function(event){
+                event.preventDefault();
+                publisher.emitSuccess();
+                context.$('.modal').modal('hide');
 
-            //     if(selectedLocation === null) {/*Extra precaution, button should be disabled anyways.*/
-            //         publisher.publishMessage({
-            //             "messageType": 'warning',
-            //             "messageTitle": 'Search',
-            //             "messageText": 'No valid location selected. Please try again.'
-            //         });
-            //     }else if(selectedLocation.lat) { //It is coordinates
-            //         exposed.markLocation(selectedLocation);
-            //     }else {
-            //         exposed.goToLocation();
-            //     }
-            // });
-
-            // $locatorInput.on('keydown', function(e) {
-            //     if (e.keyCode === 13) {
-            //         $locatorButton.click();
-            //     }
-            // });
-
+            });
+        },
+        openModal: function(params){
+            if(params.message !== ""){
+                var content = "Message sent was: " + params.message + '<br> Click OK to send the modal.display.success message, if not, it will not be sent.';
+                context.$('.modal-body').html("");//clear any old values.
+                context.$('.modal-body').html(content);
+                context.$('.modal').modal('toggle');
+            }
         }
     };
 

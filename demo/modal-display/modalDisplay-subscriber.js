@@ -1,14 +1,14 @@
-// define([
-// 	'./inputArea'
-// ], function () {
-//     var context;
+define([
+	'./modalDisplay'
+], function (modalDisplayTool) {
+    var context;
 
-// 	var exposed = {
-//         init: function(thisContext){
-//             context = thisContext;
-//             context.sandbox.on('data.clear.all', locatorTool.clear);
-//         }
-//     };	
+	var exposed = {
+        init: function(thisContext){
+            context = thisContext;
+            context.sandbox.on('show.text', modalDisplayTool.openModal);
+        }
+    };	
 
-//     return exposed;
-// });
+    return exposed;
+});

@@ -5,7 +5,7 @@
     <meta charset="utf-8"/>
     <link rel='shortcut icon' type='image/x-icon' href='../images/logos/meridthumb.png'/>
     <link href="../stylesheets/main.css" rel="stylesheet" type="text/css"/>
-    <script data-main="app" src="../javascripts/requirejs-2.1.11/require.js"></script>
+    <script data-main="../demo/app" src="../javascripts/requirejs-2.1.11/require.js"></script>
     <script src="../javascripts/prism/prism.js"></script>
   </head>
   <body data-spy="scroll" data-target="#sideNav">
@@ -45,8 +45,8 @@
                 <p>The first order of business is setting up RequireJS and passing in the Aura object:</p> 
                   <p><li><code>require(['jquery', 'aura/aura'], function($, Aura) { ... });</code ></li></p>
                 <p>The object can be configured by passing a configurations object. Possible values can be:</p>
-                  <p><li><code>"debug" : true</code></li></p>
-                  <p><li><code>sources: { default: '&ltpath-to-folder-containing-all-components&gt'}</code></li></p>
+                  <p><li><code>"debug" : true</code>. -- Default value is <code>false</code>.</li></p>
+                  <p><li><code>sources: { default: '&ltpath-to-folder-containing-all-components&gt'}</code> -- Default folder is <code>aura_components</code>.</li></p>
 
                 <p>You can specify the extensions to be used by applying <code>.use('&ltpath-to-folder-containing-extension&gt')</code></p>
                 <p>After setting up the object, one simply starts the application by running <code>Aura().start();</code>. If you want to restrict the scope to your application to a particular element, or set of elements in your document, you can pass a selector to start. In this case, we want to search for components anywhere in the 'body' of our HTML: <code>Aura.start({ components: 'body' });</code></p>
@@ -57,26 +57,28 @@
               <span class="label label-primary"> &ltroot&gt/app.js </span>
               <pre class="line-numbers"><code class="language-javascript">require.config({
     paths: {
-      aura: 'javascripts/aura/lib',
-      handlebars: 'javascripts/handlebars-1.3.0/handlebars',
-      underscore: 'javascripts/underscore-1.6.0/underscore',
-      jquery: 'javascripts/jquery-1.11.1/dist/jquery'
+        aura: '../javascripts/aura/lib',
+        handlebars: '../javascripts/handlebars-1.3.0/handlebars',
+        underscore: '../javascripts/underscore-1.6.0/underscore',
+        jquery: '../javascripts/jquery-1.11.1/jquery',
+        bootstrap: '../javascripts/bootstrap-3.2.0/bootstrap'
     },
-    shim: {
-      aura: {
-          deps: ['underscore', 'jquery']
-      }   
+    shim:{
+        aura: {
+            deps: ['underscore', 'jquery']
+        }
     }
-});    
+});
 
-require(['jquery', 'aura/aura'], function($, Aura) { 
-  Aura({
+require(['jquery', 'aura/aura'], function($, Aura) {
+
+    Aura({
         "debug":true,
-        sources: {default: 'components'} 
+        sources: {default: '.'} 
     })
-    .use('extensions/utils-extension/utils-extension')
+    .use('./extensions/utils-extension')
     .start({ components: 'body' });
-}); 
+});
               </code></pre>
 
 
@@ -87,11 +89,19 @@ require(['jquery', 'aura/aura'], function($, Aura) {
 &lthtml&gt
   &lthead&gt
     &ltmeta charset="utf-8"&gt
-    &lttitle&gtMeridian Example&lt/title&gt
-    &lt!--add your css files and other .js files--&gt
-    &ltscript data-main="app" src="./bower_components/requirejs/require.js"&gt&lt/script&gt
+    &lttitle&gtMeridian Map&lt/title&gt
+    &ltlink rel="stylesheet" href="../stylesheets/bootstrap-3.2.0/readable-theme/bootstrap.css"&gt
+    &ltscript data-main="app" src="../javascripts/requirejs-2.1.11/require.js"&gt&lt/script&gt
   &lt/head&gt
   &ltbody&gt
+    &ltdiv class="container"&gt
+        &lth1 class="page-header"&gtWelcome to the Demo.&lt/h1&gt
+        &lth3&gt Input Area component: &lt/h3&gt
+        &ltdiv data-aura-component="input-area"&gt&lt/div&gt
+        &ltdiv data-aura-component="modal-display"&gt&lt/div&gt
+        &lth3&gt Text Display component: &lt/h3&gt
+        &ltdiv data-aura-component="display-area"&gt&lt/div&gt
+    &lt/div&gt
   &lt/body&gt
 &lt/html&gt
               </code></pre>
@@ -100,6 +110,7 @@ require(['jquery', 'aura/aura'], function($, Aura) {
 
           <h2 class="page-header" id="components">Components</h2>
             <p>A self contained element, usually tied to a HTML element, wrapped with functionality for the user and other components to interact with.</p>
+
 
           <h4 class="page-header" id="componentsFiles"> Files required/recommended</h4>
             <p> All files are contained in a single folder.</p>
