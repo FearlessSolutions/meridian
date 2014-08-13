@@ -12,7 +12,7 @@ define([], function(){
                 },
                 "layers": {
                     // "SomeLayer": {   
-                    //     "visibility": false,
+                    //     "visible": false,
                     //     "hiddenFeatures": ["featureId1", "featureId2", ..., "featureIdN"],
                     //     "identifiedFeatures": ["featureId1", "featureId2", ..., "featureIdN"],
                     //     "selectedFeatures": ["featureId1", "featureId2", ..., "featureIdN"]

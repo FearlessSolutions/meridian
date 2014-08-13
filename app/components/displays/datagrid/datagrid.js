@@ -105,7 +105,10 @@ define([
     };
 
     function addCustomClasses(params) {
-        if(context.sandbox.stateManager.layers[params.record['Layer ID']].hiddenFeatures.indexOf(params.record['Feature ID']) > -1) {
+        if(
+            !context.sandbox.stateManager.getLayerStateById({"layerId": params.record['Layer ID']}).visible ||
+            context.sandbox.stateManager.layers[params.record['Layer ID']].hiddenFeatures.indexOf(params.record['Feature ID']) > -1
+        ){
             return ["hiddenFeature"];
         } else {
             return [];

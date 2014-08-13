@@ -14,6 +14,8 @@ define([
             context.sandbox.on('map.features.plot', datagrid.reload);
             context.sandbox.on('map.features.hide', datagrid.reload);
             context.sandbox.on('map.features.show', datagrid.reload);
+            context.sandbox.on('map.layer.hide', datagrid.reload);
+            context.sandbox.on('map.layer.show', datagrid.reload);
             context.sandbox.on('data.clear.all', datagrid.clear);
         }
     };
