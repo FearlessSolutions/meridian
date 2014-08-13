@@ -16,7 +16,7 @@ define([
             context.$('#datagrid-context-menu').hover(
                 function(){return;},
                 function(){
-                    exposed.hideMenu({"layerId": layerId, "featureId": featureId});
+                    exposed.hideMenu();
                 }
             );
             // set menu item callback control
@@ -51,8 +51,8 @@ define([
                 });
             context.$('#datagrid-context-menu').show();
         },
-        hideMenu: function(params) {
-            context.$('#datagrid-' + params.layerId + '-' + params.featureId + '-context-menu').hide();
+        hideMenu: function() {
+            context.$('#datagrid-context-menu').hide();
         }
     };
 
