@@ -119,7 +119,8 @@ define([
         },
         addData: function(params) {
             var compiledData = [],
-                datasets;
+                datasets,
+                currentPagination = $('ul.pagination li.active a').html();
 
             if(datagridVisible && myTable) {
                 datasets = context.sandbox.dataStorage.datasets;
@@ -141,9 +142,12 @@ define([
                     });
                 });
 
-                // TODO: update datagrid library to include a 'replaceData' method, that will only flush and replace data while not changing page
+                // Remove old data
                 myTable.removeAllData();
+                // replace data with new Full Data
                 myTable.addData(compiledData);
+                // Make sure the table stays on same page as prior to adding data
+                myTable.updatePaginator(currentPagination);
             }
         }
     };
