@@ -1,3 +1,4 @@
 div[data-aura-component='display-area'] #displayArea{
-	max-width: 500px;
+	min-width: 400px;
+	display: inline-table;
 }

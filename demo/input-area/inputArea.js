@@ -1,6 +1,5 @@
 define([
-    './inputArea-publisher',
-    'bootstrap'
+    './inputArea-publisher'
 ], function (publisher) {
     var context;
 
@@ -11,8 +10,8 @@ define([
             $textArea = context.$('#inputArea input');
            
             $submitBtn.on('click', function(event){
-                var input = $textArea.val();
                 event.preventDefault();
+                var input = $textArea.val();
 
                 publisher.publishInput({
                     "message":input
