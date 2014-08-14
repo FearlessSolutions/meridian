@@ -11,9 +11,9 @@ define([
             context.sandbox.on('datagrid.reload', datagrid.reload);
             context.sandbox.on('map.layer.create', datagrid.reload);
             context.sandbox.on('map.layer.delete', datagrid.reload);
-            context.sandbox.on('map.features.plot', datagrid.reload);
-            context.sandbox.on('map.features.hide', datagrid.reload);
-            context.sandbox.on('map.features.show', datagrid.reload);
+            context.sandbox.on('map.features.plot', datagrid.addData);
+            context.sandbox.on('map.features.hide', datagrid.refresh);
+            context.sandbox.on('map.features.show', datagrid.refresh);
             context.sandbox.on('map.layer.hide', datagrid.reload);
             context.sandbox.on('map.layer.show', datagrid.reload);
             context.sandbox.on('data.clear.all', datagrid.clear);

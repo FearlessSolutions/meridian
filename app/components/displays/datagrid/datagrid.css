@@ -20,3 +20,7 @@ div[data-aura-component='displays/datagrid'] #datagridContainer tr.hiddenFeature
 div[data-aura-component='displays/datagrid'] .datagrid-context-menu {
     z-index: 1090;
 }
+
+div[data-aura-component='displays/datagrid'] tr .context-menu-active {
+    border: gray dotted 2px;
+}

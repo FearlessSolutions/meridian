@@ -8,22 +8,6 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            datagridContextMenuTemplate = Handlebars.compile(datagridContextMenuHBS);
-            var datagridContextMenuHTML = datagridContextMenuTemplate({});
-            context.$('#datagridContainer').after(datagridContextMenuHTML);
-
-            // close menu on hover out
-            context.$('#datagrid-context-menu').hover(
-                function(){return;},
-                function(){
-                    exposed.hideMenu();
-                }
-            );
-            // set menu item callback control
-            context.$('#datagrid-context-menu li a').click(function(e){
-                e.preventDefault();
-                alert("Datagrid Context Menu Item Was Clicked");
-            });
         },
         /**
          * [disableOption description]
@@ -39,9 +23,64 @@ define([
             context.sandbox.emit(params.menuChannel, params.payload);  // dynamically emit publish messages
         },
         showMenu: function(params) {
-            var $currentMenu = context.$('#datagrid-context-menu');
+            var datagridContextMenuHTML,
+                $currentMenu;
 
-            context.$('#datagrid-context-menu')
+            // Remove any existing datagrid context menus
+            context.$('#datagrid-context-menu').remove();
+
+            datagridContextMenuTemplate = Handlebars.compile(datagridContextMenuHBS);
+            datagridContextMenuHTML = datagridContextMenuTemplate({
+                "layerId": params.layerId,
+                "featureId": params.featureId
+            });
+            
+            $('#datagridContainer').after(datagridContextMenuHTML);
+            $currentMenu = context.$('#datagrid-context-menu');
+
+            // close menu on hover out
+            $currentMenu.hover(
+                function(){return;},
+                function(){
+                    exposed.hideMenu();
+                }
+            );
+
+            // set menu item callback control
+            context.$('#datagrid-context-menu li a').click(function(e){
+                e.preventDefault();
+
+                // Update StateManager to avoid Race Condition
+                if(this.getAttribute('data-channel') === 'map.features.hide') {
+                    context.sandbox.stateManager.addHiddenFeaturesByLayerId({
+                        "layerId": this.getAttribute('data-layerId'),
+                        "featureIds": [this.getAttribute('data-featureId')]
+                    });
+                }
+                // Update StateManager to avoid Race Condition
+                if(this.getAttribute('data-channel') === 'map.features.show') {
+                    context.sandbox.stateManager.removeHiddenFeaturesByLayerId({
+                        "layerId": this.getAttribute('data-layerId'),
+                        "featureIds": [this.getAttribute('data-featureId')]
+                    });
+                }
+
+                // Execute callback from menu click
+                exposed.menuCallback({
+                    "menuChannel": this.getAttribute('data-channel'),
+                    "payload": {
+                        "layerId": this.getAttribute('data-layerId'),
+                        "featureIds": [this.getAttribute('data-featureId')]
+                    }  
+                });
+
+                // Close Context Menu
+                exposed.hideMenu();
+                
+            });
+            
+
+            $currentMenu
                 .data("invokedOn", params.event.target)
                 .show()
                 .css({
@@ -49,10 +88,10 @@ define([
                     left: getLeftLocation(params.event, $currentMenu),
                     top: getTopLocation(params.event, $currentMenu)
                 });
-            context.$('#datagrid-context-menu').show();
+            $currentMenu.show();
         },
         hideMenu: function() {
-            context.$('#datagrid-context-menu').hide();
+            context.$('#datagrid-context-menu').remove();
         }
     };
 

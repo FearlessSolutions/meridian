@@ -111,6 +111,40 @@ define([
             if(datagridVisible) {
                 exposed.open();
             }
+        },
+        refresh: function() {
+            if(datagridVisible && myTable) {
+                myTable.updateTable();
+            }
+        },
+        addData: function(params) {
+            var compiledData = [],
+                datasets;
+
+            if(datagridVisible && myTable) {
+                datasets = context.sandbox.dataStorage.datasets;
+
+                storedColumns = context.sandbox.dataStorage.getColumns();
+                 _.each(datasets, function(collection) {
+                    _.each(collection.models, function(model) {
+
+                        var tempObject = {};
+                        $.each(storedColumns, function(k, v){
+                            if(model.attributes.hasOwnProperty(k)) {
+                                tempObject[v] = model.attributes[k];
+                            } else {
+                                tempObject[v] = '';
+                            }
+                        });
+                        compiledData.push(tempObject);
+
+                    });
+                });
+
+                // TODO: update datagrid library to include a 'replaceData' method, that will only flush and replace data while not changing page
+                myTable.removeAllData();
+                myTable.addData(compiledData);
+            }
         }
     };
 
