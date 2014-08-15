@@ -1,7 +1,8 @@
 define([
     './datagrid-publisher',
+    './datagrid-context-menu',
     'datatable'
-], function (publisher) {
+], function (publisher, datagridContextMenu) {
 
     var context,
         myTable,
@@ -11,6 +12,7 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
             $('#datagridContainer .close').on('click', function(){
                 publisher.closeDatagrid();
@@ -64,11 +66,19 @@ define([
                         "searchable": true,
                         "closeable": false,
                         "clickable": true,
-                        "afterRowClick": function(target) {
-                            publisher.identifyRecord({
-                                "featureId": target['Feature ID'],
-                                "layerId": target['Layer ID']
-                            });
+                        "afterRowClick": function(event, target) {
+                            if(event.which === 1) {
+                                publisher.identifyRecord({
+                                    "featureId": target['Feature ID'],
+                                    "layerId": target['Layer ID']
+                                });
+                            } else if (event.which === 3) {
+                                datagridContextMenu.showMenu({
+                                    "featureId": target['Feature ID'],
+                                    "layerId": target['Layer ID'],
+                                    "event": event
+                                });
+                            }
                         },
                         "addRowClasses": addCustomClasses
                     });
@@ -100,6 +110,44 @@ define([
         reload: function() {
             if(datagridVisible) {
                 exposed.open();
+            }
+        },
+        refresh: function() {
+            if(datagridVisible && myTable) {
+                myTable.updateTable();
+            }
+        },
+        addData: function(params) {
+            var compiledData = [],
+                datasets,
+                currentPagination = $('ul.pagination li.active a').html();
+
+            if(datagridVisible && myTable) {
+                datasets = context.sandbox.dataStorage.datasets;
+
+                storedColumns = context.sandbox.dataStorage.getColumns();
+                 _.each(datasets, function(collection) {
+                    _.each(collection.models, function(model) {
+
+                        var tempObject = {};
+                        $.each(storedColumns, function(k, v){
+                            if(model.attributes.hasOwnProperty(k)) {
+                                tempObject[v] = model.attributes[k];
+                            } else {
+                                tempObject[v] = '';
+                            }
+                        });
+                        compiledData.push(tempObject);
+
+                    });
+                });
+
+                // Remove old data
+                myTable.removeAllData();
+                // replace data with new Full Data
+                myTable.addData(compiledData);
+                // Make sure the table stays on same page as prior to adding data
+                myTable.updatePaginator(currentPagination);
             }
         }
     };

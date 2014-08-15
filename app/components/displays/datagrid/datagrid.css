@@ -16,3 +16,7 @@ div[data-aura-component='displays/datagrid'] #datagridContainer .close {
 div[data-aura-component='displays/datagrid'] #datagridContainer tr.hiddenFeature {
     color: #cecece;
 }
+
+div[data-aura-component='displays/datagrid'] .datagrid-context-menu {
+    z-index: 1090;
+}
