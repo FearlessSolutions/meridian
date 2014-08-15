@@ -393,60 +393,129 @@ define([
          * @param params
          */
         identifyFeature: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0],
-                feature = layer.getFeatureBy('featureId', params.featureId),
+            var layerVisibility,
+                featureVisibilty,
+                layer,
+                feature,
                 clusterFeatureId,
                 clusterFeatureCount,
                 record,
                 currentDataService;
 
-            //If no feature is found, it is most likely because it was hidden in a cluster
-            if(!feature) {
-                context.sandbox.utils.each(layer.features, function(k1, v1) {
-                    if(v1.cluster) {
-                        context.sandbox.utils.each(v1.cluster, function(k2, v2) {
-                            if(params.featureId === v2.featureId) {
-                                feature = v1;
-                                record = v2;
-                                clusterFeatureId = k2 + 1;
-                                clusterFeatureCount = feature.cluster.length;
-                            }
-                        });
-                    }
-                });
-
+            // TODO: If the feature is not hidden and its layer is not hidden: do the identify
+            layerVisibility = context.sandbox.stateManager.getLayerStateById({"layerId": params.layerId}).visible;
+            featureVisibilty = (context.sandbox.stateManager.layers[params.layerId].hiddenFeatures.indexOf(params.featureId) > -1) ? false : true;
+            if(layerVisibility && featureVisibilty) {
+                layer = params.map.getLayersBy('layerId', params.layerId)[0];
+                feature = layer.getFeatureBy('featureId', params.featureId);
+                //If no feature is found, it is most likely because it was hidden in a cluster
                 if(!feature) {
-                    context.sandbox.logger.error('Feature does not exist on map.');
-                    return;
-                }
+                    context.sandbox.utils.each(layer.features, function(k1, v1) {
+                        if(v1.cluster) {
+                            context.sandbox.utils.each(v1.cluster, function(k2, v2) {
+                                if(params.featureId === v2.featureId) {
+                                    feature = v1;
+                                    record = v2;
+                                    clusterFeatureId = k2 + 1;
+                                    clusterFeatureCount = feature.cluster.length;
+                                }
+                            });
+                        }
+                    });
 
-                currentDataService = record.attributes.dataService;
+                    if(!feature) {
+                        context.sandbox.logger.error('Feature does not exist on map.');
+                        return;
+                    }
 
-                context.sandbox.dataStorage.getFeatureById(
-                    {"featureId": record.featureId},
-                    function(fullFeature) {
-                        var infoWinTemplateRef = context.sandbox.dataServices[currentDataService].infoWinTemplate,
-                            headerHTML = '<span>' + clusterFeatureId + ' of ' + clusterFeatureCount + '</span>',
-                            formattedAttributes = {},
-                            bounds,
-                            popup;
+                    currentDataService = record.attributes.dataService;
 
-                        context.sandbox.utils.each(fullFeature.properties, 
+                    context.sandbox.dataStorage.getFeatureById(
+                        {"featureId": record.featureId},
+                        function(fullFeature) {
+                            var infoWinTemplateRef = context.sandbox.dataServices[currentDataService].infoWinTemplate,
+                                headerHTML = '<span>' + clusterFeatureId + ' of ' + clusterFeatureCount + '</span>',
+                                formattedAttributes = {},
+                                bounds,
+                                popup;
+
+                            context.sandbox.utils.each(fullFeature.properties, 
+                                function(key, value) {
+                                    if((context.sandbox.utils.type(value) === "string" ||
+                                        context.sandbox.utils.type(value) === "number" ||
+                                        context.sandbox.utils.type(value) === "boolean")) {
+                                        formattedAttributes[key] = value;
+                                    }
+                            });
+                            popup = new OpenLayers.Popup.FramedCloud('popup',
+                                OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                                null,
+                                headerHTML + infoWinTemplateRef.buildInfoWinTemplate(
+                                    formattedAttributes,
+                                    fullFeature
+                                ),
+                                null,
+                                true,
+                                function() {
+                                    mapBase.clearMapSelection({
+                                        "map": params.map
+                                    });
+                                    mapBase.clearMapPopups({
+                                        "map": params.map
+                                    });
+                                }
+                            );
+                            popup.layerId = params.layerId;
+
+                            mapBase.clearMapSelection({
+                                "map": params.map
+                            });
+                            mapBase.clearMapPopups({
+                                "map": params.map
+                            });
+
+                            bounds = feature.geometry.getBounds();
+                            params.map.setCenter(bounds.getCenterLonLat());
+
+                            feature.popup = popup;
+                            params.map.addPopup(popup);
+
+                            context.sandbox.dataServices[currentDataService].infoWinTemplate.postRenderingAction(
+                                record,
+                                layer.layerId
+                            );
+
+                            context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
+                                "layerId": layer.layerId,
+                                "featureIds": [
+                                    record.featureId
+                                ]
+                            });
+                        }
+                    );
+                } else {
+                    var popup,
+                        infoWinTemplateRef,
+                        formattedAttributes = {},
+                        anchor;
+                    context.sandbox.dataStorage.getFeatureById({"featureId": feature.featureId}, function(fullFeature) {
+                        infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
+                        context.sandbox.utils.each(fullFeature.properties,
                             function(key, value) {
                                 if((context.sandbox.utils.type(value) === "string" ||
                                     context.sandbox.utils.type(value) === "number" ||
-                                    context.sandbox.utils.type(value) === "boolean")) {
+                                    context.sandbox.utils.type(value) === "boolean"
+                                )) {
                                     formattedAttributes[key] = value;
                                 }
                         });
+                        
+                        anchor= {"size": new OpenLayers.Size(0,0), "offset": new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
                         popup = new OpenLayers.Popup.FramedCloud('popup',
                             OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
                             null,
-                            headerHTML + infoWinTemplateRef.buildInfoWinTemplate(
-                                formattedAttributes,
-                                fullFeature
-                            ),
-                            null,
+                            infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes, fullFeature),
+                            anchor,
                             true,
                             function() {
                                 mapBase.clearMapSelection({
@@ -457,7 +526,6 @@ define([
                                 });
                             }
                         );
-                        popup.layerId = params.layerId;
 
                         mapBase.clearMapSelection({
                             "map": params.map
@@ -466,77 +534,18 @@ define([
                             "map": params.map
                         });
 
-                        bounds = feature.geometry.getBounds();
-                        params.map.setCenter(bounds.getCenterLonLat());
-
                         feature.popup = popup;
                         params.map.addPopup(popup);
-
-                        context.sandbox.dataServices[currentDataService].infoWinTemplate.postRenderingAction(
-                            record,
-                            layer.layerId
-                        );
+                        infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
 
                         context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
-                            "layerId": layer.layerId,
+                            "layerId": feature.layer.layerId,
                             "featureIds": [
-                                record.featureId
+                                feature.featureId
                             ]
                         });
-                    }
-                );
-            } else {
-                var popup,
-                    infoWinTemplateRef,
-                    formattedAttributes = {},
-                    anchor;
-                context.sandbox.dataStorage.getFeatureById({"featureId": feature.featureId}, function(fullFeature) {
-                    infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
-                    context.sandbox.utils.each(fullFeature.properties,
-                        function(key, value) {
-                            if((context.sandbox.utils.type(value) === "string" ||
-                                context.sandbox.utils.type(value) === "number" ||
-                                context.sandbox.utils.type(value) === "boolean"
-                            )) {
-                                formattedAttributes[key] = value;
-                            }
                     });
-                    
-                    anchor= {"size": new OpenLayers.Size(0,0), "offset": new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
-                    popup = new OpenLayers.Popup.FramedCloud('popup',
-                        OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
-                        null,
-                        infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes, fullFeature),
-                        anchor,
-                        true,
-                        function() {
-                            mapBase.clearMapSelection({
-                                "map": params.map
-                            });
-                            mapBase.clearMapPopups({
-                                "map": params.map
-                            });
-                        }
-                    );
-
-                    mapBase.clearMapSelection({
-                        "map": params.map
-                    });
-                    mapBase.clearMapPopups({
-                        "map": params.map
-                    });
-
-                    feature.popup = popup;
-                    params.map.addPopup(popup);
-                    infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
-
-                    context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
-                        "layerId": feature.layer.layerId,
-                        "featureIds": [
-                            feature.featureId
-                        ]
-                    });
-                });
+                }
             }
         }
 
