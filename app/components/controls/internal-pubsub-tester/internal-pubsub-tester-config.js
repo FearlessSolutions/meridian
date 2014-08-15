@@ -214,6 +214,15 @@ define([
                 "layerId": "TestLayer1"
             }
         },
+        "map.zoom.toFeatures": {
+            "payload": {
+                "layerId": "TestLayer1",
+                "featureIds": [
+                  "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
+                  "d3bc9d37-e683-4195-9475-bd4f37887d21"
+                ]
+            }
+        },
         "map.zoom.toLocation": {
             "payload": {
                 "minLon": -20,

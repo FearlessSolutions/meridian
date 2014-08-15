@@ -121,6 +121,19 @@ define([
             });
         },
         /**
+         * Zoom in to Features
+         * @param {object} params - JSON parameters
+         * @param {string} params.layerId - id of layer
+         * @param {array} params.featureIds - array of featureIds
+         */
+        zoomToFeatures: function(params) {
+            mapNavigation.zoomToFeatures({
+                "map": map,
+                "layerId": params.layerId,
+                "featureIds": params.featureIds
+            });
+        },
+        /**
          * Set the Basemap
          * @param {object} params - JSON parameters
          * @param {string} params.basemapLayer - name of basemap layer
