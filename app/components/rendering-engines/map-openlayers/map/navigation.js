@@ -28,15 +28,40 @@ define([
          * @param params
          */
         zoomToLayer: function(params) {
-            var queryLayer = params.map.getLayersBy('layerId', params.layerId)[0];
+            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
 
-            if(queryLayer && queryLayer.getDataExtent()) {
-                params.map.zoomToExtent(queryLayer.getDataExtent());
+            if(layer && layer.getDataExtent()) {
+                params.map.zoomToExtent(layer.getDataExtent());
             } else {
                 publisher.publishMessage({
                     messageType: 'warning',
                     messageTitle: 'Zoom to Layer',
                     messageText: 'No data in layer to zoom to.'
+                });
+            }
+        },
+        /**
+         * Zoom to features (all features in array must belong to the same layer)
+         * @param params
+         */
+        zoomToFeatures: function(params) {
+            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
+            var bounds = new OpenLayers.Bounds();
+            
+            // TODO: make it also work in cluster mode (to check through the features in clusters)
+            context.sandbox.utils.each(params.featureIds, function(key, value) {
+                var feature = layer.getFeatureBy('featureId', value);
+                var featureExtent = feature.geometry.getBounds();
+                bounds.extend(featureExtent);
+            });
+
+            if(layer && bounds) {
+                params.map.zoomToExtent(bounds);
+            } else {
+                publisher.publishMessage({
+                    messageType: 'warning',
+                    messageTitle: 'Zoom to Features',
+                    messageText: 'Features not found.'
                 });
             }
         },

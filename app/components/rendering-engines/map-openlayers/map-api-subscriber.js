@@ -26,6 +26,7 @@ define([
             context.sandbox.on('map.zoom.in', mapCore.zoomIn);
             context.sandbox.on('map.zoom.out', mapCore.zoomOut);
             context.sandbox.on('map.zoom.toLocation', mapCore.zoomToExtent);
+            context.sandbox.on('map.zoom.toFeatures', mapCore.zoomToFeatures);
             context.sandbox.on('map.zoom.toLayer', mapCore.zoomToLayer);
             context.sandbox.on('map.feature.identify', mapCore.identifyRecord);
             context.sandbox.on('data.clear.all', mapCore.clear);
@@ -47,6 +48,7 @@ define([
             context.sandbox.off('map.zoom.in', mapCore.zoomIn);
             context.sandbox.off('map.zoom.out', mapCore.zoomOut);
             context.sandbox.off('map.zoom.toLocation', mapCore.zoomToLocation);
+            context.sandbox.off('map.zoom.toFeatures', mapCore.zoomToFeatures);
             context.sandbox.off('map.zoom.toLayer', mapCore.zoomToLayer);
             context.sandbox.off('map.feature.identify', mapCore.identifyRecord);
             context.sandbox.off('data.clear.all', mapCore.clear);
