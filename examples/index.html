@@ -1,3 +1,7 @@
+<!-- &lt left -->
+<!-- &gt right-->
+<!-- data-line="4"  how to highlight-->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -115,6 +119,9 @@ require(['jquery', 'aura/aura'], function($, Aura) {
             <p>A self contained element, usually tied to a HTML element, wrapped with functionality for the user and other components to interact with.</p>
 
             <p> All files are contained in a single folder. To prevent problems, make sure folder names contain no spaces. Aura parses spaces differently and the component folder will not be found. </p>
+
+            <p>The following is a list of files that are normally found inside the folder of each component.</p>
+
             <p><code>main.js</code>- Required File.</p>
               <ul>
                 <p>Meridian utilizies this file to initialize the component. The component HTML and other files are initialized and applied here. </p>
@@ -155,10 +162,6 @@ require(['jquery', 'aura/aura'], function($, Aura) {
                 <li>jQuery access must be limited to the components own element.</li>
               </ul>
 
-
-<!-- &lt left -->
-<!-- &gt right-->
- <!-- data-line="4"  how to highlight-->
 
           <h4 class="page-header" id="componentsExamples">Components Examples</h4>
             <p>Here is a simple example of an <code>input-area</code> component. In the current status, the component simply reads the content in the input area. Without any messaging files, this component will not be able to comunicate with any others.</p>
@@ -236,23 +239,33 @@ require(['jquery', 'aura/aura'], function($, Aura) {
 });</code></pre>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
           
           <h2 class="page-header" id="messaging">Messaging</h2>
+            <p>Meridian messaging is all about the means of communication between components.</p>
 
           <h4 class="page-header" id="messagingRules">Messaging Rules & Information</h4>
+            <li>The benefit of using channels over direct function calls is that neither side cares what the other looks like internally. The interoperability of components comes from the channels.</li>
+
+            <li> Each component that wants to comunicate with other components is required to define what channels is publishes to and listens to.</li>
+
+            <li>All information send between components should be sent over channels and it should be contained in an object, even if it is one value. <em>i.e</em><code>{'name':'value'}</code></li>
+            <br>
+            <p>The files that handle all the messaging are:</p>
+
+            <p><code>*-subscriber.js</code>- Recommended File.</p>
+              <ul>
+                <p>Defines and contains all the channels the component listens to. Each channel is mapped to at least one of the exposed functions of the component.</p>
+              </ul>
+            <p><code>*-publisher.js</code>- Recommended File.</p>
+              <ul>
+                <p>Defines and contains all the channels the component publishes to. It exposes the publish functions to the component.</p>
+              </ul>
+
+
           <h4 class="page-header" id="messagingExamples">Messaging Examples</h4>
+            <p>Bellow we will see the code required to add messaging to the <code>input-area</code> example component used in the <a href=".#components">Components</a> section.</p>
+
+            <p>First we need to create our </p>
 
 
           <h2 class="page-header" id="sandBoxing">SandBoxing</h2>
