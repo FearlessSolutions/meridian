@@ -1,6 +1,5 @@
 define([
 ], function () {
-
 	var context;
 
 	var exposed = {
@@ -13,5 +12,4 @@ define([
     };
 
     return exposed;
-
 });

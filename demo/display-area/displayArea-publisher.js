@@ -1,6 +1,5 @@
 define([
 ], function () {
-
 	var context;
 
 	var exposed = {

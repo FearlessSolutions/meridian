@@ -61,7 +61,7 @@ footer p {
 }
 
 /*Makes the href from sideNav account for the nav bar at the top of the page.*/
-h2:before, h4:before{
+h2:before, h4:before, p:before{
 	display: block;
 	content: " ";
 	height: 75px;
@@ -122,7 +122,11 @@ h2:before, h4:before{
 }
 
 /*Allow <code> to be inline and not take the entire width of the page.*/
-div.language-javascript code {
+code.language-javascript {
 	display: inline;
 }
 
+/*Adding more space after the formatted code examples*/
+pre[class*="language-"] {
+	margin-bottom: 25px;
+}
