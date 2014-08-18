@@ -400,7 +400,13 @@ define([
                 clusterFeatureId,
                 clusterFeatureCount,
                 record,
-                currentDataService;
+                currentDataService,
+                popup,
+                infoWinTemplateRef,
+                formattedAttributes = {},
+                anchor,
+                currentFeature,
+                selectController;
 
             // TODO: If the feature is not hidden and its layer is not hidden: do the identify
             layerVisibility = context.sandbox.stateManager.getLayerStateById({"layerId": params.layerId}).visible;
@@ -494,10 +500,6 @@ define([
                         }
                     );
                 } else {
-                    var popup,
-                        infoWinTemplateRef,
-                        formattedAttributes = {},
-                        anchor;
                     context.sandbox.dataStorage.getFeatureById({"featureId": feature.featureId}, function(fullFeature) {
                         infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
                         context.sandbox.utils.each(fullFeature.properties,
@@ -534,16 +536,20 @@ define([
                             "map": params.map
                         });
 
+                        // currentFeature = layer.getFeatureBy('featureId', feature.featureId)[0];
+                        selectController = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                        selectController.select(feature);
+
                         feature.popup = popup;
                         params.map.addPopup(popup);
                         infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
 
-                        context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
-                            "layerId": feature.layer.layerId,
-                            "featureIds": [
-                                feature.featureId
-                            ]
-                        });
+                        // context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
+                        //     "layerId": feature.layer.layerId,
+                        //     "featureIds": [
+                        //         feature.featureId
+                        //     ]
+                        // });
                     });
                 }
             }
