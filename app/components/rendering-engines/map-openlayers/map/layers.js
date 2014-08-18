@@ -500,57 +500,9 @@ define([
                         }
                     );
                 } else {
-                    context.sandbox.dataStorage.getFeatureById({"featureId": feature.featureId}, function(fullFeature) {
-                        infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
-                        context.sandbox.utils.each(fullFeature.properties,
-                            function(key, value) {
-                                if((context.sandbox.utils.type(value) === "string" ||
-                                    context.sandbox.utils.type(value) === "number" ||
-                                    context.sandbox.utils.type(value) === "boolean"
-                                )) {
-                                    formattedAttributes[key] = value;
-                                }
-                        });
-                        
-                        anchor= {"size": new OpenLayers.Size(0,0), "offset": new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
-                        popup = new OpenLayers.Popup.FramedCloud('popup',
-                            OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
-                            null,
-                            infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes, fullFeature),
-                            anchor,
-                            true,
-                            function() {
-                                mapBase.clearMapSelection({
-                                    "map": params.map
-                                });
-                                mapBase.clearMapPopups({
-                                    "map": params.map
-                                });
-                            }
-                        );
-
-                        mapBase.clearMapSelection({
-                            "map": params.map
-                        });
-                        mapBase.clearMapPopups({
-                            "map": params.map
-                        });
-
-                        // currentFeature = layer.getFeatureBy('featureId', feature.featureId)[0];
-                        selectController = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-                        selectController.select(feature);
-
-                        feature.popup = popup;
-                        params.map.addPopup(popup);
-                        infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
-
-                        // context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
-                        //     "layerId": feature.layer.layerId,
-                        //     "featureIds": [
-                        //         feature.featureId
-                        //     ]
-                        // });
-                    });
+                    // If not in a cluster, fire the selector event
+                    selectController = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                    selectController.select(feature);
                 }
             }
         }
