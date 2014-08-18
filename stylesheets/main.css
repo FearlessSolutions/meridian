@@ -51,12 +51,12 @@ code {
 	padding-top: 25px;
 }
 
-.footer {
+/*Add some padding to the footer content.*/
+footer {
 	padding-bottom: 10px;
-	background-color: none;
 }
 
-.footer p {
+footer p {
 	margin-bottom: 0px;
 }
 

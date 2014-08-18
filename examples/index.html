@@ -15,7 +15,7 @@
     <script src="../javascripts/bootstrap-3.2.0/bootstrap.js"></script>
   </head>
   <body data-spy="scroll" data-target="#sideNav">
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
           <span class="icon-bar"></span>
@@ -31,11 +31,11 @@
           <li class="active"><a href=".">Examples</a></li>
         </ul>
       </div>
-    </div>
+    </nav>
     
-    <div class="container">
+    <section class="container">
       <div class="row">
-        <div class="col-md-10 container">
+        <section class="col-md-10 container">
 
           <h2 class="page-header" id="starting">Starting a Meridian Application</h2>
             <p>To get Meridian started, there are only two required files:</p>
@@ -301,10 +301,10 @@ require(['jquery', 'aura/aura'], function($, Aura) {
 
 
            
-        </div><!-- md-10 container -->
+        </section><!-- md-10 container -->
 
-        <div class="col-md-2">
-          <div class="hidden-print hidden-xs hidden-sm" id="sideNav">
+        <section class="col-md-2">
+          <nav class="hidden-print hidden-xs hidden-sm" id="sideNav">
             <ul class="nav affix">
               <li><a href="#starting">Starting the App</a>
                 <ul class="nav">
@@ -343,29 +343,29 @@ require(['jquery', 'aura/aura'], function($, Aura) {
               </li>
              
             </ul>
-          </div> <!-- sideNav -->
-        </div><!-- md-2 -->
+          </nav> <!-- sideNav -->
+        </section><!-- md-2 -->
       </div><!-- row -->
-    </div><!--container-->
+    </section><!--container-->
     
     <hr>
 
-    <div class="footer text-center">
+    <footer class="footer text-center">
       <div class="container">
         <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian/archive/master.zip"><i class="glyphicon glyphicon-cloud-download"></i> Download Meridian</a>
         <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian"><i class="icon-github3"></i> View on Github</a>
       </div>
-        
+
       <div class="container new-section small">
         <p>Software (c) 2014 <a href="http://www.boeing.com/" title="Boeing">The Boeing Company</a></p>
         <p>The United States Government has unlimited rights in this software, pursuant to the contracts under which it was developed.</p>
-     
+
         <p>The AML Center (under OZONE) is released to the public as Open Source Software as required by <a href="http://www.gpo.gov/fdsys/pkg/PLAW-112publ81/pdf/PLAW-112publ81.pdf" title="NDAA FY12">Section 924 of the 2012 National Defense Authorization Act</a>.</p>
 
         <p>Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html" title="Apache License v2.0">Apache License v2.0</a>.</p>
 
         <p>Forked from the Open Source Project: <a href="http://aurajs.com/"> Aura JS</a>.</p>
       </div>
-    </div>
+    </footer>
   </body>
 </html>
