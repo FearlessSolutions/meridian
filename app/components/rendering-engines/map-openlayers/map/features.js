@@ -35,6 +35,14 @@ define([
                     currentFeature.featureId = value.id || '';
                     currentFeature.attributes.dataService = value.dataService || '';
 
+                    // Handle default styles if none defined
+                    if(!currentFeature.attributes.icon) {
+                        iconData = context.sandbox.icons.getIconForFeature(value);
+                        currentFeature.attributes.icon = iconData.icon;
+                        currentFeature.attributes.height = iconData.height;
+                        currentFeature.attributes.width = iconData.width;
+                    }
+                     
                     newFeatures.push(currentFeature);
                 });
 
