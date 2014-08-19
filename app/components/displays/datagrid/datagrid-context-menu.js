@@ -14,19 +14,29 @@ define([
         },
         showMenu: function(params) {
             var hiddenFeatures,
+                layerVisibility,
                 hideDisabled = '',
                 showDisabled = 'disabled',
                 zoomDisabled = '',
                 datagridContextMenuHTML,
                 $currentMenu;
 
+            layerVisibility = context.sandbox.stateManager.getLayerStateById({
+                "layerId": params.layerId
+            }).visible;
+
             hiddenFeatures = context.sandbox.stateManager.getHiddenFeaturesByLayerId({
                 "layerId": params.layerId
             });
-            if(hiddenFeatures.indexOf(params.featureId) > -1) {
+
+            if(hiddenFeatures.indexOf(params.featureId) > -1 || !layerVisibility) {
                 hideDisabled = 'disabled';
                 showDisabled = '';
                 zoomDisabled = 'disabled';
+            }
+            // If the layer is not visible, also disable the menu item for show (can't show if the layer is off)
+            if(!layerVisibility) {
+                showDisabled = 'disabled';
             }
 
             // Remove any existing datagrid context menus
