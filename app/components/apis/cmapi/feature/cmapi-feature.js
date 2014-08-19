@@ -221,11 +221,10 @@ define([
                         "data": newData
                     });
 
-                    
-                    context.sandbox.utils.each(newData, function(k, v){
-                        featureIds.push(v.featureId);
-                    });
                     if(message.zoom === true) {
+                        context.sandbox.utils.each(newData, function(k, v){
+                            featureIds.push(v.featureId);
+                        });
                         publisher.publishZoomToFeatures({
                             "layerId": layerId,
                             "featureIds": featureIds
