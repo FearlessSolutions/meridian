@@ -112,8 +112,8 @@ define([
                             }
                         ]
                     },
-                    "zoom":"true",
-                    "readOnly":"false"
+                    "zoom":true,
+                    "readOnly":false
                 }
             },
             "map.feature.hide":{
