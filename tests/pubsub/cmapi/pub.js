@@ -25,7 +25,7 @@ define([
             }
             $pubSelector.on("change", function(e){
                 var channel = this.selectedOptions[0].value,
-                    sample = JSON.stringify(pubChannels[channel].sample) || '';
+                    sample = JSON.stringify(pubChannels[channel].sample, null, "  ") || '';
 
                 if($(this.selectedOptions[0]).hasClass("has-error")){
                     $(this).parent().addClass("has-error");
