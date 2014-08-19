@@ -258,12 +258,14 @@ define([
          * @param {object} params - JSON parameters
          * @param {array} params.featureIds - ids of features to be hidden
          * @param {string} params.layerId - layer id
+         * @param {boolean} params.exclusive - only these features are hidden
          */
         hideFeatures: function(params) {
             mapFeatures.hideFeatures({
                 "map": map,
                 "layerId": params.layerId,
-                "featureIds": params.featureIds
+                "featureIds": params.featureIds,
+                "exclusive": params.exclusive
             });
             if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
                 mapHeatmap.update({

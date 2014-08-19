@@ -59,9 +59,17 @@ define([
         hideFeatures: function(params) {
             var layerId = params.layerId,
                 featureIds = params.featureIds,
-                layer = params.map.getLayersBy('layerId', layerId)[0];
+                layer = params.map.getLayersBy('layerId', layerId)[0],
+                currentHiddenFeatures = [];
 
             if(layer) {
+                if(params.exclusive === true) { // Show all previously hidden features before hiding new ones
+                    exposed.showAllFeatures({
+                        "map": params.map,
+                        "layerId": layerId
+                    });
+                }
+
                 context.sandbox.stateManager.addHiddenFeaturesByLayerId({
                     "layerId": layerId,
                     "featureIds": featureIds
@@ -138,7 +146,7 @@ define([
                 context.sandbox.utils.each(featureIds, function(index, featureId) {
                     var feature = layer.getFeatureBy('featureId', featureId);
                     if(feature) {
-                        feature.style = null; 
+                        feature.style = null;
                     } else {
                         context.sandbox.utils.each(layer.features, function(index, clusterFeature) {
                             if(clusterFeature.cluster) {
@@ -159,6 +167,32 @@ define([
                     "forces": true
                 });
             }
+        },
+        showAllFeatures: function(params) {
+            var layerId = params.layerId,
+                layer = params.map.getLayersBy('layerId', layerId)[0];
+
+            context.sandbox.stateManager.removeAllHiddenFeaturesByLayerId({
+                "layerId": layerId
+            });
+
+            context.sandbox.utils.each(layer.features, function(index, feature) {
+                if(feature.cluster) {
+                    context.sandbox.utils.each(feature.cluster, function(index, record) {
+                        record.style = null;
+                    });
+                } else {
+                    feature.style = null;
+                }
+            });
+            layer.redraw();
+            if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                layer.recluster();
+            }
+            layer.refresh({
+                "force": true,
+                "forces": true
+            });
         }
     };
     return exposed;
