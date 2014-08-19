@@ -61,11 +61,20 @@ footer p {
 }
 
 /*Makes the href from sideNav account for the nav bar at the top of the page.*/
-h2:before, h4:before, p:before{
+h2:before, h4:before{
 	display: block;
 	content: " ";
 	height: 75px;
 	margin-top: -75px;
+	visibility:hidden;
+}
+
+/*Makes hidden anchor that behaves like h2:before and h4:before*/
+a.anchorLink {
+	display: inline-block;
+	content: " ";
+	height: 80px;
+	margin-top: -80px;
 	visibility:hidden;
 }
 

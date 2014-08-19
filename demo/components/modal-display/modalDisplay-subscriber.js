@@ -9,6 +9,5 @@ define([
             context.sandbox.on('show.text', modalDisplayTool.openModal);
         }
     };	
-
     return exposed;
 });

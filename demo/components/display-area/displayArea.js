@@ -1,7 +1,6 @@
 define([
-    './displayArea-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
     textCount = 0,
     modalCount = 0;

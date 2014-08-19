@@ -3,7 +3,6 @@ define([
     'text!./inputArea.hbs',
     './inputArea',
     './inputArea-publisher',
-    './inputArea-subscriber',
     'handlebars'
 ], function (inputAreaToolCSS, inputAreaToolHBS, inputAreaTool, inputAreaToolPublisher, inputAreaToolSubscriber) {
     return {
@@ -15,7 +14,6 @@ define([
             this.html(html);
 
             inputAreaToolPublisher.init(this);
-            //inputAreaToolSubscriber.init(this);
             inputAreaTool.init(this);
         }
     };                

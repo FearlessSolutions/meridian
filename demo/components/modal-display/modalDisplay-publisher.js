@@ -1,8 +1,6 @@
 define([
 ], function () {
-
 	var context;
-
 	var exposed = {
         init: function(thisContext) {
             context = thisContext;
@@ -11,7 +9,5 @@ define([
             context.sandbox.emit('modal.display.success'); 
         }
     };
-
     return exposed;
-
 });

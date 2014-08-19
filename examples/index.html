@@ -90,7 +90,7 @@
 
               <p>Everything together will look something like this:</p>
 
-            <span class="label label-primary"> &ltroot&gt/app.js </span>
+            <span class="label label-primary"><a class="anchorLink" id="rootApp"></a>&ltroot&gt/app.js </span>
             <pre class="line-numbers"><code class="language-javascript">require.config({
     paths: {
         aura: '../javascripts/aura/lib',
@@ -110,14 +110,14 @@ require(['jquery', 'aura/aura'], function($, Aura) {
 
     Aura({
         "debug":true,
-        sources: {default: '.'} 
+        sources: {default: './components'} 
     })
     .use('./extensions/utils-extension')
     .start({ components: 'body' });
 });</code></pre>
 
 
-          <span class="label label-primary"> &ltroot&gt/index.html </span>
+          <span class="label label-primary"><a class="anchorLink" id="rootIndex"></a>&ltroot&gt/index.html </span>
           <pre class="line-numbers"><code class="language-markup">&lt!DOCTYPE html&gt
 &lthtml&gt
   &lthead&gt
@@ -189,7 +189,7 @@ require(['jquery', 'aura/aura'], function($, Aura) {
             <h4 class="page-header" id="componentsExamples">Components Examples</h4>
               <p>Here is a simple example of an <code>input-area</code> component. In the current status, the component simply reads the content in the input area. Without any messaging files, this component will not be able to comunicate with any others.</p>
 
-            <span class="label label-primary"> input-area/inputArea.hbs </span>
+            <span class="label label-primary"><a class="anchorLink" id="inputAreaHBS"></a>input-area/inputArea.hbs </span>
 <pre class="line-numbers"><code class="language-markup">&ltdiv id="inputArea" class="input-group"&gt
   &ltinput type="text" class="form-control"&gt
   &ltspan class="input-group-btn"&gt
@@ -295,7 +295,7 @@ require(['jquery', 'aura/aura'], function($, Aura) {
 
               <p>Now the publisher file needed for the <code>input-area</code> component:</p>
 
-              <span class="label label-primary"> input-area/inputArea-publisher.js </span>
+              <span class="label label-primary"><a class="anchorLink" id="inputAreaPublisher"></a>input-area/inputArea-publisher.js </span>
               <pre class="line-numbers"><code class="language-javascript">define([
 ], function () {
   var context;
@@ -323,7 +323,7 @@ inputAreaTool.init(this);</code></pre>
 
               <p>Final version of <code>input-area/inputArea.js</code></p>
 
-              <span class="label label-primary"> input-area/inputArea.js </span>
+              <span class="label label-primary"><a class="anchorLink" id="inputAreaJS"></a>input-area/inputArea.js </span>
               <pre class="line-numbers"><code class="language-javascript">define([
     './inputArea-publisher'
 ], function (publisher) {
@@ -376,11 +376,11 @@ inputAreaTool.init(this);</code></pre>
               <br>
               <p>There are three type of extension files:</p>
               <ul>
-                <li><code>root/name-configuration-extension/*-extension.js</code></li>
+                <li><code>root/*-configuration-extension/*-extension.js</code></li>
                   <p>Holds all the functions and applies content to the sandbox.</p>
-                <li><code>root/name-configuration-extension/*.js</code></li>
+                <li><code>root/*-configuration-extension/*.js</code></li>
                 <p>Configuration file that holds things like URLs, library options and other static content.</p>
-                <li><code>root/name-configuration-extension/*.hbs</code></li>
+                <li><code>root/*-configuration-extension/*.hbs</code></li>
                 <p>Template that changes in different application states and/or between applications. Useful when you want to keep a component as generic as possible and want to add specific functionality.</p>
               </ul>
 
@@ -415,7 +415,7 @@ inputAreaTool.init(this);</code></pre>
             <p>For our demo, we will be utilizing Meridian's <code>utils-extensions.js</code> file. It adds 
             <code>sandbox.utils</code> to the application, and it shows how to expose some parts of a library. In addition, it shows how Meridian controls the access of jQuery to a single component.</p>
 
-            <span class="label label-primary">utils-extensions.js</span>
+            <span class="label label-primary"><a class="anchorLink" id="utilsExtension"></a>utils-extensions.js</span>
             <pre class="line-numbers"><code class="language-javascript">define([
     'jquery'
 ], function($){
@@ -456,9 +456,6 @@ inputAreaTool.init(this);</code></pre>
           <h2 class="page-header" id="meridian">Meridian in action</h2>
             <p>The <code>input-area</code>, <code>display-area</code> and <code>modal-display</code> components can be seen working just below.</p>
 
-            <p>This demo utilizes: </p>
-              <li><code>utils-extension.js</code> file found on <a href="./#my">Extension examples</a></li>
-
             <h4 class="page-header" id="demo">Demo</h4>
               <div class="container" style="text-align: center">
                 <h3> Input Area component: </h3>
@@ -470,9 +467,247 @@ inputAreaTool.init(this);</code></pre>
                 <a href="../demo" target="_blank">View these examples on a separeate page <span class="glyphicon glyphicon-chevron-right"></span></a>
               </div>
 
-            <h4 class="page-header" id="source">Source Code</h2>
+            <h4 class="page-header" id="source">Source Code</h4>
+              <p><span class="label label-primary">root/extensions/utils-extension.js</span> file shown in <a href="./#utilsExtension">Extension examples</a>.</p>
+              <p><span class="label label-primary">root/index.html</span> file shown in <a href="./#rootIndex">File examples</a>.</p>
+              <p><span class="label label-primary">root/app.js</span> file shown in <a href="./#rootApp">File examples</a>.</p>
+
+              <p><span class="label label-primary">root/components/input-area</span> which contains:</p>
+              <p><span class="label label-primary">root/components/input-area/inputArea.hbs</span> file shown in <a href="./#inputAreaHBS">Components examples</a>.</p>
+              <p><span class="label label-primary">root/components/input-area/inputArea.js</span> file shown in <a href="./#inputAreaJS">Components examples</a>.</p>
+              <p><span class="label label-primary">root/components/input-area/inputArea-publisher.js</span> file shown in <a href="./#inputAreaPublisher">Messaging examples</a>.</p>
+
+              <p><span class="label label-primary">root/components/input-area/inputArea.css</span>:</p>
+              <pre class="line-numbers"><code class="language-css">div[data-aura-component='input-area'] #inputArea{
+  max-width: 500px;
+  text-align: center;
+  display: inline-table;
+}</code></pre>
 
 
+              <p><span class="label label-primary">root/components/input-area/main.js</span>:</p>
+              <pre class="line-numbers"><code class="language-javascript">define([
+    'text!./inputArea.css',
+    'text!./inputArea.hbs',
+    './inputArea',
+    './inputArea-publisher',
+    'handlebars'
+], function (inputAreaToolCSS, inputAreaToolHBS, inputAreaTool, inputAreaToolPublisher, inputAreaToolSubscriber) {
+    return {
+        initialize: function() {
+            this.sandbox.utils.addCSS(inputAreaToolCSS, 'tool-inputArea-component-style');
+
+            var inputAreaToolTemplate = Handlebars.compile(inputAreaToolHBS);
+            var html = inputAreaToolTemplate();
+            this.html(html);
+
+            inputAreaToolPublisher.init(this);
+            inputAreaTool.init(this);
+        }
+    };                
+});</code></pre>
+
+
+            <p><span class="label label-primary">root/components/display-area</span> which contains:</p>
+            <p><span class="label label-primary">root/components/display-area/displayArea.css</span>:</p>
+            <pre class="line-numbers"><code class="language-css">div[data-aura-component='display-area'] #displayArea{
+  min-width: 400px;
+  display: inline-table;
+}</code></pre>
+
+
+            <p><span class="label label-primary">root/components/display-area/displayArea.hbs</span>:</p>
+            <pre class="line-numbers"><code class="language-markup">&ltdiv id="displayArea" class="panel panel-default"&gt
+  &ltdiv class="panel-heading"&gtMessages received:&lt/div&gt
+  &ltdiv class="panel-body"&gt
+    &ltdiv id="showText" class="well"&gt
+      &ltspan class="badge"&gt0&lt/span&gt "show.text"
+      &ltbutton class="btn btn-primary btn-xs pull-right" type="button"&gtAdd 1&lt/button&gt
+    &lt/div&gt
+  &ltdiv id="modalChannel" class="well"&gt
+    &ltspan class="badge"&gt0&lt/span&gt "modal.display.success"
+      &ltbutton class="btn btn-primary btn-xs pull-right" type="button"&gtAdd 1&lt/button&gt
+  &lt/div&gt
+  &lt/div&gt
+&lt/div&gt</code></pre>
+
+
+            <p><span class="label label-primary">root/components/display-area/displayArea-subscriber.js</span>:</p>
+            <pre class="line-numbers"><code class="language-javascript">define([
+  './displayArea'
+], function (displayAreaTool) {
+    var context;
+  var exposed = {
+        init: function(thisContext){
+            context = thisContext;
+            context.sandbox.on('show.text', displayAreaTool.updateTextCount);
+            context.sandbox.on('modal.display.success', displayAreaTool.updateModalCount);
+        }
+    };  
+    return exposed;
+});</code></pre>
+
+
+            <p><span class="label label-primary">root/components/display-area/displayArea.js</span>:</p>
+            <pre class="line-numbers"><code class="language-javascript">define([
+    'bootstrap'
+], function () {
+    var context,
+    textCount = 0,
+    modalCount = 0;
+
+    var exposed = {
+        init: function(thisContext) {
+            context = thisContext
+            context.$('#showText .btn').on('click',function(event){
+                 event.preventDefault();
+                 exposed.updateTextCount();
+            });
+
+            context.$('#modalChannel .btn').on('click',function(event){
+                 event.preventDefault();
+                 exposed.updateModalCount();
+            });
+        },
+        updateTextCount: function(param){
+            context.$('#showText span').html(++textCount);
+        },
+        updateModalCount: function(param){
+            context.$('#modalChannel span').html(++modalCount);
+        }
+    };
+    return exposed;
+});</code></pre>
+
+
+            <p><span class="label label-primary">root/components/display-area/main.js</span>:</p>
+            <pre class="line-numbers"><code class="language-javascript">define([
+    'text!./displayArea.css',
+    'text!./displayArea.hbs',
+    './displayArea',
+    './displayArea-subscriber',
+    'handlebars'
+], function (displayAreaToolCSS, displayAreaToolHBS, displayAreaTool, displayAreaToolSubscriber) {
+    return {
+        initialize: function() {
+            this.sandbox.utils.addCSS(displayAreaToolCSS, 'tool-displayArea-component-style');
+
+            var displayAreaToolTemplate = Handlebars.compile(displayAreaToolHBS);
+            var html = displayAreaToolTemplate();
+            this.html(html);
+
+            displayAreaToolSubscriber.init(this);
+            displayAreaTool.init(this);
+        }
+    };                
+});</code></pre>
+
+
+            <p>And finally, <span class="label label-primary">root/components/modal-display</span> which contains:</p>
+            <p><span class="label label-primary">root/components/modal-display/modalDisplay.hbs</span>:</p>
+            <pre class="line-numbers"><code class="language-markup">&ltdiv class="modal"&gt
+  &ltdiv class="modal-dialog"&gt
+    &ltdiv class="modal-content"&gt
+      &ltdiv class="modal-header"&gt
+        &ltbutton type="button" class="close" data-dismiss="modal" aria-hidden="true"&gt×&lt/button&gt
+        &lth4 class="modal-title"&gtMessage Received!&lt/h4&gt
+      &lt/div&gt
+      &ltdiv class="modal-body"&gt
+      &lt/div&gt
+      &ltdiv class="modal-footer"&gt
+        &ltbutton type="button" class="btn btn-default" data-dismiss="modal"&gtClose&lt/button&gt
+        &ltbutton type="button" class="btn btn-primary"&gtOk&lt/button&gt
+      &lt/div&gt
+    &lt/div&gt
+  &lt/div&gt
+&lt/div&gt</code></pre>
+
+
+            <p><span class="label label-primary">root/components/modal-display/modalDisplay-publisher.js</span>:</p>
+            <pre class="line-numbers"><code class="language-javascript">define([
+], function () {
+  var context;
+  var exposed = {
+        init: function(thisContext) {
+            context = thisContext;
+        },
+        emitSuccess: function(params){
+            context.sandbox.emit('modal.display.success'); 
+        }
+    };
+    return exposed;
+});</code></pre>
+
+
+            <p><span class="label label-primary">root/components/modal-display/modalDisplay-subscriber.js</span>:</p>
+            <pre class="line-numbers"><code class="language-javascript">define([
+  './modalDisplay'
+], function (modalDisplayTool) {
+    var context;
+
+  var exposed = {
+        init: function(thisContext){
+            context = thisContext;
+            context.sandbox.on('show.text', modalDisplayTool.openModal);
+        }
+    };  
+    return exposed;
+});</code></pre>
+
+
+            <p><span class="label label-primary">root/components/modal-display/modalDisplay.js</span>:</p>
+            <pre class="line-numbers"><code class="language-javascript">define([
+    './modalDisplay-publisher',
+    'bootstrap'
+], function (publisher) {
+    var context;
+    var exposed = {
+        init: function(thisContext) {
+            context = thisContext;
+            context.$('.modal').modal({
+                show: false
+            });
+
+            context.$('.btn.btn-primary').on('click',function(event){
+                event.preventDefault();
+                publisher.emitSuccess();
+                context.$('.modal').modal('hide');
+            });
+        },
+        openModal: function(params){
+            if(params.message !== ""){
+                var content = "Message sent was: " + params.message + '<br> Click OK to send the modal.display.success message, if not, it will not be sent.';
+                context.$('.modal-body').html("");//clear any old values.
+                context.$('.modal-body').html(content);
+                context.$('.modal').modal('toggle');
+            }
+        }
+    };
+    return exposed;
+});</code></pre>
+
+
+          <p><span class="label label-primary">root/components/modal-display/main.js</span>:</p>
+          <pre class="line-numbers"><code class="language-javascript">define([
+    'text!./modalDisplay.hbs',
+    './modalDisplay',
+    './modalDisplay-publisher',
+    './modalDisplay-subscriber',
+    'handlebars'
+], function (modalDisplayToolHBS, modalDisplayTool, modalDisplayToolPublisher, modalDisplayToolSubscriber) {
+    return {
+        initialize: function() {
+
+            var modalDisplayToolTemplate = Handlebars.compile(modalDisplayToolHBS);
+            var html = modalDisplayToolTemplate();
+            this.html(html);
+
+            modalDisplayToolPublisher.init(this);
+            modalDisplayToolSubscriber.init(this);
+            modalDisplayTool.init(this);
+        }
+    };                
+});</code></pre>
            
         </section><!-- md-10 container -->
 

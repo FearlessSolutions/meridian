@@ -3,7 +3,6 @@ define([
     'bootstrap'
 ], function (publisher) {
     var context;
-
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
@@ -15,7 +14,6 @@ define([
                 event.preventDefault();
                 publisher.emitSuccess();
                 context.$('.modal').modal('hide');
-
             });
         },
         openModal: function(params){
@@ -27,6 +25,5 @@ define([
             }
         }
     };
-
     return exposed;
 });

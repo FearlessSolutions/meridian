@@ -20,7 +20,7 @@ require(['jquery', 'aura/aura'], function($, Aura) {
 
     Aura({
         "debug":true,
-        sources: {default: '.'} 
+        sources: {default: './components'} 
     })
     .use('./extensions/utils-extension')
     .start({ components: 'body' });
