@@ -76,6 +76,12 @@ define([
                     "layerId": message.overlayId,
                     "featureIds": [message.featureId]
                 });
+                if(message.zoom) {
+                    publisher.publishZoomToFeatures({
+                        "layerId": message.overlayId,
+                        "featureIds": [message.featureId]
+                    });
+                }
                 // TODO: add support for CMAPI allowing you to zoom to the feature passed in
             } else if(message.format === 'kml') {
                 sendError('map.feature.unplot', message, 'KML is not currently supported');
@@ -118,7 +124,7 @@ define([
             ]
         },
         "name":"STRING",                (optional)(default: '')
-        "zoom":"true",                  (optional)(default: true)(If it should center and zoom after plotting)
+        "zoom":"true",                  (optional)(default: true)
         "selectable":BOOLEAN            (optional)(default: true)
     }
      *Note that name and selectable will only be used if there was no overlay with the given id
@@ -168,7 +174,7 @@ define([
         var newAJAX = context.sandbox.utils.ajax(postOptions)
             .done(function(data, status) {
                 var newData = [],
-                    layerQuery;
+                    featureIds = [];
                     
                 if(status === "success") {
                     context.sandbox.utils.each(data, function(key, value){
@@ -214,6 +220,17 @@ define([
                         "layerId": layerId,
                         "data": newData
                     });
+
+                    
+                    context.sandbox.utils.each(newData, function(k, v){
+                        featureIds.push(v.featureId);
+                    });
+                    if(message.zoom === true) {
+                        publisher.publishZoomToFeatures({
+                            "layerId": layerId,
+                            "featureIds": featureIds
+                        });
+                    }
 
                     publisher.publishPlotFinish({"layerId": layerId});
                 } else {
