@@ -13,11 +13,12 @@ define([
             context.sandbox.emit(params.menuChannel, params.payload);  // dynamically emit publish messages
         },
         showMenu: function(params) {
-            var datagridContextMenuHTML,
-                $currentMenu,
+            var hiddenFeatures,
                 hideDisabled = '',
                 showDisabled = 'disabled',
-                zoomDisabled = '';
+                zoomDisabled = '',
+                datagridContextMenuHTML,
+                $currentMenu;
 
             hiddenFeatures = context.sandbox.stateManager.getHiddenFeaturesByLayerId({
                 "layerId": params.layerId
