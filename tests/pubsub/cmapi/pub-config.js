@@ -112,7 +112,7 @@ define([
                             }
                         ]
                     },
-                    "zoom":true,
+                    "zoom":false,
                     "readOnly":false
                 }
             },
@@ -127,7 +127,8 @@ define([
                 "valid": true,
                 "sample": {
                     "overlayId": "testOverlayId1",
-                    "featureId": "f1"
+                    "featureId": "f1",
+                    "zoom": false
                 }
             },
             "map.view.zoom":{
