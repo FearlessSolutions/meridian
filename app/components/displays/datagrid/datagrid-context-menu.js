@@ -9,22 +9,24 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        /**
-         * [disableOption description]
-         * @param {object} params - JSON parameters
-         * @param {string} params.layerId - id of layer
-         * @param {string} params.channel - internal pubsub channel
-         * @return N/A
-         */
-        disableOption: function(params){
-            var $option = context.$('#datagrid-' + params.layerId + '-' + params.featureId + '-context-menu a[data-channel="'+ params.channel + '"]').parent('li').addClass('disabled');
-        },
         menuCallback: function(params) {
             context.sandbox.emit(params.menuChannel, params.payload);  // dynamically emit publish messages
         },
         showMenu: function(params) {
             var datagridContextMenuHTML,
-                $currentMenu;
+                $currentMenu,
+                hideDisabled = '',
+                showDisabled = 'disabled',
+                zoomDisabled = '';
+
+            hiddenFeatures = context.sandbox.stateManager.getHiddenFeaturesByLayerId({
+                "layerId": params.layerId
+            });
+            if(hiddenFeatures.indexOf(params.featureId) > -1) {
+                hideDisabled = 'disabled';
+                showDisabled = '';
+                zoomDisabled = 'disabled';
+            }
 
             // Remove any existing datagrid context menus
             context.$('#datagrid-context-menu').remove();
@@ -32,7 +34,10 @@ define([
             datagridContextMenuTemplate = Handlebars.compile(datagridContextMenuHBS);
             datagridContextMenuHTML = datagridContextMenuTemplate({
                 "layerId": params.layerId,
-                "featureId": params.featureId
+                "featureId": params.featureId,
+                "hideDisabled": hideDisabled,
+                "showDisabled": showDisabled,
+                "zoomDisabled": zoomDisabled
             });
             
             $('#datagridContainer').after(datagridContextMenuHTML);
@@ -49,33 +54,36 @@ define([
             // set menu item callback control
             context.$('#datagrid-context-menu li a').click(function(e){
                 e.preventDefault();
+                // Only process the click if the menu item doesn't have disabled class
+                if(!$(this).parent('li').hasClass('disabled')) {
 
-                // Update StateManager to avoid Race Condition
-                if(this.getAttribute('data-channel') === 'map.features.hide') {
-                    context.sandbox.stateManager.addHiddenFeaturesByLayerId({
-                        "layerId": this.getAttribute('data-layerId'),
-                        "featureIds": [this.getAttribute('data-featureId')]
+                    // Update StateManager to avoid Race Condition
+                    if(this.getAttribute('data-channel') === 'map.features.hide') {
+                        context.sandbox.stateManager.addHiddenFeaturesByLayerId({
+                            "layerId": this.getAttribute('data-layerId'),
+                            "featureIds": [this.getAttribute('data-featureId')]
+                        });
+                    }
+                    // Update StateManager to avoid Race Condition
+                    if(this.getAttribute('data-channel') === 'map.features.show') {
+                        context.sandbox.stateManager.removeHiddenFeaturesByLayerId({
+                            "layerId": this.getAttribute('data-layerId'),
+                            "featureIds": [this.getAttribute('data-featureId')]
+                        });
+                    }
+
+                    // Execute callback from menu click
+                    exposed.menuCallback({
+                        "menuChannel": this.getAttribute('data-channel'),
+                        "payload": {
+                            "layerId": this.getAttribute('data-layerId'),
+                            "featureIds": [this.getAttribute('data-featureId')]
+                        }  
                     });
-                }
-                // Update StateManager to avoid Race Condition
-                if(this.getAttribute('data-channel') === 'map.features.show') {
-                    context.sandbox.stateManager.removeHiddenFeaturesByLayerId({
-                        "layerId": this.getAttribute('data-layerId'),
-                        "featureIds": [this.getAttribute('data-featureId')]
-                    });
-                }
 
-                // Execute callback from menu click
-                exposed.menuCallback({
-                    "menuChannel": this.getAttribute('data-channel'),
-                    "payload": {
-                        "layerId": this.getAttribute('data-layerId'),
-                        "featureIds": [this.getAttribute('data-featureId')]
-                    }  
-                });
-
-                // Close Context Menu
-                exposed.hideMenu();
+                    // Close Context Menu
+                    exposed.hideMenu();
+                }
                 
             });
             
@@ -94,17 +102,6 @@ define([
             context.$('#datagrid-context-menu').remove();
         }
     };
-
-    function contextMenuClickHandler(selector) {
-        context.$(selector)
-            .off('click')
-            .on( 'click', function (e) {
-                context.$(this).hide();
-        
-                var $invokedOn = context.$(this).data("invokedOn");
-                var $selectedMenu = context.$(e.target);
-        });
-    }
 
     function getLeftLocation(event, $menu) {
         var elementleft,
