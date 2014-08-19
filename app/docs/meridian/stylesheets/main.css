@@ -1,0 +1,141 @@
+@import url("./bootstrap-3.2.0/readable-theme/bootstrap.css");
+@import url("./icomoon/style.css");
+@import url("./prism.css");
+
+/*
+on hover: #1863e6;
+on hover border: #175fdd;
+primary and border color: #4582ec
+ */
+
+body { 
+	padding-top: 65px; /*taking into account the fixed nav bar*/
+	position: relative; /*need for the side nav bar*/
+}
+
+.main-banner {
+	display: block;
+	text-align: center;
+	padding-top: 33px; /*modifying jumbotron padding to be smaller*/
+	padding-bottom: 33px; /*modifying jumbotron padding to be smaller*/
+	background-image: url("../images/meridian-banner.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.error-banner {
+	display: block;
+	text-align: center;
+	background-image: url("../images/meridian-banner.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+	margin-top: 60px;
+}
+
+.logo {
+	height: 210px;
+	width: 300px;
+}
+
+/*Making text primary the blue theme color instead of black.*/
+a.text-primary {
+  color: #4582ec;
+}
+
+/*Override code color to the blue theme*/
+code {
+	color: #1863e6;
+}
+
+.new-section {
+	padding-top: 25px;
+}
+
+/*Add some padding to the footer content.*/
+footer {
+	padding-bottom: 10px;
+}
+
+footer p {
+	margin-bottom: 0px;
+}
+
+/*Makes the href from sideNav account for the nav bar at the top of the page.*/
+h2:before, h4:before{
+	display: block;
+	content: " ";
+	height: 75px;
+	margin-top: -75px;
+	visibility:hidden;
+}
+
+/*Makes hidden anchor that behaves like h2:before and h4:before*/
+a.anchorLink {
+	display: inline-block;
+	content: " ";
+	height: 80px;
+	margin-top: -80px;
+	visibility:hidden;
+}
+
+/*Separates menu from navigation bar in the top of the page*/
+.nav.affix {
+	padding-top: 15px;
+}
+
+/*Only select the first value, not the entire set of values. That is why <a> is used.*/
+.nav.affix > li.active > a {
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: #134fb8;
+	color: #134fb8;
+}
+
+/*Set border so that <a> elements do not shift slightly when not active.*/
+.nav.affix > li > a {
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: transparent;
+}
+
+/*Indent values nested inside the <ul>*/
+.nav.affix  ul.nav > li {
+	padding-left: 20px;
+	font-size: small;
+}
+
+/*Select all <a> elements and make the padding smaller than default values.*/
+.nav.affix li > a {
+	padding-top: 3px;
+	padding-bottom: 3px;
+
+}
+
+/*Indented links use the li border. Set transparent border to all nested <li> elements to prevent shift*/
+.nav.affix li ul.nav li {
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: transparent;
+}
+
+/*Selects each individual active li inside a nester ul*/
+.nav.affix li ul.nav li.active {
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: #134fb8;
+}
+
+/*Make active <a> darker*/
+.nav.affix li ul.nav li.active > a {
+	color: #134fb8;
+}
+
+/*Allow <code> to be inline and not take the entire width of the page.*/
+code.language-javascript {
+	display: inline;
+}
+
+/*Adding more space after the formatted code examples*/
+pre[class*="language-"] {
+	margin-bottom: 25px;
+}
