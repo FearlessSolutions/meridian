@@ -7,14 +7,16 @@ define([
 
     return {
         initialize: function() {
-            this.sandbox.utils.addCSS(splashScreenCSS, 'displays-splash-screen-component-style');
+            if(!this.sandbox.utils.preferences.get('splashScreenHidden')) {
+                this.sandbox.utils.addCSS(splashScreenCSS, 'displays-splash-screen-component-style');
 
-            var splashScreenTemplate = Handlebars.compile(this.sandbox.splashScreen.template);
-            var html = splashScreenTemplate();
-            this.html(html);
+                var splashScreenTemplate = Handlebars.compile(this.sandbox.splashScreen.template);
+                var html = splashScreenTemplate();
+                this.html(html);
 
-            splashScreenPublisher.init(this);
-            splashScreen.init(this);
+                splashScreenPublisher.init(this);
+                splashScreen.init(this);
+            }
         }
     };
                 
