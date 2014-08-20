@@ -129,12 +129,57 @@ define([
                 });
             }
         },
+        hideAllFeatures: function(params) {
+            var layerId = params.layerId,
+                layer = params.map.getLayersBy('layerId', layerId)[0],
+                hiddenFeatureIds = [];
+
+            context.sandbox.utils.each(layer.features, function(index, feature) {
+                if(feature.cluster) {
+                    context.sandbox.utils.each(feature.cluster, function(index, record) {
+                        hiddenFeatureIds.push(record.featureId);
+                        if(!record.style) {
+                            record.style = {}; 
+                        }
+                        record.style.display = "none";
+                    });
+                } else {
+                    hiddenFeatureIds.push(feature.featureId);
+                    if(!feature.style) {
+                        feature.style = {}; 
+                    }
+                    feature.style.display = "none";
+                }
+            });
+
+            context.sandbox.stateManager.addHiddenFeaturesByLayerId({
+                "layerId": layerId,
+                "featureIds": hiddenFeatureIds
+            });
+
+            if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                layer.recluster();
+            }
+
+            layer.redraw();
+            layer.refresh({
+                "force": true,
+                "forces": true
+            });
+        },
         showFeatures: function(params) {
             var layerId = params.layerId,
                 featureIds = params.featureIds,
                 layer = params.map.getLayersBy('layerId', layerId)[0];
 
             if(layer) {
+                if(params.exclusive === true) { // Show all previously hidden features before hiding new ones
+                    exposed.hideAllFeatures({
+                        "map": params.map,
+                        "layerId": layerId
+                    });
+                }
+
                 context.sandbox.stateManager.removeHiddenFeaturesByLayerId({
                     "layerId": layerId,
                     "featureIds": featureIds
@@ -190,6 +235,7 @@ define([
                     feature.style = null;
                 }
             });
+
             layer.redraw();
             layer.refresh({
                 "force": true,

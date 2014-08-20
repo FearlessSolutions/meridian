@@ -283,7 +283,8 @@ define([
             mapFeatures.showFeatures({
                 "map": map,
                 "layerId": params.layerId,
-                "featureIds": params.featureIds
+                "featureIds": params.featureIds,
+                "exclusive": params.exclusive
             });
             if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
                 mapHeatmap.update({
