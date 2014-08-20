@@ -75,6 +75,10 @@ define([
                     "featureIds": featureIds
                 });
 
+                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                    layer.recluster();
+                }
+
                 context.sandbox.utils.each(featureIds, function(index, featureId) {
                     var feature = layer.getFeatureBy('featureId', featureId);
                     if(feature) {
@@ -100,9 +104,6 @@ define([
                 });
 
                 layer.redraw();
-                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
-                    layer.recluster();
-                }
                 layer.refresh({
                     "force": true,
                     "forces": true
