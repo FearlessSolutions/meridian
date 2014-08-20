@@ -176,6 +176,10 @@ define([
                 "layerId": layerId
             });
 
+            if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                layer.recluster();
+            }
+
             context.sandbox.utils.each(layer.features, function(index, feature) {
                 if(feature.cluster) {
                     context.sandbox.utils.each(feature.cluster, function(index, record) {
@@ -186,9 +190,6 @@ define([
                 }
             });
             layer.redraw();
-            if(context.sandbox.stateManager.map.visualMode === 'cluster') {
-                layer.recluster();
-            }
             layer.refresh({
                 "force": true,
                 "forces": true
