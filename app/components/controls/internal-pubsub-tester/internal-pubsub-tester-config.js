@@ -141,6 +141,21 @@ define([
               ]
             }
         },
+        "map.features.update": {
+            "payload": {
+              "layerId": "TestLayer1",
+              "featureObjects": [
+                {
+                  "featureId": "d3bc9d37-e683-4195-9475-bd4f37887d21",
+                  "style": {
+                    "icon": "http://icons.iconarchive.com/icons/icons-land/vista-map-markers/256/Map-Marker-Marker-Outside-Pink-icon.png",
+                    "width": 24,
+                    "height": 24
+                  }
+                }
+              ]
+            }
+        },
         "map.get.extent": {
             "payload": {}
         },
