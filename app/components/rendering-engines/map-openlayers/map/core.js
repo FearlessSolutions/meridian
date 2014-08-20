@@ -272,6 +272,7 @@ define([
                     "map": map
                 });
             }
+            publisher.updateEventCounter(); // TODO: Hack for updating event counter
         },
         /**
          * Show Features
@@ -291,6 +292,7 @@ define([
                     "map": map
                 });
             }
+            publisher.updateEventCounter(); // TODO: Hack for updating event counter
         },
         /**
          * Hide Layer
