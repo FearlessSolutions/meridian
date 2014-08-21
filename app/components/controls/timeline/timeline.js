@@ -76,7 +76,8 @@ define([
                 var	snapshotHTML = snapshotTemplate({
                     "layerId": layerId,
                     "name": name,
-                    "thumbnailURL": thumnailURL
+                    "thumbnailURL": thumnailURL,
+                    "count": context.sandbox.dataStorage.datasets[params.layerId].length
                 });
 
                 context.$('#timeline-container').append(snapshotHTML);
@@ -136,8 +137,7 @@ define([
                 var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
                     count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
                 if($badge.length === 0) {
-                    console.error("update fail", $badge);
-                    $badge = context.$('#snapshot-' + params.layerId + ' .badge');
+                    return;
                 }
 
                 $badge.text(context.sandbox.utils.trimNumber(count));
