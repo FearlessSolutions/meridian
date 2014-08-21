@@ -65,6 +65,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     
     Aura({
         "debug":true,
+        "appName": "Meridian",
         sources: {default: 'components'} 
     })
     .use('extensions/utils-extension/utils-extension')
