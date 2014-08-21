@@ -15,6 +15,9 @@ define([
         },
         publishMousePosition: function(params) {
             context.sandbox.emit('mouse.position.change', params);
+        },
+        updateEventCounter: function(params) {
+            context.sandbox.emit('eventcounter.update', params);
         }
     };
 

@@ -96,6 +96,11 @@ define([], function(){
                         });
                     }
                 },
+                removeAllHiddenFeaturesByLayerId: function(params) {
+                    if(stateManager.layers[params.layerId]) {
+                        stateManager.layers[params.layerId].hiddenFeatures = [];
+                    }
+                },
                 getAllIdentifiedFeatures: function(params) {
                     var identifiedFeatures = [];
                     app.sandbox.utils.each(stateManager.layers, function(layerId, layerState){
