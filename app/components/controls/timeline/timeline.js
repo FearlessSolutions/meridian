@@ -77,7 +77,7 @@ define([
                     "layerId": layerId,
                     "name": name,
                     "thumbnailURL": thumnailURL,
-                    "count": context.sandbox.dataStorage.datasets[params.layerId].length
+                    "count": context.sandbox.dataStorage.datasets[params.layerId].length || 0
                 });
 
                 context.$('#timeline-container').append(snapshotHTML);
@@ -136,15 +136,13 @@ define([
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
                     count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
-                if($badge.length === 0) {
-                    return;
+                if($badge.length > 0) {
+                    $badge.text(context.sandbox.utils.trimNumber(count));
+                    exposed.updateTooltip({
+                        "layerId": params.layerId,
+                        "status": "Running"
+                    });
                 }
-
-                $badge.text(context.sandbox.utils.trimNumber(count));
-                exposed.updateTooltip({
-                    "layerId": params.layerId,
-                    "status": "Running"
-                });
             }
         },
         markFinished: function(params) {
