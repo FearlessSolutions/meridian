@@ -7,11 +7,13 @@ define([
 	'./cmapi-status-subscriber'
 ], function (publisher, subscriber) {
 	var context,
+        sendError,
         emit;
 
     var exposed = {
-        init: function(thisContext, layerId, parentEmit) {
+        init: function(thisContext, layerId, errorChannel, parentEmit) {
             context = thisContext;
+            sendError = errorChannel;
             emit = parentEmit;
             publisher.init(context);
             subscriber.init(context, exposed);

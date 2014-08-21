@@ -171,7 +171,11 @@ define([
 
                     }
                 }
-            }
+            },
+            "map.clear":{
+                "valid": true,
+                "sample": {}
+             }
         }
     };
 
