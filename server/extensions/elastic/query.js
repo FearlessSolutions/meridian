@@ -11,13 +11,13 @@ exports.init = function(context){
 exports.executeQuery = function(userName, sessionId, query, callback){
 
     var newQuery = {
-        query: {
-            filtered: {
-                query: query.query,
-                filter: {
-                    term: {
-                        userId: userName,
-                        sessionId: sessionId
+        "query": {
+            "filtered": {
+                "query": query.query,
+                "filter": {
+                    "term": {
+                        "userId": userName,
+                        "sessionId": sessionId
                     }
                 }
             }
@@ -30,16 +30,22 @@ exports.executeQuery = function(userName, sessionId, query, callback){
 
 };
 
+exports.executeFilter = function(userId, sessionId, queryId, filter, callback){
+    getJSONByQuery(userId+""+sessionId, config.index.data, null, filter, function(err, results){
+        callback(results);
+    });
+};
+
 exports.streamQuery = function(userName, sessionId, query, pageSize, pageCallback){
 
     var newQuery = {
-        query: {
-            filtered: {
-                query: query.query,
-                filter: {
-                    term: {
-                        userId: userName,
-                        sessionId: sessionId
+        "query": {
+            "filtered": {
+                "query": query.query,
+                "filter": {
+                    "term": {
+                        "userId": userName,
+                        "sessionId": sessionId
                     }
                 }
             }
@@ -82,9 +88,9 @@ var getJSONByQuery = function(routing, index, type, query, callback){
 var getJSONById = function(routing, index, type, id, callback){
 
     var req = {
-        index: index,
-        type: type || '_all',
-        id: id
+        "index": index,
+        "type": type || '_all',
+        "id": id
     };
 
     if (routing){ req.routing = routing; }

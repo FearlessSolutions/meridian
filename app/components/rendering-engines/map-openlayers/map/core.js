@@ -295,6 +295,19 @@ define([
             publisher.updateEventCounter(); // TODO: Hack for updating event counter
         },
         /**
+         * Update Features
+         * @param {object} params - JSON parameters
+         * @param {string} params.layerId - layer id
+         * @param {array} params.featureObjects - // Currently represents features to be updated
+         */
+        updateFeatures: function(params) {
+            mapFeatures.updateFeatures({
+                "map": map,
+                "layerId": params.layerId,
+                "featureObjects": params.featureObjects // [{"featureId": 123, "style":{stylishstuff}}]
+            });
+        },
+        /**
          * Hide Layer
          * @param {object} params - JSON parameters
          * @param {string} params.layerId - id of layer

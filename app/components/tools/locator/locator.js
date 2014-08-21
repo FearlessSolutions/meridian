@@ -33,12 +33,13 @@ define([
                 var input = $locatorInput.val();
                 event.preventDefault();
 
-                if(selectedLocation === null) {/*Extra precaution, button should be disabled anyways.*/
+                if(selectedLocation === null || input === "") {/*Extra precaution, button should be disabled anyways.*/
                     publisher.publishMessage({
                         "messageType": 'warning',
                         "messageTitle": 'Search',
                         "messageText": 'No valid location selected. Please try again.'
                     });
+                    $locatorButton.attr('disabled', true); 
                 }else if(selectedLocation.lat) { //It is coordinates
                     exposed.markLocation(selectedLocation);
                 }else {

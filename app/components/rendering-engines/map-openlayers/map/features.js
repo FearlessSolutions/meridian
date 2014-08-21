@@ -241,6 +241,42 @@ define([
                 "force": true,
                 "forces": true
             });
+        },
+        updateFeatures: function(params) {  // TODO: finish method to support full feature updating (attirbutes, styles, etc.)
+            var layerId = params.layerId,
+                featureObjects = params.featureObjects,
+                layer = params.map.getLayersBy('layerId', layerId)[0];
+
+            if(layer) {
+                context.sandbox.utils.each(featureObjects, function(key, featureObject) {
+                    var feature = layer.getFeatureBy('featureId', featureObject.featureId);
+
+                    // If no feature found, look for feature in clusters
+                    if(!feature) {
+                        context.sandbox.utils.each(layer.features, function(k1, v1){
+                            if(v1.cluster) {
+                                context.sandbox.utils.each(v1.cluster, function(k2, v2){
+                                    if(featureObject.featureId === v2.featureId) {
+                                        feature = v2;
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    if(feature) { 
+                        context.sandbox.utils.each(featureObject.style, function(styleKey, styleProperty) { // TODO: Finish to support real style updates 
+                            feature.attributes[styleKey] = styleProperty; // Only works when updating attributes that are being consumed by the preexisting stylemap/template
+                        });
+                    }
+                });
+            }
+
+            layer.redraw();
+            layer.refresh({
+                "force": true,
+                "forces": true
+            });
         }
     };
     return exposed;
