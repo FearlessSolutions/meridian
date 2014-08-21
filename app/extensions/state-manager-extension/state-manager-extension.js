@@ -1,4 +1,7 @@
 define([], function(){
+    var context,
+        readyCallbacks;
+
     var exposed = {
         initialize: function(app) {
             var stateManager = {
@@ -6,7 +9,19 @@ define([], function(){
                     // "visualMode": "cluster" 
                     // Other properties that could be in Map.Status
                     "status": {
-                        "ready": false
+                        "ready": false,
+                        setReady: function(newReady) {
+                            context.sandbox.stateManager.map.status.ready = true;
+                            runReadyCallbacks();
+                            readyCallbacks = [];
+                        },
+                        addReadyCallback: function(newCallback) {
+                            if(context.sandbox.stateManager.map.status.ready) {
+                                newCallback();
+                            } else {
+                                readyCallbacks.push(newCallback);
+                            }
+                        }
                     },
                     "extent": {}
                 },
@@ -144,10 +159,19 @@ define([], function(){
                 }
 			};
 
+            context = app;
+            readyCallbacks = [];
+
             app.sandbox.stateManager = stateManager;
 
         }
     };
+
+    function runReadyCallbacks(){
+        readyCallbacks.forEach(function(callback){
+            callback();
+        });
+    }
 
     return exposed;
 

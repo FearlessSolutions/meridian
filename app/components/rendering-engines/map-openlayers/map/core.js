@@ -74,7 +74,7 @@ define([
             
             context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
             
-            context.sandbox.stateManager.map.status.ready = true;
+            context.sandbox.stateManager.map.status.setReady(true);
         },
         /**
          * Zoom In
