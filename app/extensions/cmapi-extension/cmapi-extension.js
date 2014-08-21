@@ -25,7 +25,6 @@ define([
 
             //Put utility function in sandbox
             app.sandbox.cmapi.getMaxExtent = getMaxExtent;
-            app.sandbox.cmapi.thisName = "meridian";
 
             //Set up CMAPI as a 'dataService'
             if (!app.sandbox.dataServices) {
