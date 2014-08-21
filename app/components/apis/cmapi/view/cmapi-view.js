@@ -110,6 +110,32 @@ define([
 
             publisher.publishCenterOnBounds(bounds);
 		},
+        "map.view.center.data": function(message){
+            var extent,
+                minLatDelta,
+                minLonDelta,
+                maxLatDelta,
+                maxLonDelta;
+
+            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(datasetId, dataset){
+                dataset.each(function(feature){
+                    extent = context.sandbox.cmapi.getMaxExtent(feature.attributes.geometry.coordinates, extent);
+                });
+            });
+
+            //Add some padding
+            minLatDelta = Math.abs(extent.minLat) * 0.25;
+            minLonDelta = Math.abs(extent.minLon) * 0.25;
+            maxLatDelta = Math.abs(extent.maxLat) * 0.25;
+            maxLonDelta = Math.abs(extent.maxLon) * 0.25;
+
+            publisher.publishCenterOnBounds({
+                "minLat": extent.minLat - minLatDelta,
+                "minLon": extent.minLon - minLonDelta,
+                "maxLat": extent.maxLat + maxLatDelta,
+                "maxLon": extent.maxLon + maxLonDelta
+            });
+        },
 		"map.view.clicked": function(message){ return; } //This is not supported
     };
 

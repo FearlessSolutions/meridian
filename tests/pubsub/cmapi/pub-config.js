@@ -101,7 +101,6 @@ define([
                                 },
                                 "properties": {
                                     "featureId": "f1"
-                                // }
                                 },
                                 "style": {
                                     "height": 24,
@@ -113,6 +112,7 @@ define([
                         ]
                     },
                     "zoom":false,
+                    "dataZoom": false,
                     "readOnly":false
                 }
             },
@@ -171,6 +171,10 @@ define([
 
                     }
                 }
+            },
+            "map.view.center.data":{
+                "valid": true,
+                "sample": {}
             }
         }
     };
