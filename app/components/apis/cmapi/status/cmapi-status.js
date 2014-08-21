@@ -17,6 +17,9 @@ define([
             emit = parentEmit;
             publisher.init(context);
             subscriber.init(context, exposed);
+
+            //On map.status.ready, send message
+            context.sandbox.stateManager.triggerMapStatusReady(emitChannels['map.status.ready']);
         },
         receive: function(channel, message) {
             if(receiveChannels[channel]) {
@@ -92,10 +95,16 @@ define([
            //     selectedFeatures: []
            // };
            // emit('map.status.selected', message);
+        },
+        "map.status.ready": function(){
+            var message = {
+                "widgetName": "Meridian", // TODO: should be dynamic
+                "readyState": true
+            };
+            emit('map.status.ready', message);
         }
     };
 
     return exposed;
-
 
 });
