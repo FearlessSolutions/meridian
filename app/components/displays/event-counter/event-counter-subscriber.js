@@ -14,6 +14,7 @@ define([
             context.sandbox.on('map.layer.show', eventCountTool.update);
             context.sandbox.on('map.layer.delete', eventCountTool.update);
             context.sandbox.on('data.clear.all', eventCountTool.clear);
+            context.sandbox.on('eventcounter.update', eventCountTool.update); // TODO: Remove hack once hide/show updates stateManager
         }
     };	
 

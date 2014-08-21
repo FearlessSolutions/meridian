@@ -1,8 +1,8 @@
 define([
 ], function() { 
     var pubConfiguration = {
-        "channels":{
-            "map.overlay.create":{
+        "channels": {
+            "map.overlay.create": {
                 "valid":true,
                 "sample": {
                     "name": "Test Name 1",
@@ -66,31 +66,31 @@ define([
                     }
                 }
             },
-            "map.overlay.remove":{
+            "map.overlay.remove": {
                 "valid": true,
                 "sample": {
                     "overlayId": "testOverlayId1"
                 }
             },
-            "map.overlay.hide":{
+            "map.overlay.hide": {
                 "valid": true,
                 "sample": {
                     "overlayId": "testOverlayId1"
                 }
             },
-            "map.overlay.show":{
+            "map.overlay.show": {
                 "valid": true,
                 "sample": {
                     "overlayId": "testOverlayId1"
                 }
             },
-            "map.feature.plot":{
+            "map.feature.plot": {
                 "valid": true,
                 "sample": {
                     "overlayId":"testOverlayId1",
                     "name":"Test Name 1",
                     "format":"geojson",
-                    "feature":{
+                    "feature": {
                         "type":"FeatureCollection",
                         "features":[
                             {
@@ -101,7 +101,6 @@ define([
                                 },
                                 "properties": {
                                     "featureId": "f1"
-                                // }
                                 },
                                 "style": {
                                     "height": 24,
@@ -113,17 +112,18 @@ define([
                         ]
                     },
                     "zoom":false,
+                    "dataZoom": false,
                     "readOnly":false
                 }
             },
-            "map.feature.hide":{
+            "map.feature.hide": {
                 "valid": true,
                 "sample": {
                     "overlayId": "testOverlayId1",
                     "featureId": "f1"
                 }
             },
-            "map.feature.show":{
+            "map.feature.show": {
                 "valid": true,
                 "sample": {
                     "overlayId": "testOverlayId1",
@@ -131,22 +131,22 @@ define([
                     "zoom": false
                 }
             },
-            "map.view.zoom":{
+            "map.view.zoom": {
                 "valid": true
             },
-            "map.view.center.overlay":{
+            "map.view.center.overlay": {
                 "valid": true,
                 "sample": {
                     "overlayId": "testOverlayId1"
                 }
             },
-            "map.view.center.feature":{
+            "map.view.center.feature": {
                 "valid": true,
                 "sample": {
                     "featureId": "f1"
                 }
             },
-            "map.view.center.location":{
+            "map.view.center.location": {
                 "valid": true,
                 "sample": {
                     "location": {
@@ -156,7 +156,7 @@ define([
                     }
                 }
             },
-            "map.view.center.bounds":{ //TODO support zoom, or just best fit?
+            "map.view.center.bounds": { //TODO support zoom, or just best fit?
                 "valid": true,
                 "sample": {
                     "bounds": {
@@ -171,6 +171,14 @@ define([
 
                     }
                 }
+            },
+            "map.view.center.data": {
+                "valid": true,
+                "sample": {}
+            },
+            "map.clear": {
+                "valid": true,
+                "sample": {}
             }
         }
     };

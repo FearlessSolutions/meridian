@@ -13,6 +13,7 @@ define([
             context.sandbox.on('map.features.plot', mapCore.plotFeatures);
             context.sandbox.on('map.features.show', mapCore.showFeatures);
             context.sandbox.on('map.features.hide', mapCore.hideFeatures);
+            context.sandbox.on('map.features.update', mapCore.updateFeatures);
             context.sandbox.on('map.feature.identify', mapCore.identifyRecord);
             context.sandbox.on('map.basemap.change', mapCore.setBasemap);
             context.sandbox.on('map.center.set', mapCore.setCenter);
@@ -35,6 +36,7 @@ define([
             context.sandbox.off('map.features.plot', mapCore.plotFeatures);
             context.sandbox.off('map.features.show', mapCore.showFeatures);
             context.sandbox.off('map.features.hide', mapCore.hideFeatures);
+            context.sandbox.off('map.features.update', mapCore.updateFeatures);
             context.sandbox.off('map.feature.identify', mapCore.identifyRecord);
             context.sandbox.off('map.basemap.change', mapCore.setBasemap);
             context.sandbox.off('map.center.set', mapCore.setCenter);

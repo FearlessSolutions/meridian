@@ -75,8 +75,8 @@ define([
                 maxExtent = getMaxExtent(nextCoords, maxExtent);
             });
         } else { //Is at the lowest level
-            lon = currentCoords[0];
-            lat = currentCoords[1];
+            lon = parseFloat(currentCoords[0]);
+            lat = parseFloat(currentCoords[1]);
 
             if(lat < maxExtent.minLat) {
                 maxExtent.minLat = lat;
