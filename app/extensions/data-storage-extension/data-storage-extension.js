@@ -19,6 +19,9 @@ define([
                         dataStorage.updateColumns({"data": params.data});
                     }
                 },
+                where: function(params){
+                    return dataStorage.datasets[params.datasetId] ? dataStorage.datasets[params.datasetId].where(params.criteria) : [];
+                },
                 updateColumns: function(params) {
                     $.each(params.data, function(k, v) {
                         // Skipping id field because it is for backbone modeling
