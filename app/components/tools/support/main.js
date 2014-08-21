@@ -13,7 +13,9 @@ define([
             this.sandbox.utils.addCSS(supportToolCSS, 'tools-support-component-style');
 
             var supportToolTemplate = Handlebars.compile(supportToolHBS);
-            var html = supportToolTemplate();
+            var html = supportToolTemplate({
+                "appName": this.sandbox.systemConfiguration.appName
+            });
             this.html(html);
 
             supportPublisher.init(this);

@@ -84,7 +84,7 @@ define([
            var message = {
                "version": "2.0",
                "type": "2-D",
-               "widgetName": "Meridian",
+               "widgetName": context.sandbox.systemConfiguration.appName,
                "extensions": []
            };
            emit('map.status.about', message);
@@ -96,13 +96,13 @@ define([
            // };
            // emit('map.status.selected', message);
         },
-        "map.status.ready": function(){
+        "map.status.ready": function() {
             var message = {
-                "widgetName": "Meridian", // TODO: should be dynamic
+                "widgetName": context.sandbox.systemConfiguration.appName,
                 "readyState": true
             };
             emit('map.status.ready', message);
-        }
+         }
     };
 
     return exposed;

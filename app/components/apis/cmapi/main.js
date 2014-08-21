@@ -51,6 +51,11 @@ define([
             category = channel.split('.')[1]; //0 is always "map"
             message = e.data.message;
 
+            //Check to see if we are the origin (we sent it, so it is already a JSON object)
+            if(!message || message.widgetName === context.sandbox.systemConfiguration.appName){
+                return;
+            }
+
             try {
                 if(message !== '') {
                     message = JSON.parse(message);
