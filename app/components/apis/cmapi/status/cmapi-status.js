@@ -7,14 +7,19 @@ define([
 	'./cmapi-status-subscriber'
 ], function (publisher, subscriber) {
 	var context,
+        sendError,
         emit;
 
     var exposed = {
-        init: function(thisContext, layerId, parentEmit) {
+        init: function(thisContext, layerId, errorChannel, parentEmit) {
             context = thisContext;
+            sendError = errorChannel;
             emit = parentEmit;
             publisher.init(context);
             subscriber.init(context, exposed);
+
+            //On map.status.ready, send message
+            context.sandbox.stateManager.triggerMapStatusReady(emitChannels['map.status.ready']);
         },
         receive: function(channel, message) {
             if(receiveChannels[channel]) {
@@ -101,6 +106,5 @@ define([
     };
 
     return exposed;
-
 
 });

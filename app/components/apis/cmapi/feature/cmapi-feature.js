@@ -186,7 +186,9 @@ define([
                         newValue.layerId = value.queryId;
                         newValue.geometry = value.geometry;
                         newValue.type = value.type;
-                        newValue.properties = {};
+                        newValue.properties = {
+                            "dataService": "cmapi"
+                        };
 
                         context.sandbox.utils.each(value.properties, function(key, value){
                             newValue[key] = value;
@@ -228,6 +230,31 @@ define([
                         publisher.publishZoomToFeatures({
                             "layerId": layerId,
                             "featureIds": featureIds
+                        });
+                    } else if(message.dataZoom) {
+                        var extent,
+                            minLatDelta,
+                            minLonDelta,
+                            maxLatDelta,
+                            maxLonDelta;
+
+                        context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(datasetId, dataset){
+                            dataset.each(function(feature){
+                                extent = context.sandbox.cmapi.getMaxExtent(feature.attributes.geometry.coordinates, extent);
+                            });
+                        });
+
+                        //Add some padding
+                        minLatDelta = Math.abs(extent.minLat) * 0.25;
+                        minLonDelta = Math.abs(extent.minLon) * 0.25;
+                        maxLatDelta = Math.abs(extent.maxLat) * 0.25;
+                        maxLonDelta = Math.abs(extent.maxLon) * 0.25;
+
+                        publisher.publishCenterOnBounds({
+                            "minLat": extent.minLat - minLatDelta,
+                            "minLon": extent.minLon - minLonDelta,
+                            "maxLat": extent.maxLat + maxLatDelta,
+                            "maxLon": extent.maxLon + maxLonDelta
                         });
                     }
 
