@@ -14,7 +14,7 @@ define([
 
         "components" : [
             {
-                "componentName" : "locator",
+                "componentName" : "locator input",
                 "placement" : "bottom",
                 "width" : "250px",
                 "title": "Location Tool",
