@@ -26,6 +26,9 @@ define([
         },
         publishZoomToFeatures: function(args) {
             context.sandbox.emit('map.zoom.toFeatures', args);
+        },
+        publishCenterOnBounds: function(args){
+            context.sandbox.emit('map.zoom.toLocation', args);
         }
     };
 
