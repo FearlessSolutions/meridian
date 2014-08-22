@@ -8,7 +8,8 @@ define([
     var context,
         snapshotTemplate,
         $timeline,
-        stopTimelinePlayback = true;
+        stopTimelinePlayback = true,
+        timer;
 
     var exposed = {
         init: function(thisContext) {
@@ -238,7 +239,7 @@ define([
                 $timeline.animate({scrollLeft: 0});
 
                 var i = 1;
-                var timer = setInterval(function() {
+                timer = setInterval(function() {
                     if(!stopTimelinePlayback && context.sandbox.dataStorage.datasets[tempArray[i]]) {
                         if(i > 3) {
                             var leftPos = $timeline.scrollLeft();
@@ -269,6 +270,7 @@ define([
             }
         },
         timelinePlaybackStop: function(params) {
+            clearInterval(timer);
             stopTimelinePlayback = true;
             context.$('.snapshot').removeClass('selected');
         },
