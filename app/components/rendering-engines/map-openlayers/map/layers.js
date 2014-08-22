@@ -203,12 +203,18 @@ define([
                 layers = selector.layers,
                 index;
 
-            mapBase.clearMapSelection({
-                "map": params.map
+            identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
+                "layerId": params.layerId
             });
-            mapBase.clearMapPopups({
-                "map": params.map
-            });
+
+            if(identifiedFeatures.length) {
+                mapBase.clearMapSelection({
+                    "map": params.map
+                });
+                mapBase.clearMapPopups({
+                    "map": params.map
+                });
+            }
 
             delete context.sandbox.stateManager.layers[params.layerId];
             params.map.removeLayer(params.map.getLayersBy('layerId', params.layerId)[0]);
@@ -241,14 +247,21 @@ define([
             params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
         },
         hideLayer: function(params) {
-            var currentLayer;
+            var currentLayer,
+                identifiedFeatures; 
 
-            mapBase.clearMapSelection({
-                "map": params.map
+            identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
+                "layerId": params.layerId
             });
-            mapBase.clearMapPopups({
-                "map": params.map
-            });
+
+            if(identifiedFeatures.length) {
+                mapBase.clearMapSelection({
+                    "map": params.map
+                });
+                mapBase.clearMapPopups({
+                    "map": params.map
+                });
+            }
 
             if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
                 context.sandbox.stateManager.layers[params.layerId].visible = false;
@@ -267,13 +280,6 @@ define([
         },
         showLayer: function(params) {
             var currentLayer;
-
-            mapBase.clearMapSelection({
-                "map": params.map
-            });
-            mapBase.clearMapPopups({
-                "map": params.map
-            });
 
             if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
                 context.sandbox.stateManager.layers[params.layerId].visible = true;
@@ -387,150 +393,117 @@ define([
          * @param params
          */
         identifyFeature: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0],
-                feature = layer.getFeatureBy('featureId', params.featureId),
+            var layerVisibility,
+                featureVisibilty,
+                layer,
+                feature,
                 clusterFeatureId,
                 clusterFeatureCount,
                 record,
-                currentDataService;
+                currentDataService,
+                popup,
+                infoWinTemplateRef,
+                formattedAttributes = {},
+                anchor,
+                currentFeature,
+                selectController;
 
-            //If no feature is found, it is most likely because it was hidden in a cluster
-            if(!feature) {
-                context.sandbox.utils.each(layer.features, function(k1, v1) {
-                    if(v1.cluster) {
-                        context.sandbox.utils.each(v1.cluster, function(k2, v2) {
-                            if(params.featureId === v2.featureId) {
-                                feature = v1;
-                                record = v2;
-                                clusterFeatureId = k2 + 1;
-                                clusterFeatureCount = feature.cluster.length;
-                            }
-                        });
-                    }
-                });
-
+            // TODO: If the feature is not hidden and its layer is not hidden: do the identify
+            layerVisibility = context.sandbox.stateManager.getLayerStateById({"layerId": params.layerId}).visible;
+            featureVisibilty = (context.sandbox.stateManager.layers[params.layerId].hiddenFeatures.indexOf(params.featureId) > -1) ? false : true;
+            if(layerVisibility && featureVisibilty) {
+                layer = params.map.getLayersBy('layerId', params.layerId)[0];
+                feature = layer.getFeatureBy('featureId', params.featureId);
+                //If no feature is found, it is most likely because it was hidden in a cluster
                 if(!feature) {
-                    context.sandbox.logger.error('Feature does not exist on map.');
-                    return;
-                }
-
-                currentDataService = record.attributes.dataService;
-
-                context.sandbox.dataStorage.getFeatureById(
-                    {"featureId": record.featureId},
-                    function(fullFeature) {
-                        var infoWinTemplateRef = context.sandbox.dataServices[currentDataService].infoWinTemplate,
-                            headerHTML = '<span>' + clusterFeatureId + ' of ' + clusterFeatureCount + '</span>',
-                            formattedAttributes = {},
-                            bounds,
-                            popup;
-
-                        context.sandbox.utils.each(fullFeature.properties, 
-                            function(key, value) {
-                                if((context.sandbox.utils.type(value) === "string" ||
-                                    context.sandbox.utils.type(value) === "number" ||
-                                    context.sandbox.utils.type(value) === "boolean")) {
-                                    formattedAttributes[key] = value;
+                    context.sandbox.utils.each(layer.features, function(k1, v1) {
+                        if(v1.cluster) {
+                            context.sandbox.utils.each(v1.cluster, function(k2, v2) {
+                                if(params.featureId === v2.featureId) {
+                                    feature = v1;
+                                    record = v2;
+                                    clusterFeatureId = k2 + 1;
+                                    clusterFeatureCount = feature.cluster.length;
                                 }
-                        });
-                        popup = new OpenLayers.Popup.FramedCloud('popup',
-                            OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
-                            null,
-                            headerHTML + infoWinTemplateRef.buildInfoWinTemplate(
-                                formattedAttributes,
-                                fullFeature
-                            ),
-                            null,
-                            true,
-                            function() {
-                                mapBase.clearMapSelection({
-                                    "map": params.map
-                                });
-                                mapBase.clearMapPopups({
-                                    "map": params.map
-                                });
-                            }
-                        );
-                        popup.layerId = params.layerId;
-
-                        mapBase.clearMapSelection({
-                            "map": params.map
-                        });
-                        mapBase.clearMapPopups({
-                            "map": params.map
-                        });
-
-                        bounds = feature.geometry.getBounds();
-                        params.map.setCenter(bounds.getCenterLonLat());
-
-                        feature.popup = popup;
-                        params.map.addPopup(popup);
-
-                        context.sandbox.dataServices[currentDataService].infoWinTemplate.postRenderingAction(
-                            record,
-                            layer.layerId
-                        );
-
-                        context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
-                            "layerId": layer.layerId,
-                            "featureIds": [
-                                record.featureId
-                            ]
-                        });
-                    }
-                );
-            } else {
-                var popup,
-                    infoWinTemplateRef,
-                    formattedAttributes = {},
-                    anchor;
-                context.sandbox.dataStorage.getFeatureById({"featureId": feature.featureId}, function(fullFeature) {
-                    infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
-                    context.sandbox.utils.each(fullFeature.properties,
-                        function(key, value) {
-                            if((context.sandbox.utils.type(value) === "string" ||
-                                context.sandbox.utils.type(value) === "number" ||
-                                context.sandbox.utils.type(value) === "boolean"
-                            )) {
-                                formattedAttributes[key] = value;
-                            }
+                            });
+                        }
                     });
-                    
-                    anchor= {"size": new OpenLayers.Size(0,0), "offset": new OpenLayers.Pixel(0,-(feature.attributes.height/2))};
-                    popup = new OpenLayers.Popup.FramedCloud('popup',
-                        OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
-                        null,
-                        infoWinTemplateRef.buildInfoWinTemplate(formattedAttributes, fullFeature),
-                        anchor,
-                        true,
-                        function() {
+
+                    if(!feature) {
+                        context.sandbox.logger.error('Feature does not exist on map.');
+                        return;
+                    }
+
+                    currentDataService = record.attributes.dataService;
+
+                    context.sandbox.dataStorage.getFeatureById(
+                        {"featureId": record.featureId},
+                        function(fullFeature) {
+                            var infoWinTemplateRef = context.sandbox.dataServices[currentDataService].infoWinTemplate,
+                                headerHTML = '<span>' + clusterFeatureId + ' of ' + clusterFeatureCount + '</span>',
+                                formattedAttributes = {},
+                                bounds,
+                                popup;
+
+                            context.sandbox.utils.each(fullFeature.properties, 
+                                function(key, value) {
+                                    if((context.sandbox.utils.type(value) === "string" ||
+                                        context.sandbox.utils.type(value) === "number" ||
+                                        context.sandbox.utils.type(value) === "boolean")) {
+                                        formattedAttributes[key] = value;
+                                    }
+                            });
+                            popup = new OpenLayers.Popup.FramedCloud('popup',
+                                OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                                null,
+                                headerHTML + infoWinTemplateRef.buildInfoWinTemplate(
+                                    formattedAttributes,
+                                    fullFeature
+                                ),
+                                null,
+                                true,
+                                function() {
+                                    mapBase.clearMapSelection({
+                                        "map": params.map
+                                    });
+                                    mapBase.clearMapPopups({
+                                        "map": params.map
+                                    });
+                                }
+                            );
+                            popup.layerId = params.layerId;
+
                             mapBase.clearMapSelection({
                                 "map": params.map
                             });
                             mapBase.clearMapPopups({
                                 "map": params.map
                             });
+
+                            bounds = feature.geometry.getBounds();
+                            params.map.setCenter(bounds.getCenterLonLat());
+
+                            feature.popup = popup;
+                            params.map.addPopup(popup);
+
+                            context.sandbox.dataServices[currentDataService].infoWinTemplate.postRenderingAction(
+                                record,
+                                layer.layerId
+                            );
+
+                            context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
+                                "layerId": layer.layerId,
+                                "featureIds": [
+                                    record.featureId
+                                ]
+                            });
                         }
                     );
-
-                    mapBase.clearMapSelection({
-                        "map": params.map
-                    });
-                    mapBase.clearMapPopups({
-                        "map": params.map
-                    });
-
-                    feature.popup = popup;
-                    params.map.addPopup(popup);
-                    infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
-
-                    context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
-                        "layerId": feature.layer.layerId,
-                        "featureIds": [
-                            feature.featureId
-                        ]
-                    });
-                });
+                } else {
+                    // If not in a cluster, fire the selector event
+                    selectController = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                    selectController.select(feature);
+                }
             }
         }
 

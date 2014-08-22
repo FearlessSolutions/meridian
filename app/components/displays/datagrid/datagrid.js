@@ -1,16 +1,22 @@
 define([
     './datagrid-publisher',
+    './datagrid-context-menu',
     'datatable'
-], function (publisher) {
+], function (publisher, datagridContextMenu) {
 
     var context,
         myTable,
-        $datagridContainer;
+        $datagridContainer,
+        datagridVisible = false;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
+            $('#datagridContainer .close').on('click', function(){
+                publisher.closeDatagrid();
+            });
         },
         toggleGrid: function() {
             if($datagridContainer.hasClass('hidden')) {
@@ -19,72 +25,143 @@ define([
                 exposed.close();
             }
         },
-        open:function(){
-            var compiledData = [],
-                storedColumns,
-                datasets = context.sandbox.dataStorage.datasets;
+        open: function() {
+            if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
+                var compiledData = [],
+                    storedColumns,
+                    datasets = context.sandbox.dataStorage.datasets;
 
-            $datagridContainer.removeClass('hidden');
-            $datagridContainer.height(328);
+                $datagridContainer.removeClass('hidden');
+                $datagridContainer.height(328);
 
 
-            storedColumns = context.sandbox.dataStorage.getColumns();
-             _.each(datasets, function(collection) {
-                _.each(collection.models, function(model) {
+                storedColumns = context.sandbox.dataStorage.getColumns();
+                 _.each(datasets, function(collection) {
+                    _.each(collection.models, function(model) {
 
-                    var tempObject = {};
-                    $.each(storedColumns, function(k, v){
-                        if(model.attributes.hasOwnProperty(k)) {
-                            tempObject[v] = model.attributes[k];
-                        } else {
-                            tempObject[v] = '';
-                        }
-                    });
-                    compiledData.push(tempObject);
-
-                });
-            });
-
-            var columnsArray = [];
-            context.sandbox.utils.each(storedColumns, function(k, v){
-                columnsArray.push(v);
-            });
-            
-            if(!myTable) {
-                myTable = $datagridContainer.Datatable({
-                    "sortable": true,
-                    "pagination": true,
-                    "data": compiledData,
-                    "columns": columnsArray,
-                    "searchable": true,
-                    "closeable": false,
-                    "clickable": true,
-                    "afterRowClick": function(target) {
-                        publisher.identifyRecord({
-                            "featureId": target['Feature ID'],
-                            "layerId": target['Layer ID']
+                        var tempObject = {};
+                        $.each(storedColumns, function(k, v){
+                            if(model.attributes.hasOwnProperty(k)) {
+                                tempObject[v] = model.attributes[k];
+                            } else {
+                                tempObject[v] = '';
+                            }
                         });
-                    }
+                        compiledData.push(tempObject);
+
+                    });
                 });
+
+                var columnsArray = [];
+                context.sandbox.utils.each(storedColumns, function(k, v) {
+                    columnsArray.push(v);
+                });
+
+                if(!myTable) {
+                    myTable = $datagridContainer.Datatable({
+                        "sortable": true,
+                        "pagination": true,
+                        "data": compiledData,
+                        "columns": columnsArray,
+                        "searchable": true,
+                        "closeable": false,
+                        "clickable": true,
+                        "afterRowClick": function(event, target) {
+                            if(event.which === 1) {
+                                publisher.identifyRecord({
+                                    "featureId": target['Feature ID'],
+                                    "layerId": target['Layer ID']
+                                });
+                            } else if (event.which === 3) {
+                                datagridContextMenu.showMenu({
+                                    "featureId": target['Feature ID'],
+                                    "layerId": target['Layer ID'],
+                                    "event": event
+                                });
+                            }
+                        },
+                        "addRowClasses": addCustomClasses
+                    });
+                } else {
+                    myTable.removeAllData();
+                    myTable.updateColumns(columnsArray);
+                    myTable.addData(compiledData);
+                }
+                datagridVisible = true;
             } else {
-                myTable.removeAllData();
-                myTable.addData(compiledData);
+                publisher.closeDatagrid();
+                datagridVisible = false;
             }
         },
-        close: function(){
+        close: function() {
             $datagridContainer.addClass('hidden');
             $datagridContainer.height(0);
             if(myTable) {
                 myTable.removeAllData();
             }
+            datagridVisible = false;
         },
         clear: function() {
             if(myTable) { //In both untill refactor
                 myTable.removeAllData();
             }
             exposed.close();
+        },
+        reload: function() {
+            if(datagridVisible) {
+                exposed.open();
+            }
+        },
+        refresh: function() {
+            if(datagridVisible && myTable) {
+                myTable.updateTable();
+            }
+        },
+        addData: function(params) {
+            var compiledData = [],
+                datasets,
+                currentPagination = $('ul.pagination li.active a').html();
+
+            if(datagridVisible && myTable) {
+                datasets = context.sandbox.dataStorage.datasets;
+
+                storedColumns = context.sandbox.dataStorage.getColumns();
+                 _.each(datasets, function(collection) {
+                    _.each(collection.models, function(model) {
+
+                        var tempObject = {};
+                        $.each(storedColumns, function(k, v){
+                            if(model.attributes.hasOwnProperty(k)) {
+                                tempObject[v] = model.attributes[k];
+                            } else {
+                                tempObject[v] = '';
+                            }
+                        });
+                        compiledData.push(tempObject);
+
+                    });
+                });
+
+                // Remove old data
+                myTable.removeAllData();
+                // replace data with new Full Data
+                myTable.addData(compiledData);
+                // Make sure the table stays on same page as prior to adding data
+                myTable.updatePaginator(currentPagination);
+            }
         }
     };
+
+    function addCustomClasses(params) {
+        if(
+            !context.sandbox.stateManager.getLayerStateById({"layerId": params.record['Layer ID']}).visible ||
+            context.sandbox.stateManager.layers[params.record['Layer ID']].hiddenFeatures.indexOf(params.record['Feature ID']) > -1
+        ){
+            return ["hiddenFeature"];
+        } else {
+            return [];
+        }
+    }
 
     return exposed;
     

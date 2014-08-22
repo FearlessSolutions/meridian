@@ -8,3 +8,15 @@ div[data-aura-component='displays/datagrid'] #datagridContainer {
 	box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);
     position: relative;
 }
+
+div[data-aura-component='displays/datagrid'] #datagridContainer .close {
+    margin: 10px;
+}
+
+div[data-aura-component='displays/datagrid'] #datagridContainer tr.hiddenFeature {
+    color: #cecece;
+}
+
+div[data-aura-component='displays/datagrid'] .datagrid-context-menu {
+    z-index: 1090;
+}

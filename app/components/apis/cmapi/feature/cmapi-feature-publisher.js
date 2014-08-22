@@ -23,6 +23,12 @@ define([
         },
         publishShowFeatures: function(args) {
             context.sandbox.emit('map.features.show', args);
+        },
+        publishZoomToFeatures: function(args) {
+            context.sandbox.emit('map.zoom.toFeatures', args);
+        },
+        publishCenterOnBounds: function(args){
+            context.sandbox.emit('map.zoom.toLocation', args);
         }
     };
 

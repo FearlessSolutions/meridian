@@ -15,6 +15,15 @@ define([
         "data.record.identify": {
             "payload": {}
         },
+        "datagrid.close": {
+            "payload": {}
+        },
+        "datagrid.open": {
+            "payload": {}
+        },
+        "datagrid.reload": {
+            "payload": {}
+        },
         "event.count.add": {
             "payload": {}
         },
@@ -25,9 +34,6 @@ define([
             "payload": {}
         },
         "map.cluster": {
-            "payload": {}
-        },
-        "map.datagrid.toggle": {
             "payload": {}
         },
         "map.draw.bbox.added": {
@@ -123,7 +129,8 @@ define([
               "featureIds": [
                 "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
                 "d3bc9d37-e683-4195-9475-bd4f37887d21"
-              ]
+              ],
+              "exclusive": false
             }
         },
         "map.features.show": {
@@ -132,6 +139,22 @@ define([
               "featureIds": [
                 "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
                 "d3bc9d37-e683-4195-9475-bd4f37887d21"
+              ],
+              "exclusive": false
+            }
+        },
+        "map.features.update": {
+            "payload": {
+              "layerId": "TestLayer1",
+              "featureObjects": [
+                {
+                  "featureId": "d3bc9d37-e683-4195-9475-bd4f37887d21",
+                  "style": {
+                    "icon": "http://icons.iconarchive.com/icons/icons-land/vista-map-markers/256/Map-Marker-Marker-Outside-Pink-icon.png",
+                    "width": 24,
+                    "height": 24
+                  }
+                }
               ]
             }
         },
@@ -200,11 +223,30 @@ define([
         "map.zoom.in": {
             "payload": {}
         },
-        "map.zoom.location": {
-            "payload": {}
-        },
         "map.zoom.out": {
             "payload": {}
+        },
+        "map.zoom.toLayer": {
+            "payload": {
+                "layerId": "TestLayer1"
+            }
+        },
+        "map.zoom.toFeatures": {
+            "payload": {
+                "layerId": "TestLayer1",
+                "featureIds": [
+                  "f74ff07f-4964-4f7e-beb6-33e6d2abb6ef",
+                  "d3bc9d37-e683-4195-9475-bd4f37887d21"
+                ]
+            }
+        },
+        "map.zoom.toLocation": {
+            "payload": {
+                "minLon": -20,
+                "minLat": 20,
+                "maxLon": 20,
+                "maxLat": 40
+            }
         },
         "menu.opening": {
             "payload": {}
@@ -222,12 +264,18 @@ define([
               "geometry": {
                 "type": "point",
                 "coordinates": [
-                  0,
-                  0
+                    0,
+                    0
                 ]
               },
               "properties": {}
             }
+        },
+        "progress.queue.add": {
+            "payload": {}
+        },
+        "progress.queue.remove": {
+            "payload": {}
         },
         "timeline.playback.start": {
             "payload": {}

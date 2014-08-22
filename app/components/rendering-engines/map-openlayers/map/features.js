@@ -35,6 +35,14 @@ define([
                     currentFeature.featureId = value.id || '';
                     currentFeature.attributes.dataService = value.dataService || '';
 
+                    // Handle default styles if none defined
+                    if(!currentFeature.attributes.icon) {
+                        iconData = context.sandbox.icons.getIconForFeature(value);
+                        currentFeature.attributes.icon = iconData.icon;
+                        currentFeature.attributes.height = iconData.height;
+                        currentFeature.attributes.width = iconData.width;
+                    }
+                     
                     newFeatures.push(currentFeature);
                 });
 
@@ -51,13 +59,25 @@ define([
         hideFeatures: function(params) {
             var layerId = params.layerId,
                 featureIds = params.featureIds,
-                layer = params.map.getLayersBy('layerId', layerId)[0];
+                layer = params.map.getLayersBy('layerId', layerId)[0],
+                currentHiddenFeatures = [];
 
             if(layer) {
+                if(params.exclusive === true) { // Show all previously hidden features before hiding new ones
+                    exposed.showAllFeatures({
+                        "map": params.map,
+                        "layerId": layerId
+                    });
+                }
+
                 context.sandbox.stateManager.addHiddenFeaturesByLayerId({
                     "layerId": layerId,
                     "featureIds": featureIds
                 });
+
+                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                    layer.recluster();
+                }
 
                 context.sandbox.utils.each(featureIds, function(index, featureId) {
                     var feature = layer.getFeatureBy('featureId', featureId);
@@ -84,9 +104,6 @@ define([
                 });
 
                 layer.redraw();
-                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
-                    layer.recluster();
-                }
                 layer.refresh({
                     "force": true,
                     "forces": true
@@ -112,12 +129,57 @@ define([
                 });
             }
         },
+        hideAllFeatures: function(params) {
+            var layerId = params.layerId,
+                layer = params.map.getLayersBy('layerId', layerId)[0],
+                hiddenFeatureIds = [];
+
+            context.sandbox.utils.each(layer.features, function(index, feature) {
+                if(feature.cluster) {
+                    context.sandbox.utils.each(feature.cluster, function(index, record) {
+                        hiddenFeatureIds.push(record.featureId);
+                        if(!record.style) {
+                            record.style = {}; 
+                        }
+                        record.style.display = "none";
+                    });
+                } else {
+                    hiddenFeatureIds.push(feature.featureId);
+                    if(!feature.style) {
+                        feature.style = {}; 
+                    }
+                    feature.style.display = "none";
+                }
+            });
+
+            context.sandbox.stateManager.addHiddenFeaturesByLayerId({
+                "layerId": layerId,
+                "featureIds": hiddenFeatureIds
+            });
+
+            if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                layer.recluster();
+            }
+
+            layer.redraw();
+            layer.refresh({
+                "force": true,
+                "forces": true
+            });
+        },
         showFeatures: function(params) {
             var layerId = params.layerId,
                 featureIds = params.featureIds,
                 layer = params.map.getLayersBy('layerId', layerId)[0];
 
             if(layer) {
+                if(params.exclusive === true) { // Show all previously hidden features before hiding new ones
+                    exposed.hideAllFeatures({
+                        "map": params.map,
+                        "layerId": layerId
+                    });
+                }
+
                 context.sandbox.stateManager.removeHiddenFeaturesByLayerId({
                     "layerId": layerId,
                     "featureIds": featureIds
@@ -130,7 +192,7 @@ define([
                 context.sandbox.utils.each(featureIds, function(index, featureId) {
                     var feature = layer.getFeatureBy('featureId', featureId);
                     if(feature) {
-                        feature.style = null; 
+                        feature.style = null;
                     } else {
                         context.sandbox.utils.each(layer.features, function(index, clusterFeature) {
                             if(clusterFeature.cluster) {
@@ -151,6 +213,70 @@ define([
                     "forces": true
                 });
             }
+        },
+        showAllFeatures: function(params) {
+            var layerId = params.layerId,
+                layer = params.map.getLayersBy('layerId', layerId)[0];
+
+            context.sandbox.stateManager.removeAllHiddenFeaturesByLayerId({
+                "layerId": layerId
+            });
+
+            if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                layer.recluster();
+            }
+
+            context.sandbox.utils.each(layer.features, function(index, feature) {
+                if(feature.cluster) {
+                    context.sandbox.utils.each(feature.cluster, function(index, record) {
+                        record.style = null;
+                    });
+                } else {
+                    feature.style = null;
+                }
+            });
+
+            layer.redraw();
+            layer.refresh({
+                "force": true,
+                "forces": true
+            });
+        },
+        updateFeatures: function(params) {  // TODO: finish method to support full feature updating (attirbutes, styles, etc.)
+            var layerId = params.layerId,
+                featureObjects = params.featureObjects,
+                layer = params.map.getLayersBy('layerId', layerId)[0];
+
+            if(layer) {
+                context.sandbox.utils.each(featureObjects, function(key, featureObject) {
+                    var feature = layer.getFeatureBy('featureId', featureObject.featureId);
+
+                    // If no feature found, look for feature in clusters
+                    if(!feature) {
+                        context.sandbox.utils.each(layer.features, function(k1, v1){
+                            if(v1.cluster) {
+                                context.sandbox.utils.each(v1.cluster, function(k2, v2){
+                                    if(featureObject.featureId === v2.featureId) {
+                                        feature = v2;
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    if(feature) { 
+                        context.sandbox.utils.each(featureObject.style, function(styleKey, styleProperty) { // TODO: Finish to support real style updates 
+                            feature.attributes[styleKey] = styleProperty; // Only works when updating attributes that are being consumed by the preexisting stylemap/template
+                        });
+                    }
+                });
+            }
+
+            layer.redraw();
+            layer.refresh({
+                "force": true,
+                "forces": true
+            });
         }
     };
     return exposed;

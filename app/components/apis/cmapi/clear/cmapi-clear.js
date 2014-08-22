@@ -1,0 +1,21 @@
+define([
+	'./cmapi-clear-publisher'
+], function (publisher) {
+	var context,
+        sendError;
+    var exposed = {
+        init: function(thisContext, layerId, errorChannel) {
+            context = thisContext;
+            sendError = errorChannel;
+            publisher.init(context);
+        },
+        receive: function(channel, message) {
+            clear();
+        }
+    };
+
+    function clear(){
+        publisher.publishClear();
+    }
+    return exposed;
+});

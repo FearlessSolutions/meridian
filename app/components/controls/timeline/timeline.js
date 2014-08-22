@@ -8,7 +8,8 @@ define([
     var context,
         snapshotTemplate,
         $timeline,
-        stopTimelinePlayback = true;
+        stopTimelinePlayback = true,
+        timer;
 
     var exposed = {
         init: function(thisContext) {
@@ -76,7 +77,8 @@ define([
                 var	snapshotHTML = snapshotTemplate({
                     "layerId": layerId,
                     "name": name,
-                    "thumbnailURL": thumnailURL
+                    "thumbnailURL": thumnailURL,
+                    "count": context.sandbox.dataStorage.datasets[params.layerId].length || 0
                 });
 
                 context.$('#timeline-container').append(snapshotHTML);
@@ -135,16 +137,13 @@ define([
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 var $badge = context.$('#snapshot-' + params.layerId + ' .badge'),
                     count = context.sandbox.dataStorage.datasets[params.layerId].length || 0;
-                if($badge.length === 0) {
-                    console.error("update fail", $badge);
-                    $badge = context.$('#snapshot-' + params.layerId + ' .badge');
+                if($badge.length > 0) {
+                    $badge.text(context.sandbox.utils.trimNumber(count));
+                    exposed.updateTooltip({
+                        "layerId": params.layerId,
+                        "status": "Running"
+                    });
                 }
-
-                $badge.text(context.sandbox.utils.trimNumber(count));
-                exposed.updateTooltip({
-                    "layerId": params.layerId,
-                    "status": "Running"
-                });
             }
         },
         markFinished: function(params) {
@@ -240,7 +239,7 @@ define([
                 $timeline.animate({scrollLeft: 0});
 
                 var i = 1;
-                var timer = setInterval(function() {
+                timer = setInterval(function() {
                     if(!stopTimelinePlayback && context.sandbox.dataStorage.datasets[tempArray[i]]) {
                         if(i > 3) {
                             var leftPos = $timeline.scrollLeft();
@@ -271,6 +270,7 @@ define([
             }
         },
         timelinePlaybackStop: function(params) {
+            clearInterval(timer);
             stopTimelinePlayback = true;
             context.$('.snapshot').removeClass('selected');
         },
@@ -314,7 +314,7 @@ define([
                 publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
                     "messageType": "success",
                     "messageTitle": "Data Service",
-                    "messageText": params.name + " query layer was removed"
+                    "messageText": "Layer successfully removed"
                 });
 
                 // Take care of AOI and toggleBtn state
@@ -373,7 +373,7 @@ define([
             publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
                 "messageType": "success",
                 "messageTitle": "Data Service",
-                "messageText": params.name + " query layer was removed"
+                "messageText": "Layer successfully removed"
             });
             publisher.deleteLayer({"layerId": params.layerId});
         },

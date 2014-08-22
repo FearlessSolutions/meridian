@@ -76,6 +76,12 @@ define([
                     "layerId": message.overlayId,
                     "featureIds": [message.featureId]
                 });
+                if(message.zoom) {
+                    publisher.publishZoomToFeatures({
+                        "layerId": message.overlayId,
+                        "featureIds": [message.featureId]
+                    });
+                }
                 // TODO: add support for CMAPI allowing you to zoom to the feature passed in
             } else if(message.format === 'kml') {
                 sendError('map.feature.unplot', message, 'KML is not currently supported');
@@ -118,7 +124,7 @@ define([
             ]
         },
         "name":"STRING",                (optional)(default: '')
-        "zoom":"true",                  (optional)(default: true)(If it should center and zoom after plotting)
+        "zoom":"true",                  (optional)(default: true)
         "selectable":BOOLEAN            (optional)(default: true)
     }
      *Note that name and selectable will only be used if there was no overlay with the given id
@@ -168,7 +174,7 @@ define([
         var newAJAX = context.sandbox.utils.ajax(postOptions)
             .done(function(data, status) {
                 var newData = [],
-                    layerQuery;
+                    featureIds = [];
                     
                 if(status === "success") {
                     context.sandbox.utils.each(data, function(key, value){
@@ -180,7 +186,9 @@ define([
                         newValue.layerId = value.queryId;
                         newValue.geometry = value.geometry;
                         newValue.type = value.type;
-                        newValue.properties = {};
+                        newValue.properties = {
+                            "dataService": "cmapi"
+                        };
 
                         context.sandbox.utils.each(value.properties, function(key, value){
                             newValue[key] = value;
@@ -214,6 +222,41 @@ define([
                         "layerId": layerId,
                         "data": newData
                     });
+
+                    if(message.zoom === true) {
+                        context.sandbox.utils.each(newData, function(k, v){
+                            featureIds.push(v.featureId);
+                        });
+                        publisher.publishZoomToFeatures({
+                            "layerId": layerId,
+                            "featureIds": featureIds
+                        });
+                    } else if(message.dataZoom) {
+                        var extent,
+                            minLatDelta,
+                            minLonDelta,
+                            maxLatDelta,
+                            maxLonDelta;
+
+                        context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(datasetId, dataset){
+                            dataset.each(function(feature){
+                                extent = context.sandbox.cmapi.getMaxExtent(feature.attributes.geometry.coordinates, extent);
+                            });
+                        });
+
+                        //Add some padding
+                        minLatDelta = Math.abs(extent.minLat) * 0.25;
+                        minLonDelta = Math.abs(extent.minLon) * 0.25;
+                        maxLatDelta = Math.abs(extent.maxLat) * 0.25;
+                        maxLonDelta = Math.abs(extent.maxLon) * 0.25;
+
+                        publisher.publishCenterOnBounds({
+                            "minLat": extent.minLat - minLatDelta,
+                            "minLon": extent.minLon - minLonDelta,
+                            "maxLat": extent.maxLat + maxLatDelta,
+                            "maxLon": extent.maxLon + maxLonDelta
+                        });
+                    }
 
                     publisher.publishPlotFinish({"layerId": layerId});
                 } else {

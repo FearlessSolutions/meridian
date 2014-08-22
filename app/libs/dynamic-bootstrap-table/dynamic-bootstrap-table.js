@@ -1,5 +1,5 @@
 /**
-Dynamic Bootstrap Table - 0.1.0
+Dynamic Bootstrap Table - 0.1.3
 https://github.com/eherman/dynamic-bootstrap-table
 Copyright (c) 2014 Eric Herman
 License: MIT
@@ -49,6 +49,7 @@ License: MIT
         "afterClose": undefined,
         "clickable": false,
         "afterRowClick": undefined,
+        "addRowClasses": undefined,
         init: function() {
             var datatable = this;
 
@@ -211,22 +212,33 @@ License: MIT
             }
 
             $.each(this.data.slice(this.startFeature, this.endFeature), function(i, feature){
-                var bodyRowHtml = '';
+                var bodyRowHtml = '',
+                    injectedRowClasses;
                 $.each(datatable.columns, function(index, value){
                     bodyRowHtml += '<td class="cellDiv"><span>'+feature.record[value]+'</span></td>';
                 });
+                if(typeof datatable.addRowClasses === 'function') {
+                    injectedRowClasses = datatable.addRowClasses(feature).join(" ");
+                }
                 if((i%2) !== 0) {
-                    $('.bodyTable table').append('<tr class="rowDiv oddRow" record-id="'+feature.id+'">'+bodyRowHtml+'</tr>');
+                    $('.bodyTable table').append('<tr class="rowDiv oddRow ' + injectedRowClasses + '" record-id="'+feature.id+'">'+bodyRowHtml+'</tr>');
                 } else {
-                    $('.bodyTable table').append('<tr class="rowDiv evenRow" record-id="'+feature.id+'">'+bodyRowHtml+'</tr>');
+                    $('.bodyTable table').append('<tr class="rowDiv evenRow ' + injectedRowClasses + '" record-id="'+feature.id+'">'+bodyRowHtml+'</tr>');
                 }
             });
             if(this.clickable) {
                 $('.bodyTable table tr').addClass('clickableRow');
-                $('.bodyTable table tr').on('click', function() {
+                $('.bodyTable table tr').on('click', function(event) {
+                    event.preventDefault();
                     var recordId = $(this).attr('record-id');
                     var record = datatable.getRecordById(recordId);
-                    datatable.afterRowClick(record);
+                    datatable.afterRowClick(event, record);
+                });
+                $('.bodyTable table tr').on('contextmenu', function(event) {
+                    event.preventDefault();
+                    var recordId = $(this).attr('record-id');
+                    var record = datatable.getRecordById(recordId);
+                    datatable.afterRowClick(event, record);
                 });
             }
 
@@ -304,14 +316,14 @@ License: MIT
                 });
             }
         },
-        updatePaginator: function() {
+        updatePaginator: function(newPage) {
             var datatable = this;
 
             if(this.pagination) {
                 //PAGINATION
                 var options = {
                     bootstrapMajorVersion: 3,
-                    currentPage: datatable.currentPage,
+                    currentPage: newPage || datatable.currentPage, // can provide newPage to keep an existing pagination spot
                     numberOfPages: datatable.paginatorSize,
                     totalPages: datatable.totalPages,
                     onPageClicked: function(e,originalEvent,type,page){
