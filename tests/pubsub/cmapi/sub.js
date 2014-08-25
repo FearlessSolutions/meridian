@@ -36,6 +36,7 @@ define([
             });
 
             window.addEventListener("message", receiveMessage, false); //TODO: third param?
+            toggleChannel('map.status.ready');
         },
         receiveMessage: receiveMessage
     };

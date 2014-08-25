@@ -6,8 +6,9 @@ define([
     './view/cmapi-view',
     './overlay/cmapi-overlay',
     './feature/cmapi-feature',
-    './status/cmapi-status'
-], function(view, overlay, feature, status) {
+    './status/cmapi-status',
+    './clear/cmapi-clear'
+], function(view, overlay, feature, status, clear) {
     var context,
         defaultLayerId = 'cmapi',
         processing = {};
@@ -23,6 +24,7 @@ define([
             overlay.init(context, defaultLayerId, sendError, emit);
             status.init(context, defaultLayerId, sendError, emit);
             view.init(context, defaultLayerId, sendError);
+            clear.init(context, defaultLayerId, sendError);
 
             context.sandbox.external.onPostMessage(receive);
 
@@ -30,6 +32,7 @@ define([
             processing.overlay = overlay;
             processing.status = status;
             processing.view = view;
+            processing.clear = clear;
         }
     };
 
@@ -47,6 +50,11 @@ define([
         if(channel && typeof channel === 'string') {
             category = channel.split('.')[1]; //0 is always "map"
             message = e.data.message;
+
+            //Check to see if we are the origin (we sent it, so it is already a JSON object)
+            if(!message || message.widgetName === context.sandbox.systemConfiguration.appName){
+                return;
+            }
 
             try {
                 if(message !== '') {

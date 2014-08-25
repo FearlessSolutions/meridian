@@ -56,17 +56,18 @@ require.config({
 require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
 
     // Listen to CSSWatch trigger (fired from datagrid/main.js)
-    $(document).on("css-change", '#datagridContainer', function(event, change){
-        console.log("CSS Change:", change.width, "height:", change.height);
+    $(document).on('css-change', '#datagridContainer', function(event, change){
         $('#mapContainer').css('height', 'calc(100% - 32px - ' + change.height + ')');
         $('div[data-aura-component="rendering-engines/map-openlayers"], #map').css('height', '100%');
         window.dispatchEvent(new Event('resize')); // Trigger OpenLayers to redraw the map
     });
     
     Aura({
-        "debug":false,
-        sources: {default: 'components'} 
+        "debug": false,
+        "appName": "Meridian",
+        "sources": {"default": "components"} 
     })
+    .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')
     .use('extensions/ajax-handler-extension/ajax-handler-extension')
     .use('extensions/session-extension/session-extension')
@@ -84,6 +85,6 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/mock-extension/mock-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
 //    .use('extensions/csv-upload-extension/csv-upload-extension')
-    .start({ components: 'body' });
+    .start({ "components": "body" });
 
 });
