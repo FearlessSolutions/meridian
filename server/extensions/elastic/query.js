@@ -11,13 +11,13 @@ exports.init = function(context){
 exports.executeQuery = function(userName, sessionId, query, callback){
 
     var newQuery = {
-        query: {
-            filtered: {
-                query: query.query,
-                filter: {
-                    term: {
-                        userId: userName,
-                        sessionId: sessionId
+        "query": {
+            "filtered": {
+                "query": query.query,
+                "filter": {
+                    "term": {
+                        "userId": userName,
+                        "sessionId": sessionId
                     }
                 }
             }
@@ -59,8 +59,29 @@ exports.getMetadataByQueryId = function(queryId, callback){
 };
 
 exports.getMetadataBySessionId = function(sessionId, callback){
-    var query = {query:{match:{sessionId:sessionId}}};
+    var query = {
+        "query":{
+            "match":{
+                "sessionId":sessionId
+            }
+        }
+    };
     getJSONByQuery(null, config.index.metadata, null, query, callback);
+};
+
+exports.getCountBySessionId = function(username, sessionId, callback){
+    var query = {
+        "filtered": {
+            "filter": {
+                "term": {
+                    "userId": username,
+                    "sessionId": sessionId
+                }
+            }
+        }
+    };
+
+    getCountBySessionId(username+""+sessionId, config.index.data, query, callback);
 };
 
 
@@ -90,6 +111,19 @@ var getJSONById = function(routing, index, type, id, callback){
     if (routing){ req.routing = routing; }
 
     client.get(req).then(function(resp){
+        callback(null, resp);
+    }, function(err){
+        callback(err, null);
+    });
+};
+
+var getCountBySessionId = function(routing, index,body, callback){
+    var req = {
+        "index": index,
+        "body": body
+    };
+
+    client.count(req).then(function(resp){
         callback(null, resp);
     }, function(err){
         callback(err, null);

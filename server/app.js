@@ -29,5 +29,6 @@ exports.init = function(app){
     // Components
     use('components/mock');
     use('components/csv-upload');
+    use('components/utils');
 
 };
