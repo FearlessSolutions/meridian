@@ -23,6 +23,11 @@ define([
             $downloadButton.on('click', function(event){
                 event.preventDefault();
 
+                //If it is not selectable, ignore click
+                if($downloadButton.hasClass('stop') || $downloadButton.hasClass('wait')){
+                    return;
+                }
+
                 publisher.publishMessage({
                     "messageType": "success",
                     "messageTitle": "CSV Download",
