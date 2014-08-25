@@ -46,9 +46,10 @@ define([
                 context.sandbox.utils.ajax({
                     "type": "GET" ,
                     "url": context.sandbox.utils.getCurrentNodeJSEndpoint() + "/getCount",
-                    headers: {
-                        'x-meridian-session-id': context.sandbox.sessionId
-                    }
+                    "cache": false
+//                    "headers": {
+//                        "x-meridian-session-id": context.sandbox.sessionId
+//                    }
                 })
                     .done(function(response){
                         if(response.count === 0){ //No points = fail
