@@ -69,13 +69,21 @@ exports.getMetadataBySessionId = function(sessionId, callback){
     getJSONByQuery(null, config.index.metadata, null, query, callback);
 };
 
+/**
+ * Returns the feature count of a user session
+ * @param username
+ * @param sessionId
+ * @param callback
+ */
 exports.getCountBySessionId = function(username, sessionId, callback){
     var query = {
-        "filtered": {
-            "filter": {
-                "term": {
-                    "userId": username,
-                    "sessionId": sessionId
+        "query": {
+            "filtered": {
+                "filter": {
+                    "term": {
+                        "userId": username,
+                        "sessionId": sessionId
+                    }
                 }
             }
         }
@@ -117,9 +125,17 @@ var getJSONById = function(routing, index, type, id, callback){
     });
 };
 
+/**
+ * Returns the feature count of a user session
+ * @param routing username+sessionId
+ * @param index data
+ * @param body the limiting query (at least username and session)
+ * @param callback returns the feature count of the session
+ */
 var getCountBySessionId = function(routing, index,body, callback){
     var req = {
         "index": index,
+        "routing": routing,
         "body": body
     };
 

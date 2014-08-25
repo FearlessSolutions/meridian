@@ -42,7 +42,6 @@ exports.init = function(context){
                 res.send(err);
             } else {
                 res.status(200);
-                console.log(response);
                 res.send(response.hits.hits.map(function(ele){return ele._source;}));
             }
         });

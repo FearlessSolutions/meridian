@@ -15,7 +15,7 @@ exports.init = function(context){
         query = context.sandbox.elastic.query;
 
     /**
-     * Endpoint for getting the number of features in a session
+     * Endpoint for getting the number of features in a user's current session
      *
      * Middleware:
      *      auth.verifyUser - ensure the user has a valid test cert
@@ -37,7 +37,9 @@ exports.init = function(context){
                 res.send(err);
             }else{
                 res.status(200);
-                res.send(resp);
+                res.send({
+                    "count": resp.count
+                });
             }
         });
     });
