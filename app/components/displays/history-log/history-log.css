@@ -1,0 +1,26 @@
+div[data-aura-component='displays/history-log'] #HistoryLogIcon {
+    display: inline;
+    float: right;
+    margin: 12px 5px;
+    font-size: 125%;
+}
+
+div[data-aura-component='displays/history-log'] #HistoryLogIcon:hover {
+    cursor: pointer;
+}
+
+div[data-aura-component='displays/history-log'] #HistoryLogDialog {
+    display: none;
+    float: right;
+}
+
+div[data-aura-component='displays/history-log'] #HistoryLogDialog .dialog-dialog {
+    width: 300px;
+    position: absolute;
+    z-index: 2000;
+    margin: 39px -268px;
+}
+
+div[data-aura-component='displays/history-log'] #HistoryLogDialog .dialog-body {
+    padding: 0px 20px 0px 20px;
+}
