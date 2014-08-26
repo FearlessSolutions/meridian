@@ -21,6 +21,9 @@ define([
 
             $currentMenu = context.$('#snapshot-' + layerId + '-settings-menu');
 
+            //layer starts off showing points. Show layer option in the menu should start out disabled.
+            context.$('#snapshot-' + layerId + '-settings-menu a[data-channel="timeline.menu.layer.show"]').parent('li').addClass('disabled');
+
             context.$('#snapshot-' + layerId + '-settings').on("click", function (e) {
                 var $settingsButton = context.$(this);
 
@@ -94,7 +97,17 @@ define([
          * @return N/A
          */
         disableOption: function(params){
-            var $option = context.$('#snapshot-' + params.layerId + '-settings-menu a[data-channel="'+ params.channel + '"]').parent('li').addClass('disabled');
+            context.$('#snapshot-' + params.layerId + '-settings-menu a[data-channel="'+ params.channel + '"]').parent('li').addClass('disabled');
+        },
+        /**
+         * [enableOption description]
+         * @param {object} params - JSON parameters
+         * @param {string} params.layerId - id of layer
+         * @param {string} params.channel - internal pubsub channel
+         * @return N/A
+         */
+        enableOption: function(params){
+            context.$('#snapshot-' + params.layerId + '-settings-menu a[data-channel="'+ params.channel + '"]').parent('li').removeClass('disabled');
         },
         menuCallback: function(params) {
             context.sandbox.emit(params.menuChannel, params.payload);  // dynamically emit publish messages
