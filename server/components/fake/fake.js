@@ -58,7 +58,7 @@ function init(){
         }
     });
     reader.addListener('end', function(){
-        console.log("Mock2 set loaded with " + records + " records");
+        console.log("Fake set loaded with " + records + " records");
     });
 }
 init();
