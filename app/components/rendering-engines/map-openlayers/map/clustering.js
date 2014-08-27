@@ -289,7 +289,7 @@ define([], function() {
                             feature = this.features[i];
                             if(feature.geometry) {
                                 if(
-                                    feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point" && 
+                                    feature.geometry.CLASS_NAME === 'OpenLayers.Geometry.Point' &&
                                     context.sandbox.stateManager.getFeatureVisibility({
                                         "layerId": this.layer.layerId,
                                         "featureId": feature.featureId
@@ -298,7 +298,8 @@ define([], function() {
                                     clustered = false;
                                     for(j=clusters.length-1; j>=0; --j) {
                                         cluster = clusters[j];
-                                        if(this.shouldCluster(cluster, feature)) {
+                                        if( cluster.geometry.CLASS_NAME !== 'OpenLayers.Geometry.Point' &&
+                                            this.shouldCluster(cluster, feature)) {
                                             this.addToCluster(cluster, feature);
                                             clustered = true;
                                             break;
