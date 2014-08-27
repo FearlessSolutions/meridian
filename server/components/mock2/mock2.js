@@ -10,7 +10,7 @@ function init(){
     console.log("Loading mock2 data set");
     var isFirstRow = true;
     var records = 0;
-    var reader = csv.createCsvFileReader('server/components/mock2/Random-Points-250k.csv');
+    var reader = csv.createCsvFileReader('server/components/mock2/Random-Points-100k.csv');
     reader.addListener('data', function(data) {
         var i;
 
