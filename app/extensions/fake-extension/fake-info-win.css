@@ -1,22 +1,22 @@
-.mock2-extension.info-win-dialog{
+.fake-extension.info-win-dialog{
 	font-size: .8em;
 }
 
-.mock2-extension.info-win-dialog .title{
+.fake-extension.info-win-dialog .title{
 	font-weight: bold;
 	font-size: 14px;
 	text-align: center;
 	margin-left: 30px;
 }
 
-.mock2-extension.info-win-dialog .content{
+.fake-extension.info-win-dialog .content{
 	position: relative;
 	margin-left: 15px;
 	width: 500px;
 	height: 135px;
 }
 
-.mock2-extension.info-win-dialog .imgDiv{
+.fake-extension.info-win-dialog .imgDiv{
 	float: left;
 	width: 80px;
 	height: auto;
@@ -24,12 +24,12 @@
 	text-align: center;
 }
 
-.mock2-extension.info-win-dialog img{
+.fake-extension.info-win-dialog img{
 	width: 80px;
 	height: 80px;
 }
 
-.mock2-extension.info-win-dialog .tableDiv{
+.fake-extension.info-win-dialog .tableDiv{
 	float: right;
 	vertical-align: top;
 	margin-left: 15px;
@@ -40,10 +40,10 @@
 	border: 1px solid lightgray;
 }
 
-.mock2-extension.info-win-dialog table.table{
+.fake-extension.info-win-dialog table.table{
 	margin-bottom: 0px;
 }
 
-.mock2-extension.info-win-dialog table.table td{
+.fake-extension.info-win-dialog table.table td{
 	padding: 5px;
 }

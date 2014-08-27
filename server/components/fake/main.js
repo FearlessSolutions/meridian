@@ -1,9 +1,9 @@
-var mock2 = require('./mock2.js');
+var fake = require('./fake.js');
 var uuid = require('node-uuid');
 var _ = require("underscore");
 
 /**
- * curl -XPOST https://localhost:8000/query/bbox/mock2 -d'{"minLat":"40","maxLat":"50","minLon":"40","maxLon":"50"}' --cert sean.pines.p12:schemaless --insecure --header "Content-Type:application/json"
+ * curl -XPOST https://localhost:8000/query/bbox/fake -d'{"minLat":"40","maxLat":"50","minLon":"40","maxLon":"50"}' --cert sean.pines.p12:schemaless --insecure --header "Content-Type:application/json"
  * @param app
  */
 exports.init = function(context){
@@ -27,7 +27,7 @@ exports.init = function(context){
         var queryId = req.body.queryId || uuid.v4();
 
 
-        mock2.query(minLat, maxLat, minLon, maxLon, start, pageSize, throttleMs, function(page){
+        fake.query(minLat, maxLat, minLon, maxLon, start, pageSize, throttleMs, function(page){
 
             if (!page || page.length === 0){
                 res.status(204);
@@ -35,7 +35,7 @@ exports.init = function(context){
                 return;
             }
 
-            save.writeGeoJSON(userName, sessionId, queryId, 'mock2', page, function(err, results){
+            save.writeGeoJSON(userName, sessionId, queryId, 'fake', page, function(err, results){
                 if (err){
                     res.status(500);
                     res.send(err);
@@ -49,10 +49,10 @@ exports.init = function(context){
 
     });
 
-    app.post('/query/bbox/mock2/dummy', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+    app.post('/query/bbox/fake/dummy', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         var queryId = uuid.v4();
 
-        mock2.query(40, 50, 40, 50, 0, 1000, 0, function(page){
+        fake.query(40, 50, 40, 50, 0, 1000, 0, function(page){
 
             page.forEach(function(record){
                 record.properties.queryId = queryId;
@@ -60,7 +60,7 @@ exports.init = function(context){
 
             var userName = res.get('Parsed-User');
             var sessionId = res.get('Parsed-SessionId');
-            save.writeGeoJSON(userName, sessionId, queryId, 'mock2', page, function(err){
+            save.writeGeoJSON(userName, sessionId, queryId, 'fake', page, function(err){
                 if (err){
                     console.log('error: ' + err);
                     res.status(500);

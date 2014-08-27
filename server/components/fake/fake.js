@@ -7,10 +7,10 @@ var LON_INDEX = 1;
 var indexToKeyName = {};
 
 function init(){
-    console.log("Loading mock2 data set");
+    console.log("Loading fake data set");
     var isFirstRow = true;
     var records = 0;
-    var reader = csv.createCsvFileReader('server/components/mock2/Random-Points-100k.csv');
+    var reader = csv.createCsvFileReader('server/components/fake/Random-Points-100k.csv');
     reader.addListener('data', function(data) {
         var i;
 

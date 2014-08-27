@@ -1,9 +1,9 @@
 define([
-    './mock2-publisher'
+    './fake-publisher'
 ], function(publisher) {
 
     var context,
-        DATASOURCE_NAME = 'mock2';
+        DATASOURCE_NAME = 'fake';
 
     var exposed = { 
 
@@ -126,7 +126,7 @@ define([
                 context.sandbox.utils.each(data, function(key, value){
                     var newValue = {};
 
-                    context.sandbox.utils.each(context.sandbox.dataServices.mock2.keys, function(k1, v1){
+                    context.sandbox.utils.each(context.sandbox.dataServices.fake.keys, function(k1, v1){
                         context.sandbox.utils.each(value.properties, function(k2, v2){
                             if(v1 === k2) {
                                 newValue[k2] = v2;
@@ -134,7 +134,7 @@ define([
                         });
                     });
 
-                    newValue.dataService = data[key].dataService = 'mock2';
+                    newValue.dataService = data[key].dataService = 'fake';
                     newValue.layerId = layerId;
                     newValue.id = data[key].id = value.properties.featureId;
                     newValue.geometry = value.geometry;

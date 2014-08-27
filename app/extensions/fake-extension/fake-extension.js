@@ -1,25 +1,25 @@
 define([
-    'text!./mock2-info-win.hbs',
-    'text!./mock2-info-win.css',
+    'text!./fake-info-win.hbs',
+    'text!./fake-info-win.css',
     'handlebars'
-], function(mock2Hbs, mock2InfoWinCSS) {
+], function(fakeHbs, fakeInfoWinCSS) {
     var exposed = {
         initialize: function(app) {
-            app.sandbox.utils.addCSS(mock2InfoWinCSS, 'mock2-extension-style');
+            app.sandbox.utils.addCSS(fakeInfoWinCSS, 'fake-extension-style');
 
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
-            app.sandbox.dataServices.mock2 = {};
-            app.sandbox.dataServices.mock2.infoWinTemplate = {
+            app.sandbox.dataServices.fake = {};
+            app.sandbox.dataServices.fake.infoWinTemplate = {
                 buildInfoWinTemplate: function(attributes, fullFeature) {
-                    var mock2Template = Handlebars.compile(mock2Hbs);
-                    var html = mock2Template({
+                    var fakeTemplate = Handlebars.compile(fakeHbs);
+                    var html = fakeTemplate({
                         "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
                         "classification": attributes.classification,
                         "name": attributes.name,
                         "attributes": attributes,
-                        "namespace": "mock2-extension"
+                        "namespace": "fake-extension"
                     });
                     return html;
                 },
@@ -27,7 +27,7 @@ define([
                     return;
                 }
             };
-            app.sandbox.dataServices.mock2.keys = [
+            app.sandbox.dataServices.fake.keys = [
                 "classification",
                 "layerId",
                 "featureId",
