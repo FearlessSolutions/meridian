@@ -97,8 +97,37 @@ exports.getMetadataByQueryId = function(queryId, callback){
 };
 
 exports.getMetadataBySessionId = function(sessionId, callback){
-    var query = {query:{match:{sessionId:sessionId}}};
+    var query = {
+        "query":{
+            "match":{
+                "sessionId":sessionId
+            }
+        }
+    };
     getJSONByQuery(null, config.index.metadata, null, query, callback);
+};
+
+/**
+ * Returns the feature count of a user session
+ * @param username
+ * @param sessionId
+ * @param callback
+ */
+exports.getCountBySessionId = function(username, sessionId, callback){
+    var query = {
+        "query": {
+            "filtered": {
+                "filter": {
+                    "term": {
+                        "userId": username,
+                        "sessionId": sessionId
+                    }
+                }
+            }
+        }
+    };
+
+    getCountBySessionId(username+""+sessionId, config.index.data, query, callback);
 };
 
 
@@ -128,6 +157,27 @@ var getJSONById = function(routing, index, type, id, callback){
     if (routing){ req.routing = routing; }
 
     client.get(req).then(function(resp){
+        callback(null, resp);
+    }, function(err){
+        callback(err, null);
+    });
+};
+
+/**
+ * Returns the feature count of a user session
+ * @param routing username+sessionId
+ * @param index data
+ * @param body the limiting query (at least username and session)
+ * @param callback returns the feature count of the session
+ */
+var getCountBySessionId = function(routing, index,body, callback){
+    var req = {
+        "index": index,
+        "routing": routing,
+        "body": body
+    };
+
+    client.count(req).then(function(resp){
         callback(null, resp);
     }, function(err){
         callback(err, null);
