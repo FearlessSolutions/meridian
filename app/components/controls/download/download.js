@@ -7,7 +7,7 @@ define([
         $downloadButton;
 
     var exposed = {
-        "init": function(thisContext){
+        "init": function(thisContext) {
             context = thisContext;
             $downloadButton = context.$('#downloadButton');
 
@@ -20,7 +20,7 @@ define([
                 }
             });
 
-            $downloadButton.on('click', function(event){
+            $downloadButton.on('click', function(event) {
                 event.preventDefault();
 
                 if(context.sandbox.dataStorage.datasets.length === 0){
@@ -34,7 +34,7 @@ define([
                     "url": context.sandbox.utils.getCurrentNodeJSEndpoint() + "/getCount",
                     "cache": false
                 })
-                    .done(function(response){
+                    .done(function(response) {
                         if(response.count === 0){ //No points = fail
                             publishCantDownload();
                         }else{
@@ -43,10 +43,10 @@ define([
                                 "messageTitle": "CSV Download",
                                 "messageText": "CSV Download started."
                             });
-                            window.open(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.csv?x-meridian-session-id=' + context.sandbox.sessionId);
+                            window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.csv?x-meridian-session-id=' + context.sandbox.sessionId);
                         }
                     })
-                    .error(function(e){
+                    .error(function(e) {
                         publisher.publishMessage({
                             "messageType": "error",
                             "messageTitle": "CSV Download",
@@ -57,7 +57,7 @@ define([
         }
     };
 
-    function publishCantDownload(){
+    function publishCantDownload() {
         publisher.publishMessage({
             "messageType": "warning",
             "messageTitle": "CSV Download",
