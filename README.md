@@ -90,7 +90,7 @@ To view the documentation page, go to [https://localhost:3000/docs/meridian](htt
 
 ## Guides
 
-Introduction to Meridian can be found [here](https://rawgit.com/ozone-development/meridian/master/app/docs/meridian/index.html).
+Introduction to Meridian can be found [here](http://ozone-development.github.io/meridian/).
 
 Much of the Design is based on [Aura](http://aurajs.com/). 
 
