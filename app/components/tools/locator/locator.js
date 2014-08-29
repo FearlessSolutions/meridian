@@ -40,7 +40,7 @@ define([
                         "messageText": 'No valid location selected. Please try again.'
                     });
                     $locatorButton.attr('disabled', true); 
-                }else if(selectedLocation.lat) { //It is coordinates
+                }else if('lat' in selectedLocation) { //It is coordinates
                     exposed.markLocation(selectedLocation);
                 }else {
                     exposed.goToLocation();
@@ -76,7 +76,7 @@ define([
                         if(content !== null) {
 
                             //Handle both coordinates and places
-                            if(query.match(/^-/) || query.match(/^-?\d/)) {
+                            if(query.match(/^-?\d/)) {
                                 context.sandbox.locator.queryCoordinates(query, function(coordinates){
                                     if(coordinates){
                                         selectedLocation = coordinates;
