@@ -112,8 +112,6 @@ define([
                 var identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
                     "layerId": layer.layerId
                 });
-
-                
                 context.sandbox.utils.each(identifiedFeatures, function(i1, identifiedfid){
                     context.sandbox.utils.each(featureIds, function(i2, fid){
                         if(fid === identifiedfid) {
@@ -170,13 +168,29 @@ define([
         showFeatures: function(params) {
             var layerId = params.layerId,
                 featureIds = params.featureIds,
-                layer = params.map.getLayersBy('layerId', layerId)[0];
+                layer = params.map.getLayersBy('layerId', layerId)[0],
+                identifiedFeatures;
 
             if(layer) {
                 if(params.exclusive === true) { // Show all previously hidden features before hiding new ones
                     exposed.hideAllFeatures({
                         "map": params.map,
                         "layerId": layerId
+                    });
+
+                    // Steps to clear popup IF it doess not belong to one of the features exclussively being shown
+                    identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
+                        "layerId": layer.layerId
+                    });
+                    context.sandbox.utils.each(identifiedFeatures, function(i1, identifiedfid){  // TODO: if this is ever enhanced to allow multiple identifation windows, this will need updating
+                        if(featureIds.indexOf(identifiedfid) === -1) {
+                            mapBase.clearMapSelection({
+                                "map": params.map
+                            });
+                            mapBase.clearMapPopups({
+                                "map": params.map
+                            });
+                        }  
                     });
                 }
 
