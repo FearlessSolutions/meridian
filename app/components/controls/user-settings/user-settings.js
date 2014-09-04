@@ -64,10 +64,10 @@ define([
 
             /**
              * Creates the list of available base maps. 
-             * 'option value=' is the base map name used for base map switches. e.g landscape, imagery, etc.
-             * options.fn looks up the property specified in the hbs, in our case the 'label' property.
-             * @param  {Array of JSON} items  Represents the base map array found in map-configuration.js
-             * @param  {HandleBar Object} options  Contains: {Object}data, {function}fn, {Object}hash and {function}inverse.
+             * option value is the base map name used for base map switches. e.g landscape, imagery, etc.
+             * options.fn looks up the property specified in the hbs, in our case the label property.
+             * @param  {Array} items  Represents the base map array found in map-configuration.js
+             * @param  {Object} options  Contains: {Object}data, {function}fn, {Object}hash and {function}inverse.
              * @return {null}  Registers the Handlebar helper. 
              */
             Handlebars.registerHelper('list', function(items, options) {

@@ -62,6 +62,12 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
         window.dispatchEvent(new Event('resize')); // Trigger OpenLayers to redraw the map
     });
     
+    /**
+     * A Meridian sandbox is the layer between each component, libraries, and the Meridian Core.
+     * It protects and controls component scope, provides flexibility to switch out libraries with
+     * greater ease and allows global access to common functionality.
+     * @namespace Sandbox
+     */
     Aura({
         "debug": false,
         "appName": "Meridian",

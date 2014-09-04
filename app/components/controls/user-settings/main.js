@@ -7,6 +7,10 @@ define([
     'handlebars'
 ], function (userSettings, userSettingsPublisher, userSettingsSubscriber, userSettingsCss, userSettingsHBS) {
     return {
+        /**
+         * @function initialize
+         * @return {type} description
+         */
         initialize: function() {
             this.sandbox.utils.addCSS(userSettingsCss, 'displays-user-settings-component-style');
 

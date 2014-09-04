@@ -161,6 +161,7 @@ module.exports = function (grunt) {
       postbuild: '.prebuild',
       docsPubsub: ['app/docs/pubsub/publishers.txt', 'app/docs/pubsub/subscribers.txt']
     },
+
     uglify: {
       options: {
         mangle: false,
@@ -222,13 +223,16 @@ module.exports = function (grunt) {
         ]
       }
     },
+
     useminPrepare: {
       html: 'index.html'
     },
+
     usemin: {
       html: ['dist/*.html'],
       css: ['dist/styles/*.css']
     },
+
     imagemin: {
       dist: {
         files: [{
@@ -239,6 +243,7 @@ module.exports = function (grunt) {
         }]
       }
     },
+
     cssmin: {
       options:{
         keepSpecialComments: 0
@@ -383,6 +388,24 @@ module.exports = function (grunt) {
       //   src: ['app/extensions/**/*.js'],
       //   dest:'.prebuild/scripts/extensions.js'
       // }
+    },
+
+  jsdoc : {
+      dist : {
+          src: ['./app/*.js','./app/extensions/map-configuration-extension/*.js', './app/components/controls/datagrid-toggle/*.js'], 
+          options: {
+              "destination": './app/docs/jsdoc',
+              "linient": true
+            }
+      },
+      docstrap : {
+        src : ['./app/*.js','./app/extensions/map-configuration-extension/*.js', './app/components/controls/datagrid-toggle/*.js'],
+        options : {
+          destination : './app/docs/docstrap',
+            template : "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",
+            configure : "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template/jsdoc.conf.json"
+        }
+      }
     }
 
   });
@@ -430,6 +453,8 @@ module.exports = function (grunt) {
     'jshint',
     'copy:glide'
   ]);
+
+
 
   grunt.registerTask('default', ['build']);
 

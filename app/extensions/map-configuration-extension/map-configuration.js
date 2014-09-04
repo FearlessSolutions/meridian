@@ -2,6 +2,14 @@ define([
 
 ], function() {
 
+/**
+ * @namespace Sandbox.mapConfiguration
+ * @property {String} defaulMapEngine - The default values for parties.
+ * @property {String} defaultBaseMap
+ * @property {Array} basemaps Array of basemap Objects. 
+ * @property {String} basemaps.basemap
+ * @property {String} basemaps.type
+ */
   var mapConfiguration = {
     "defaultMapEngine" : "OpenLayers",
     "defaultBaseMap": "landscape",//Must be a valid name in basemaps.
