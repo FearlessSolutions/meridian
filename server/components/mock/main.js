@@ -12,7 +12,7 @@ exports.init = function(context){
     var auth = context.sandbox.auth;
     var save = context.sandbox.elastic.save;
 
-    app.post('/query/bbox/:source', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+    app.post('/query/bbox/mock', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         var minLat = parseFloat(req.body.minLat);
         var minLon = parseFloat(req.body.minLon);
         var maxLat = parseFloat(req.body.maxLat);
