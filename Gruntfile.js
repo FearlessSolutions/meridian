@@ -406,9 +406,9 @@ module.exports = function (grunt) {
       docstrap : {
         src : ['./app/*.js','./app/extensions/map-configuration-extension/*.js', './app/components/controls/datagrid-toggle/*.js'],
         options : {
-          destination : './app/docs/docstrap',
-            template : "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",
-            configure : "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template/jsdoc.conf.json"
+          destination : './app/docs/jsdoc-api',
+          template : "./app/docs/meridian-template",
+          configure : "./app/docs/meridian-template/jsdoc.conf.json"
         }
       }
     }
