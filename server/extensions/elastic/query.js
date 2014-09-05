@@ -17,7 +17,7 @@ exports.updateRecord = function(userName, sessionId, type, updateMap, callback){
                 "_index": config.index.data,
                 "_type": type,
                 "_id": id,
-                "_routing": username+""+sessionId
+                "_routing": userName+""+sessionId
             }
         });
         bulkRequest.push({
@@ -28,16 +28,6 @@ exports.updateRecord = function(userName, sessionId, type, updateMap, callback){
     client.bulk({
         "body": bulkRequest
     });
-
-//    client.update({
-//        "index": config.index.data,
-//        "type": type,
-//        "id": id,
-//        "routing": userName+""+sessionId,
-//        "body":{
-//            "doc": updates
-//        }
-//    }, callback);
 };
 
 exports.executeQuery = function(userName, sessionId, query, callback){
