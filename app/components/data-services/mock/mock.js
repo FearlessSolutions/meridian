@@ -81,7 +81,14 @@ define([
             
         },
         clear: function() {
-            context.sandbox.dataStorage.clear();
+            var queryId;
+
+            for(queryId in context.sandbox.dataStorage.datasets){
+                if(context.sandbox.dataStorage.datasets[queryId] === DATASOURCE_NAME){
+                    delete context.sandbox.dataStorage.datasets[queryId];
+                }
+            }
+
             context.sandbox.ajax.clear();
         },
         deleteDataset: function(params) { 
