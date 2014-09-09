@@ -4,7 +4,7 @@ define([
 	var context,
         sendError;
     var exposed = {
-        init: function(thisContext, layerId, errorChannel) {
+        init: function(thisContext, errorChannel) {
             context = thisContext;
             sendError = errorChannel;
             publisher.init(context);

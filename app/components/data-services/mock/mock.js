@@ -2,7 +2,8 @@ define([
     './mock-publisher'
 ], function(publisher) {
 
-    var context;
+    var context,
+        DATASOURCE_NAME = 'mock';
 
     var exposed = { 
 
@@ -16,6 +17,7 @@ define([
             // Create the snapshot prior to executing query, so user knows something happened
             if(!context.sandbox.dataStorage.datasets[params.queryId]) {
                 context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
+                context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
 
                 publisher.createLayer({
                     "layerId": params.queryId,
@@ -43,6 +45,11 @@ define([
         stopQuery: function(params) {
             var layerState,
                 dataTransferState;
+
+            //If the query is not related to this datasource, ignore
+            if(context.sandbox.dataStorage.datasets[params.layerId].dataService !== DATASOURCE_NAME){
+                return;
+            }
 
             context.sandbox.ajax.stopQuery({
                 "layerId": params.layerId

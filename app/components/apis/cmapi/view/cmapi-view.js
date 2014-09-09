@@ -6,10 +6,10 @@ define([
         defaultLayerId;
 
     var exposed = {
-        init: function(thisContext, defaultLayer, errorChannel, emit) {
+        init: function(thisContext, errorChannel, emit) {
             context = thisContext;
             sendError = errorChannel;
-            defaultLayerId = defaultLayer;
+            defaultLayerId = context.sandbox.cmapi.defaultLayerId;
             publisher.init(context);
         },
         receive: function(channel, message) {
@@ -136,7 +136,8 @@ define([
                 "maxLon": extent.maxLon + maxLonDelta
             });
         },
-		"map.view.clicked": function(message){ return; } //This is not supported
+		"map.view.clicked": function(message){
+        } //This is not supported
     };
 
     return exposed;
