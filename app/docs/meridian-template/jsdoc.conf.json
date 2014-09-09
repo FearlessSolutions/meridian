@@ -15,7 +15,7 @@
 		"theme"                 : "meridian",
 		"linenums"              : true,
 		"collapseSymbols"       : true,
-		"inverseNav"            : true,
+		"inverseNav"            : false,
 		"highlightTutorialCode" : true
 	}
 }
