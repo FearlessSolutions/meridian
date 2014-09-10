@@ -49,3 +49,6 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body td
   text-overflow: ellipsis;
 }
 
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table th {
+  border-top: none;
+}
