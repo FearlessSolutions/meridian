@@ -56,6 +56,8 @@ define([
                 } 
             });
 
+            context.$('.expiration span').tooltip();
+
         },
         open: function() {
             publisher.publishOpening({"componentOpening": MENU_DESIGNATION});

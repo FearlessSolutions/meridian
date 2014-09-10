@@ -52,3 +52,6 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body td
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table th {
   border-top: none;
 }
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .expiration span.glyphicon-time {
+  color: #bd362f;
+}
