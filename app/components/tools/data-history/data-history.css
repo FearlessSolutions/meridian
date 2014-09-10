@@ -58,3 +58,7 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .d
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view  img {
     padding-bottom: 1em;
 }
+
+div[data-aura-component='tools/data-history'] #data-history-modal .data-history-modal-back-to-list {
+    padding-right: .5em;
+}

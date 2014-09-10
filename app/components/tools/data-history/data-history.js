@@ -21,6 +21,7 @@ define([
                 "show": false
              }).on('hidden.bs.modal', function() {
                 publisher.closeDataHistory();
+                exposed.hideDetailedInfo();
              });
 
             $cancelButton.on('click', function(event) {
@@ -34,9 +35,12 @@ define([
             }); 
 
             context.$('.data-action-info').on('click', function(event) {
-                context.$('.data-history-list').addClass('hidden');
-                context.$('.data-history-detail-view').removeClass('hidden');
-            })
+                exposed.showDetailedInfo();
+            });
+            context.$('.data-history-modal-back-to-list').on('click', function(event) {
+                exposed.hideDetailedInfo();
+            });
+
         },
         open: function() {
             publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
@@ -44,6 +48,16 @@ define([
         },
         close: function() {
             $modal.modal('hide');
+        },
+        showDetailedInfo: function() {
+            context.$('.data-history-list').addClass('hidden');
+            context.$('.data-history-modal-back-to-list').removeClass('hidden');
+            context.$('.data-history-detail-view').removeClass('hidden');
+        },
+        hideDetailedInfo: function() {
+            context.$('.data-history-list').removeClass('hidden');
+            context.$('.data-history-modal-back-to-list').addClass('hidden');
+            context.$('.data-history-detail-view').addClass('hidden');
         },
         clear: function() {
             $modal.modal('hide');
