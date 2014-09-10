@@ -52,7 +52,7 @@ define([
             context.$('.data-action-delete').on('click', function(event) {
                 var result = confirm("Want to delete?");
                 if (result==true) {
-                    context.$(this).parents('.history-record').hide();
+                    context.$(this).parents('tr').hide();
                 } 
             });
 

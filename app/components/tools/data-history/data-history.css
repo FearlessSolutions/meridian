@@ -24,30 +24,8 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-footer 
 div[data-aura-component='tools/data-history'] #data-history-modal {
     overflow-y: hidden;
 }
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body ul{
-    list-style: none;
-}
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body li span:not(:first-child) {
-    padding-left: 2em;
-}
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body li {
-    display: table-row;
-}
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body li span {
-    display: table-cell;
-    min-width: 50px;
-}
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body li span .btn-xs {
-    line-height: 1;
-}
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body li span.data-name {
-  max-width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body li span.data-date {
-    font-style: italic;
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body {
+    padding: 20px 10px;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view  span {
     display: block;
@@ -62,3 +40,12 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .d
 div[data-aura-component='tools/data-history'] #data-history-modal .data-history-modal-back-to-list {
     padding-right: .5em;
 }
+
+
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body td.data-name {
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+

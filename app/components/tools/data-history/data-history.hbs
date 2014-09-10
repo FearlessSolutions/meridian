@@ -6,38 +6,48 @@
                 <h4 class="modal-title">Data History<span class="data-history-modal-back-to-list pull-right hidden"><span class="glyphicon glyphicon-arrow-left"></span></span></h4>
             </div>
             <div class="modal-body">
-                <ul class="data-history-list">
-                    <li class="history-record">
-                        <span class="data-name">My Query</span>
-                        <span class="data-date">Mon Sept 8, 2014 9:15am</span>
-                        <span class="data-record-count">355 features</span>
-                        <span class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default data-action-info">i</button>
-                            <button type="button" class="btn btn-xs btn-default data-action-restore">+</button>
-                            <button type="button" class="btn btn-xs btn-default data-action-delete">x</button>
-                        </span>
-                    </li>
-                    <li class="history-record">
-                        <span class="data-name">Another Query</span>
-                        <span class="data-date">Mon Sept 8, 2014 2:23pm</span>
-                        <span class="data-record-count">1,245 features</span>
-                        <span class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default data-action-info">i</button>
-                            <button type="button" class="btn btn-xs btn-default data-action-restore">+</button>
-                            <button type="button" class="btn btn-xs btn-default data-action-delete">x</button>
-                        </span>
-                    </li>
-                    <li class="history-record">
-                        <span class="data-name">Some Very Long Query Name</span>
-                        <span class="data-date">Mon Sept 8, 2014 8:22am</span>
-                        <span class="data-record-count">12,987 features</span>
-                        <span class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default data-action-info">i</button>
-                            <button type="button" class="btn btn-xs btn-default data-action-restore">+</button>
-                            <button type="button" class="btn btn-xs btn-default data-action-delete">x</button>
-                        </span>
-                    </li>
-                </ul>
+                <table class="table table-condensed data-history-list">
+                  <tr>
+                    <th>Exp</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Record Count</th>
+                    <th>Actions</th>
+                  </tr>
+                  <tr>
+                    <td class="expiration"></td>
+                    <td class="data-name">My Query</td>
+                    <td class="data-date">Mon Sept 8, 2014 11:15am</td>
+                    <td class="data-record-count">355 features</td>
+                    <td class="data-actions">
+                        <button type="button" class="btn btn-xs btn-default data-action-info">i</button>
+                        <button type="button" class="btn btn-xs btn-default data-action-restore">+</button>
+                        <button type="button" class="btn btn-xs btn-default data-action-delete">x</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="expiration"></td>  
+                    <td class="data-name">Another Query</td>
+                    <td class="data-date">Mon Sept 8, 2014 9:56am</td>
+                    <td class="data-record-count">1,245 features</td>
+                    <td class="data-actions">
+                        <button type="button" class="btn btn-xs btn-default data-action-info">i</button>
+                        <button type="button" class="btn btn-xs btn-default data-action-restore">+</button>
+                        <button type="button" class="btn btn-xs btn-default data-action-delete">x</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="expiration"><span class="glyphicon glyphicon-time"></span></td>
+                    <td class="data-name">Some Very Long Query Name</td>
+                    <td class="data-date">Mon Sept 8, 2014 8:22am</td>
+                    <td class="data-record-count">12,987 features</td>
+                    <td class="data-actions">
+                        <button type="button" class="btn btn-xs btn-default data-action-info">i</button>
+                        <button type="button" class="btn btn-xs btn-default data-action-restore">+</button>
+                        <button type="button" class="btn btn-xs btn-default data-action-delete">x</button>
+                    </td>
+                  </tr>
+                </table>
                 <div class="data-history-detail-view hidden">
                     <div class="pull-right">
                         <img src="http://www.adventistdirectory.org/images2012/map-world.png" width="200">
