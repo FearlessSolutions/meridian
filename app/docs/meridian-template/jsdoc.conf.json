@@ -2,6 +2,11 @@
 	"tags"      : {
 		"allowUnknownTags" : true
 	},
+	"source"    : {
+		"include" : [
+			"./README.md"
+		]
+	},
 	"templates" : {
 		"cleverLinks"           : false,
 		"monospaceLinks"        : false,
@@ -10,7 +15,7 @@
 		"outputSourcePath"      : true,
 		"systemName"            : "Meridian",
 		"footer"                : "",
-		"copyright"             : "Software (c) 2014 The Boeing Company. <br>The United States Government has unlimited rights in this software, pursuant to the contracts under which it was developed. <br>The AML Center (under OZONE) is released to the public as Open Source Software <br>as required by Section 924 of the 2012 National Defense Authorization Act. <br>Released under the Apache License v2.0. <br>Forked from the Open Source Project: Aura JS.",
+		"copyright"             : "Software (c) 2014 <a href='http://www.boeing.com/' title='Boeing'>The Boeing Company</a>. <br>The United States Government has unlimited rights in this software, pursuant to the contracts under which it was developed. <br>The AML Center (under OZONE) is released to the public as Open Source Software <br>as required by Section 924 of the 2012 National Defense Authorization Act. <br>Released under the Apache License v2.0. <br>Forked from the Open Source Project: Aura JS.",
 		"navType"               : "vertical",
 		"theme"                 : "meridian",
 		"linenums"              : true,
