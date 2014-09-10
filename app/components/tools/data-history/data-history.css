@@ -49,3 +49,12 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body li
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body li span.data-date {
     font-style: italic;
 }
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view  span {
+    display: block;
+}
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view  span.data-actions {
+    text-align: center;
+}
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view  img {
+    padding-bottom: 1em;
+}

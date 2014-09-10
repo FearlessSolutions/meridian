@@ -32,6 +32,11 @@ define([
                 event.preventDefault();
                 publisher.closeDataHistory();
             }); 
+
+            context.$('.data-action-info').on('click', function(event) {
+                context.$('.data-history-list').addClass('hidden');
+                context.$('.data-history-detail-view').removeClass('hidden');
+            })
         },
         open: function() {
             publisher.publishOpening({"componentOpening": MENU_DESIGNATION});

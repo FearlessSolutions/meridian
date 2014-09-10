@@ -6,7 +6,7 @@
                 <h4 class="modal-title">Data History</h4>
             </div>
             <div class="modal-body">
-                <ul class="">
+                <ul class="data-history-list">
                     <li class="history-record">
                         <span class="data-name">My Query</span>
                         <span class="data-date">Mon Sept 8, 2014 9:15am</span>
@@ -38,7 +38,28 @@
                         </span>
                     </li>
                 </ul>
+                <div class="data-history-detail-view hidden">
+                    <div class="pull-right">
+                        <img src="http://www.adventistdirectory.org/images2012/map-world.png" width="200">
+                        <span class="data-actions">
+                            <button type="button" class="btn btn-sm btn-default data-action-info">i</button>
+                            <button type="button" class="btn btn-sm btn-default data-action-restore">+</button>
+                            <button type="button" class="btn btn-sm btn-default data-action-delete">x</button>
+                        </span>
+                    </div>
+                    <div class="meta">
+                        <span>{queryName}</span>
+                        <span>{datasetId}</span>
+                        <span>{date}</span>
+                        <span>{count}</span>
+                        <span>{extent}</span>
+                        <span>{createdOn}</span>
+                        <span>{dataService}</span>
+                        <span>{justification}</span>
+                        <span>{auth}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</div
