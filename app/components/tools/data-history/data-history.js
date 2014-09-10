@@ -41,6 +41,21 @@ define([
                 exposed.hideDetailedInfo();
             });
 
+            context.$('.data-action-restore').on('click', function(event) {
+                var result = confirm("Want to restore this data?");
+                if (result==true) {
+                    context.$(this).prop('disabled', true);
+                    publisher.closeDataHistory();
+                } 
+            });
+
+            context.$('.data-action-delete').on('click', function(event) {
+                var result = confirm("Want to delete?");
+                if (result==true) {
+                    context.$(this).parents('.history-record').hide();
+                } 
+            });
+
         },
         open: function() {
             publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
