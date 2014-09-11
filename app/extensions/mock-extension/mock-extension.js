@@ -10,31 +10,27 @@ define([
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
-            app.sandbox.dataServices.mock = {};
-            app.sandbox.dataServices.mock.infoWinTemplate = {
-                "buildInfoWinTemplate": function(attributes, fullFeature) {
-                    var mockTemplate = Handlebars.compile(mockHbs);
-                    var html = mockTemplate({
-                        "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
-                        "classification": attributes.classification,
-                        "name": attributes.name,
-                        "attributes": attributes,
-                        "namespace": "mock-extension"
-                    });
-                    return html;
+            app.sandbox.dataServices.mock = {
+                "infoWinTemplate": {
+                    "buildInfoWinTemplate": function(attributes, fullFeature) {
+                        var mockTemplate = Handlebars.compile(mockHbs);
+                        var html = mockTemplate({
+                            "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
+                            "classification": attributes.classification,
+                            "name": attributes.name,
+                            "attributes": attributes,
+                            "namespace": "mock-extension"
+                        });
+                        return html;
+                    },
+                    "postRenderingAction": function(feature, layerId) {
+                        return;
+                    }
                 },
-                "postRenderingAction": function(feature, layerId) {
-                    return;
+                "keys": {
+                    "percent": "%",
+                    "color": "Color"
                 }
-            };
-            app.sandbox.dataServices.mock.keys = {
-                "classification": "Classification",
-//                "layerId": "Layer ID",
-//                "featureId": "Feature ID",
-//                "lat": "Lat",
-//                "lon": "Lon",
-                "percent": "%",
-                "color": "Color"
             };
         }
     };
