@@ -12,7 +12,7 @@ exports.init = function(context){
     var auth = context.sandbox.auth;
     var save = context.sandbox.elastic.save;
 
-    app.post('/query/bbox/:source', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+    app.post('/query/bbox/mock', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         var minLat = parseFloat(req.body.minLat);
         var minLon = parseFloat(req.body.minLon);
         var maxLat = parseFloat(req.body.maxLat);
@@ -22,7 +22,7 @@ exports.init = function(context){
         var throttleMs = req.body.throttleMs ? parseInt(req.body.throttleMs) : 0;
         var userName = res.get('Parsed-User');
         var sessionId = res.get('Parsed-SessionId');
-        var source = req.params.source;
+        var source = 'mock';
 
         var queryId = req.body.queryId || uuid.v4();
 
@@ -36,7 +36,7 @@ exports.init = function(context){
             }
 
             var persistData = function(){
-                save.writeGeoJSON(userName, sessionId, queryId, 'mock', page, function(err, results){
+                save.writeGeoJSON(userName, sessionId, queryId, source, page, function(err, results){
                     if (err){
                         res.status(500);
                         res.send(err);
