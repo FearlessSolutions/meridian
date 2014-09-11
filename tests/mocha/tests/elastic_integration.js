@@ -156,7 +156,7 @@ describe("Elastic Search Integration Test Suite", function(){
     });
 
     it("should have the correct record count in a query's metadata", function(done){
-        metadataManager.getMetadataByQueryId(testQueryId, function(err, meta){
+        metadataManager.getMetadataByQueryId('testUser1', testQueryId, function(err, meta){
             expect(err).to.be.not.ok;
             expect(meta.getNumRecords()).to.equal(5);
             done();
@@ -164,7 +164,7 @@ describe("Elastic Search Integration Test Suite", function(){
     });
 
     it("should have the correct keyset in a query's metadata", function(done){
-        metadataManager.getMetadataByQueryId(testQueryId, function(err, meta){
+        metadataManager.getMetadataByQueryId('testUser1', testQueryId, function(err, meta){
             expect(err).to.be.not.ok;
             expect(meta.getKeys().lon).to.be.defined;
             expect(meta.getKeys().heading).to.be.defined;
@@ -176,7 +176,7 @@ describe("Elastic Search Integration Test Suite", function(){
     });
 
     it("should be able to fetch metadata by session id", function(done){
-        metadataManager.getMetadataBySessionId(testResultId, function(err, meta){
+        metadataManager.getMetadataBySessionId('testUser1', testResultId, function(err, meta){
             expect(err).to.be.not.ok;
             expect(meta[testQueryId]).to.be.defined;
             expect(meta[testQueryId].getKeys().lon).to.be.defined;

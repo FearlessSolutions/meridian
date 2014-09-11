@@ -31,7 +31,7 @@ exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON,
         geoJSON = [geoJSON];
     }
 
-    Metadata.getMetadataByQueryId(queryId, function(err, meta){
+    Metadata.getMetadataByQueryId(userName, queryId, function(err, meta){
         if (!meta || meta.status === 404 && meta.message === 'Not Found'){
             meta = Metadata.create(userName, sessionId, queryId);
         }

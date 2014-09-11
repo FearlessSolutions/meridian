@@ -3,12 +3,8 @@ var query = require('./query');
 var _ = require('underscore');
 var moment = require('moment');
 
-exports.init = function(context){
-
-}
-
-exports.getMetadataByQueryId = function(queryId, callback){
-    query.getMetadataByQueryId(queryId, function(err, meta){
+exports.getMetadataByQueryId = function(userId, queryId, callback){
+    query.getMetadataByQueryId(userId, queryId, function(err, meta){
         if (err){
             callback(err);
         } else {
@@ -17,8 +13,8 @@ exports.getMetadataByQueryId = function(queryId, callback){
     });
 };
 
-exports.getMetadataBySessionId = function(sessionId, callback){
-    query.getMetadataBySessionId(sessionId, function(err, meta){
+exports.getMetadataBySessionId = function(userId, sessionId, callback){
+    query.getMetadataBySessionId(userId, sessionId, function(err, meta){
         if (err) {
             callback(err);
         } else {

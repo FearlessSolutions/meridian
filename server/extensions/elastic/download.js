@@ -5,7 +5,7 @@ var query = require('./query');
 exports.pipeCSVToResponse = function(userName, sessionId, res){
 
     // Query metadata
-    metadataManager.getMetadataBySessionId(sessionId, function(err, meta){
+    metadataManager.getMetadataBySessionId(userName, sessionId, function(err, meta){
         var needToCreateLAT = false; //If there is a need to create the keys, for when they are not already included
         var needToCreateLON = false;
         if (err){
