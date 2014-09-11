@@ -43,7 +43,7 @@ define([
 
             context.$('.data-action-restore').on('click', function(event) {
                 var result = confirm("Want to restore this data?");
-                if (result==true) {
+                if(result === true) {
                     context.$(this).prop('disabled', true);
                     publisher.closeDataHistory();
                 } 
@@ -51,7 +51,7 @@ define([
 
             context.$('.data-action-delete').on('click', function(event) {
                 var result = confirm("Want to delete?");
-                if (result==true) {
+                if(result === true) {
                     context.$(this).parents('tr').hide();
                 } 
             });
@@ -67,12 +67,14 @@ define([
             $modal.modal('hide');
         },
         showDetailedInfo: function() {
-            context.$('.data-history-list').addClass('hidden');
+            context.$('.data-history-list-container').addClass('hidden');
+            context.$('.data-history-headers').addClass('hidden');
             context.$('.data-history-modal-back-to-list').removeClass('hidden');
             context.$('.data-history-detail-view').removeClass('hidden');
         },
         hideDetailedInfo: function() {
-            context.$('.data-history-list').removeClass('hidden');
+            context.$('.data-history-list-container').removeClass('hidden');
+            context.$('.data-history-headers').removeClass('hidden');
             context.$('.data-history-modal-back-to-list').addClass('hidden');
             context.$('.data-history-detail-view').addClass('hidden');
         },

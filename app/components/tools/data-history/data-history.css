@@ -8,16 +8,15 @@ body.dialog-open .modal-backdrop {
   background-color: #000000;
   display: none;
 }
+
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-backdrop.in {
     opacity: 0.7;
     filter: alpha(opacity=70);
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-dialog {
     margin: 15% auto;
+    width: 680px;
 }
-/*div[data-aura-component='tools/data-history'] .modal button.close {
-    display: none;
-}*/
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-footer {
     text-align:center;
 }
@@ -25,6 +24,7 @@ div[data-aura-component='tools/data-history'] #data-history-modal {
     overflow-y: hidden;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body {
+    height: 280px;
     padding: 20px 10px;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view  span {
@@ -34,34 +34,99 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .d
     text-align: center;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view  img {
-    padding-bottom: 1em;
+  padding-bottom: 1em;
 }
 
 div[data-aura-component='tools/data-history'] #data-history-modal .data-history-modal-back-to-list {
-    padding-right: .5em;
+  padding-right: .5em;
+}
+div[data-aura-component='tools/data-history'] #data-history-modal .data-history-modal-back-to-list:hover {
+  cursor: pointer;
 }
 
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body div.data-history-list-container {
+  height: 198px;
+  overflow: auto;
+}
 
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body td.data-name {
-  max-width: 150px;
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table {
+  margin-bottom: 0px; 
+}
+
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table th, 
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table td {
+  border-top: none;
+  border-bottom: 1px solid #dddddd;
+}
+
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .expiration {
+  width: 25px;
+  text-align: right;
+}
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .data-name {
+  width: 200px;
+  text-align: left;
+  max-width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table th {
-  border-top: none;
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .data-date {
+  width: 150px;
+  text-align: left;
+}
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .data-record-count {
+  width: 100px;
+  text-align: right;
+}
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .data-actions {
+  width: 125px;
   text-align: center;
 }
+
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .expiration span.glyphicon-time {
   color: #bd362f;
 }
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .expiration {
-  text-align: right;
+
+/* More Details View */
+
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view .left-container {
+  width: 300px;
+  max-width: 300px;
+  min-width: 300px;
+  float: left;
 }
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-record-count {
-  text-align: right;
-}
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-actions {
+
+div[data-aura-component='tools/data-history'] #data-history-modal .data-history-detail-view .data-actions {
+  /*position: absolute;
+  bottom: 15px;
+  right: 10px;*/
+  margin-top: 10px;
   text-align: center;
+}
+div[data-aura-component='tools/data-history'] #data-history-modal .data-history-detail-view .data-actions button {
+  padding-top: 8px;
+  padding-right: 12px;
+  padding-bottom: 12px;
+  padding-left: 12px;
+}
+
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view .right-container {
+  float: right;
+}
+
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body textarea.form-control {
+  width: 350px;
+  max-width: 350px;
+  min-width: 350px;
+  height: 246px;
+  max-height: 246px;
+  min-height: 246px;
+}
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body textarea.form-control {
+  cursor: default;
+}
+
+div[data-aura-component='tools/data-history'] #data-history-modal .indent {
+  padding-left: 10px;
 }
