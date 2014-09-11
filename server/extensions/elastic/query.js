@@ -97,6 +97,17 @@ exports.getMetadataBySessionId = function(sessionId, callback){
     getJSONByQuery(null, config.index.metadata, null, query, callback);
 };
 
+exports.getMetadataByUserId = function(userId, callback){
+    var query = {
+        "query":{
+            "match":{
+                "userId":userId
+            }
+        }
+    };
+    getJSONByQuery(null, config.index.metadata, null, query, callback);
+};
+
 /**
  * Returns the feature count of a user session
  * @param username

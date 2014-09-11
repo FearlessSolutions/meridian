@@ -31,6 +31,20 @@ exports.getMetadataBySessionId = function(sessionId, callback){
     });
 };
 
+exports.getMetadataByUserId = function(userId, callback){
+    query.getMetadataByUserId(userId, function(err, meta){
+        if (err) {
+            callback(err);
+        } else {
+            var ret = {};
+            meta.hits.hits.forEach(function(ele){
+                ret[ele._source.queryId] = new MetadataBuilder(ele._source);
+            });
+            callback(null, ret);
+        }
+    });
+};
+
 function saveMetadata(userName, sessionId, queryId, metadata, callback){
     save.writeMetadata(userName, sessionId, queryId, metadata, callback);
 };

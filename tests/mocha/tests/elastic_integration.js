@@ -35,6 +35,7 @@ describe("Elastic Search Integration Test Suite", function(){
         // It would be better to properly do callbacks within the mapping function
         setTimeout(function(){
             var testUsers = [{'user':'testUser1', 'sessionId':'A7478FB8AB254F608335D1D2F6DE960F'},
+                {'user':'testUser1', 'sessionId':'B7478FB8AB254F608335D1D2F6DE960F'},
                 {'user':'testUser2', 'sessionId':'8DEFBAC7337475D67E6F76E76C76'},
                 {'user':'testUser3', 'sessionId':'ABC6D7EFC7A6D6EF7C7EA7D7F'}];
 
@@ -181,6 +182,19 @@ describe("Elastic Search Integration Test Suite", function(){
             expect(meta[testQueryId].getKeys().lon).to.be.defined;
             expect(meta['A7478FB8AB254F608335D1D2F6DE960F']).to.be.defined;
             expect(meta['A7478FB8AB254F608335D1D2F6DE960F'].getKeys().num).to.be.defined;
+            done();
+        });
+    });
+
+    it("should be able to fetch metadata by user id", function(done){
+        metadataManager.getMetadataByUserId('testUser1', function(err, meta){
+            expect(err).to.be.not.ok;
+            expect(meta[testQueryId]).to.be.defined;
+            expect(meta[testQueryId].getKeys().lon).to.be.defined;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F']).to.be.defined;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F'].getKeys().num).to.be.defined;
+            expect(meta['B7478FB8AB254F608335D1D2F6DE960F']).to.be.defined;
+            expect(meta['B7478FB8AB254F608335D1D2F6DE960F'].getKeys().num).to.be.defined;
             done();
         });
     });
