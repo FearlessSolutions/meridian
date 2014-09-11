@@ -1,8 +1,10 @@
 define([
     'text!./download.hbs',
     './download',
+    './download-publisher',
+    './download-subscriber',
     'handlebars'
-], function(downloadHBS, download){
+], function(downloadHBS, download, publisher, subscriber){
 
     return {
         initialize: function() {
@@ -13,6 +15,8 @@ define([
             this.html(html);
 
             download.init(this);
+            publisher.init(this);
+            subscriber.init(this);
 
         }
     };

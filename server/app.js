@@ -30,5 +30,6 @@ exports.init = function(app){
     use('components/mock');
     use('components/fake');
     use('components/csv-upload');
+    use('components/utils');
 
 };

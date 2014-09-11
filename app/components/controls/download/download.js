@@ -1,12 +1,13 @@
 define([
+    './download-publisher',
     'bootstrap'
-], function(){
+], function(publisher){
 
     var context,
         $downloadButton;
 
     var exposed = {
-        init: function(thisContext){
+        "init": function(thisContext) {
             context = thisContext;
             $downloadButton = context.$('#downloadButton');
 
@@ -19,12 +20,50 @@ define([
                 }
             });
 
-            $downloadButton.on('click', function(event){
+            $downloadButton.on('click', function(event) {
                 event.preventDefault();
-                window.open(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.csv?x-meridian-session-id=' + context.sandbox.sessionId);
+
+                if(context.sandbox.dataStorage.datasets.length === 0){
+                    publishCantDownload();
+                    return;
+                }
+
+                //Not adding to ajaxHandler, because it would then have to handle clear, and we don't have a good way around that.
+                context.sandbox.utils.ajax({
+                    "type": "GET" ,
+                    "url": context.sandbox.utils.getCurrentNodeJSEndpoint() + "/getCount",
+                    "cache": false
+                })
+                    .done(function(response) {
+                        if(response.count === 0){ //No points = fail
+                            publishCantDownload();
+                        }else{
+                            publisher.publishMessage({
+                                "messageType": "success",
+                                "messageTitle": "CSV Download",
+                                "messageText": "CSV Download started."
+                            });
+                            window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.csv?x-meridian-session-id=' + context.sandbox.sessionId);
+                        }
+                    })
+                    .error(function(e) {
+                        publisher.publishMessage({
+                            "messageType": "error",
+                            "messageTitle": "CSV Download",
+                            "messageText": "Connection to server failed."
+                        });
+                    });
             });
         }
     };
+
+    function publishCantDownload() {
+        publisher.publishMessage({
+            "messageType": "warning",
+            "messageTitle": "CSV Download",
+            "messageText": "No data to download."
+        });
+    }
 
     return exposed;
 

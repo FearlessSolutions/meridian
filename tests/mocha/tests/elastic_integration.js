@@ -23,7 +23,8 @@ describe("Elastic Search Integration Test Suite", function(){
         require('../../../server/app').init({
             get:function(){},
             post:function(){},
-            all:function(){}
+            all:function(){},
+            delete:function(){}
         });
 
         save = require('../../../server/extensions/elastic/save');
@@ -57,7 +58,7 @@ describe("Elastic Search Integration Test Suite", function(){
                 }
 
                 save.writeGeoJSON(user.user, user.sessionId, user.sessionId, "test", geoJSON, function(err){
-
+                    if (err) console.log(err);
                 });
             });
             return done(null);
@@ -95,6 +96,7 @@ describe("Elastic Search Integration Test Suite", function(){
 //        testResultId = uuid.v4().split("-").join("");
         testQueryId = uuid.v4().split("-").join("");
         save.writeGeoJSON("testUser1", testResultId, testQueryId, "test", geoJSON, function(err){
+            if (err) console.log(err);
             expect(err).to.be.not.ok;
         });
 
@@ -155,7 +157,7 @@ describe("Elastic Search Integration Test Suite", function(){
     it("should have the correct record count in a query's metadata", function(done){
         metadataManager.getMetadataByQueryId(testQueryId, function(err, meta){
             expect(err).to.be.not.ok;
-            expect(meta.numRecords).to.equal(5);
+            expect(meta.getNumRecords()).to.equal(5);
             done();
         });
     });
@@ -163,11 +165,11 @@ describe("Elastic Search Integration Test Suite", function(){
     it("should have the correct keyset in a query's metadata", function(done){
         metadataManager.getMetadataByQueryId(testQueryId, function(err, meta){
             expect(err).to.be.not.ok;
-            expect(meta.keys.lon).to.be.defined;
-            expect(meta.keys.heading).to.be.defined;
-            expect(meta.keys.dest).to.be.defined;
-            expect(meta.keys.featureId).to.be.defined;
-            expect(meta.keys.queryId).to.be.defined;
+            expect(meta.getKeys().lon).to.be.defined;
+            expect(meta.getKeys().heading).to.be.defined;
+            expect(meta.getKeys().dest).to.be.defined;
+            expect(meta.getKeys().featureId).to.be.defined;
+            expect(meta.getKeys().queryId).to.be.defined;
             done();
         });
     });
@@ -176,9 +178,9 @@ describe("Elastic Search Integration Test Suite", function(){
         metadataManager.getMetadataBySessionId(testResultId, function(err, meta){
             expect(err).to.be.not.ok;
             expect(meta[testQueryId]).to.be.defined;
-            expect(meta[testQueryId].keys.lon).to.be.defined;
+            expect(meta[testQueryId].getKeys().lon).to.be.defined;
             expect(meta['A7478FB8AB254F608335D1D2F6DE960F']).to.be.defined;
-            expect(meta['A7478FB8AB254F608335D1D2F6DE960F'].keys.num).to.be.defined;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F'].getKeys().num).to.be.defined;
             done();
         });
     });
@@ -195,7 +197,8 @@ describe("Elastic Search Integration Test Suite", function(){
             },
             end: function(chunk){
                 this.buffer += chunk;
-                expect(this.buffer.length).to.equal(1045);
+                expect(this.buffer.length).to.equal(1287);
+//                expect(this.buffer.length).to.equal(1045); changed due to LAT/LON being added
                 expect(this.headers['Content-Type']).to.be.defined;
                 expect(this.headers['Content-Disposition']).to.be.defined;
                 done();

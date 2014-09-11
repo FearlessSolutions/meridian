@@ -6,7 +6,8 @@ exports.pipeCSVToResponse = function(userName, sessionId, res){
 
     // Query metadata
     metadataManager.getMetadataBySessionId(sessionId, function(err, meta){
-
+        var needToCreateLAT = false; //If there is a need to create the keys, for when they are not already included
+        var needToCreateLON = false;
         if (err){
             res.status(500);
             res.send("Error - couldn't fetch metadata for " + sessionId);
@@ -21,13 +22,25 @@ exports.pipeCSVToResponse = function(userName, sessionId, res){
         var keyToIndexMap = {};
         var maxIndex = 0;
         _.each(meta, function(metadata, queryId){
-            _.each(metadata.keys, function(value, key){
+            _.each(metadata.getKeys(), function(value, key){
                 if (keyToIndexMap[key] === undefined){
                     keyToIndexMap[key] = maxIndex;
                     maxIndex += 1;
                 }
             });
         });
+
+        //Make sure that LAT and LON are there for future upload
+        if(keyToIndexMap.LAT === undefined){
+            keyToIndexMap.LAT = maxIndex;
+            needToCreateLAT = true;
+            maxIndex++;
+        }
+        if(keyToIndexMap.LON === undefined){
+            keyToIndexMap.LON = maxIndex;
+            needToCreateLON = true;
+            maxIndex++; //Not required for now, but keeping in case of future additions
+        }
 
         // Generate header row
         var buffer = '\ufeff'; // UTF-8 Byte Order Mark, used by excel
@@ -53,6 +66,15 @@ exports.pipeCSVToResponse = function(userName, sessionId, res){
                         var index = keyToIndexMap[key];
                         row[index] = value;
                     });
+
+                    //If required, add LAT and LON based on Point geometry
+                    if(needToCreateLAT){
+                        row[keyToIndexMap.LAT] = result._source.geometry.coordinates[1];
+                    }
+                    if(needToCreateLON){
+                        row[keyToIndexMap.LON] = result._source.geometry.coordinates[0];
+                    }
+
                     buffer = _writeArray(buffer, row);
                 });
 

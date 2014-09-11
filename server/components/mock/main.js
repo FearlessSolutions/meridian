@@ -22,7 +22,7 @@ exports.init = function(context){
         var throttleMs = req.body.throttleMs ? parseInt(req.body.throttleMs) : 0;
         var userName = res.get('Parsed-User');
         var sessionId = res.get('Parsed-SessionId');
-        var source = req.params.source;
+        var source = 'mock';
 
         var queryId = req.body.queryId || uuid.v4();
 
@@ -35,16 +35,30 @@ exports.init = function(context){
                 return;
             }
 
-            save.writeGeoJSON(userName, sessionId, queryId, 'mock', page, function(err, results){
-                if (err){
-                    res.status(500);
-                    res.send(err);
+            var persistData = function(){
+                save.writeGeoJSON(userName, sessionId, queryId, source, page, function(err, results){
+                    if (err){
+                        res.status(500);
+                        res.send(err);
 
-                } else {
-                    res.status(200);
-                    res.send(page);
-                }
-            });
+                    } else {
+                        res.status(200);
+                        res.send(page);
+                    }
+                });
+            };
+
+
+            if (parseInt(start) === 0){
+                context.sandbox.elastic.metadata
+                    .create(userName, sessionId, queryId)
+                    .setQueryName(req.body.queryName)
+                    .setRawQuery(req.body)
+                    .setDataSource(source)
+                    .commit(persistData);
+            } else {
+                persistData();
+            }
         });
 
     });
@@ -60,6 +74,7 @@ exports.init = function(context){
 
             var userName = res.get('Parsed-User');
             var sessionId = res.get('Parsed-SessionId');
+
             save.writeGeoJSON(userName, sessionId, queryId, 'mock', page, function(err){
                 if (err){
                     console.log('error: ' + err);

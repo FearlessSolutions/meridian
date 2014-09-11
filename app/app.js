@@ -57,16 +57,16 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
 
     // Listen to CSSWatch trigger (fired from datagrid/main.js)
     $(document).on('css-change', '#datagridContainer', function(event, change){
-        console.log('CSS Change:', change.width, 'height:', change.height);
         $('#mapContainer').css('height', 'calc(100% - 32px - ' + change.height + ')');
         $('div[data-aura-component="rendering-engines/map-openlayers"], #map').css('height', '100%');
         window.dispatchEvent(new Event('resize')); // Trigger OpenLayers to redraw the map
     });
     
     Aura({
-        "debug": true,
+        "debug": false,
         "appName": "Meridian",
-        "sources": {"default": "components"} 
+        "sources": {"default": "components"},
+        "mediator": {"maxListeners": 50}
     })
     .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')

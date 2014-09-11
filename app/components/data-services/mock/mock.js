@@ -97,7 +97,9 @@ define([
                 "maxLon": params.maxLon,
                 "start": params.start || 0,
                 "queryId": params.queryId || null,
-                "pageSize": params.pageSize
+                "pageSize": params.pageSize,
+                "queryName": params.name,
+                "justification": params.justification
             },
             xhrFields: {
                 withCredentials: true

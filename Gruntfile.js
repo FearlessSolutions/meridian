@@ -318,11 +318,16 @@ module.exports = function (grunt) {
             src: ['**/*'],
             expand: true
           },
-          { cwd: 'node_modules/elasticsearch', // bring over Sean's modified version of the elastic search module
-            dest: 'glide/node_modules/elasticsearch',
+          { cwd: 'node_modules', // bring over all local node modules
+            dest: 'glide/node_modules',
             src: ['**/*'],
             expand: true
           },
+          // { cwd: 'node_modules/elasticsearch', // bring over Sean's modified version of the elastic search module
+          //   dest: 'glide/node_modules/elasticsearch',
+          //   src: ['**/*'],
+          //   expand: true
+          // },
           {
             'glide/app/bower_components/eventemitter2/lib/eventemitter2.js': 'app/bower_components/eventemitter2/lib/eventemitter2.js'
           },

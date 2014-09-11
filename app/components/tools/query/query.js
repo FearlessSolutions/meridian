@@ -55,7 +55,8 @@ define([
                 var queryObject = {
                         "name": name,
                         "dataSourceId": dataSource,
-                        "minLat": minLat, 
+                        "justification": justification,
+                        "minLat": minLat,
                         "minLon": minLon, 
                         "maxLat": maxLat, 
                         "maxLon": maxLon, 
