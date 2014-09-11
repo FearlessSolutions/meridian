@@ -52,14 +52,6 @@ exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON,
             record.featureId = featureId;
             record.queryId = queryId;
 
-//            if (!meta.keys){
-//                meta.keys = {};
-//            }
-//
-//            _.each(_.keys(record.properties), function(key){
-//                meta.keys[key] = true;
-//            });
-
             meta.addKeys(_.keys(record.properties));
 
             records.push({
@@ -68,13 +60,9 @@ exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON,
             });
         });
 
-//        meta.numRecords += geoJSON.length;
         meta.setNumRecords(meta.getNumRecords() + geoJSON.length).commit(function(){
             writeJSON(userName, sessionId, routingStr, config.index.data, dataType, records, callback);
         });
-//        Metadata.saveMetadata(userName, sessionId, queryId, meta, function(){
-//            writeJSON(userName, sessionId, routingStr, config.index.data, dataType, records, callback);
-//        });
     });
 };
 

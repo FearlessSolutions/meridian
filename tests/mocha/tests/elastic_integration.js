@@ -58,7 +58,6 @@ describe("Elastic Search Integration Test Suite", function(){
                 }
 
                 save.writeGeoJSON(user.user, user.sessionId, user.sessionId, "test", geoJSON, function(err){
-                    console.log("before save callback");
                     if (err) console.log(err);
                 });
             });
@@ -97,7 +96,6 @@ describe("Elastic Search Integration Test Suite", function(){
 //        testResultId = uuid.v4().split("-").join("");
         testQueryId = uuid.v4().split("-").join("");
         save.writeGeoJSON("testUser1", testResultId, testQueryId, "test", geoJSON, function(err){
-            console.log("save result set callback");
             if (err) console.log(err);
             expect(err).to.be.not.ok;
         });
