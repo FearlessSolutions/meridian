@@ -5,6 +5,7 @@ var mapping = require('./mapping');
 var client = require('./client');
 var stream = require('./stream');
 var purge = require('./purge');
+var metadata = require('./metadata');
 
 var uuid = require('node-uuid');
 
@@ -19,7 +20,8 @@ exports.init = function(context){
         mapping: mapping,
         client: client,
         stream: stream,
-        purge: purge
+        purge: purge,
+        metadata: metadata
     };
 
     // Init sub-modules as necessary
@@ -29,6 +31,7 @@ exports.init = function(context){
     context.sandbox.elastic.save.init(context);
     context.sandbox.elastic.stream.init(context);
     context.sandbox.elastic.purge.init(context);
+    context.sandbox.elastic.metadata.init(context);
 
     var auth = context.sandbox.auth;
 
