@@ -20,9 +20,9 @@
                     <td class="data-date">Mon 09/10/14 11:15am</td>
                     <td class="data-record-count">3,455</td>
                     <td class="data-actions">
-                        <button type="button" class="btn btn-xs btn-default data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                        <button type="button" class="btn btn-xs btn-default data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                        <button type="button" class="btn btn-xs btn-default data-action-delete"><span class="glyphicon glyphicon-trash"></button>
+                        <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
+                        <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
+                        <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></button>
                     </td>
                   </tr>
                   <tr>
@@ -31,9 +31,9 @@
                     <td class="data-date">Mon 09/10/14 09:56</td>
                     <td class="data-record-count">1,245</td>
                     <td class="data-actions">
-                        <button type="button" class="btn btn-xs btn-default data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                        <button type="button" class="btn btn-xs btn-default data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                        <button type="button" class="btn btn-xs btn-default data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
+                        <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
+                        <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
+                        <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
                     </td>
                   </tr>
                   <tr>
@@ -42,9 +42,9 @@
                     <td class="data-date">Mon 09/08/14 8:22am</td>
                     <td class="data-record-count">12,987</td>
                     <td class="data-actions">
-                        <button type="button" class="btn btn-xs btn-default data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                        <button type="button" class="btn btn-xs btn-default data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                        <button type="button" class="btn btn-xs btn-default data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
+                        <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
+                        <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
+                        <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
                     </td>
                   </tr>
                 </table>
@@ -52,21 +52,31 @@
                     <div class="pull-right">
                         <img src="http://www.adventistdirectory.org/images2012/map-world.png" width="200">
                         <span class="data-actions">
-                            <button type="button" class="btn btn-default data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                            <button type="button" class="btn btn-default data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-default data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
+                            <button type="button" class="btn btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
+                            <button type="button" class="btn btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
+                            <button type="button" class="btn btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
                         </span>
                     </div>
                     <div class="meta">
                         <span>{queryName}</span>
-                        <span>{datasetId}</span>
-                        <span>{date}</span>
-                        <span>{count}</span>
-                        <span>{extent}</span>
                         <span>{createdOn}</span>
-                        <span>{dataService}</span>
-                        <span>{justification}</span>
-                        <span>{rawQuery}</span>
+                        <span>{count}</span>
+                        <span>{expiresOn}</span>
+                        <span>{status}</span>
+                        <span>Raw Query Input:
+                            <textarea id="internal-pub-message" class="form-control" rows="10">
+    {
+      "name": "My Layer",
+      "justification": "Because I said so",
+      "extent": {
+        "minLat": "-13.645987",
+        "minLon": "-20.830078",
+        "maxLat": "12.146746",
+        "maxLon": "1.098633"
+      }
+    }
+                            </textarea>
+                        </span>
                     </div>
                 </div>
             </div>
