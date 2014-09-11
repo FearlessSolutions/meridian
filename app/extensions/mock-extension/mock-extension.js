@@ -4,7 +4,7 @@ define([
     'handlebars'
 ], function(mockHbs, mockInfoWinCSS) {
     var exposed = {
-        initialize: function(app) {
+        "initialize": function(app) {
             app.sandbox.utils.addCSS(mockInfoWinCSS, 'mock-extension-style');
 
             if (!app.sandbox.dataServices) {
@@ -12,7 +12,7 @@ define([
             }
             app.sandbox.dataServices.mock = {};
             app.sandbox.dataServices.mock.infoWinTemplate = {
-                buildInfoWinTemplate: function(attributes, fullFeature) {
+                "buildInfoWinTemplate": function(attributes, fullFeature) {
                     var mockTemplate = Handlebars.compile(mockHbs);
                     var html = mockTemplate({
                         "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
@@ -23,18 +23,19 @@ define([
                     });
                     return html;
                 },
-                postRenderingAction: function(feature, layerId) {
+                "postRenderingAction": function(feature, layerId) {
                     return;
                 }
             };
-            app.sandbox.dataServices.mock.keys = [
-                "classification",
-                "layerId",
-                "featureId",
-                "lat",
-                "lon",
-                "color"
-            ];
+            app.sandbox.dataServices.mock.keys = {
+                "classification": "Classification",
+//                "layerId": "Layer ID",
+//                "featureId": "Feature ID",
+//                "lat": "Lat",
+//                "lon": "Lon",
+                "percent": "%",
+                "color": "Color"
+            };
         }
     };
 
