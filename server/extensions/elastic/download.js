@@ -22,7 +22,7 @@ exports.pipeCSVToResponse = function(userName, sessionId, res){
         var keyToIndexMap = {};
         var maxIndex = 0;
         _.each(meta, function(metadata, queryId){
-            _.each(metadata.keys, function(value, key){
+            _.each(metadata.getKeys(), function(value, key){
                 if (keyToIndexMap[key] === undefined){
                     keyToIndexMap[key] = maxIndex;
                     maxIndex += 1;
