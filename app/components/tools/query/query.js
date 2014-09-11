@@ -54,6 +54,7 @@ define([
 
                 var queryObject = {
                         "name": name,
+                        "justification": justification,
                         "serviceName": "mock",
                         "minLat": minLat, 
                         "minLon": minLon, 
