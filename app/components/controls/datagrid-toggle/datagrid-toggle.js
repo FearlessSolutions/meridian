@@ -5,7 +5,15 @@ define([
     var context,
         $dataGridToggleButton;
 
+    
     var exposed = {
+        
+       /**
+        * Description here!
+        * @funciton
+        * @instance
+        * @memberof module:datagrid-toggle
+        */
         init: function(thisContext) {
             context = thisContext;
             $dataGridToggleButton = context.$('#dataGridToggleButton');
