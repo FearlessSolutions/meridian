@@ -2,7 +2,8 @@ define([
     './mock-publisher'
 ], function(publisher) {
 
-    var context;
+    var context,
+        DATASOURCE_NAME = 'mock';
 
     var exposed = { 
 
@@ -10,35 +11,37 @@ define([
             context = thisContext;
         },
         "executeQuery": function(params) {
-            // Set a query ID to pass to the server
-            params.queryId = context.sandbox.utils.UUID();
+            if(params.dataSourceId === DATASOURCE_NAME) {
+                // Set a query ID to pass to the server
+                params.queryId = context.sandbox.utils.UUID();
 
-            // Create the snapshot prior to executing query, so user knows something happened
-            if(!context.sandbox.dataStorage.datasets[params.queryId]) {
-                context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
+                // Create the snapshot prior to executing query, so user knows something happened
+                if(!context.sandbox.dataStorage.datasets[params.queryId]) {
+                    context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
+                    context.sandbox.dataStorage.datasets[params.queryId].dataSourceId = DATASOURCE_NAME;
 
-                publisher.createLayer({
-                    "layerId": params.queryId,
-                    "name": params.name,
-                    "selectable": true,
-                    "coords": {
-                        "minLat": params.minLat,
-                        "minLon": params.minLon,
-                        "maxLat": params.maxLat,
-                        "maxLon": params.maxLon
-                    }
+                    publisher.createLayer({
+                        "layerId": params.queryId,
+                        "name": params.name,
+                        "selectable": true,
+                        "coords": {
+                            "minLat": params.minLat,
+                            "minLon": params.minLon,
+                            "maxLat": params.maxLat,
+                            "maxLon": params.maxLon
+                        }
+                    });
+                }
+
+                queryData(params);
+
+                publisher.publishMessage({
+                    "messageType": "success",
+                    "messageTitle": "Data Service",
+                    "messageText": params.name + " query initiated"
                 });
+                publisher.addToProgressQueue();
             }
-
-            queryData(params);
-
-            publisher.publishMessage({
-                "messageType": "success",
-                "messageTitle": "Data Service",
-                "messageText": params.name + " query initiated"
-            });
-            publisher.addToProgressQueue();
-
         },
         "stopQuery": function(params) {
             var layerState,
@@ -85,7 +88,7 @@ define([
     function queryData(params) {
         var newAJAX = context.sandbox.utils.ajax({
             type: 'POST',
-            url: 'https://localhost:3000/query/bbox/' + params.serviceName,
+            url: 'https://localhost:3000/query/bbox/' + params.dataSourceId,
             data: {
                 "throttleMs": 0,
                 "minLat": params.minLat,
@@ -94,7 +97,9 @@ define([
                 "maxLon": params.maxLon,
                 "start": params.start || 0,
                 "queryId": params.queryId || null,
-                "pageSize": params.pageSize
+                "pageSize": params.pageSize,
+                "queryName": params.name,
+                "justification": params.justification
             },
             xhrFields: {
                 withCredentials: true
@@ -135,8 +140,8 @@ define([
                         });
                     }
 
-
                     newValue.dataService = data[dataIndex].dataService = "mock";
+
                     newValue.layerId = layerId;
                     newValue.id = data[dataIndex].id = dataFeature.properties.featureId;
                     newValue.geometry = dataFeature.geometry;
