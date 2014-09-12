@@ -10,31 +10,27 @@ define([
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
-            app.sandbox.dataServices.fake = {};
-            app.sandbox.dataServices.fake.infoWinTemplate = {
-                buildInfoWinTemplate: function(attributes, fullFeature) {
-                    var fakeTemplate = Handlebars.compile(fakeHbs);
-                    var html = fakeTemplate({
-                        "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
-                        "classification": attributes.classification,
-                        "name": attributes.name,
-                        "attributes": attributes,
-                        "namespace": "fake-extension"
-                    });
-                    return html;
+            app.sandbox.dataServices.fake = {
+                "infoWinTemplate": {
+                    "buildInfoWinTemplate": function(attributes, fullFeature) {
+                        var fakeTemplate = Handlebars.compile(fakeHbs);
+                        var html = fakeTemplate({
+                            "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
+                            "classification": attributes.classification,
+                            "name": attributes.name,
+                            "attributes": attributes,
+                            "namespace": "fake-extension"
+                        });
+                        return html;
+                    },
+                    "postRenderingAction": function(feature, layerId) {
+                        return;
+                    }
                 },
-                postRenderingAction: function(feature, layerId) {
-                    return;
+                "keys": {
+                    "valid": "Valid"
                 }
             };
-            app.sandbox.dataServices.fake.keys = [
-                "classification",
-                "layerId",
-                "featureId",
-                "lat",
-                "lon",
-                "color"
-            ];
         }
     };
 
