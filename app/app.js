@@ -69,7 +69,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
      * @namespace Sandbox
      */
     /**
-     * A List of all the channels being used as listeners, not a namespace.<br> To understand how channels work and how
+     * A List of all the channels being used as listeners, <b><i>not a namespace</i></b>.<br> To understand how channels work and how
      * they are used, please refer to the {@link http://ozone-development.github.io/meridian/examples/#messaging | Messaging}
      * documentation.<br>
      * A list of all emited channels can be found on the Events dropdown, and inside each component module 
