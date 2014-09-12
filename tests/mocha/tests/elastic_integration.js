@@ -199,6 +199,23 @@ describe("Elastic Search Integration Test Suite", function(){
         });
     });
 
+    it("should return no metadata by session id if the session doesn't belong to the user", function(done){
+        metadataManager.getMetadataBySessionId('testUser2', testResultId, function(err, meta){
+            expect(err).to.be.not.ok;
+            expect(meta[testQueryId]).to.not.be.ok;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F']).to.not.be.ok;
+            done();
+        });
+    });
+
+    it("should fail to fetch metadata by query id if the query doesn't belong to the user", function(done){
+        metadataManager.getMetadataByQueryId('testUser2', testQueryId, function(err, meta){
+            expect(err).to.be.ok;
+            expect(meta).to.be.not.ok;
+            done();
+        });
+    });
+
     it("should be able to trigger a CSV download without error", function(done){
         var mockRes = {
             buffer: "",
