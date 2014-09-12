@@ -206,8 +206,9 @@ textarea {
 }
 body {
   margin: 0;
+  font-family: Georgia, "Times New Roman", Times, serif;
   font-size: 16px;
-  line-height: 20px;
+  line-height: 1.42857143;
   color: #333333;
   background-color: #ffffff;
 }
@@ -676,7 +677,7 @@ h4 small {
 ul,
 ol {
   padding: 0;
-  margin: 0 0 10px 25px;
+  margin: 0 0 10px 45px;
 }
 ul ul,
 ul ol,
@@ -716,6 +717,8 @@ dd {
 }
 dt {
   font-weight: bold;
+  margin-left: 20px;
+
 }
 dd {
   margin-left: 10px;
@@ -5260,10 +5263,10 @@ h3 {
 h4 {
   font-size: 14px;
 }
-h5,
+/*h5,
 h6 {
   font-size: 11px;
-}
+}*/
 blockquote {
   padding: 10px 15px;
   background-color: #eeeeee;
@@ -5867,8 +5870,9 @@ a.thumbnail:hover {
   display: block;
 }
 footer {
-  border-top: 1px solid #007fff;
-  padding-top: 15px;
+  border-top: 1px solid #dddddd;
+  padding-top: 10px;
+  margin-top: 30px;
 }
 code {
   background-color: none;
@@ -5880,7 +5884,7 @@ code {
   margin-top: -62px;
 }
 .member-collapsed {
-  background-color: #007fff;
+  background-color: #dddddd;
   color: #ffffff;
 }
 .member-open {
@@ -6063,6 +6067,33 @@ fieldset[disabled] .navbar-default .btn-link:hover,
 fieldset[disabled] .navbar-default .btn-link:focus {
   color: #333333;
 }
-.description{
-  padding-left: 20px;
+/**Indent Module content.*/
+dd > table.params, dd > h5, dd > .description {
+  margin-left: 20px;
+}
+dt > h4.name {
+  color: #f0ad4e;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+.description {
+  font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+/*Add more space after Source link.*/
+.details {
+  margin-bottom: 20px;
+}
+/*Makes the href from sideNav account for the nav bar at the top of the page.*/
+.toc-shim, h4.name:before{
+  display: block;
+  content: " ";
+  height: 75px;
+  margin-top: -75px;
+  visibility:hidden;
+}
+.member-collapsed > h4 {
+  color: #4582ec;
+}
+
+.member-open > h4 {
+  color: #f0ad4e;
 }
