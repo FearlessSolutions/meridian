@@ -107,7 +107,8 @@ define([
         })
         .done(function(data){
             var layerId,
-                newData = [];
+                newData = [],
+                keys = context.sandbox.dataServices.fake.keys;
 
             if (data && data.length > 0){
                 layerId = params.queryId || data[0].properties.queryId;
@@ -125,23 +126,30 @@ define([
                     }
                 });
 
-                context.sandbox.utils.each(data, function(key, value){
+                //For each feature, create the minimized feature to be stored locally, with all the fields needed for datagrid
+                context.sandbox.utils.each(data, function(dataIndex, dataFeature){
                     var newValue = {};
 
-                    context.sandbox.utils.each(context.sandbox.dataServices.fake.keys, function(k1, v1){
-                        context.sandbox.utils.each(value.properties, function(k2, v2){
-                            if(v1 === k2) {
-                                newValue[k2] = v2;
+                    if(keys){
+                        //For each of the keys required, if that property exists in the feature, hoist it
+                        //and give it the specified header name
+                        context.sandbox.utils.each(keys, function(key, headerForKey){
+                            if(dataFeature.properties[key] !== undefined){
+                                newValue[headerForKey] = dataFeature.properties[key]; //Notice that v1 is used as the key
                             }
                         });
-                    });
+                    }
 
-                    newValue.dataService = data[key].dataService = 'fake';
+                    newValue.dataService = data[dataIndex].dataService = 'fake';
+
                     newValue.layerId = layerId;
-                    newValue.id = data[key].id = value.properties.featureId;
-                    newValue.geometry = value.geometry;
-                    newValue.type = value.type;
+                    newValue.id = data[dataIndex].id = dataFeature.properties.featureId;
+                    newValue.geometry = dataFeature.geometry;
+                    newValue.type = dataFeature.type;
                     newValue.properties = {};
+                    newValue.lat = dataFeature.geometry.coordinates[1];
+                    newValue.lon = dataFeature.geometry.coordinates[0];
+                    newValue.featureId = dataFeature.properties.featureId;
 
                     context.sandbox.dataStorage.addData({
                         "datasetId": layerId,
@@ -149,7 +157,7 @@ define([
                     });
 
                     // Add style properties for map features, but not for local dataset storage
-                    context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(value), function(styleKey, styleValue){
+                    context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(dataFeature), function(styleKey, styleValue){
                         newValue.properties[styleKey] = styleValue;
                     });
 

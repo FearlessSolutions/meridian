@@ -10,7 +10,7 @@ define([
         datagridVisible = false;
 
     var exposed = {
-        init: function(thisContext) {
+        "init": function(thisContext) {
             context = thisContext;
             datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
@@ -18,14 +18,14 @@ define([
                 publisher.closeDatagrid();
             });
         },
-        toggleGrid: function() {
+        "toggleGrid": function() {
             if($datagridContainer.hasClass('hidden')) {
                 exposed.open();
             }else {
                 exposed.close();
             }
         },
-        open: function() {
+        "open": function() {
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 var compiledData = [],
                     storedColumns,
@@ -93,7 +93,7 @@ define([
                 datagridVisible = false;
             }
         },
-        close: function() {
+        "close": function() {
             $datagridContainer.addClass('hidden');
             $datagridContainer.height(0);
             if(myTable) {
@@ -101,23 +101,23 @@ define([
             }
             datagridVisible = false;
         },
-        clear: function() {
+        "clear": function() {
             if(myTable) { //In both untill refactor
                 myTable.removeAllData();
             }
             exposed.close();
         },
-        reload: function() {
+        "reload": function() {
             if(datagridVisible) {
                 exposed.open();
             }
         },
-        refresh: function() {
+        "refresh": function() {
             if(datagridVisible && myTable) {
                 myTable.updateTable();
             }
         },
-        addData: function(params) {
+        "addData": function(params) {
             var compiledData = [],
                 datasets,
                 currentPagination = $('ul.pagination li.active a').html();
