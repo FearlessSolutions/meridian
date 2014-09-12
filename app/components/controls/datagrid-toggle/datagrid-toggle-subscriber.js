@@ -9,7 +9,6 @@ define([
         init: function(thisContext){
             context = thisContext;
             /**
-             * Description of channel here.
              * @typedef {Channel} datagrid.close
              * @memberof Channels
              */
@@ -20,7 +19,6 @@ define([
              */
             context.sandbox.on('datagrid.open', datagridToggle.setActive);
             /**
-             * 
              * @typedef {Channel} data.clear.all
              * @memberof Channels
              */

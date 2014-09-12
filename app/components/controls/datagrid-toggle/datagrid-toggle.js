@@ -7,10 +7,9 @@ define([
 
     
     var exposed = {
-        
        /**
-        * Description here!
-        * @funciton
+        * Utilized by all files that want to add functionality to the component.
+        * Activetes the tooltip, initializes variables and action listeners.
         * @instance
         * @memberof module:datagrid-toggle
         */
@@ -38,6 +37,12 @@ define([
             });
 
         },
+        /**
+        * Adds the active class to the component. Sends a message if no data is 
+        * avaliable to be displayed.
+        * @instance
+        * @memberof module:datagrid-toggle
+        */
         setActive: function() {
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 $dataGridToggleButton.addClass('active');
@@ -49,9 +54,19 @@ define([
                 });
             }
         },
+        /**
+        * Removes the active class from the component.
+        * @instance
+        * @memberof module:datagrid-toggle
+        */
         removeActive: function() {
             $dataGridToggleButton.removeClass('active');
         },
+        /**
+        * Removes the active class from the component.
+        * @instance
+        * @memberof module:datagrid-toggle
+        */
         clear: function(){
             $dataGridToggleButton.removeClass('active');
         }
