@@ -82,15 +82,46 @@ exports.getByFeatureId = function(userName, sessionId, featureId, callback){
     getJSONById(routingStr, config.index.data, null, featureId, callback);
 };
 
-exports.getMetadataByQueryId = function(queryId, callback){
-    getJSONById(null, config.index.metadata, null, queryId, callback);
+exports.getMetadataByQueryId = function(userId, queryId, callback){
+    getJSONById(null, config.index.metadata, null, queryId, function(err, results){
+        if (err){
+            callback(err, null);
+        } else if (results._source.userId !== userId){
+            callback("Metadata found but it does not belong to " + userId, null)
+        } else {
+            callback(null, results);
+        }
+    });
 };
 
-exports.getMetadataBySessionId = function(sessionId, callback){
+exports.getMetadataBySessionId = function(userId, sessionId, callback){
+    var query = {
+        "query":{
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "userId": userId
+                        }
+                    },
+                    {
+                        "term": {
+                            "sessionId": sessionId
+                        }
+                    }
+                ]
+            }
+
+        }
+    };
+    getJSONByQuery(null, config.index.metadata, null, query, callback);
+};
+
+exports.getMetadataByUserId = function(userId, callback){
     var query = {
         "query":{
             "match":{
-                "sessionId":sessionId
+                "userId":userId
             }
         }
     };
