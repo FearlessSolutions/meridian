@@ -5,7 +5,7 @@ var query = require('./query');
 exports.pipeCSVToResponse = function(userName, sessionId, res){
 
     // Query metadata
-    metadataManager.getMetadataBySessionId(sessionId, function(err, meta){
+    metadataManager.getMetadataBySessionId(userName, sessionId, function(err, meta){
         var needToCreateLAT = false; //If there is a need to create the keys, for when they are not already included
         var needToCreateLON = false;
         if (err){
@@ -22,7 +22,7 @@ exports.pipeCSVToResponse = function(userName, sessionId, res){
         var keyToIndexMap = {};
         var maxIndex = 0;
         _.each(meta, function(metadata, queryId){
-            _.each(metadata.keys, function(value, key){
+            _.each(metadata.getKeys(), function(value, key){
                 if (keyToIndexMap[key] === undefined){
                     keyToIndexMap[key] = maxIndex;
                     maxIndex += 1;
