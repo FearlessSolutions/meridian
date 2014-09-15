@@ -67,12 +67,16 @@ define([
                         "closeable": false,
                         "clickable": true,
                         "afterRowClick": function(event, target) {
-                            if(event.which === 1) {
+
+                            //If it was a link, as set below, do not identify the point.
+                            if(event.originalEvent.isLink){
+                                event.stopPropagation(); //Stop doing other stuff if it is a point
+                            }else if(event.which === 1) { //Normal click
                                 publisher.identifyRecord({
                                     "featureId": target['Feature ID'],
                                     "layerId": target['Layer ID']
                                 });
-                            } else if (event.which === 3) {
+                            } else if (event.which === 3) { //Right-click
                                 datagridContextMenu.showMenu({
                                     "featureId": target['Feature ID'],
                                     "layerId": target['Layer ID'],
@@ -87,6 +91,12 @@ define([
                     myTable.updateColumns(columnsArray);
                     myTable.addData(compiledData);
                 }
+
+                //If a link was clicked, mark the event as such. This happens before 'afterRowClick'
+                context.$('.rowDiv a').on('click', function(e){
+                    e.originalEvent.isLink = true; //The originalEvent is used at all levels during bubbling.
+                });
+
                 datagridVisible = true;
             } else {
                 publisher.closeDatagrid();
