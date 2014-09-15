@@ -165,7 +165,6 @@ define([
 
                     newValue.mapUrl = context.sandbox.dataServices.mock.processMapUrl(dataFeature.properties); //Add the map url
 
-
                     context.sandbox.dataStorage.addData({
                         "datasetId": layerId,
                         "data": newValue
