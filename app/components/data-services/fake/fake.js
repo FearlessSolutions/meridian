@@ -47,8 +47,6 @@ define([
             var layerState,
                 dataTransferState;
 
-            console.debug("stopQuery", params);
-
             //If the query is not related to this datasource, ignore
             if(context.sandbox.dataStorage.datasets[params.layerId].dataService !== DATASOURCE_NAME){
                 return;

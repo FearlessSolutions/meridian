@@ -98,7 +98,6 @@ define([
     };
 
     function queryData(params) {
-        console.debug("queryData", params);
         var newAJAX = context.sandbox.utils.ajax({
             "type": "POST",
             "url": "https://localhost:3000/query/bbox/" + params.dataSourceId,
