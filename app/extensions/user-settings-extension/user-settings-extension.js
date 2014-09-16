@@ -1,23 +1,8 @@
-/**
-     * The description.
-     * @namespace Sandbox
-     * 
-     */
 define([
 ], function() {
     var app;
 
-    /**
-     * Object description.
-     * @namespace UserSettingsExtension
-     * @memberOf Sandbox
-     */
     var exposed = {
-    	/**
-    	 * Initializes UserSettingsExtension
-    	 * @var init
-    	 * @memberOf UserSettingsExtension
-    	 */
         initialize: function(thisApp) {      
             app = thisApp;
 
