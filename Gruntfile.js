@@ -404,7 +404,24 @@ module.exports = function (grunt) {
             }
       },
       docstrap : {
-        src : ['./app/*.js','./app/extensions/map-configuration-extension/*.js', './app/components/controls/datagrid-toggle/*.js'],
+        src : ['./app/app.js', './app/components/','./app/extensions/'],
+        options : {
+          destination : './app/docs/jsdoc-api',
+          template : "./app/docs/meridian-template",
+          configure : "./app/docs/meridian-template/jsdoc.conf.json",
+          recurse: true
+        }
+      },
+      components : {
+        src : ['./app/*.js', './app/components/'],
+        options : {
+          destination : './app/docs/jsdoc-api',
+          template : "./app/docs/meridian-template",
+          configure : "./app/docs/meridian-template/jsdoc.conf.json"
+        }
+      },
+      extensions : {
+        src : ['./app/*.js','./app/extensions/'],
         options : {
           destination : './app/docs/jsdoc-api',
           template : "./app/docs/meridian-template",
