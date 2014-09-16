@@ -5808,7 +5808,7 @@ a.thumbnail:hover {
 #toc {
   position: fixed;
   top: 80px;
-  width: 29%;
+  width: 32%;
   max-height: 82%;
   overflow: auto;
   -webkit-border-radius: 5px;
