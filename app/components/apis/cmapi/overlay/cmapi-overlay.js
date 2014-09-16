@@ -25,15 +25,15 @@ define([
     };
 
     var receiveChannels = {
-        /**
-         * Creates an overlay with given params.
-         * If a layer already exists with the given id, that call is ignored
-         * @param message
-         * message.overlayId - The layerId for the new layer (optional)(default: 'cmapi')
-         * message.name - The displayed name of the new layer (optional)(default: '')
-         * message.selectable - If the features in the layer should be selectable (optional)(default: true)
-         * message.bounds{maxLat:INT, maxLon:INT, minLat:INT, minLon:INT} - The AOI box to be created with the layer (optional)
-         */
+        // *
+        //  * Creates an overlay with given params.
+        //  * If a layer already exists with the given id, that call is ignored
+        //  * @param message
+        //  * message.overlayId - The layerId for the new layer (optional)(default: 'cmapi')
+        //  * message.name - The displayed name of the new layer (optional)(default: '')
+        //  * message.selectable - If the features in the layer should be selectable (optional)(default: true)
+        //  * message.bounds{maxLat:INT, maxLon:INT, minLat:INT, minLon:INT} - The AOI box to be created with the layer (optional)
+         
 		"map.overlay.create": function(message) {
 			if(message === '') {
 				message = {

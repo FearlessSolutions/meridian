@@ -100,35 +100,35 @@ define([
 		}
     };
 
-    /**
-     * Plot passed in geoJSON
-     * If geoJSON is trying to be put in a layer that doesn't exist
-     * @param message
-     * message =
-     * {
-        "overlayId":"STRING",           (optional)(default: 'cmapi'
-        "format":"geojson",             (required)
-        "feature":{                     (required)
-            "type":"FeatureCollection"  (required),
-            "features":[ (required) (this must be formatted as proper geoJSON features)
-                {
-                    "type":"Feature",
-                    "geometry":{
-                        "type":"Polygon",
-                         "coordinates": [*]
-                    },
-                    "properties":{
-                        "p1": "test prop 1"
-                    }
-                }
-            ]
-        },
-        "name":"STRING",                (optional)(default: '')
-        "zoom":"true",                  (optional)(default: true)
-        "selectable":BOOLEAN            (optional)(default: true)
-    }
-     *Note that name and selectable will only be used if there was no overlay with the given id
-     */
+    // *
+    //  * Plot passed in geoJSON
+    //  * If geoJSON is trying to be put in a layer that doesn't exist
+    //  * @param message
+    //  * message =
+    //  * {
+    //     "overlayId":"STRING",           (optional)(default: 'cmapi'
+    //     "format":"geojson",             (required)
+    //     "feature":{                     (required)
+    //         "type":"FeatureCollection"  (required),
+    //         "features":[ (required) (this must be formatted as proper geoJSON features)
+    //             {
+    //                 "type":"Feature",
+    //                 "geometry":{
+    //                     "type":"Polygon",
+    //                      "coordinates": [*]
+    //                 },
+    //                 "properties":{
+    //                     "p1": "test prop 1"
+    //                 }
+    //             }
+    //         ]
+    //     },
+    //     "name":"STRING",                (optional)(default: '')
+    //     "zoom":"true",                  (optional)(default: true)
+    //     "selectable":BOOLEAN            (optional)(default: true)
+    // }
+    //  *Note that name and selectable will only be used if there was no overlay with the given id
+     
     function plotGeoJSON(message) {
         var postOptions,
             layerId;
