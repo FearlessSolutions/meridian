@@ -5,7 +5,8 @@
 	"source"    : {
 		"include" : [
 			"./app/docs/meridian-template/index.md"
-		]
+		],
+		"exclude" : ["./app/components/rendering-engines/*/libs/*/*.js"]
 	},
 	"templates" : {
 		"cleverLinks"           : false,
