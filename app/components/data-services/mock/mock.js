@@ -163,6 +163,8 @@ define([
                     newValue.lon = dataFeature.geometry.coordinates[0];
                     newValue.featureId = dataFeature.properties.featureId;
 
+                    newValue.mapUrl = context.sandbox.dataServices.mock.processMapUrl(dataFeature.properties); //Add the map url
+
                     context.sandbox.dataStorage.addData({
                         "datasetId": layerId,
                         "data": newValue
