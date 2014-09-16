@@ -7,7 +7,9 @@ define([
     var context,
         myTable,
         $datagridContainer,
-        datagridVisible = false;
+        datagridVisible = false,
+        MOUSE_CLICK_LEFT = 1,
+        MOUSE_CLICK_RIGHT = 3;
 
     var exposed = {
         "init": function(thisContext) {
@@ -71,12 +73,12 @@ define([
                             //If it was a link, as set below, do not identify the point.
                             if(event.originalEvent.isLink){
                                 event.stopPropagation(); //Stop doing other stuff if it is a point
-                            }else if(event.which === 1) { //Normal click
+                            }else if(event.which === MOUSE_CLICK_LEFT) { 
                                 publisher.identifyRecord({
                                     "featureId": target['Feature ID'],
                                     "layerId": target['Layer ID']
                                 });
-                            } else if (event.which === 3) { //Right-click
+                            } else if (event.which === MOUSE_CLICK_RIGHT) {
                                 datagridContextMenu.showMenu({
                                     "featureId": target['Feature ID'],
                                     "layerId": target['Layer ID'],
