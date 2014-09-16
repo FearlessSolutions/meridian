@@ -1,179 +1,27 @@
 <div class="modal fade" id="data-history-modal" tabindex="-1" role="dialog" aria-labelledby="data-history-modal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header dialog-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Data History</h4>
+                <p class="modal-title">Data History</p>
             </div>
             <div class="modal-body">
-                <table class="table table-condensed data-history-headers">
-                    <tr>
-                        <th class="expiration"></th>
-                        <th class="data-name">Name</th>
-                        <th class="data-date">Date</th>
-                        <th class="data-record-count">Records</th>
-                        <th class="data-actions">Actions</th>
-                    </tr>
-                </table>
-                <div class="data-history-list-container">
-                    <table class="table table-condensed data-history-list">
-                      <tr>
-                        <td class="expiration"></td>
-                        <td class="data-name">My Query</td>
-                        <td class="data-date">Mon 09/10/14 11:15am</td>
-                        <td class="data-record-count">3,455</td>
-                        <td class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="expiration"></td>  
-                        <td class="data-name">Another Query</td>
-                        <td class="data-date">Mon 09/10/14 09:56pm</td>
-                        <td class="data-record-count">1,245</td>
-                        <td class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="expiration"><span class="glyphicon glyphicon-time" data-toggle="tooltip" data-placement="left" title="This data expires tomorrow"></span></td>
-                        <td class="data-name">Some Very Long Name For a Layer</td>
-                        <td class="data-date">Mon 09/08/14 8:22am</td>
-                        <td class="data-record-count">12,987</td>
-                        <td class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="expiration"><span class="glyphicon glyphicon-time" data-toggle="tooltip" data-placement="left" title="This data expires tomorrow"></span></td>
-                        <td class="data-name">Some Very Long Name For a Layer</td>
-                        <td class="data-date">Mon 09/08/14 8:22am</td>
-                        <td class="data-record-count">12,987</td>
-                        <td class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="expiration"><span class="glyphicon glyphicon-time" data-toggle="tooltip" data-placement="left" title="This data expires tomorrow"></span></td>
-                        <td class="data-name">Some Very Long Name For a Layer</td>
-                        <td class="data-date">Mon 09/08/14 8:22am</td>
-                        <td class="data-record-count">12,987</td>
-                        <td class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="expiration"><span class="glyphicon glyphicon-time" data-toggle="tooltip" data-placement="left" title="This data expires tomorrow"></span></td>
-                        <td class="data-name">Some Very Long Name For a Layer</td>
-                        <td class="data-date">Mon 09/08/14 8:22am</td>
-                        <td class="data-record-count">12,987</td>
-                        <td class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="expiration"><span class="glyphicon glyphicon-time" data-toggle="tooltip" data-placement="left" title="This data expires tomorrow"></span></td>
-                        <td class="data-name">Some Very Long Name For a Layer</td>
-                        <td class="data-date">Mon 09/08/14 8:22am</td>
-                        <td class="data-record-count">12,987</td>
-                        <td class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="expiration"><span class="glyphicon glyphicon-time" data-toggle="tooltip" data-placement="left" title="This data expires tomorrow"></span></td>
-                        <td class="data-name">Some Very Long Name For a Layer</td>
-                        <td class="data-date">Mon 09/08/14 8:22am</td>
-                        <td class="data-record-count">12,987</td>
-                        <td class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="expiration"><span class="glyphicon glyphicon-time" data-toggle="tooltip" data-placement="left" title="This data expires tomorrow"></span></td>
-                        <td class="data-name">Some Very Long Name For a Layer</td>
-                        <td class="data-date">Mon 09/08/14 8:22am</td>
-                        <td class="data-record-count">12,987</td>
-                        <td class="data-actions">
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-info"><span class="glyphicon glyphicon-info-sign"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-xs btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                      </tr>
+                <div class="data-history-summary-list-container">
+                    <table class="table table-condensed data-history-headers">
+                        <tr>
+                            <th class="expiration"></th>
+                            <th class="data-name">Name</th>
+                            <th class="data-date">Date</th>
+                            <th class="data-record-count">Records</th>
+                            <th class="data-actions">Actions</th>
+                        </tr>
                     </table>
+                    <div class="data-history-list-container">
+                        <table class="table table-condensed data-history-list">
+                        </table>
+                    </div>
                 </div>
                 <div class="data-history-detail-view hidden">
-                    <div class="left-container">
-                        <div class="meta">
-                            <span><b>Query Name:</b></span>
-                                <span class="indent">Some Very Long Name For a Layer</span>
-                            <span><b>Created On:</b></span>
-                                <span class="indent">Mon 09/10/14 11:15am</span>
-                            <span><b>Record Count:</b></span>
-                                <span class="indent">3,455</span>
-                            <span><b>Expires On:</b></span>
-                                <span class="indent">Mon 09/15/14 11:15am</span>
-                            <span><b>Status:</b></span>
-                                <span class="indent">Finished</span>
-                        </div>
-                        <div class="data-actions">
-                            <button type="button" class="btn btn-default-icon data-history-modal-back-to-list"><span class="glyphicon glyphicon-arrow-left"></span></button>
-                            <button type="button" class="btn btn-default-icon data-action-restore"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="btn btn-default-icon data-action-delete"><span class="glyphicon glyphicon-trash"></span></button>
-                        </div>
-                    </div>
-                    <div class="right-container">
-                        {{!-- <span><b>Raw Query:</b></span> --}}
-                        <textarea id="raw-query-object" class="form-control" readonly>
-    {
-      "name": "My Layer",
-      "justification": "Because I said so",
-      "extent": {
-        "minLat": "-13.645987",
-        "minLon": "-20.830078",
-        "maxLat": "12.146746",
-        "maxLon": "1.098633"
-      }
-      "extent": {
-        "minLat": "-13.645987",
-        "minLon": "-20.830078",
-        "maxLat": "12.146746",
-        "maxLon": "1.098633"
-      }
-      "extent": {
-        "minLat": "-13.645987",
-        "minLon": "-20.830078",
-        "maxLat": "12.146746",
-        "maxLon": "1.098633"
-      }
-      "extent": {
-        "minLat": "-13.645987",
-        "minLon": "-20.830078",
-        "maxLat": "12.146746",
-        "maxLon": "1.098633"
-      }
-    }
-                        </textarea>
-                    </div>
-                    {{!-- <div class="pull-right">
-                        <img src="http://www.adventistdirectory.org/images2012/map-world.png" width="200">
-                    </div> --}}
                 </div>
             </div>
         </div>

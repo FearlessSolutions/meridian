@@ -72,11 +72,11 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body ta
   text-overflow: ellipsis;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .data-date {
-  width: 150px;
+  width: 170px;
   text-align: left;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .data-record-count {
-  width: 100px;
+  width: 80px;
   text-align: right;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .data-actions {
