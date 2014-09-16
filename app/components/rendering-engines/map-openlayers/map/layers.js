@@ -14,10 +14,10 @@ define([
             context = thisContext;
 
         },
-        /**
-         * Create layers that are not accessible to the user, and that don't go away
-         * @param params
-         */
+        // *
+        //  * Create layers that are not accessible to the user, and that don't go away
+        //  * @param params
+         
         createStaticLayers: function(params) {
             var geolocatorParams,
                 geolocatorLayer,
@@ -102,15 +102,15 @@ define([
             });
 
         },
-        /**
-         * Create new vector layer
-         * @param params {
-         *      styleMap - Style map for just this layer
-         *      layerId - Id for this layer (must be unique).
-         *      selectable - If this layer's features should be interactive
-         * }
-         * @returns {OpenLayers.Layer.Vector}
-         */
+        // *
+        //  * Create new vector layer
+        //  * @param params {
+        //  *      styleMap - Style map for just this layer
+        //  *      layerId - Id for this layer (must be unique).
+        //  *      selectable - If this layer's features should be interactive
+        //  * }
+        //  * @returns {OpenLayers.Layer.Vector}
+         
         createVectorLayer: function(params) {
             var options,
                 newVectorLayer,
@@ -156,21 +156,21 @@ define([
 
             return newVectorLayer;
         },
-        /**
-         * Add base layer of OSM format
-         * @param params
-         * @returns {OpenLayers.Layer.OSM}
-         */
+        // *
+        //  * Add base layer of OSM format
+        //  * @param params
+        //  * @returns {OpenLayers.Layer.OSM}
+         
         createOSMLayer: function(params) {
             var baseLayer = new OpenLayers.Layer.OSM(params.label,params.url);
             params.map.addLayer(baseLayer);
             return baseLayer;
         },
-        /**
-         * Create baselayer of WMTS format
-         * @param params
-         * @returns {OpenLayers.Layer.WMTS}
-         */
+        // *
+        //  * Create baselayer of WMTS format
+        //  * @param params
+        //  * @returns {OpenLayers.Layer.WMTS}
+         
         createWMTSLayer: function(params) {
             var baseLayer = new OpenLayers.Layer.WMTS({
                 "name": params.name,
@@ -194,10 +194,10 @@ define([
         setLayerIndex: function(params) {
             params.map.setLayerIndex(params.map.getLayersBy('layerId', params.layerId)[0], params.layerIndex);
         },
-        /**
-         * Delete layer with given layerId and all of the features in it
-         * @param params
-         */
+        // *
+        //  * Delete layer with given layerId and all of the features in it
+        //  * @param params
+         
         deleteLayer: function(params) {
             var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0],
                 layers = selector.layers,
@@ -239,10 +239,10 @@ define([
                 "map": params.map
             });
         },
-        /**
-         * Remove all of the features from a layer, but leave the layer
-         * @param params
-         */
+        // *
+        //  * Remove all of the features from a layer, but leave the layer
+        //  * @param params
+         
         clearLayer: function(params) {
             params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
         },
@@ -296,10 +296,10 @@ define([
                 }
             }
         },
-        /**
-         * Change which visual mode the map is in by activating the proper sub-module
-         * @param params
-         */
+        // *
+        //  * Change which visual mode the map is in by activating the proper sub-module
+        //  * @param params
+         
         visualModeChanged: function(params) {
             var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
             selector.unselectAll();
@@ -313,10 +313,10 @@ define([
                 "map": params.map
             });
         },
-        /**
-         * Clear all features and feature layers
-         * @param params
-         */
+        // *
+        //  * Clear all features and feature layers
+        //  * @param params
+         
         clear: function(params) {
             var layers = params.map.getLayersByClass('OpenLayers.Layer.Vector');
             layers.forEach(function(layer) {
@@ -338,11 +338,11 @@ define([
                 });
             }
         },
-        /**
-         * Load basemaps, as defined in the map configuration. Accepts OSM and WMTS
-         * @param params
-         * @returns {{}}
-         */
+        // *
+        //  * Load basemaps, as defined in the map configuration. Accepts OSM and WMTS
+        //  * @param params
+        //  * @returns {{}}
+         
         loadBasemaps: function(params) {
             var basemapLayers = {};
 
@@ -388,10 +388,10 @@ define([
         setBasemap: function(params) {
             params.map.setBaseLayer(params.basemapLayer);
         },
-        /**
-         * Add popup to feature, even if it is in a cluster
-         * @param params
-         */
+        // *
+        //  * Add popup to feature, even if it is in a cluster
+        //  * @param params
+         
         identifyFeature: function(params) {
             var layerVisibility,
                 featureVisibilty,
@@ -509,10 +509,10 @@ define([
 
     };
 
-    /**
-     * Add mouse position listener
-     * @param params
-     */
+    // *
+    //  * Add mouse position listener
+    //  * @param params
+     
     function addGeoLocatorListeners(params) {
         params.layer.events.on({
             beforefeatureselected: function(evt) {

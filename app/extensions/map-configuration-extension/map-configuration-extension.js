@@ -8,7 +8,7 @@ define([
 	var exposed = {
 		/**
 		 * Funciton utilized by Meridian to init all extensions. 
-		 * This extentions exposes {@link Sandbox.mapConfiguration} to the {@link Sandbox} namespace.
+		 * This extention exposes {@link Sandbox.mapConfiguration} to the {@link Sandbox} namespace.
 		 * @instance
 		 * @param  {Object} app Instance of the Meridian application.
 		 */

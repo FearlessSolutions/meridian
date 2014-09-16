@@ -9,7 +9,7 @@ define([
     var exposed = {
        /**
         * Utilized by all files that want to add functionality to the component.
-        * Activetes the tooltip, initializes variables and action listeners.
+        * Activities the tooltip, initializes variables and action listeners.
         * @instance
         * @memberof module:datagrid-toggle
         */

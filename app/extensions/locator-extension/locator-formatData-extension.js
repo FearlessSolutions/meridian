@@ -16,8 +16,9 @@ define([
             /**
              * Formats data and separates it by names and the data needed to use the typeahead
              * implementation found in component/tool/locator. (locator.js)
-             * @param  {[type]} param [description]
-             * @return {JSON}       JSON Object containing an array called 'name' and a 'data' object.
+             * @namespace Sandbox.locator.formatData
+             * @type {Function}
+             * @return {Object}  JSON Object containing an array called 'name' and a 'data' object.
              * array is used to populate the dropdown from the typeahead. 
              */
             app.sandbox.locator.formatData = function(param) {

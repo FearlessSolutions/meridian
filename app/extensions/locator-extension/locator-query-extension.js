@@ -48,7 +48,7 @@ define([
 
                 /**
                  * Parses a part of DegreeMinutes.Seconds
-                 * @param coordinate The part that was parsed
+                 *  coordinate The part that was parsed
                  */
                 function parseCoordinate(coordinateString){
                     var splitAtDecimal = coordinateString.split('.'),
@@ -86,12 +86,7 @@ define([
 
             app.sandbox.locator.queryCoordinates = queryCoordinates;
 
-            /**
-             * [query description]
-             * @param  {[type]}   param    [description]
-             * @param  {Function} callback [description]
-             * @return {[type]}            [description]
-             */
+            
             app.sandbox.locator.query = function(param, callback) {
 
                 var data = {
