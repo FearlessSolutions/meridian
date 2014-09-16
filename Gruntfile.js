@@ -417,7 +417,8 @@ module.exports = function (grunt) {
         options : {
           destination : './app/docs/jsdoc-api',
           template : "./app/docs/meridian-template",
-          configure : "./app/docs/meridian-template/jsdoc.conf.json"
+          configure : "./app/docs/meridian-template/jsdoc.conf.json",
+          recurse: true
         }
       },
       extensions : {
@@ -425,7 +426,8 @@ module.exports = function (grunt) {
         options : {
           destination : './app/docs/jsdoc-api',
           template : "./app/docs/meridian-template",
-          configure : "./app/docs/meridian-template/jsdoc.conf.json"
+          configure : "./app/docs/meridian-template/jsdoc.conf.json",
+          recurse: true
         }
       }
     }
