@@ -1,0 +1,83 @@
+JSDocs: How to document your Meridian code
+
+For publishers:
+
+/**
+* Description about the funciton that emits the channel.
+* @instance
+* @memberof module:module-name
+*/
+functionName: function(){
+	/**
+	* Description about the channel and (if applicable) about the payload it sends.
+	* @event module:module-name#channel-name
+	* @memberof module:module-name
+	*/
+	context.sandbox.emit(‘channel.name’);
+}
+
+
+For subscribers:
+
+/**
+ * Description about the channel and (if applicable) about the payload it receives.
+ * @typedef {Channel} channel.name
+ * @memberof Channels
+ */
+context.sandbox.on(channel.name, someFunction);
+
+
+
+For files with functionality:
+
+/**
+ * Description about the function here.
+ * @instance
+ * @memberof module:module-name
+ */
+ aFunctionName: function(...) {...}
+
+
+ Component main.js file:
+
+/**
+ * Component that contains the necessary channels and functionality to <insert more description>.
+ * @module datagrid-toggle
+ */
+return {
+
+	/**
+     * Funciton utilized by Meridian to init all components. <Insert description about what it
+     * initializes: publisher,subscriber, template, etc.>
+     * @instance
+     * @memberof module:module-name
+     */
+	initialize:function(){...}
+ }
+
+
+
+ For extensions:
+
+ /**
+  * @exports NameExtension
+  */
+var exposed = {
+	/**
+	 * Funciton utilized by Meridian to init all extensions. 
+	 * This extention <insert more description here>.
+	 * @instance
+	 * @param  {Object} app Instance of the Meridian application.
+	 */
+	initialize: function(app) {...}
+};
+
+... AND/OR ...
+
+/**
+ * @namespace Sandbox.a
+ * @property {....} varName - Var Description.
+ * @property {....} varName2 - Var Description2.
+ */
+var a = {...}
+return a;
