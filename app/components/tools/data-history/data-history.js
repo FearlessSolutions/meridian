@@ -121,6 +121,17 @@ define([
             // Clear previous data history list
             $dataHistoryListTable.html('');
 
+            var newAJAX = context.sandbox.utils.ajax({
+                type: 'GET',
+                url: 'https://localhost:3000/metadata/user',
+                xhrFields: {
+                    withCredentials: true
+                }
+            })
+            .done(function(data){
+                console.debug(data);
+            });
+
             // Dummy data that would be returned by server
             var data = [
                 {
@@ -141,32 +152,6 @@ define([
                     "dataDate": "Tues. 10/10/10 @12:00:00",
                     "dataRecordCount": "25,000"
                 }
-                // {
-                //     "queryId": "12345",
-                //     "dataName": "Test Query Dataset 3",
-                //     "dataDate": "Tues. 10/10/10 @12:00:00",
-                //     "dataRecordCount": "25,000"
-                // },
-                // {
-                //     "dataName": "Test Query Dataset 3",
-                //     "dataDate": "Tues. 10/10/10 @12:00:00",
-                //     "dataRecordCount": "25,000"
-                // },
-                // {
-                //     "dataName": "Test Query Dataset 3",
-                //     "dataDate": "Tues. 10/10/10 @12:00:00",
-                //     "dataRecordCount": "25,000"
-                // },
-                // {
-                //     "dataName": "Test Query Dataset 3",
-                //     "dataDate": "Tues. 10/10/10 @12:00:00",
-                //     "dataRecordCount": "25,000"
-                // },
-                // {
-                //     "dataName": "Test Query Dataset 3",
-                //     "dataDate": "Tues. 10/10/10 @12:00:00",
-                //     "dataRecordCount": "25,000"
-                // }
             ];
 
             context.sandbox.utils.each(data, function(index, dataEntry) {
