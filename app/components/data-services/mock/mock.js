@@ -2,47 +2,55 @@ define([
     './mock-publisher'
 ], function(publisher) {
 
-    var context;
+    var context,
+        DATASOURCE_NAME = 'mock';
 
     var exposed = { 
 
-        init: function(thisContext) {
+        "init": function(thisContext) {
             context = thisContext;
         },
-        executeQuery: function(params) {
-            // Set a query ID to pass to the server
-            params.queryId = context.sandbox.utils.UUID();
+        "executeQuery": function(params) {
+            if(params.dataSourceId === DATASOURCE_NAME) {
+                // Set a query ID to pass to the server
+                params.queryId = context.sandbox.utils.UUID();
 
             // Create the snapshot prior to executing query, so user knows something happened
             if(!context.sandbox.dataStorage.datasets[params.queryId]) {
                 context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
+                context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
 
-                publisher.createLayer({
-                    "layerId": params.queryId,
-                    "name": params.name,
-                    "selectable": true,
-                    "coords": {
-                        "minLat": params.minLat,
-                        "minLon": params.minLon,
-                        "maxLat": params.maxLat,
-                        "maxLon": params.maxLon
-                    }
+                    publisher.createLayer({
+                        "layerId": params.queryId,
+                        "name": params.name,
+                        "selectable": true,
+                        "coords": {
+                            "minLat": params.minLat,
+                            "minLon": params.minLon,
+                            "maxLat": params.maxLat,
+                            "maxLon": params.maxLon
+                        }
+                    });
+                }
+
+                queryData(params);
+
+                publisher.publishMessage({
+                    "messageType": "success",
+                    "messageTitle": "Data Service",
+                    "messageText": params.name + " query initiated"
                 });
+                publisher.addToProgressQueue();
             }
-
-            queryData(params);
-
-            publisher.publishMessage({
-                "messageType": "success",
-                "messageTitle": "Data Service",
-                "messageText": params.name + " query initiated"
-            });
-            publisher.addToProgressQueue();
-
         },
-        stopQuery: function(params) {
+        "stopQuery": function(params) {
             var layerState,
                 dataTransferState;
+
+            //If the query is not related to this datasource, ignore
+            if(context.sandbox.dataStorage.datasets[params.layerId].dataService !== DATASOURCE_NAME){
+                return;
+            }
 
             context.sandbox.ajax.stopQuery({
                 "layerId": params.layerId
@@ -73,20 +81,27 @@ define([
             }
             
         },
-        clear: function() {
-            context.sandbox.dataStorage.clear();
+        "clear": function() {
+            var queryId;
+
+            for(queryId in context.sandbox.dataStorage.datasets){
+                if(context.sandbox.dataStorage.datasets[queryId].dataService === DATASOURCE_NAME){
+                    delete context.sandbox.dataStorage.datasets[queryId];
+                }
+            }
+
             context.sandbox.ajax.clear();
         },
-        deleteDataset: function(params) { 
+        "deleteDataset": function(params) {
             // delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delete directly
         }
     };
 
     function queryData(params) {
         var newAJAX = context.sandbox.utils.ajax({
-            type: 'POST',
-            url: 'https://localhost:3000/query/bbox/' + params.serviceName,
-            data: {
+            "type": "POST",
+            "url": "https://localhost:3000/query/bbox/" + params.dataSourceId,
+            "data": {
                 "throttleMs": 0,
                 "minLat": params.minLat,
                 "minLon": params.minLon,
@@ -94,15 +109,18 @@ define([
                 "maxLon": params.maxLon,
                 "start": params.start || 0,
                 "queryId": params.queryId || null,
-                "pageSize": params.pageSize
+                "pageSize": params.pageSize,
+                "queryName": params.name,
+                "justification": params.justification
             },
-            xhrFields: {
-                withCredentials: true
+            "xhrFields": {
+                "withCredentials": true
             }
         })
         .done(function(data){
             var layerId,
-                newData = [];
+                newData = [],
+                keys = context.sandbox.dataServices.mock.keys;
 
             if (data && data.length > 0){
                 layerId = params.queryId || data[0].properties.queryId;
@@ -120,23 +138,32 @@ define([
                     }
                 });
 
-                context.sandbox.utils.each(data, function(key, value){
+                //For each feature, create the minimized feature to be stored locally, with all the fields needed for datagrid
+                context.sandbox.utils.each(data, function(dataIndex, dataFeature){
                     var newValue = {};
 
-                    context.sandbox.utils.each(context.sandbox.dataServices.mock.keys, function(k1, v1){
-                        context.sandbox.utils.each(value.properties, function(k2, v2){
-                            if(v1 === k2) {
-                                newValue[k2] = v2;
+                    if(keys){
+                        //For each of the keys required, if that property exists in the feature, hoist it
+                        //and give it the specified header name
+                        context.sandbox.utils.each(keys, function(key, headerForKey){
+                            if(dataFeature.properties[key] !== undefined){
+                                newValue[headerForKey] = dataFeature.properties[key]; //Notice that v1 is used as the key
                             }
                         });
-                    });
+                    }
 
-                    newValue.dataService = data[key].dataService = "mock";
+                    newValue.dataService = data[dataIndex].dataService = "mock";
+
                     newValue.layerId = layerId;
-                    newValue.id = data[key].id = value.properties.featureId;
-                    newValue.geometry = value.geometry;
-                    newValue.type = value.type;
+                    newValue.id = data[dataIndex].id = dataFeature.properties.featureId;
+                    newValue.geometry = dataFeature.geometry;
+                    newValue.type = dataFeature.type;
                     newValue.properties = {};
+                    newValue.lat = dataFeature.geometry.coordinates[1];
+                    newValue.lon = dataFeature.geometry.coordinates[0];
+                    newValue.featureId = dataFeature.properties.featureId;
+
+                    newValue.mapUrl = context.sandbox.dataServices.mock.processMapUrl(dataFeature.properties); //Add the map url
 
                     context.sandbox.dataStorage.addData({
                         "datasetId": layerId,
@@ -144,7 +171,7 @@ define([
                     });
 
                     // Add style properties for map features, but not for local dataset storage
-                    context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(value), function(styleKey, styleValue){
+                    context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(dataFeature), function(styleKey, styleValue){
                         newValue.properties[styleKey] = styleValue;
                     });
 
@@ -200,7 +227,7 @@ define([
             publisher.removeFromProgressQueue();
 
             context.sandbox.stateManager.setLayerStateById({
-                "layerId": layerId,
+                "layerId": params.layerId,
                 "state": {
                     "dataTransferState": 'error'
                 }

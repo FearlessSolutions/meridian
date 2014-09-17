@@ -5,6 +5,7 @@ var mapping = require('./mapping');
 var client = require('./client');
 var stream = require('./stream');
 var purge = require('./purge');
+var metadata = require('./metadata');
 
 var uuid = require('node-uuid');
 
@@ -19,7 +20,8 @@ exports.init = function(context){
         mapping: mapping,
         client: client,
         stream: stream,
-        purge: purge
+        purge: purge,
+        metadata: metadata
     };
 
     // Init sub-modules as necessary
@@ -119,6 +121,27 @@ exports.init = function(context){
     app.delete('/clear/:queryId', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         purge.deleteRecordsByQueryId(res.get('Parsed-User'), res.get('Parsed-SessionId'),
             req.params.queryId, function(err, results){
+            res.status(err ? 500 : 200);
+            res.send(err ? err : results);
+        });
+    });
+
+    app.get('/metadata/user', auth.verifyUser, function(req, res){
+        metadata.getMetadataByUserId(res.get('Parsed-User'), function(err, results){
+            res.status(err ? 500 : 200);
+            res.send(err ? err : results);
+        });
+    });
+
+    app.get('/metadata/session', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+        metadata.getMetadataBySessionId(res.get('Parsed-User'), res.get('Parsed-SessionId'), function(err, results){
+            res.status(err ? 500 : 200);
+            res.send(err ? err : results);
+        });
+    });
+
+    app.get('/metadata/query/:id', auth.verifyUser, function(req, res){
+        metadata.getMetadataByQueryId(res.get('Parsed-User'), req.params.id, function(err, results){
             res.status(err ? 500 : 200);
             res.send(err ? err : results);
         });

@@ -54,8 +54,9 @@ define([
 
                 var queryObject = {
                         "name": name,
-                        "serviceName": "mock",
-                        "minLat": minLat, 
+                        "dataSourceId": dataSource,
+                        "justification": justification,
+                        "minLat": minLat,
                         "minLon": minLon, 
                         "maxLat": maxLat, 
                         "maxLon": maxLon, 
@@ -184,7 +185,7 @@ define([
                 $maxLat.val('');
                 context.$('#query-name').val('');
                 context.$('#query-justification').val('');
-                context.$('#query-source').val(1);
+                context.$('#query-source').val('mock');
 
                 context.$('.has-error').removeClass('has-error');            
         },

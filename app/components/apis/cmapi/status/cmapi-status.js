@@ -11,7 +11,7 @@ define([
         emit;
 
     var exposed = {
-        init: function(thisContext, layerId, errorChannel, parentEmit) {
+        init: function(thisContext, errorChannel, parentEmit) {
             context = thisContext;
             sendError = errorChannel;
             emit = parentEmit;
