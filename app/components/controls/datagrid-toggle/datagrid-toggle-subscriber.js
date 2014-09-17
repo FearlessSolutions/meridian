@@ -9,17 +9,17 @@ define([
         init: function(thisContext){
             context = thisContext;
             /**
-             * @typedef {Channel} datagrid.close
+             * @typedef datagrid.close
              * @memberof Channels
              */
             context.sandbox.on('datagrid.close', datagridToggle.removeActive);
             /**
-             * @typedef {Channel} datagrid.open
+             * @typedef datagrid.open
              * @memberof Channels
              */
             context.sandbox.on('datagrid.open', datagridToggle.setActive);
             /**
-             * @typedef {Channel} data.clear.all
+             * @typedef data.clear.all
              * @memberof Channels
              */
             context.sandbox.on('data.clear.all', datagridToggle.clear);

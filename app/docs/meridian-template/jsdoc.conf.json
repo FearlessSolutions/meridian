@@ -6,7 +6,7 @@
 		"include" : [
 			"./app/docs/meridian-template/index.md"
 		],
-		"exclude" : ["./app/components/rendering-engines/*/libs/*/*.js"]
+		"excludePattern": "(^|\\/|\\\\)libs"
 	},
 	"templates" : {
 		"cleverLinks"           : false,
@@ -14,7 +14,7 @@
 		"dateFormat"            : "ddd MMM Do YYYY",
 		"outputSourceFiles"     : true,
 		"outputSourcePath"      : true,
-		"systemName"            : "Meridian API",
+		"systemName"            : "Meridian",
 		"footer"                : "",
 		"copyright"             : "Software (c) 2014 <a href='http://www.boeing.com/' title='Boeing'>The Boeing Company</a>.<br>The United States Government has unlimited rights in this software, pursuant to the contracts under which it was developed. <br>The AML Center (under OZONE) is released to the public as Open Source Software<br>as required by <a href='http://www.gpo.gov/fdsys/pkg/PLAW-112publ81/pdf/PLAW-112publ81.pdf' title='NDAA FY12'>Section 924 of the 2012 National Defense Authorization Act</a>.<br>Released under <a href='http://www.apache.org/licenses/LICENSE-2.0.html' title='Apache License v2.0'>Apache License v2.0</a>.<br>Forked from the Open Source Project: <a href='http://aurajs.com/'> Aura JS</a>.",
 		"navType"               : "vertical",
