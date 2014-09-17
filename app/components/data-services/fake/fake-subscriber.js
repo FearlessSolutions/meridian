@@ -11,6 +11,7 @@ define([
             context.sandbox.on('query.stop', dataServiceFake.stopQuery);
             context.sandbox.on('data.clear.all', dataServiceFake.clear);
             context.sandbox.on('map.layer.delete', dataServiceFake.deleteDataset);  // TODO: find what uses this, if nothing... remove
+            context.sandbox.on('data.restore', dataServiceFake.restoreDataset);
         }
     };	
 

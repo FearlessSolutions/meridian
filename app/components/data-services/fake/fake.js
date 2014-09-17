@@ -94,6 +94,13 @@ define([
         },
         deleteDataset: function(params) { 
             // delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delete directly
+        },
+        restoreDataset: function(params) {
+            //If the query is not related to this datasource, ignore
+            if(params.dataSource === DATASOURCE_NAME) {
+                // TODO: Restore data from the server, similar to queryData functionality
+                console.debug(params);
+            }
         }
     };
 
