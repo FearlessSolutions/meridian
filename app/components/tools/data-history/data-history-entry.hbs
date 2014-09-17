@@ -1,4 +1,4 @@
-<tr>
+<tr data-datasetid="{{datasetId}}" data-datasource="{{dataSource}}">
     <td class="expiration">
         {{!-- <span class="glyphicon glyphicon-time" data-toggle="tooltip" data-placement="left" title="This data expires tomorrow">
         </span> --}}
@@ -7,14 +7,14 @@
     <td class="data-date">{{{dataDate}}}</td>
     <td class="data-record-count">{{{dataRecordCount}}}</td>
     <td class="data-actions">
-        <button type="button" class="btn btn-xs btn-default-icon data-action-info" data-datasetid="{{datasetId}}">
+        <button type="button" class="btn btn-default-icon data-action-info">
             <span class="glyphicon glyphicon-info-sign"></span>
         </button>
-        <button type="button" class="btn btn-xs btn-default-icon data-action-restore">
+        <button type="button" class="btn btn-default-icon data-action-restore">
             <span class="glyphicon glyphicon-plus"></span>
         </button>
-        <button type="button" class="btn btn-xs btn-default-icon data-action-delete">
+        {{!-- <button type="button" class="btn btn-default-icon data-action-delete">
             <span class="glyphicon glyphicon-trash"></span>
-        </button>
+        </button> --}}
     </td>
 </tr>

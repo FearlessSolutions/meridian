@@ -10,6 +10,7 @@ define([
         dataHistoryDetailViewTemplate,
         MENU_DESIGNATION = 'data-history',
         $modal,
+        $modalBody,
         $cancelButton,
         $closeButton,
         $dataHistoryListTable,
@@ -23,6 +24,8 @@ define([
             dataHistoryDetailViewTemplate = Handlebars.compile(dataHistoryDetailViewHBS);
 
             $modal = context.$('#data-history-modal');
+            $modalBody = context.$('#data-history-modal .modal-body');
+
             $closeButton = context.$('#data-history-modal.modal button.close');
             $dataHistoryListTable = context.$('#data-history-modal.modal .data-history-list');
             $dataHistoryDetailView = context.$('#data-history-modal.modal .data-history-detail-view');
@@ -55,62 +58,54 @@ define([
             $modal.modal('hide');
         },
         showDetailedInfo: function(dataObject) {
-            var datasetId = dataObject.datasetId;
-            console.debug(datasetId);
-
-            /**
-             * Get metadata from server for specific dataset by datasetId
-             */
-
-            // Dummy data that would be returned by server
-            var data = {
-                "datasetId": "123",
-                "dataName": "Test Dataset 1",
-                "dataDate": "Mon. 12/12/12 @12:00:00",
-                "dataRecordCount": "12,000",
-                "dataExpiresOn": "Mon. 01/12/12 @08:00:00",
-                "dataStatus": "Finished",
-                "rawDataObject": {
-                    "datasetId": "123",
-                    "dataName": "Test Dataset 1",
-                    "dataDate": "Mon. 12/12/12 @12:00:00",
-                    "dataRecordCount": "12,000",
-                    "dataExpiresOn": "Mon. 01/12/12 @08:00:00",
-                    "dataStatus": "Finished",
-                    "coords": {
-                        "lat": 0,
-                        "lon": 0
-                    }
+            var newAJAX = context.sandbox.utils.ajax({
+                type: 'GET',
+                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + dataObject.datasetId,
+                xhrFields: {
+                    withCredentials: true
                 }
-            };
+            })
+            .done(function(data){
 
-            var rawDataObjectString = JSON.stringify(data.rawDataObject, null, "  ");
-            data.rawDataObject = rawDataObjectString;
+                var tempData = {
+                    "datasetId": data.queryId,
+                    "dataSource": data.dataSource || "N/A",
+                    "dataName": data.queryName || "N/A",
+                    "dataDate": data.createdOn || "N/A",
+                    "dataRecordCount": data.numRecords || "N/A",
+                    "dataExpiresOn": data.expireOn || "N/A",
+                    "dataStatus": "N/A",
+                    "rawDataObject": data.rawQuery || "N/A"
+                };
 
-            var dataHistoryDetailView = dataHistoryDetailViewTemplate(data);
-            $dataHistoryDetailView.html(dataHistoryDetailView);
+                var rawDataObjectString = JSON.stringify(tempData.rawDataObject, null, "  ");
+                tempData.rawDataObject = rawDataObjectString;
 
-            context.$('.data-history-modal-back-to-list').on('click', function(event) {
-                exposed.hideDetailedInfo();
+                var dataHistoryDetailView = dataHistoryDetailViewTemplate(tempData);
+                $dataHistoryDetailView.html(dataHistoryDetailView);
+
+                context.$('.data-history-detail-view .data-history-modal-back-to-list').on('click', function(event) {
+                    exposed.hideDetailedInfo();
+                });
+                context.$('.data-history-detail-view .data-action-restore').on('click', function(event) {
+                    publisher.restoreDataset({
+                        "datasetId": tempData.datasetId,
+                        "dataSource": tempData.dataSource
+                    });
+                });
+                // context.$('.data-history-detail-view .data-action-delete').on('click', function(event) {
+                //     // Delete the dataset
+                //     console.debug('Will delete dataset ' + tempData.datasetId + ' here.');
+                // });
+
+                $modalBody.addClass('finiteHeight');
+                context.$('.data-history-summary-list-container').addClass('hidden');
+                context.$('.data-history-detail-view').removeClass('hidden');
+
             });
-            context.$('.data-action-restore').on('click', function(event) {
-                var result = confirm("Want to restore this data?");
-                if(result === true) {
-                    context.$(this).prop('disabled', true);
-                    publisher.closeDataHistory();
-                } 
-            });
-            context.$('.data-action-delete').on('click', function(event) {
-                var result = confirm("Want to delete?");
-                if(result === true) {
-                    context.$(this).parents('tr').hide();
-                } 
-            });
-
-            context.$('.data-history-summary-list-container').addClass('hidden');
-            context.$('.data-history-detail-view').removeClass('hidden');
         },
         hideDetailedInfo: function() {
+            $modalBody.removeClass('finiteHeight');
             context.$('.data-history-summary-list-container').removeClass('hidden');
             context.$('.data-history-detail-view').addClass('hidden');
         },
@@ -119,49 +114,45 @@ define([
         },
         updateDataHistory: function() {
             // Clear previous data history list
-            $dataHistoryListTable.html('');
+            $dataHistoryListTable.empty();
 
             var newAJAX = context.sandbox.utils.ajax({
                 type: 'GET',
-                url: 'https://localhost:3000/metadata/user',
+                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/user',
                 xhrFields: {
                     withCredentials: true
                 }
             })
             .done(function(data){
-                console.debug(data);
-            });
 
-            // Dummy data that would be returned by server
-            var data = [
-                {
-                    "datasetId": "123",
-                    "dataName": "Test Dataset 1",
-                    "dataDate": "Mon. 12/12/12 @12:00:00",
-                    "dataRecordCount": "12,000"
-                },
-                {
-                    "datasetId": "1234",
-                    "dataName": "Test Dataset 2",
-                    "dataDate": "Thurs. 11/11/11 @12:00:00",
-                    "dataRecordCount": "5,000"
-                },
-                {
-                    "datasetId": "12345",
-                    "dataName": "Test Dataset 3",
-                    "dataDate": "Tues. 10/10/10 @12:00:00",
-                    "dataRecordCount": "25,000"
-                }
-            ];
-
-            context.sandbox.utils.each(data, function(index, dataEntry) {
-                var dataHistoryEntry = generateDataHistoryEntryRow(dataEntry);
-                $dataHistoryListTable.append(dataHistoryEntry);
-            });
-            context.$('.data-action-info').on('click', function(event) {
-                exposed.showDetailedInfo({
-                    "datasetId": context.$(this).data('datasetid')
+                context.sandbox.utils.each(data, function(index, dataEntry) {
+                    var tempDataEntry = {
+                        "datasetId": dataEntry.queryId,
+                        "dataSource": dataEntry.dataSource,
+                        "dataName": dataEntry.queryName,
+                        "dataDate": dataEntry.createdOn,
+                        "dataRecordCount": dataEntry.numRecords
+                    };
+                    var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);
+                    $dataHistoryListTable.append(dataHistoryEntry);
                 });
+
+                context.$('.data-history-list .data-action-info').on('click', function(event) {
+                    exposed.showDetailedInfo({
+                        "datasetId": context.$(this).parent().parent().data('datasetid')
+                    });
+                });
+                context.$('.data-history-list .data-action-restore').on('click', function(event) {
+                    publisher.restoreDataset({
+                        "datasetId": context.$(this).parent().parent().data('datasetid'),
+                        "dataSource": context.$(this).parent().parent().data('datasource')
+                    });
+                });
+                // context.$('.data-history-list .data-action-delete').on('click', function(event) {
+                //     // Delete the dataset
+                //     console.debug('Will delete dataset ' + context.$(this).parent().parent().data('datasetid') + ' here.');
+                // });
+
             });
         }
     };
@@ -169,6 +160,7 @@ define([
     function generateDataHistoryEntryRow(dataHistoryEntryObject) {
         return dataHistoryEntryTemplate({
             "datasetId": dataHistoryEntryObject.datasetId,
+            "dataSource": dataHistoryEntryObject.dataSource,
             "dataName": dataHistoryEntryObject.dataName,
             "dataDate": dataHistoryEntryObject.dataDate,
             "dataRecordCount": dataHistoryEntryObject.dataRecordCount

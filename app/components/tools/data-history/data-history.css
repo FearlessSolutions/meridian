@@ -24,9 +24,14 @@ div[data-aura-component='tools/data-history'] #data-history-modal {
     overflow-y: hidden;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body {
-    height: 280px;
+    max-height: 280px;
     padding: 20px 10px;
 }
+
+div[data-aura-component='tools/data-history'] #data-history-modal .finiteHeight {
+    height: 280px;
+}
+
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view  span {
     display: block;
 }
@@ -45,7 +50,7 @@ div[data-aura-component='tools/data-history'] #data-history-modal .data-history-
 }
 
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body div.data-history-list-container {
-  height: 198px;
+  max-height: 198px;
   overflow: auto;
 }
 
@@ -84,12 +89,18 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body ta
   text-align: center;
 }
 
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .data-actions button {
+  padding-top: 2px;
+  padding-right: 5px;
+  padding-bottom: 0.5px;
+  padding-left: 5.5px;
+}
+
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .expiration span.glyphicon-time {
   color: #bd362f;
 }
 
 /* More Details View */
-
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view .left-container {
   width: 300px;
   max-width: 300px;
@@ -98,9 +109,6 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .d
 }
 
 div[data-aura-component='tools/data-history'] #data-history-modal .data-history-detail-view .data-actions {
-  /*position: absolute;
-  bottom: 15px;
-  right: 10px;*/
   margin-top: 10px;
   text-align: center;
 }

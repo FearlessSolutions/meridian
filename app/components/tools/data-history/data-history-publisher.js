@@ -13,8 +13,11 @@ define([
         openDataHistory: function() {
             context.sandbox.emit('data.history.open');
         },
-        publishOpening: function(params){
+        publishOpening: function(params) {
             context.sandbox.emit('menu.opening', params);
+        },
+        restoreDataset: function(params) {
+            context.sandbox.emit('data.restore', params);
         }
     };
 
