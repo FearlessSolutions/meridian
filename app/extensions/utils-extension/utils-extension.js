@@ -6,7 +6,7 @@ define([
       */
     var exposed = {
         /**
-         * Funciton utilized by Meridian to init all extensions. 
+         * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
          * This extention exposes {@link Sandbox.utils} to the {@link Sandbox} namespace.
          * @function
          * @instance
@@ -59,7 +59,7 @@ define([
                  * @param {String} coordinates.lon - Longitude given.
                  * @memberof Sandbox.utils
                  * @return {Object} The geoJson object created.
-                 * @example The return object looks something like this:
+                 * @example 
                  * geoJson = {
                  *     type: 'feature',
                  *     geometry: {
