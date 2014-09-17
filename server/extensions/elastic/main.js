@@ -63,6 +63,39 @@ exports.init = function(context){
         });
     });
 
+    app.get('/feature/query/:queryId', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+        var userName = res.get('Parsed-User');
+        var sessionId = res.get('Parsed-SessionId');
+        var queryId = req.params.queryId;
+
+        query.getResultsByQueryId(userName, sessionId, queryId, function(err, results){
+            if (err){
+                res.status(500);
+                res.send(err);
+            } else {
+                res.status(200);
+                res.send(results);
+            }
+        });
+    });
+
+    app.get('/feature/query/:queryId/session/:sessionId', auth.verifyUser, function(req, res){
+        var userName = res.get('Parsed-User');
+        var sessionId = req.params.sessionId;
+        var queryId = req.params.queryId;
+
+        query.getResultsByQueryId(userName, sessionId, queryId, function(err, results){
+            if (err){
+                res.status(500);
+                res.send(err);
+            } else {
+                res.status(200);
+                res.send(results);
+            }
+        });
+    });
+
+
     /**
      * Must be formatted as GeoJSON
      *
