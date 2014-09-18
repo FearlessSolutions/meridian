@@ -3,7 +3,8 @@ define([
     'text!./data-history-entry.hbs',
     'text!./data-history-detail-view.hbs',
     'bootstrap',
-    'handlebars'
+    'handlebars',
+    'momentJS'
 ], function (publisher, dataHistoryEntryHBS, dataHistoryDetailViewHBS) {
     var context,
         dataHistoryEntryTemplate,
@@ -71,9 +72,9 @@ define([
                     "datasetId": data.queryId,
                     "dataSource": data.dataSource || "N/A",
                     "dataName": data.queryName || "N/A",
-                    "dataDate": data.createdOn || "N/A",
+                    "dataDate": moment.unix(data.createdOn).format("MMMM Do YYYY, h:mm:ss a") || "N/A",
                     "dataRecordCount": data.numRecords || "N/A",
-                    "dataExpiresOn": data.expireOn || "N/A",
+                    "dataExpiresOn": moment.unix(data.expireOn).format("MMMM Do YYYY, h:mm:ss a") || "N/A",
                     "dataStatus": "N/A",
                     "rawDataObject": data.rawQuery || "N/A"
                 };
@@ -130,7 +131,7 @@ define([
                         "datasetId": dataEntry.queryId,
                         "dataSource": dataEntry.dataSource,
                         "dataName": dataEntry.queryName,
-                        "dataDate": dataEntry.createdOn,
+                        "dataDate": moment.unix(dataEntry.createdOn).fromNow(),
                         "dataRecordCount": dataEntry.numRecords
                     };
                     var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);

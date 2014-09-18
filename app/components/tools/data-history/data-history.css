@@ -108,6 +108,12 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .d
   float: left;
 }
 
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view .left-container .meta {
+  max-width: 300px;
+  max-height: 200px;
+  overflow: auto;
+}
+
 div[data-aura-component='tools/data-history'] #data-history-modal .data-history-detail-view .data-actions {
   margin-top: 10px;
   text-align: center;
