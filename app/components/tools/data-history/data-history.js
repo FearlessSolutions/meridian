@@ -90,11 +90,7 @@ define([
                     exposed.hideDetailedInfo();
                 });
                 context.$('.data-history-detail-view .data-action-restore').on('click', function(event) {
-                    publisher.restoreDataset({
-                        "datasetId": tempData.datasetId,
-                        "dataSessionId": tempData.dataSessionId,
-                        "dataSource": tempData.dataSource
-                    });
+                    publisher.restoreDataset(data);
                     publisher.closeDataHistory();
                 });
                 // context.$('.data-history-detail-view .data-action-delete').on('click', function(event) {
@@ -130,6 +126,7 @@ define([
                 $dataHistoryListTable.empty();
 
                 var tempDataArray = [];
+                var currentDataArray = {};
 
                 context.sandbox.utils.each(data, function(index, dataEntry) {
                     var tempDataEntry = {
@@ -142,6 +139,7 @@ define([
                         "dataRecordCount": dataEntry.numRecords
                     };
                     tempDataArray.push(tempDataEntry);
+                    currentDataArray[dataEntry.queryId] = dataEntry;
                 });
 
                 tempDataArray.sort(dynamicSort('-rawDate'));
@@ -157,11 +155,7 @@ define([
                     });
                 });
                 context.$('.data-history-list .data-action-restore').on('click', function(event) {
-                    publisher.restoreDataset({
-                        "datasetId": context.$(this).parent().parent().data('datasetid'),
-                        "dataSessionId": context.$(this).parent().parent().data('datasessionid'),
-                        "dataSource": context.$(this).parent().parent().data('datasource')
-                    });
+                    publisher.restoreDataset(currentDataArray[context.$(this).parent().parent().data('datasetid')]);
                     publisher.closeDataHistory();
                 });
                 // context.$('.data-history-list .data-action-delete').on('click', function(event) {
