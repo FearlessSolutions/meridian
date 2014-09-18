@@ -70,6 +70,7 @@ define([
 
                 var tempData = {
                     "datasetId": data.queryId,
+                    "dataSessionId": data.sessionId,
                     "dataSource": data.dataSource || "N/A",
                     "dataName": data.queryName || "N/A",
                     "dataDate": moment.unix(data.createdOn).format("MMMM Do YYYY, h:mm:ss a") || "N/A",
@@ -91,6 +92,7 @@ define([
                 context.$('.data-history-detail-view .data-action-restore').on('click', function(event) {
                     publisher.restoreDataset({
                         "datasetId": tempData.datasetId,
+                        "dataSessionId": tempData.dataSessionId,
                         "dataSource": tempData.dataSource
                     });
                 });
@@ -114,9 +116,6 @@ define([
             $modal.modal('hide');
         },
         updateDataHistory: function() {
-            // Clear previous data history list
-            $dataHistoryListTable.empty();
-
             var newAJAX = context.sandbox.utils.ajax({
                 type: 'GET',
                 url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/user',
@@ -126,14 +125,27 @@ define([
             })
             .done(function(data){
 
+                // Clear previous data history list
+                $dataHistoryListTable.empty();
+
+                var tempDataArray = [];
+
                 context.sandbox.utils.each(data, function(index, dataEntry) {
                     var tempDataEntry = {
                         "datasetId": dataEntry.queryId,
+                        "dataSessionId": dataEntry.sessionId,
                         "dataSource": dataEntry.dataSource,
                         "dataName": dataEntry.queryName,
                         "dataDate": moment.unix(dataEntry.createdOn).fromNow(),
+                        "rawDate": dataEntry.createdOn,
                         "dataRecordCount": dataEntry.numRecords
                     };
+                    tempDataArray.push(tempDataEntry);
+                });
+
+                tempDataArray.sort(dynamicSort('-rawDate'));
+
+                context.sandbox.utils.each(tempDataArray, function(index, tempDataEntry) {
                     var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);
                     $dataHistoryListTable.append(dataHistoryEntry);
                 });
@@ -146,6 +158,7 @@ define([
                 context.$('.data-history-list .data-action-restore').on('click', function(event) {
                     publisher.restoreDataset({
                         "datasetId": context.$(this).parent().parent().data('datasetid'),
+                        "dataSessionId": context.$(this).parent().parent().data('datasessionid'),
                         "dataSource": context.$(this).parent().parent().data('datasource')
                     });
                 });
@@ -161,11 +174,24 @@ define([
     function generateDataHistoryEntryRow(dataHistoryEntryObject) {
         return dataHistoryEntryTemplate({
             "datasetId": dataHistoryEntryObject.datasetId,
+            "dataSessionId": dataHistoryEntryObject.dataSessionId,
             "dataSource": dataHistoryEntryObject.dataSource,
             "dataName": dataHistoryEntryObject.dataName,
             "dataDate": dataHistoryEntryObject.dataDate,
             "dataRecordCount": dataHistoryEntryObject.dataRecordCount
         });
+    }
+
+    function dynamicSort(property) {
+        var sortOrder = 1;
+        if(property[0] === "-") {
+            sortOrder = -1;
+            property = property.substr(1);
+        }
+        return function (a,b) {
+            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder;
+        };
     }
 
     return exposed;
