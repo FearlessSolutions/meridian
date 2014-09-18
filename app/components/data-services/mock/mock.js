@@ -161,7 +161,7 @@ define([
     function processDataPage(data, params){
         var layerId,
             newData = [],
-            keys = context.sandbox.dataServices.mock.keys;
+            keys = context.sandbox.dataServices[DATASOURCE_NAME].keys;
 
         layerId = params.queryId || data[0].properties.queryId;
 
@@ -192,7 +192,7 @@ define([
                 });
             }
 
-            newValue.dataService = data[dataIndex].dataService = "mock";
+            newValue.dataService = data[dataIndex].dataService = DATASOURCE_NAME;
 
             newValue.layerId = layerId;
             newValue.id = data[dataIndex].id = dataFeature.properties.featureId;
@@ -203,7 +203,7 @@ define([
             newValue.lon = dataFeature.geometry.coordinates[0];
             newValue.featureId = dataFeature.properties.featureId;
 
-            newValue.mapUrl = context.sandbox.dataServices.mock.processMapUrl(dataFeature.properties); //Add the map url
+            newValue.mapUrl = context.sandbox.dataServices[DATASOURCE_NAME].processMapUrl(dataFeature.properties); //Add the map url
 
             context.sandbox.dataStorage.addData({
                 "datasetId": layerId,
