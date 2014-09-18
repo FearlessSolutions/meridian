@@ -16,7 +16,7 @@
                 "mock": {
                     "_ttl": {
                         "enabled": true,
-                        "default": "12h"
+                        "default": "7d"
                     },
                     "_routing": {
                         "required": true
@@ -37,7 +37,7 @@
                 "fake": {
                     "_ttl": {
                         "enabled": true,
-                        "default": "12h"
+                        "default": "7d"
                     },
                     "_routing": {
                         "required": true
@@ -58,7 +58,7 @@
                 "UNKNOWN": {
                     "_ttl": {
                         "enabled": true,
-                        "default": "12h"
+                        "default": "7d"
                     },
                     "_routing": {
                         "required": true
@@ -79,13 +79,15 @@
                 "metadata": {
                     "_ttl": {
                         "enabled": true,
-                        "default": "7d"
+                        "default": "14d"
                     },
                     "properties": {
                         "userId" : {"type" : "string", "index" : "not_analyzed"},
                         "sessionId": {"type" : "string", "index" : "not_analyzed"},
                         "queryId": {"type" : "string", "index" : "not_analyzed"},
-                        "featureId": {"type" : "string", "index" : "not_analyzed"}
+                        "featureId": {"type" : "string", "index" : "not_analyzed"},
+                        "createdOn": {"type": "date"},
+                        "expireOn": {"type": "date"}
                     }
                 }
             }

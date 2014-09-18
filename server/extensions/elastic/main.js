@@ -52,7 +52,7 @@ exports.init = function(context){
     app.get('/feature/:id', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         var userName = res.get('Parsed-User');
         var sessionId = res.get('Parsed-SessionId');
-        query.getByFeatureId(userName, sessionId, req.params.id, function(err, response){
+        query.getByFeatureId(userName, null, req.params.id, function(err, response){
             if (err){
                 res.status(500);
                 res.send(err);

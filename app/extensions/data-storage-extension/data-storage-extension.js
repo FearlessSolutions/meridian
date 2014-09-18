@@ -50,6 +50,16 @@ define([
                     });
 
                     return ajax;
+                },
+                "getResultsByQueryAndSessionId": function(queryId, sessionId, callback){
+                    $.ajax({
+                        type: "GET",
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/query/' + queryId + '/session/' + sessionId
+                    }).done(function(data){
+                        callback(null, data);
+                    }).error(function(error){
+                        callback(error, null);
+                    });
                 }
 			};
 

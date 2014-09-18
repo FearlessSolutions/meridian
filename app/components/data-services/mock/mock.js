@@ -15,32 +15,13 @@ define([
                 // Set a query ID to pass to the server
                 params.queryId = context.sandbox.utils.UUID();
 
-            // Create the snapshot prior to executing query, so user knows something happened
-            if(!context.sandbox.dataStorage.datasets[params.queryId]) {
-                context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
-                context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
-
-                    publisher.createLayer({
-                        "layerId": params.queryId,
-                        "name": params.name,
-                        "selectable": true,
-                        "coords": {
-                            "minLat": params.minLat,
-                            "minLon": params.minLon,
-                            "maxLat": params.maxLat,
-                            "maxLon": params.maxLon
-                        }
-                    });
+                // Create the snapshot prior to executing query, so user knows something happened
+                if(!context.sandbox.dataStorage.datasets[params.queryId]) {
+                    createLayer(params);
                 }
 
+                initiateQuery(params.name);
                 queryData(params);
-
-                publisher.publishMessage({
-                    "messageType": "success",
-                    "messageTitle": "Data Service",
-                    "messageText": params.name + " query initiated"
-                });
-                publisher.addToProgressQueue();
             }
         },
         "stopQuery": function(params) {
@@ -100,9 +81,183 @@ define([
             if(params.dataSource === DATASOURCE_NAME) {
                 // TODO: Restore data from the server, similar to queryData functionality
                 console.debug(params);
+
+                context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.datasetId, params.dataSessionId, function(err, results){
+                    console.debug('breakpoint');
+                    if (err){
+                        //TODO: Handle error
+                    } else {
+                        // createLayer if layer doesn't exist
+                        if(!context.sandbox.dataStorage.datasets[params.datasetId]) {
+                            // TODO: Query Name
+                            var queryName = "Restored Query";
+                            // TODO: Bounding Box?
+                            createLayer({queryId: params.datasetId, name: queryName, minLat:0, minLon:0, maxLat:0, maxLon:0});
+
+                            // initiateQuery
+                            initiateQuery(queryName);
+
+                            // processDataPage
+
+                            // TODO: Look at the TODO below for this function, start/pageSize shouldn't be passed in
+                            processDataPage(results, {queryId: params.datasetId, name: queryName, start: 0, pageSize: 0})
+
+                            // completeQuery
+                            completeQuery(queryName, params.datasetId);
+
+                        } else {
+                            // TODO: What do we do if the data set is already on the map?
+                        }
+
+                    }
+                });
             }
         }
     };
+
+    function createLayer(params){
+        context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
+        context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
+
+        publisher.createLayer({
+            "layerId": params.queryId,
+            "name": params.name,
+            "selectable": true,
+            "coords": {
+                "minLat": params.minLat,
+                "minLon": params.minLon,
+                "maxLat": params.maxLat,
+                "maxLon": params.maxLon
+            }
+        });
+    }
+
+    function initiateQuery(queryName){
+        publisher.publishMessage({
+            "messageType": "success",
+            "messageTitle": "Data Service",
+            "messageText": queryName + " query initiated"
+        });
+        publisher.addToProgressQueue();
+    }
+
+    function completeQuery(name, queryId){
+        publisher.publishMessage({
+            "messageType": "success",
+            "messageTitle": "Data Service",
+            "messageText": name + " query complete"
+        });
+
+        context.sandbox.stateManager.setLayerStateById({
+            "layerId": queryId,
+            "state": {
+                "dataTransferState": 'finished'
+            }
+        });
+
+        publisher.publishFinish({
+            "layerId": queryId
+        });
+
+        publisher.removeFromProgressQueue();
+    }
+
+    function processDataPage(data, params){
+        var layerId,
+            newData = [],
+            keys = context.sandbox.dataServices.mock.keys;
+
+        layerId = params.queryId || data[0].properties.queryId;
+
+        publisher.publishMessage({
+            "messageType": "info",
+            "messageTitle": "Data Service",
+            "messageText": data.length+ " events have been added to " + params.name + " query layer."
+        });
+
+        context.sandbox.stateManager.setLayerStateById({
+            "layerId": layerId,
+            "state": {
+                "dataTransferState": 'running'
+            }
+        });
+
+        //For each feature, create the minimized feature to be stored locally, with all the fields needed for datagrid
+        context.sandbox.utils.each(data, function(dataIndex, dataFeature){
+            var newValue = {};
+
+            if(keys){
+                //For each of the keys required, if that property exists in the feature, hoist it
+                //and give it the specified header name
+                context.sandbox.utils.each(keys, function(key, headerForKey){
+                    if(dataFeature.properties[key] !== undefined){
+                        newValue[headerForKey] = dataFeature.properties[key]; //Notice that v1 is used as the key
+                    }
+                });
+            }
+
+            newValue.dataService = data[dataIndex].dataService = "mock";
+
+            newValue.layerId = layerId;
+            newValue.id = data[dataIndex].id = dataFeature.properties.featureId;
+            newValue.geometry = dataFeature.geometry;
+            newValue.type = dataFeature.type;
+            newValue.properties = {};
+            newValue.lat = dataFeature.geometry.coordinates[1];
+            newValue.lon = dataFeature.geometry.coordinates[0];
+            newValue.featureId = dataFeature.properties.featureId;
+
+            newValue.mapUrl = context.sandbox.dataServices.mock.processMapUrl(dataFeature.properties); //Add the map url
+
+            context.sandbox.dataStorage.addData({
+                "datasetId": layerId,
+                "data": newValue
+            });
+
+            // Add style properties for map features, but not for local dataset storage
+            context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(dataFeature), function(styleKey, styleValue){
+                newValue.properties[styleKey] = styleValue;
+            });
+
+            newData.push(newValue);
+        });
+
+        // Clear data out from memory
+        data = [];
+
+        publisher.plotFeatures({
+            "layerId": layerId,
+            "data": newData
+        });
+
+
+        //TODO: Does this need to happen in this function??
+        params.start = parseInt(params.start || 0) + parseInt(params.pageSize);
+        params.queryId = layerId;
+
+        return params;
+    }
+
+    function handleError(params){
+        publisher.publishMessage({
+            "messageType": "error",
+            "messageTitle": "Data Service",
+            "messageText": "Connection to data service failed."
+        });
+
+        publisher.removeFromProgressQueue();
+
+        context.sandbox.stateManager.setLayerStateById({
+            "layerId": params.layerId,
+            "state": {
+                "dataTransferState": 'error'
+            }
+        });
+
+        publisher.publishError({
+            "layerId": params.queryId
+        });
+    }
 
     function queryData(params) {
         var newAJAX = context.sandbox.utils.ajax({
@@ -125,97 +280,12 @@ define([
             }
         })
         .done(function(data){
-            var layerId,
-                newData = [],
-                keys = context.sandbox.dataServices.mock.keys;
-
             if (data && data.length > 0){
-                layerId = params.queryId || data[0].properties.queryId;
-
-                publisher.publishMessage({
-                    "messageType": "info",
-                    "messageTitle": "Data Service",
-                    "messageText": data.length+ " events have been added to " + params.name + " query layer."
-                });
-
-                context.sandbox.stateManager.setLayerStateById({
-                    "layerId": layerId,
-                    "state": {
-                        "dataTransferState": 'running'
-                    }
-                });
-
-                //For each feature, create the minimized feature to be stored locally, with all the fields needed for datagrid
-                context.sandbox.utils.each(data, function(dataIndex, dataFeature){
-                    var newValue = {};
-
-                    if(keys){
-                        //For each of the keys required, if that property exists in the feature, hoist it
-                        //and give it the specified header name
-                        context.sandbox.utils.each(keys, function(key, headerForKey){
-                            if(dataFeature.properties[key] !== undefined){
-                                newValue[headerForKey] = dataFeature.properties[key]; //Notice that v1 is used as the key
-                            }
-                        });
-                    }
-
-                    newValue.dataService = data[dataIndex].dataService = "mock";
-
-                    newValue.layerId = layerId;
-                    newValue.id = data[dataIndex].id = dataFeature.properties.featureId;
-                    newValue.geometry = dataFeature.geometry;
-                    newValue.type = dataFeature.type;
-                    newValue.properties = {};
-                    newValue.lat = dataFeature.geometry.coordinates[1];
-                    newValue.lon = dataFeature.geometry.coordinates[0];
-                    newValue.featureId = dataFeature.properties.featureId;
-
-                    newValue.mapUrl = context.sandbox.dataServices.mock.processMapUrl(dataFeature.properties); //Add the map url
-
-                    context.sandbox.dataStorage.addData({
-                        "datasetId": layerId,
-                        "data": newValue
-                    });
-
-                    // Add style properties for map features, but not for local dataset storage
-                    context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(dataFeature), function(styleKey, styleValue){
-                        newValue.properties[styleKey] = styleValue;
-                    });
-
-                    newData.push(newValue);
-                });
-
-                // Clear data out from memory
-                data = [];
-
-                publisher.plotFeatures({
-                    "layerId": layerId,
-                    "data": newData
-                });
-
-                params.start = parseInt(params.start || 0) + parseInt(params.pageSize);
-                params.queryId = layerId;
-                // Loop back over the funtion
+                // Process and then loop to the next page
+                params = processDataPage(data, params);
                 queryData(params);
             } else {
-                publisher.publishMessage({
-                    "messageType": "success",
-                    "messageTitle": "Data Service",
-                    "messageText": params.name + " query complete"
-                });
-
-                context.sandbox.stateManager.setLayerStateById({
-                    "layerId": params.queryId,
-                    "state": {
-                        "dataTransferState": 'finished'
-                    }
-                });
-
-                publisher.publishFinish({
-                    "layerId": params.queryId
-                });
-
-                publisher.removeFromProgressQueue();
+                completeQuery(params.name, params.queryId);
             }
 
         })
@@ -224,26 +294,7 @@ define([
             if(e.statusText === "abort"){
                 return;
             }
-
-            publisher.publishMessage({
-                "messageType": "error",
-                "messageTitle": "Data Service",
-                "messageText": "Connection to data service failed."
-            });
-
-            publisher.removeFromProgressQueue();
-
-            context.sandbox.stateManager.setLayerStateById({
-                "layerId": params.layerId,
-                "state": {
-                    "dataTransferState": 'error'
-                }
-            });
-
-            publisher.publishError({
-                "layerId": params.queryId
-            });
-
+            handleError(params);
             return false;
         });
 

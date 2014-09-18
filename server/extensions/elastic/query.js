@@ -122,9 +122,11 @@ exports.streamQuery = function(userName, sessionId, query, pageSize, pageCallbac
     stream.stream(null, config.index.data, null, newQuery, pageSize, pageCallback);
 };
 
+// spines -- We're grabbing a record by id so I don't think routing buys any efficiency
+//        -- should check this though (also, step 1 of removing sessionId)
 exports.getByFeatureId = function(userName, sessionId, featureId, callback){
-    var routingStr = userName+""+sessionId;
-    getJSONById(routingStr, config.index.data, null, featureId, callback);
+//    var routingStr = userName+""+sessionId;
+    getJSONById(null, config.index.data, null, featureId, callback);
 };
 
 exports.getMetadataByQueryId = function(userId, queryId, callback){
