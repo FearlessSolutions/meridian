@@ -80,26 +80,26 @@ define([
             //If the query is not related to this datasource, ignore
             if(params.dataSource === DATASOURCE_NAME) {
 
-                context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.datasetId, params.dataSessionId, function(err, results){
+                context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.queryId, params.sessionId, function(err, results){
                     if (err){
                         //TODO: Handle error
                     } else {
                         // createLayer if layer doesn't exist
-                        if(!context.sandbox.dataStorage.datasets[params.datasetId]) {
-                            // TODO: Query Name
-                            var queryName = "Restored";
-                            
+                        if(!context.sandbox.dataStorage.datasets[params.queryId]) {
+
+                            var queryName = params.queryName;
+
                             // TODO: Bounding Box?
-                            createLayer({queryId: params.datasetId, name: queryName, minLat:0, minLon:0, maxLat:0, maxLon:0});
+                            createLayer({queryId: params.queryId, name: queryName, minLat:0, minLon:0, maxLat:0, maxLon:0});
 
                             // initiateQuery
                             initiateQuery(queryName);
 
                             // processDataPage
-                            processDataPage(results, {queryId: params.datasetId, name: queryName})
+                            processDataPage(results, {queryId: params.queryId, name: queryName})
 
                             // completeQuery
-                            completeQuery(queryName, params.datasetId);
+                            completeQuery(queryName, params.queryId);
 
                         } else {
                             // TODO: What do we do if the data set is already on the map?
