@@ -95,6 +95,7 @@ define([
                         "dataSessionId": tempData.dataSessionId,
                         "dataSource": tempData.dataSource
                     });
+                    publisher.closeDataHistory();
                 });
                 // context.$('.data-history-detail-view .data-action-delete').on('click', function(event) {
                 //     // Delete the dataset
@@ -161,6 +162,7 @@ define([
                         "dataSessionId": context.$(this).parent().parent().data('datasessionid'),
                         "dataSource": context.$(this).parent().parent().data('datasource')
                     });
+                    publisher.closeDataHistory();
                 });
                 // context.$('.data-history-list .data-action-delete').on('click', function(event) {
                 //     // Delete the dataset
