@@ -79,18 +79,16 @@ define([
         restoreDataset: function(params) {
             //If the query is not related to this datasource, ignore
             if(params.dataSource === DATASOURCE_NAME) {
-                // TODO: Restore data from the server, similar to queryData functionality
-                console.debug(params);
 
                 context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.datasetId, params.dataSessionId, function(err, results){
-                    console.debug('breakpoint');
                     if (err){
                         //TODO: Handle error
                     } else {
                         // createLayer if layer doesn't exist
                         if(!context.sandbox.dataStorage.datasets[params.datasetId]) {
                             // TODO: Query Name
-                            var queryName = "Restored Query";
+                            var queryName = "Restored";
+                            
                             // TODO: Bounding Box?
                             createLayer({queryId: params.datasetId, name: queryName, minLat:0, minLon:0, maxLat:0, maxLon:0});
 
@@ -98,9 +96,7 @@ define([
                             initiateQuery(queryName);
 
                             // processDataPage
-
-                            // TODO: Look at the TODO below for this function, start/pageSize shouldn't be passed in
-                            processDataPage(results, {queryId: params.datasetId, name: queryName, start: 0, pageSize: 0})
+                            processDataPage(results, {queryId: params.datasetId, name: queryName})
 
                             // completeQuery
                             completeQuery(queryName, params.datasetId);
@@ -229,13 +225,6 @@ define([
             "layerId": layerId,
             "data": newData
         });
-
-
-        //TODO: Does this need to happen in this function??
-        params.start = parseInt(params.start || 0) + parseInt(params.pageSize);
-        params.queryId = layerId;
-
-        return params;
     }
 
     function handleError(params){
@@ -282,7 +271,9 @@ define([
         .done(function(data){
             if (data && data.length > 0){
                 // Process and then loop to the next page
-                params = processDataPage(data, params);
+                processDataPage(data, params);
+                params.start = parseInt(params.start || 0) + parseInt(params.pageSize);
+                params.queryId = params.queryId || data[0].properties.queryId;
                 queryData(params);
             } else {
                 completeQuery(params.name, params.queryId);

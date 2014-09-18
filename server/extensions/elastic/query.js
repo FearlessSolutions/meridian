@@ -18,7 +18,7 @@ exports.updateRecord = function(userName, sessionId, type, updateMap, callback){
                 "_index": config.index.data,
                 "_type": type,
                 "_id": id,
-                "_routing": userName+""+sessionId
+                "_routing": userName
             }
         });
         bulkRequest.push({
@@ -49,13 +49,13 @@ exports.executeQuery = function(userName, sessionId, query, callback){
 
     if (query.sort) {newQuery.sort = query.sort; }
 
-    getJSONByQuery(userName+""+sessionId, config.index.data, null, newQuery, callback);
+    getJSONByQuery(userName, config.index.data, null, newQuery, callback);
 
 };
 
 exports.getResultsByQueryId = function(userName, sessionId, queryId, callback){
 
-    var routing = userName+""+sessionId;
+    var routing = userName;
 
     var query = {
         "query":{
@@ -98,7 +98,7 @@ exports.getResultsByQueryId = function(userName, sessionId, queryId, callback){
 }
 
 exports.executeFilter = function(userId, sessionId, queryId, filter, callback){
-    getJSONByQuery(userId+""+sessionId, config.index.data, null, filter, function(err, results){
+    getJSONByQuery(userId, config.index.data, null, filter, function(err, results){
         callback(results);
     });
 };
@@ -125,8 +125,8 @@ exports.streamQuery = function(userName, sessionId, query, pageSize, pageCallbac
 // spines -- We're grabbing a record by id so I don't think routing buys any efficiency
 //        -- should check this though (also, step 1 of removing sessionId)
 exports.getByFeatureId = function(userName, sessionId, featureId, callback){
-//    var routingStr = userName+""+sessionId;
-    getJSONById(null, config.index.data, null, featureId, callback);
+    var routingStr = userName;
+    getJSONById(routingStr, config.index.data, null, featureId, callback);
 };
 
 exports.getMetadataByQueryId = function(userId, queryId, callback){
@@ -195,7 +195,7 @@ exports.getCountBySessionId = function(username, sessionId, callback){
         }
     };
 
-    getCountBySessionId(username+""+sessionId, config.index.data, query, callback);
+    getCountBySessionId(username, config.index.data, query, callback);
 };
 
 
