@@ -2,12 +2,12 @@ define([
     'jquery'
 ], function($){
     /**
-      * @exports UtilsExtension
+      * @exports utilsExtension
       */
     var exposed = {
         /**
          * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
-         * This extention exposes {@link Sandbox.utils} to the {@link Sandbox} namespace.
+         * This extension exposes {@link Sandbox.utils} to the {@link Sandbox} namespace.
          * @function
          * @instance
          * @param  {Object} app Instance of the Meridian application.
@@ -20,11 +20,12 @@ define([
              */
             var utils = {
                 /**
-                 * Description for addCSS
+                 * Add a CSS payload.
                  * @function
                  * @instance 
-                 * @param {String} style The 'actual' CSS payload
-                 * @param {String} id Optional id for the style element, used so it could be removed later, set as 'data-meridian-style-id'
+                 * @param {String} style - The CSS payload
+                 * @param {String} [id] - Id for the style element, used so it could be removed later.
+                 * Set as 'data-meridian-style-id'. Empty string used if no id is provided.
                  * @example this.sandbox.utils.addCSS(basemapGalleryCSS, 'basemap-component-style');
                  * @memberof Sandbox.utils
                  */
@@ -124,7 +125,7 @@ define([
                  * Return the first value of the input, but items in Objects have NO GUARENTEED ORDER.
                  * @function
                  * @instance
-                 * @param  {Object|Array|String} obj - Input to find for first item
+                 * @param {Object|Array|String} obj - List or object with the data.  
                  * @returns First matching item, or undefined if not found.
                  * @memberof Sandbox.utils
                  */
@@ -139,10 +140,11 @@ define([
                  * Create listener on document.
                  * @function
                  * @instance
-                 * @param  {String} selector - Event type
-                 * @param  {String} data - Value to query DOM (tag, class, id)
-                 * @param  {Function} fn - Callback function to fire on event
+                 * @param  {String} selector - Event type.
+                 * @param  {String} data - Value to query DOM (tag, class, id).
+                 * @param  {Function} fn - Callback function to fire 'on' event.
                  * @memberof Sandbox.utils
+                 * @example $(document).on(selector, data, fn);
                  */
                 forever: function(selector, data, fn){
                     $(document).on(selector, data, fn);
@@ -210,10 +212,10 @@ define([
                  */
                 preferences: {
                     /**
-                     * Description HERE.
+                     * Returns value stored in local storage based on a given key.
                      * @function
                      * @instance 
-                     * @param {String} key 
+                     * @param {String} key - Key provided.
                      * @memberof Sandbox.utils.preferences
                      * @return {Object|Boolean} The data found, false if nothing was found. 
                      */
@@ -233,13 +235,13 @@ define([
                         }
                     },
                     /**
-                     * For more help...
+                     * Store data of a key value pair in local storage.
                      * @function 
                      * @instance 
-                     * @param {String} key 
-                     * @param {String | Object} val
+                     * @param {String} key - Key provided.
+                     * @param {String | Object} val - Value content.
                      * @memberof Sandbox.utils.preferences
-                     * @return {Boolean} True if sucessfully stored, otherwise, false.
+                     * @return {Boolean} True if successfully stored, otherwise, false.
                      */
                     set: function(key, val){
                         if(typeof(Storage)!=="undefined"){
@@ -259,7 +261,7 @@ define([
                  * Removes a CSS payload (if the one to remove was added through its counterpart method and assigned an id)
                  * @function
                  * @instance
-                 * @param  {String} id - 'data-meridian-style-id' of the style element to be removed
+                 * @param  {String} id - 'data-meridian-style-id' of the style element to be removed.
                  * @example this.sandbox.utils.removeCSS('basemap-style');
                  * @memberof Sandbox.util
                  */
@@ -283,6 +285,7 @@ define([
                  */
                 type: $.type,
                 /**
+                 * Provides URL host name information.
                  * @function
                  * @instance 
                  * @memberof Sandbox.utils
@@ -292,9 +295,11 @@ define([
                     return "https://" + window.location.host;
                 },
                 /**
+                 * Generates and returns a Universal Unique Identifier (UUID).
                  * @function
                  * @instance 
                  * @memberof Sandbox.utils
+                 * @return Randomly generated Universal unique identifier (UUID). 
                  */
                 UUID: function(){
                     var r,
@@ -318,9 +323,17 @@ define([
                     return uuid.join("");
                 },
                 /**
+                 * Trims input values larger than 10,000 to 'value/1000'K+
                  * @function
                  * @instance 
+                 * @param {String|Integer} number - Number to be trimmed.
                  * @memberof Sandbox.utils
+                 * @returns {String} Trimed number if the value is more than 10,000. 
+                 * Same number is returned when value is bellow 10,000.
+                 * @example 10,000 as input ends up as: 10k
+                 *  20,000 as input ends up as: 20k
+                 *  5 as inpud ends up as: 5
+                 *  etc.
                  */
                 trimNumber: function(number){
                     if(typeof number === "string") {
@@ -333,6 +346,14 @@ define([
                         return String(number);
                     }
                 },
+                /**
+                 * Reads input as text and results are passed to the callback function.
+                 * @param {File} file - Input to be read as Text using a FileReader.
+                 * @param {Function} callback - Function where the resulting text will passed.
+                 * @funciton
+                 * @instance
+                 * @memberof Sandbox.utils
+                 */
                 getAsText: function(file, callback){
                     var reader = new FileReader();
 
@@ -342,6 +363,14 @@ define([
                         callback(text);
                     };
                 },
+                /**
+                 * Return the height of the element provided. 
+                 * Window height is given when no element is provided.
+                 * @param  {String} [el] - Name of element used to search as a jQuery
+                 * @function
+                 * @instance
+                 * @memberof Sandbox.utils
+                 */
                 pageHeight: function(el){
                     if(el) {
                         return $(el).height();
@@ -349,6 +378,14 @@ define([
                         return $(window).height();
                     }
                 },
+                /**
+                 * Return the width of the element provided. 
+                 * Window width is given when no element is provided.
+                 * @param  {String} [el] - Name of element used to search as a jQuery
+                 * @function
+                 * @instance
+                 * @memberof Sandbox.utils
+                 */
                 pageWidth: function(el){
                     if(el) {
                         return $(el).width();
@@ -356,9 +393,24 @@ define([
                         return $(window).width();
                     }
                 },
+                /**
+                 * Sets a 'on resize' listener on the window element with the provided callback.
+                 * @param  {Function} callback - Callback function.
+                 * @function
+                 * @instance
+                 * @memberof Sandbox.utils
+                 */
                 onWindowResize: function(callback){
                     $(window).on('resize', callback);
                 },
+                /**
+                 * Provides access to Underscore's _.size function by exposing it to the {@link Sandbox} namespace.
+                 * @function 
+                 * @instance 
+                 * @param {*} obj - The object and/or list where _.size will be applied to.
+                 * @returns The number of values in the object or list.
+                 * @memberof Sandbox.utils
+                 */
                 size: function(obj){
                     return _.size(obj);
                 }
