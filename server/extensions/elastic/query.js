@@ -103,7 +103,7 @@ exports.executeFilter = function(userId, sessionId, queryId, filter, callback){
     });
 };
 
-exports.streamQuery = function(userName, sessionId, query, pageSize, pageCallback){
+exports.streamQuery = function(userName, query, pageSize, pageCallback){
 
     var newQuery = {
         "query": {
@@ -111,8 +111,7 @@ exports.streamQuery = function(userName, sessionId, query, pageSize, pageCallbac
                 "query": query.query,
                 "filter": {
                     "term": {
-                        "userId": userName,
-                        "sessionId": sessionId
+                        "userId": userName
                     }
                 }
             }
