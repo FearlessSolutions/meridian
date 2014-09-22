@@ -1,4 +1,5 @@
 var stream = require('./stream');
+var _ = require('underscore');
 
 var config,
     client;
@@ -51,6 +52,50 @@ exports.executeQuery = function(userName, sessionId, query, callback){
     getJSONByQuery(userName+""+sessionId, config.index.data, null, newQuery, callback);
 
 };
+
+exports.getResultsByQueryId = function(userName, sessionId, queryId, callback){
+
+    var routing = userName+""+sessionId;
+
+    var query = {
+        "query":{
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "userId": userName
+                        }
+                    },
+                    {
+                        "term": {
+                            "sessionId": sessionId
+                        }
+                    },
+                    {
+                        "term": {
+                            "queryId": queryId
+                        }
+                    }
+                ]
+            }
+
+        }
+    };
+
+    var results = [];
+    stream.stream(routing, config.index.data, null, query, 250, function(err, page){
+        if (err){
+            callback(err, results);
+        } else if (page.hits.hits.length === 0){
+            callback(null, results);
+        } else {
+            _.each(page.hits.hits, function(result){
+                results.push(result._source);
+            });
+        }
+    });
+
+}
 
 exports.executeFilter = function(userId, sessionId, queryId, filter, callback){
     getJSONByQuery(userId+""+sessionId, config.index.data, null, filter, function(err, results){

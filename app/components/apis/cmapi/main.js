@@ -10,7 +10,6 @@ define([
     './clear/cmapi-clear'
 ], function(view, overlay, feature, status, clear) {
     var context,
-        defaultLayerId = 'cmapi',
         processing = {};
 
     var exposed = {
@@ -20,11 +19,11 @@ define([
         initialize: function() {
             context = this;
             
-            feature.init(context, defaultLayerId, sendError, emit);
-            overlay.init(context, defaultLayerId, sendError, emit);
-            status.init(context, defaultLayerId, sendError, emit);
-            view.init(context, defaultLayerId, sendError);
-            clear.init(context, defaultLayerId, sendError);
+            feature.init(context, sendError, emit);
+            overlay.init(context, sendError, emit);
+            status.init(context, sendError, emit);
+            view.init(context, sendError);
+            clear.init(context, sendError);
 
             context.sandbox.external.onPostMessage(receive);
 
@@ -60,7 +59,7 @@ define([
                 if(message !== '') {
                     message = JSON.parse(message);
                     if(!message.origin) {
-                        message.origin = defaultLayerId;
+                        message.origin = context.sandbox.cmapi.defaultLayerId;
                     }
                     /* //TODO this is for handling kml also; not doing right now
                     var split = message.split('<');
@@ -116,7 +115,7 @@ define([
      */
     function sendError(failedChannel, msg, err) {
         var payload = {
-            "sender": context.sandbox.cmapi.thisName,
+            "sender": context.sandbox.systemConfiguration.appName,
             "type": failedChannel,
             "msg": msg,
             "error": err

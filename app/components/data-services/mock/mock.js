@@ -15,10 +15,10 @@ define([
                 // Set a query ID to pass to the server
                 params.queryId = context.sandbox.utils.UUID();
 
-                // Create the snapshot prior to executing query, so user knows something happened
-                if(!context.sandbox.dataStorage.datasets[params.queryId]) {
-                    context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
-                    context.sandbox.dataStorage.datasets[params.queryId].dataSourceId = DATASOURCE_NAME;
+            // Create the snapshot prior to executing query, so user knows something happened
+            if(!context.sandbox.dataStorage.datasets[params.queryId]) {
+                context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
+                context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
 
                     publisher.createLayer({
                         "layerId": params.queryId,
@@ -46,6 +46,11 @@ define([
         "stopQuery": function(params) {
             var layerState,
                 dataTransferState;
+
+            //If the query is not related to this datasource, ignore
+            if(context.sandbox.dataStorage.datasets[params.layerId].dataService !== DATASOURCE_NAME){
+                return;
+            }
 
             context.sandbox.ajax.stopQuery({
                 "layerId": params.layerId
@@ -77,7 +82,14 @@ define([
             
         },
         "clear": function() {
-            context.sandbox.dataStorage.clear();
+            var queryId;
+
+            for(queryId in context.sandbox.dataStorage.datasets){
+                if(context.sandbox.dataStorage.datasets[queryId].dataService === DATASOURCE_NAME){
+                    delete context.sandbox.dataStorage.datasets[queryId];
+                }
+            }
+
             context.sandbox.ajax.clear();
         },
         "deleteDataset": function(params) {
@@ -87,9 +99,9 @@ define([
 
     function queryData(params) {
         var newAJAX = context.sandbox.utils.ajax({
-            type: 'POST',
-            url: 'https://localhost:3000/query/bbox/' + params.dataSourceId,
-            data: {
+            "type": "POST",
+            "url": "https://localhost:3000/query/bbox/" + params.dataSourceId,
+            "data": {
                 "throttleMs": 0,
                 "minLat": params.minLat,
                 "minLon": params.minLon,
@@ -101,8 +113,8 @@ define([
                 "queryName": params.name,
                 "justification": params.justification
             },
-            xhrFields: {
-                withCredentials: true
+            "xhrFields": {
+                "withCredentials": true
             }
         })
         .done(function(data){
@@ -151,6 +163,7 @@ define([
                     newValue.lon = dataFeature.geometry.coordinates[0];
                     newValue.featureId = dataFeature.properties.featureId;
 
+                    newValue.mapUrl = context.sandbox.dataServices.mock.processMapUrl(dataFeature.properties); //Add the map url
 
                     context.sandbox.dataStorage.addData({
                         "datasetId": layerId,
@@ -214,7 +227,7 @@ define([
             publisher.removeFromProgressQueue();
 
             context.sandbox.stateManager.setLayerStateById({
-                "layerId": layerId,
+                "layerId": params.layerId,
                 "state": {
                     "dataTransferState": 'error'
                 }

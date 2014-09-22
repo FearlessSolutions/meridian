@@ -8,9 +8,9 @@ define([
         DEFAULT_SELECTABLE = true;
 
     var exposed = {
-        init: function(thisContext, layerId, errorChannel) {
+        init: function(thisContext, errorChannel) {
             context = thisContext;
-            defaultLayerId = layerId;
+            defaultLayerId = context.sandbox.cmapi.defaultLayerId;
             sendError = errorChannel;
             publisher.init(context);
             subscriber.init(context, exposed);
@@ -52,6 +52,7 @@ define([
                 return; //Layer already made; ignore this request
             } else {
                 context.sandbox.dataStorage.datasets[message.layerId] = new Backbone.Collection();
+                context.sandbox.dataStorage.datasets[message.layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
 
                 publisher.publishCreateLayer({
                     "layerId": message.layerId,

@@ -17,8 +17,8 @@ require.config({
         datatable: 'libs/dynamic-bootstrap-table/dynamic-bootstrap-table',
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
-        jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min' // Custom build, check file's header to see what it includes
-
+        jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min', // Custom build, check file's header to see what it includes
+        momentJS: 'libs/momentjs-2.8.3/moment.min'
     },
     shim:{
         aura: {
