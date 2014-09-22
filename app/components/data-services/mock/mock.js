@@ -3,7 +3,8 @@ define([
 ], function(publisher) {
 
     var context,
-        DATASOURCE_NAME = 'mock';
+        DATASOURCE_NAME = 'mock',
+        RESTORE_PAGE_SIZE = 500;
 
     var exposed = { 
 
@@ -85,16 +86,23 @@ define([
                 if(!context.sandbox.dataStorage.datasets[params.queryId]) {
 
                     createLayer({queryId: params.queryId, name: queryName, minLat:0, minLon:0, maxLat:0, maxLon:0});
+                    initiateQuery(queryName);
 
-                    context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.queryId, params.sessionId, function(err, results){
-                        if (err){
-                            handleError({queryId: params.queryId});
-                        } else {
-                            initiateQuery(queryName);
-                            processDataPage(results, {queryId: params.queryId, name: queryName});
-                            completeQuery(queryName, params.queryId);
-                        }
-                    });
+                    var getPage = function(params, start, pageSize){
+                        context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.queryId, params.sessionId, start, pageSize, function(err, results){
+                            if (err){
+                                handleError({queryId: params.queryId});
+                            } else if (!results || results.length == 0){
+                                completeQuery(queryName, params.queryId);
+                            } else {
+                                processDataPage(results, {queryId: params.queryId, name: queryName});
+                                getPage(params, start + RESTORE_PAGE_SIZE, RESTORE_PAGE_SIZE);
+                            }
+                        });
+                    };
+
+                    getPage(params, 0, RESTORE_PAGE_SIZE);
+
                 } else {
                     // TODO: What do we do if the data set is already on the map?
                 }

@@ -84,13 +84,14 @@ exports.init = function(context){
         var sessionId = req.params.sessionId;
         var queryId = req.params.queryId;
 
-        query.getResultsByQueryId(userName, sessionId, queryId, function(err, results){
+        query.getResultsByQueryId(userName, sessionId, queryId,
+            req.query.start, req.query.size, function(err, results){
             if (err){
                 res.status(500);
                 res.send(err);
             } else {
                 res.status(200);
-                res.send(results);
+                res.send(results.hits.hits.map(function(ele){return ele._source;}));
             }
         });
     });

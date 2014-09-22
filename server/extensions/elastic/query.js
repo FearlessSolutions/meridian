@@ -53,7 +53,7 @@ exports.executeQuery = function(userName, sessionId, query, callback){
 
 };
 
-exports.getResultsByQueryId = function(userName, sessionId, queryId, callback){
+exports.getResultsByQueryId = function(userName, sessionId, queryId, from, size, callback){
 
     var routing = userName;
 
@@ -79,23 +79,13 @@ exports.getResultsByQueryId = function(userName, sessionId, queryId, callback){
                 ]
             }
 
-        }
+        },
+        "from": from,
+        "size": size
     };
 
-    var results = [];
-    stream.stream(routing, config.index.data, null, query, 250, function(err, page){
-        if (err){
-            callback(err, results);
-        } else if (page.hits.hits.length === 0){
-            callback(null, results);
-        } else {
-            _.each(page.hits.hits, function(result){
-                results.push(result._source);
-            });
-        }
-    });
-
-}
+    getJSONByQuery(routing, config.index.data, null, query, callback);
+};
 
 exports.executeFilter = function(userId, sessionId, queryId, filter, callback){
     getJSONByQuery(userId, config.index.data, null, filter, function(err, results){

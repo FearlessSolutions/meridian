@@ -51,10 +51,11 @@ define([
 
                     return ajax;
                 },
-                "getResultsByQueryAndSessionId": function(queryId, sessionId, callback){
+                "getResultsByQueryAndSessionId": function(queryId, sessionId, start, size, callback){
                     $.ajax({
                         type: "GET",
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/query/' + queryId + '/session/' + sessionId
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/query/' + queryId + '/session/' + sessionId +
+                            '?start=' + start + '&size=' + size
                     }).done(function(data){
                         callback(null, data);
                     }).error(function(error){
