@@ -1,20 +1,41 @@
-/**
- * Consolidated holding place for open AJAX calls.
- * Cleans and aborts as required
- */
 define([
 ], function() {
     var activeAJAXs;
+    /**
+     * @exports ajax-handler-extension
+     */
     var exposed = {
+        /**
+         * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
+         * This extension exposes {@link Sandbox.ajax} to the {@link Sandbox} namespace.
+         * @function
+         * @instance
+         * @param  {Object} app Instance of the Meridian application.
+         */
         initialize: function(app) {
+            /**
+             * Consolidated holding place for open AJAX calls.
+             * Cleans and aborts as required.
+             * @namespace Sandbox.ajax
+             */
+            /**
+             * Local variable that stores all active AJAX calls.
+             * @var {Array} activeAJAXs
+             * @instance
+             * @memberof Sandbox.ajax
+             */
             activeAJAXs = [];
-
             app.sandbox.ajax = {
                 /**
                  * Add a new AJAX to the list.
-                 * If it is a query, add the property to the call
-                 * @param newAJAX
-                 * @param layerId
+                 * If it is a query, add the property to the call.
+                 * @function
+                 * @instance
+                 * @param {Object} params
+                 * @param {String} params.newAJAX - Value added to the {@link Sandbox.ajax#activeAJAXs activeAJAXs array}
+                 * @param {String} params.layerId - Value added to newAJAX.
+                 * @example params.newAJAX.layerId
+                 * @memberof Sandbox.ajax
                  */
                 addActiveAJAX: function (params) {
                     if(params.layerId) {
@@ -23,7 +44,10 @@ define([
                     activeAJAXs.push(params.newAJAX);
                 },
                 /**
-                 * Remove finished AJAX from list
+                 * Remove all finished AJAX from the {@link Sandbox.ajax#activeAJAXs activeAJAXs array}.
+                 * @function
+                 * @instance
+                 * @memberof Sandbox.ajax
                  */
                 clean: function() {
                     activeAJAXs.forEach(function(ajax, index) {
@@ -33,7 +57,10 @@ define([
                     });
                 },
                 /**
-                 * Abort ALL open AJAX
+                 * Abort ALL open AJAX from the {@link Sandbox.ajax#activeAJAXs activeAJAXs array}.
+                 * @function
+                 * @instance
+                 * @memberof Sandbox.ajax
                  */
                 clear: function() {
                     activeAJAXs.forEach(function(ajax, index) {
@@ -42,8 +69,12 @@ define([
                     });
                 },
                 /**
-                 * Aborts AJAX based on layerId
-                 * @param layerId
+                 * Aborts AJAX based on layerId from the {@link Sandbox.ajax#activeAJAXs activeAJAXs array}.
+                 * @function
+                 * @instance
+                 * @params {Object} params
+                 * @param {String} params.layerId - Layer Id of AJAX.
+                 * @memberof Sandbox.ajax
                  */
                 stopQuery: function(params) {
                     activeAJAXs.forEach(function(ajax, index) {
