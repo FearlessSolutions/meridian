@@ -29,35 +29,32 @@ define([
                 }
 
                 //Not adding to ajaxHandler, because it would then have to handle clear, and we don't have a good way around that.
+
+                var currentDatasetIds = [],
+                    suffix;
+
+                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(datasetId, dataset) {
+                    currentDatasetIds.push(datasetId);
+                });
+                suffix = '?ids=' + currentDatasetIds.join();
+
                 context.sandbox.utils.ajax({
-                    "type": "GET" ,
-                    "url": context.sandbox.utils.getCurrentNodeJSEndpoint() + "/getCount",
+                    "type": "HEAD" ,
+                    "url": context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.csv' + suffix,
                     "cache": false
                 })
-                    .done(function(response) {
-                        var currentDatasetIds = [],
-                            currentDatasetIdsString = '';
-
-                        if(response.count === 0){ //No points = fail
+                    .done(function(responseText, status, jqXHR) {
+                        if (jqXHR.status === 204){
                             publishCantDownload();
-                        }else{
+                        } else {
                             publisher.publishMessage({
                                 "messageType": "success",
                                 "messageTitle": "CSV Download",
                                 "messageText": "CSV Download started."
                             });
 
-                            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(datasetId, dataset) {
-                                currentDatasetIds.push(datasetId);
-                            });
-
-                            currentDatasetIdsString = currentDatasetIds.join();
-
-                            window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + 
-                                '/results.csv?x-meridian-session-id=' + 
-                                context.sandbox.sessionId + 
-                                '&ids=' +
-                                currentDatasetIdsString);
+                            window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() +
+                                '/results.csv' + suffix);
                         }
                     })
                     .error(function(e) {

@@ -24,7 +24,8 @@ describe("Elastic Search Integration Test Suite", function(){
             get:function(){},
             post:function(){},
             all:function(){},
-            delete:function(){}
+            delete:function(){},
+            head:function(){}
         });
 
         save = require('../../../server/extensions/elastic/save');
