@@ -19,14 +19,15 @@
     "node": "0.10.29"
   },
   "dependencies": {
-      "connect": "2.14.5",
-      "elasticsearch": "2.1.4",
-      "express": "4.1.0",
-      "node-uuid": "1.4.1",
-      "underscore": "1.6.0",
-      "ya-csv": "0.9.3",
-      "platform": "1.0.0",
-      "moment": "2.8.3"
+    "connect": "2.14.5",
+    "elasticsearch": "2.1.4",
+    "express": "4.1.0",
+    "node-uuid": "1.4.1",
+    "underscore": "1.6.0",
+    "ya-csv": "0.9.3",
+    "platform": "1.0.0",
+    "moment": "2.8.3",
+    "ogr2ogr": "~0.3.1"
   },
   "devDependencies": {
     "grunt": "0.4.1",
