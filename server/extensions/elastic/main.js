@@ -140,8 +140,12 @@ exports.init = function(context){
         );
     });
 
+//    app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+//        download.pipeCSVToResponse(res.get('Parsed-User'), res.get('Parsed-SessionId'), res);
+//    });
+
     app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-        download.pipeCSVToResponse(res.get('Parsed-User'), res.get('Parsed-SessionId'), res);
+        download.pipeCSVToResponse(res.get('Parsed-User'), req.query.ids.split(","), res);
     });
 
     app.delete('/clear', auth.verifyUser, auth.verifySessionHeaders, function(req, res){

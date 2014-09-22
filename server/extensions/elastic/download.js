@@ -2,25 +2,9 @@ var _ = require('underscore');
 var metadataManager = require('./metadata');
 var query = require('./query');
 
-
 // Query metadata by user
 // Remove anything that doesn't match the query id
 // Query for all records that match any of the query ids
-/**
- * {
-  "query": {
-    "terms": {
-      "queryId": [
-        "C030E715-5EEB-4187-AAF7-A0C752E5B5CD",
-        "38F45E45-550F-4554-A3E0-26AF48BB3771"
-      ]
-    }
-  }
-}
- * @param userName
- * @param queryIdArray
- * @param res
- */
 exports.pipeCSVToResponseForQuery = function(userName, queryIdArray, res){
     // Query metadata
     metadataManager.getMetadataByUserId(userName, function(err, meta) {
