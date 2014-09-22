@@ -149,7 +149,7 @@ describe("Elastic Search Integration Test Suite", function(){
     it("should be able to page a result set (session)", function(done){
         var count = 0;
 
-        query.streamQuery('testUser1', testResultId, {query:{"match_all":{}}}, 2, function(err, results){
+        query.streamQuery('testUser1', {query:{"match":{"sessionId":testResultId}}}, 2, function(err, results){
             expect(err).to.be.not.ok;
             count += results.hits.hits.length;
             if (results.hits.hits.length === 0){
@@ -242,7 +242,7 @@ describe("Elastic Search Integration Test Suite", function(){
         });
     });
 
-    it("should be able to trigger a CSV download without error", function(done){
+    it("should be able to trigger a CSV download without error (***DEPRECATED METHOD***)", function(done){
         var mockRes = {
             buffer: "",
             headers: {},
@@ -255,7 +255,6 @@ describe("Elastic Search Integration Test Suite", function(){
             end: function(chunk){
                 this.buffer += chunk;
                 expect(this.buffer.length).to.equal(1287);
-//                expect(this.buffer.length).to.equal(1045); changed due to LAT/LON being added
                 expect(this.headers['Content-Type']).to.be.defined;
                 expect(this.headers['Content-Disposition']).to.be.defined;
                 done();
@@ -266,5 +265,31 @@ describe("Elastic Search Integration Test Suite", function(){
         };
 
         require('../../../server/extensions/elastic/download').pipeCSVToResponse('testUser1', testResultId, mockRes);
+    });
+
+    it("should be able to trigger a CSV download without error for specified queryIds", function(done){
+        var mockRes = {
+            buffer: "",
+            headers: {},
+            status: function(status){
+                expect(status).to.equal(200);
+            },
+            write: function(chunk){
+                this.buffer += chunk;
+            },
+            end: function(chunk){
+                this.buffer += chunk;
+                expect(this.buffer.length).to.equal(1287);
+                expect(this.headers['Content-Type']).to.be.defined;
+                expect(this.headers['Content-Disposition']).to.be.defined;
+                done();
+            },
+            header: function(header, value){
+                this.headers[header] = value;
+            }
+        };
+
+        var queryIdArray = ["A7478FB8AB254F608335D1D2F6DE960F", testQueryId];
+        require('../../../server/extensions/elastic/download').pipeCSVToResponseForQuery('testUser1', queryIdArray, mockRes);
     });
 });
