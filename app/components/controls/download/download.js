@@ -35,6 +35,8 @@ define([
                     "cache": false
                 })
                     .done(function(response) {
+                        var currentDatasetIds = [];
+
                         if(response.count === 0){ //No points = fail
                             publishCantDownload();
                         }else{
@@ -43,7 +45,21 @@ define([
                                 "messageTitle": "CSV Download",
                                 "messageText": "CSV Download started."
                             });
-                            window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.csv?x-meridian-session-id=' + context.sandbox.sessionId);
+
+                            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(datasetId, dataset) {
+                                currentDatasetIds.push(datasetId);
+                            });
+
+                            var currentDatasetIdsString = currentDatasetIds.join();
+                            console.debug(currentDatasetIdsString);
+
+                            //old /results.csv?x-meridian-session-id=ericsmom
+                            //new /results.csv?x-meridian-session-id=ericsmom&ids=id1,id2,id3,id4
+                            window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + 
+                                '/results.csv?x-meridian-session-id=' + 
+                                context.sandbox.sessionId + 
+                                '&ids=' +
+                                currentDatasetIdsString);
                         }
                     })
                     .error(function(e) {
