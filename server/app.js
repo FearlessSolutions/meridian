@@ -25,6 +25,7 @@ exports.init = function(app){
     use('extensions/authorization');
     use('extensions/elastic');
     use('extensions/gazetteer');
+    use('extensions/transformation');
 
     // Components
     use('components/mock');
