@@ -11,6 +11,15 @@ define([
             context = thisContext;
             $dataHistoryButton = context.$('#dataHistoryToggleButton');
 
+            //Activate bootstrap tooltip. 
+            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
+            $dataHistoryButton.tooltip({
+                "container": "body",
+                "delay": {
+                    "show": 500
+                }
+            });
+
             $dataHistoryButton.on('click', function(event) {
                 event.preventDefault();
                 if($dataHistoryButton.hasClass('active')) {
