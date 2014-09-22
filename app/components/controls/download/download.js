@@ -35,7 +35,8 @@ define([
                     "cache": false
                 })
                     .done(function(response) {
-                        var currentDatasetIds = [];
+                        var currentDatasetIds = [],
+                            currentDatasetIdsString = '';
 
                         if(response.count === 0){ //No points = fail
                             publishCantDownload();
@@ -50,8 +51,7 @@ define([
                                 currentDatasetIds.push(datasetId);
                             });
 
-                            var currentDatasetIdsString = currentDatasetIds.join();
-                            console.debug(currentDatasetIdsString);
+                            currentDatasetIdsString = currentDatasetIds.join();
 
                             window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + 
                                 '/results.csv?x-meridian-session-id=' + 
