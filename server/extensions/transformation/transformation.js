@@ -1,7 +1,7 @@
 var fs = require('fs'),
     ogr2ogr = require('ogr2ogr')
     transformationConfig = {
-        "projection": "ESPG:4326",
+        "projection": "EPSG:4326",
         "format": "GeoJSON",
         "timeout": 15000,
         "skipFailures": false,
@@ -46,13 +46,17 @@ exports.toShapefile = function(pathToInputFile, pathToOutputFile) {
 
 exports.execute = function(params) {
     if(params.pathToInputFile && params.pathToOutputFile) {
-        ogr2ogr(params.pathToInputFile)
-            .project(params.projection || transformationConfig.projection)
-            .format(params.format || transformationConfig.format)
-            .timeout(params.timeout || transformationConfig.timeout)
-            .skipfailures(params.skipFailures || transformationConfig.skipFailures)
-            .options(params.options || transformationConfig.options)
-            .stream();
-            .pipe(fs.createWriteStream(params.pathToOutputFile));
+        try {
+            ogr2ogr(params.pathToInputFile)
+                .format(params.format || transformationConfig.format)
+                .timeout(params.timeout || transformationConfig.timeout)
+                .skipfailures(params.skipFailures || transformationConfig.skipFailures)
+                .options(params.options || transformationConfig.options)
+                .stream()
+                .pipe(fs.createWriteStream(params.pathToOutputFile));
+        }
+        catch(err) {
+            console.log(err);
+        }
     }
 }
