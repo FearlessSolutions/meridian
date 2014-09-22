@@ -1,6 +1,6 @@
 var fs = require('fs'),
-    ogr2ogr = require('ogr2ogr')
-    transformationConfig = {
+    ogr2ogr = require('ogr2ogr'),
+    transformationConfig = { // Defaults from the OGR2OGR module
         "projection": "EPSG:4326",
         "format": "GeoJSON",
         "timeout": 15000,
@@ -48,6 +48,7 @@ exports.execute = function(params) {
     if(params.pathToInputFile && params.pathToOutputFile) {
         try {
             ogr2ogr(params.pathToInputFile)
+                .project(params.projection || transformationConfig.projection)
                 .format(params.format || transformationConfig.format)
                 .timeout(params.timeout || transformationConfig.timeout)
                 .skipfailures(params.skipFailures || transformationConfig.skipFailures)
