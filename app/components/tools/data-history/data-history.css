@@ -15,7 +15,7 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-backdro
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-dialog {
     margin: 15% auto;
-    width: 680px;
+    width: 700px;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-footer {
     text-align:center;
@@ -77,9 +77,9 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body ta
   text-overflow: ellipsis;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .data-source {
-  width: 90px;
+  width: 110px;
   text-align: left;
-  max-width: 50px;
+  max-width: 110px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -118,7 +118,7 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .d
 
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body .data-history-detail-view .left-container .meta {
   max-width: 300px;
-  max-height: 200px;
+  max-height: 210px;
   overflow: auto;
 }
 
