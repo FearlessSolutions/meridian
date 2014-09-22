@@ -53,8 +53,6 @@ define([
                             var currentDatasetIdsString = currentDatasetIds.join();
                             console.debug(currentDatasetIdsString);
 
-                            //old /results.csv?x-meridian-session-id=ericsmom
-                            //new /results.csv?x-meridian-session-id=ericsmom&ids=id1,id2,id3,id4
                             window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + 
                                 '/results.csv?x-meridian-session-id=' + 
                                 context.sandbox.sessionId + 
