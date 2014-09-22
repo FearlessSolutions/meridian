@@ -97,6 +97,11 @@ define([
                     });
                 } else {
                     // TODO: What do we do if the data set is already on the map?
+                    publisher.publishMessage({
+                        "messageType": "warning",
+                        "messageTitle": "Data Service",
+                        "messageText": "Dataset already loaded."
+                    });
                 }
             }
         }
