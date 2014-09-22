@@ -54,6 +54,7 @@ exports.init = function(context){
                     .create(userName, sessionId, queryId)
                     .setQueryName(req.body.queryName)
                     .setRawQuery(req.body)
+                    .setQueryBbox({top: maxLat, bottom: minLat, left: minLon, right: maxLon})
                     .setDataSource(source)
                     .commit(persistData);
             } else {

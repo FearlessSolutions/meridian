@@ -85,7 +85,13 @@ define([
 
                 if(!context.sandbox.dataStorage.datasets[params.queryId]) {
 
-                    createLayer({queryId: params.queryId, name: queryName, minLat:0, minLon:0, maxLat:0, maxLon:0});
+                    var minLat = params.queryBbox ? params.queryBbox.bottom : null,
+                        maxLat = params.queryBbox ? params.queryBbox.top : null,
+                        minLon = params.queryBbox ? params.queryBbox.left : null,
+                        maxLon = params.queryBbox ? params.queryBbox.right : null;
+
+                    createLayer({queryId: params.queryId, name: queryName,
+                        minLat: minLat, minLon: minLon, maxLat: maxLat, maxLon: maxLon});
                     initiateQuery(queryName);
 
                     var getPage = function(params, start, pageSize){
