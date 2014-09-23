@@ -28,13 +28,13 @@ define([
 
             $clearButton.on('click', function(e) {
                 // TODO: Move this to be handled by the data services (will require reasonable refactor)
-                context.sandbox.utils.ajax({
-                    type: 'DELETE',
-                    url: '/clear',
-                    headers: {
-                        'x-meridian-session-id': context.sandbox.sessionId
-                    }
-                });
+                // context.sandbox.utils.ajax({
+                //     type: 'DELETE',
+                //     url: '/clear',
+                //     headers: {
+                //         'x-meridian-session-id': context.sandbox.sessionId
+                //     }
+                // });
                 publisher.publishClear();
             });
         },
