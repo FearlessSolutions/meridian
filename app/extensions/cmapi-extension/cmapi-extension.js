@@ -10,6 +10,9 @@ define([
      * @property {String} defaultLayerId - Default value is 'cmapi'
      */
     /**
+     * @namespace Sandbox.dataServices.cmapi
+     */
+    /**
      * Sets up the CMAPI channels to listen for messages from the parent.
      * Also includes some utility functions to help parse geoJSON.
      * @exports CMAPI-extension
@@ -45,8 +48,29 @@ define([
                 app.sandbox.dataServices = {};
             }
 
+           
             app.sandbox.dataServices.cmapi = {
+                /**
+                 * Description of infoWinTemplate needed.
+                 * @instance
+                 * @property {Object} infoWinTemplate
+                 * @property {Function} infoWinTemplate.buildInfoWinTemplate {@link Sandbox.dataServices.cmapi#buildInfoWinTemplate Definition} 
+                 * @property {Function} infoWinTemplate.postRenderingAction {@link Sandbox.dataServices.cmapi#postRenderingAction Definition}
+                 * @memberof Sandbox.dataServices.cmapi
+                 */
                 "infoWinTemplate": {
+                    /**
+                     * Creates html template with the values provided to the function.
+                     * @function
+                     * @instance
+                     * @param {Object} attributes
+                     * @param {String} [attributes.classification=""] Empty string will be used if not provided.
+                     * @param {String} attributes.name - Description needed.
+                     * @param {Object} fullFeature 
+                     * @param {String} [fullFeature.style.iconLarge] - fullFeature.style.icon will be used if iconLarge is not provided.
+                     * @return Handlebar template.
+                     * @memberof Sandbox.dataServices.cmapi
+                     */
                     "buildInfoWinTemplate": function(attributes, fullFeature) {
                         var cmapiTemplate = Handlebars.compile(cmapiHBS);
                         var html = cmapiTemplate({
@@ -58,6 +82,15 @@ define([
                         });
                         return html;
                     },
+                    /**
+                     * Description needed. 
+                     * @function
+                     * @instance
+                     * @param  {Object} feature - Description needed.
+                     * @param  {Object} overlayId - Description needed.
+                     * @memberof Sandbox.dataServices.cmapi
+                     * @returns return;
+                     */
                     "postRenderingAction": function(feature, overlayId){ return; }
                 }
             };
