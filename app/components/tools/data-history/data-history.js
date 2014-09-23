@@ -66,7 +66,7 @@ define([
                     withCredentials: true
                 }
             })
-            .done(function(data){
+            .done(function(data) {
                 var tempData = {
                     "datasetId": data.queryId,
                     "dataSessionId": data.sessionId,
@@ -118,7 +118,7 @@ define([
                     withCredentials: true
                 }
             })
-            .done(function(data){
+            .done(function(data) {
                 var tempDataArray = [],
                     currentDataArray = {};
 

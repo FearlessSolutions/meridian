@@ -6,12 +6,12 @@ define([
         DATASOURCE_NAME = 'mock',
         RESTORE_PAGE_SIZE = 500;
 
-    var exposed = { 
+    var exposed = {
 
-        "init": function(thisContext) {
+        init: function(thisContext) {
             context = thisContext;
         },
-        "executeQuery": function(params) {
+        executeQuery: function(params) {
             if(params.dataSourceId === DATASOURCE_NAME) {
                 // Set a query ID to pass to the server
                 params.queryId = context.sandbox.utils.UUID();
@@ -25,7 +25,7 @@ define([
                 queryData(params);
             }
         },
-        "stopQuery": function(params) {
+        stopQuery: function(params) {
             var layerState,
                 dataTransferState;
 
@@ -61,9 +61,9 @@ define([
                     });
                 }
             }
-            
+
         },
-        "clear": function() {
+        clear: function() {
             var queryId;
 
             for(queryId in context.sandbox.dataStorage.datasets){
@@ -74,7 +74,7 @@ define([
 
             context.sandbox.ajax.clear();
         },
-        "deleteDataset": function(params) {
+        deleteDataset: function(params) {
             // delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delete directly
         },
         restoreDataset: function(params) {
@@ -103,9 +103,9 @@ define([
 
                     getPage = function(params, start, pageSize){
                         context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.queryId, params.sessionId, start, pageSize, function(err, results){
-                            if (err){
+                            if(err) {
                                 handleError({queryId: params.queryId});
-                            } else if (!results || results.length === 0){
+                            } else if (!results || results.length === 0) {
                                 completeQuery(queryName, params.queryId);
                             } else {
                                 processDataPage(results, {queryId: params.queryId, name: queryName});
@@ -128,7 +128,7 @@ define([
         }
     };
 
-    function createLayer(params){
+    function createLayer(params) {
         context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
         context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
 
@@ -145,7 +145,7 @@ define([
         });
     }
 
-    function initiateQuery(queryName){
+    function initiateQuery(queryName) {
         publisher.publishMessage({
             "messageType": "success",
             "messageTitle": "Data Service",
@@ -154,7 +154,7 @@ define([
         publisher.addToProgressQueue();
     }
 
-    function completeQuery(name, queryId){
+    function completeQuery(name, queryId) {
         publisher.publishMessage({
             "messageType": "success",
             "messageTitle": "Data Service",
@@ -175,7 +175,7 @@ define([
         publisher.removeFromProgressQueue();
     }
 
-    function processDataPage(data, params){
+    function processDataPage(data, params) {
         var layerId,
             newData = [],
             keys = context.sandbox.dataServices[DATASOURCE_NAME].keys;
@@ -244,7 +244,7 @@ define([
         });
     }
 
-    function handleError(params){
+    function handleError(params) {
         publisher.publishMessage({
             "messageType": "error",
             "messageTitle": "Data Service",
@@ -285,8 +285,8 @@ define([
                 "withCredentials": true
             }
         })
-        .done(function(data){
-            if (data && data.length > 0){
+        .done(function(data) {
+            if(data && data.length > 0) {
                 // Process and then loop to the next page
                 processDataPage(data, params);
                 params.start = parseInt(params.start || 0) + parseInt(params.pageSize);
@@ -297,9 +297,9 @@ define([
             }
 
         })
-        .error(function(e){
+        .error(function(e) {
             //If the error was because we aborted, ignore
-            if(e.statusText === "abort"){
+            if(e.statusText === "abort") {
                 return;
             }
             handleError(params);
@@ -307,7 +307,7 @@ define([
         });
 
         context.sandbox.ajax.addActiveAJAX({
-            "newAJAX": newAJAX, 
+            "newAJAX": newAJAX,
             "layerId": params.queryId
         });
     }

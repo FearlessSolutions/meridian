@@ -4,7 +4,7 @@ define([
     var context;
 
     var exposed = {
-        init: function(thisContext){
+        init: function(thisContext) {
             context = thisContext;
             context.sandbox.on('data.history.close', dataHistory.close);
             context.sandbox.on('data.history.open', dataHistory.open);
