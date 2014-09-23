@@ -1,25 +1,37 @@
-/**
- * Sets up the CMAPI channels to listen for from the parent
- * Some utility functions to help parse geoJSON
- */
 define([
     'text!./cmapi-info-win.hbs',
     'text!./cmapi-info-win.css',
     "handlebars"
 ], function(cmapiHBS, cmapiCSS) {   
+    /**
+     * CMAPI: Common Map API. Pub/sub messaging for geospacial mashups.
+     * @namespace Sandbox.cmapi
+     * @property {String} DATASOURCE_NAME - Default value is 'cmapi'
+     * @property {String} defaultLayerId - Default value is 'cmapi'
+     */
+    /**
+     * Sets up the CMAPI channels to listen for messages from the parent.
+     * Also includes some utility functions to help parse geoJSON.
+     * @exports CMAPI-extension
+     */
     var exposed = {
         /**
-         * Initialize the extension:
-         * -Set up the availible pub and sub postMessage channels
-         * -Put the helper functions in the sandbox
-         * -Set up a mock cmapi "dataService'
-         * @param app
+         * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
+         * This extension:
+         * Exposes {@link Sandbox.cmapi} to the {@link Sandbox} namespace, 
+         * Sets up the availible pub and sub postMessage channels,
+         * Puts the helper functions in the sandbox,
+         * Sets up a mock cmapi 'dataService'.
+         * @function
+         * @instance
+         * @param {Object} app - Instance of the Meridian application.
          */
         "initialize": function(app) {
             app.sandbox.utils.addCSS(cmapiCSS, 'cmapi-extension-style');
 
             //Set up parent channels
             if(!app.sandbox.cmapi) {
+               
                 app.sandbox.cmapi = {};
             }
 
@@ -54,10 +66,17 @@ define([
 
     /**
      * Recursive function to find max extent of any geoJSON geometry.
-     * Also,  marks the center of the extent
-     * @param currentCoords The current point in the geometry; either coordinates, or an array leading to coordinates
-     * @param maxExtent The current max extent; If null, is set to first found coordinate to start
-     * @returns {*}
+     * Also, marks the center of the extent.
+     * @function
+     * @instance
+     * @param {Array} currentCoords - The current point in the geometry; either coordinates, or an array leading to coordinates.
+     * @param {Object} maxExtent - The current max extent; If null, is set to first found coordinate to start.
+     * @param {Number} maxExtent.minLat - 90 when maxExtent is null.
+     * @param {Number} maxExtent.minLon - 180 when maxExtent is null.
+     * @param {Number} maxExtent.maxLat - -90 when maxExtent is null.
+     * @param {Number} maxExtent.maxLon - -180 when maxExtent is null.
+     * @returns {Object} maxExtent with added values in maxExtent.center.lat & maxExtent.center.lon
+     * @memberof Sandbox.cmapi
      */
     function getMaxExtent (currentCoords, maxExtent) {
         var lat,
