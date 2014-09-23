@@ -23,7 +23,7 @@ define([
             $downloadButton.on('click', function(event) {
                 event.preventDefault();
 
-                if(context.sandbox.dataStorage.datasets.length === 0){
+                if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0){
                     publishCantDownload();
                     return;
                 }
