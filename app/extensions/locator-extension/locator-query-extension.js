@@ -9,8 +9,8 @@ define([
                 var coordinates = input.replace(/\s/g, '').split(',');
 
                 return {
-                    "lon": parseFloat(coordinates[0], 10),
-                    "lat": parseFloat(coordinates[1], 10)
+                    "lon": parseFloat(coordinates[locatorConfiguration.lonIndex], 10),
+                    "lat": parseFloat(coordinates[locatorConfiguration.latIndex], 10)
                 };
             },
             "regex": /(^-?)\d+(\.\d+)?,[\s-]*-?\d+(\.\d+)?\s*$/
