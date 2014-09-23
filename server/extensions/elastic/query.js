@@ -93,7 +93,7 @@ exports.executeFilter = function(userId, sessionId, queryId, filter, callback){
     });
 };
 
-exports.streamQuery = function(userName, sessionId, query, pageSize, pageCallback){
+exports.streamQuery = function(userName, query, pageSize, pageCallback){
 
     var newQuery = {
         "query": {
@@ -101,8 +101,7 @@ exports.streamQuery = function(userName, sessionId, query, pageSize, pageCallbac
                 "query": query.query,
                 "filter": {
                     "term": {
-                        "userId": userName,
-                        "sessionId": sessionId
+                        "userId": userName
                     }
                 }
             }
@@ -124,7 +123,7 @@ exports.getMetadataByQueryId = function(userId, queryId, callback){
         if (err){
             callback(err, null);
         } else if (results._source.userId !== userId){
-            callback("Metadata found but it does not belong to " + userId, null)
+            callback("Metadata found but it does not belong to " + userId, null);
         } else {
             callback(null, results);
         }
@@ -165,30 +164,6 @@ exports.getMetadataByUserId = function(userId, callback){
     getJSONByQuery(null, config.index.metadata, null, query, callback);
 };
 
-/**
- * Returns the feature count of a user session
- * @param username
- * @param sessionId
- * @param callback
- */
-exports.getCountBySessionId = function(username, sessionId, callback){
-    var query = {
-        "query": {
-            "filtered": {
-                "filter": {
-                    "term": {
-                        "userId": username,
-                        "sessionId": sessionId
-                    }
-                }
-            }
-        }
-    };
-
-    getCountBySessionId(username, config.index.data, query, callback);
-};
-
-
 var getJSONByQuery = function(routing, index, type, query, callback){
 
     var searchObj = {};
@@ -223,17 +198,17 @@ var getJSONById = function(routing, index, type, id, callback){
 
 /**
  * Returns the feature count of a user session
- * @param routing username+sessionId
  * @param index data
  * @param body the limiting query (at least username and session)
  * @param callback returns the feature count of the session
  */
-var getCountBySessionId = function(routing, index,body, callback){
+exports.getCountByQuery = function(routing, index, type, body, callback){
     var req = {
         "index": index,
-        "routing": routing,
         "body": body
     };
+
+    if (routing){ req.routing = routing; }
 
     client.count(req).then(function(resp){
         callback(null, resp);

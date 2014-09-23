@@ -42,7 +42,6 @@
     "grunt-contrib-imagemin": "0.1.4",
     "grunt-contrib-livereload": "0.1.2",
     "grunt-contrib-watch": "0.4.4",
-    "grunt-bower-hooks": "0.3.0",
     "grunt-usemin": "0.1.12",
     "grunt-open": "0.2.0",
     "matchdep": "0.1.2",
