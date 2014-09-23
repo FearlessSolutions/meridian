@@ -18,7 +18,7 @@ exports.updateRecord = function(userName, sessionId, type, updateMap, callback){
                 "_index": config.index.data,
                 "_type": type,
                 "_id": id,
-                "_routing": userName+""+sessionId
+                "_routing": userName
             }
         });
         bulkRequest.push({
@@ -49,13 +49,13 @@ exports.executeQuery = function(userName, sessionId, query, callback){
 
     if (query.sort) {newQuery.sort = query.sort; }
 
-    getJSONByQuery(userName+""+sessionId, config.index.data, null, newQuery, callback);
+    getJSONByQuery(userName, config.index.data, null, newQuery, callback);
 
 };
 
-exports.getResultsByQueryId = function(userName, sessionId, queryId, callback){
+exports.getResultsByQueryId = function(userName, sessionId, queryId, from, size, callback){
 
-    var routing = userName+""+sessionId;
+    var routing = userName;
 
     var query = {
         "query":{
@@ -79,26 +79,16 @@ exports.getResultsByQueryId = function(userName, sessionId, queryId, callback){
                 ]
             }
 
-        }
+        },
+        "from": from,
+        "size": size
     };
 
-    var results = [];
-    stream.stream(routing, config.index.data, null, query, 250, function(err, page){
-        if (err){
-            callback(err, results);
-        } else if (page.hits.hits.length === 0){
-            callback(null, results);
-        } else {
-            _.each(page.hits.hits, function(result){
-                results.push(result._source);
-            });
-        }
-    });
-
-}
+    getJSONByQuery(routing, config.index.data, null, query, callback);
+};
 
 exports.executeFilter = function(userId, sessionId, queryId, filter, callback){
-    getJSONByQuery(userId+""+sessionId, config.index.data, null, filter, function(err, results){
+    getJSONByQuery(userId, config.index.data, null, filter, function(err, results){
         callback(results);
     });
 };
@@ -121,8 +111,10 @@ exports.streamQuery = function(userName, query, pageSize, pageCallback){
     stream.stream(null, config.index.data, null, newQuery, pageSize, pageCallback);
 };
 
+// spines -- We're grabbing a record by id so I don't think routing buys any efficiency
+//        -- should check this though (also, step 1 of removing sessionId)
 exports.getByFeatureId = function(userName, sessionId, featureId, callback){
-    var routingStr = userName+""+sessionId;
+    var routingStr = userName;
     getJSONById(routingStr, config.index.data, null, featureId, callback);
 };
 
@@ -131,7 +123,7 @@ exports.getMetadataByQueryId = function(userId, queryId, callback){
         if (err){
             callback(err, null);
         } else if (results._source.userId !== userId){
-            callback("Metadata found but it does not belong to " + userId, null)
+            callback("Metadata found but it does not belong to " + userId, null);
         } else {
             callback(null, results);
         }

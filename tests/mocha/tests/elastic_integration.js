@@ -114,7 +114,7 @@ describe("Elastic Search Integration Test Suite", function(){
     });
 
     it("should be able to retrieve a result set (queryId)", function(done){
-        query.getResultsByQueryId('testUser1', testResultId, testResultId, function(err, results){
+        query.getResultsByQueryId('testUser1', testResultId, testResultId, 0, 10, function(err, results){
             expect(err).to.be.not.ok;
             expect(results.length).to.equal(5);
             done();
@@ -123,7 +123,7 @@ describe("Elastic Search Integration Test Suite", function(){
 
     it("should be able to retrieve a result set (queryId -- test 2)", function(done){
         query.getResultsByQueryId('testUser3', 'ABC6D7EFC7A6D6EF7C7EA7D7F',
-            'ABC6D7EFC7A6D6EF7C7EA7D7F', function(err, results){
+            'ABC6D7EFC7A6D6EF7C7EA7D7F', 0, 10, function(err, results){
             expect(err).to.be.not.ok;
             expect(results.length).to.equal(5);
             done();
@@ -132,7 +132,7 @@ describe("Elastic Search Integration Test Suite", function(){
 
     it("should be able to retrieve a result set (queryId -- test invalid)", function(done){
         query.getResultsByQueryId('testUser3', 'ABC6D7EFC7A6D6EF7C7EA7D7F',
-            'foo', function(err, results){
+            'foo', 0, 10, function(err, results){
                 expect(err).to.be.not.ok;
                 expect(results.length).to.equal(0);
                 done();

@@ -9,7 +9,7 @@ exports.init = function(context){
 exports.deleteRecordsByQueryId = function(user, sessionId, queryId, callback){
     client.deleteByQuery({
         index: "_all",
-        routing: user+""+sessionId,
+        routing: user,
         body: {
             "query": {
                 "bool": {
@@ -39,7 +39,7 @@ exports.deleteRecordsByQueryId = function(user, sessionId, queryId, callback){
 exports.deleteRecordsForUserSessionId = function(user, sessionId, callback){
     client.deleteByQuery({
         index: "_all",
-        routing: user+""+sessionId,
+        routing: user,
         body: {
             "query": {
                 "bool": {

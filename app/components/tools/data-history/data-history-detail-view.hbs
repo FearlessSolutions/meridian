@@ -1,0 +1,29 @@
+<div class="left-container">
+    <div class="meta">
+        <span><b>Query Name:</b></span>
+            <span class="indent">{{{dataName}}}</span>
+        <span><b>Created On:</b></span>
+            <span class="indent">{{{dataDate}}}</span>
+        <span><b>Record Count:</b></span>
+            <span class="indent">{{{dataRecordCount}}}</span>
+        <span><b>Expires On:</b></span>
+            <span class="indent">{{{dataExpiresOn}}}</span>
+        <span><b>Status:</b></span>
+            <span class="indent">{{{dataStatus}}}</span>
+    </div>
+    <div class="data-actions">
+        <button type="button" class="btn btn-default-icon data-history-modal-back-to-list">
+            <span class="glyphicon glyphicon-arrow-left"></span>
+        </button>
+        <button type="button" class="btn btn-default-icon data-action-restore">
+            <span class="glyphicon glyphicon-plus"></span>
+        </button>
+        {{!-- <button type="button" class="btn btn-default-icon data-action-delete" data-datasetid="{{datasetId}}">
+            <span class="glyphicon glyphicon-trash"></span>
+        </button> --}}
+    </div>
+</div>
+<div class="right-container">
+    {{!-- <span><b>Raw Metadata:</b></span> --}}
+    <textarea id="raw-data-object" class="form-control" readonly>{{{rawDataObject}}}</textarea>
+</div>
