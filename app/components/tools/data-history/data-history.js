@@ -67,7 +67,6 @@ define([
                 }
             })
             .done(function(data){
-
                 var tempData = {
                     "datasetId": data.queryId,
                     "dataSessionId": data.sessionId,
@@ -101,7 +100,6 @@ define([
                 $modalBody.addClass('finiteHeight');
                 context.$('.data-history-summary-list-container').addClass('hidden');
                 context.$('.data-history-detail-view').removeClass('hidden');
-
             });
         },
         hideDetailedInfo: function() {
@@ -121,12 +119,11 @@ define([
                 }
             })
             .done(function(data){
+                var tempDataArray = [],
+                    currentDataArray = {};
 
                 // Clear previous data history list
                 $dataHistoryListTable.empty();
-
-                var tempDataArray = [];
-                var currentDataArray = {};
 
                 context.sandbox.utils.each(data, function(index, dataEntry) {
                     var tempDataEntry = {
@@ -162,7 +159,6 @@ define([
                 //     // Delete the dataset
                 //     console.debug('Will delete dataset ' + context.$(this).parent().parent().data('datasetid') + ' here.');
                 // });
-
             });
         }
     };

@@ -78,27 +78,34 @@ define([
             // delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delete directly
         },
         restoreDataset: function(params) {
+            var queryName,
+                minLat,
+                maxLat,
+                minLon,
+                maxLon,
+                getPage;
+
             //If the query is not related to this datasource, ignore
             if(params.dataSource === DATASOURCE_NAME) {
 
-                var queryName = params.queryName;
+                queryName = params.queryName;
 
                 if(!context.sandbox.dataStorage.datasets[params.queryId]) {
 
-                    var minLat = params.queryBbox ? params.queryBbox.bottom : null,
-                        maxLat = params.queryBbox ? params.queryBbox.top : null,
-                        minLon = params.queryBbox ? params.queryBbox.left : null,
-                        maxLon = params.queryBbox ? params.queryBbox.right : null;
+                    minLat = params.queryBbox ? params.queryBbox.bottom : null;
+                    maxLat = params.queryBbox ? params.queryBbox.top : null;
+                    minLon = params.queryBbox ? params.queryBbox.left : null;
+                    maxLon = params.queryBbox ? params.queryBbox.right : null;
 
                     createLayer({queryId: params.queryId, name: queryName,
                         minLat: minLat, minLon: minLon, maxLat: maxLat, maxLon: maxLon});
                     initiateQuery(queryName);
 
-                    var getPage = function(params, start, pageSize){
+                    getPage = function(params, start, pageSize){
                         context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.queryId, params.sessionId, start, pageSize, function(err, results){
                             if (err){
                                 handleError({queryId: params.queryId});
-                            } else if (!results || results.length == 0){
+                            } else if (!results || results.length === 0){
                                 completeQuery(queryName, params.queryId);
                             } else {
                                 processDataPage(results, {queryId: params.queryId, name: queryName});
