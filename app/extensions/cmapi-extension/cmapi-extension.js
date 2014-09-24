@@ -6,11 +6,19 @@ define([
     /**
      * CMAPI: Common Map API. Pub/sub messaging for geospacial mashups.
      * @namespace Sandbox.cmapi
+     * @memberof Sandbox
      * @property {String} DATASOURCE_NAME - Default value is 'cmapi'
      * @property {String} defaultLayerId - Default value is 'cmapi'
      */
     /**
+     * Info needed.
+     * @namespace Sandbox.dataServices
+     * @memberof Sandbox
+     */
+    /**
+     * Sets up CMAPI as a 'dataService'
      * @namespace Sandbox.dataServices.cmapi
+     * @memberof Sandbox.dataServices
      */
     /**
      * Sets up the CMAPI channels to listen for messages from the parent.
@@ -48,14 +56,10 @@ define([
                 app.sandbox.dataServices = {};
             }
 
-           
             app.sandbox.dataServices.cmapi = {
                 /**
-                 * Description of infoWinTemplate needed.
-                 * @instance
-                 * @property {Object} infoWinTemplate
-                 * @property {Function} infoWinTemplate.buildInfoWinTemplate {@link Sandbox.dataServices.cmapi#buildInfoWinTemplate Definition} 
-                 * @property {Function} infoWinTemplate.postRenderingAction {@link Sandbox.dataServices.cmapi#postRenderingAction Definition}
+                 * Info needed.
+                 * @namespace Sandbox.dataServices.cmapi.infoWinTemplate
                  * @memberof Sandbox.dataServices.cmapi
                  */
                 "infoWinTemplate": {
@@ -69,7 +73,7 @@ define([
                      * @param {Object} fullFeature 
                      * @param {String} [fullFeature.style.iconLarge] - fullFeature.style.icon will be used if iconLarge is not provided.
                      * @return Handlebar template.
-                     * @memberof Sandbox.dataServices.cmapi
+                     * @memberof Sandbox.dataServices.cmapi.infoWinTemplate
                      */
                     "buildInfoWinTemplate": function(attributes, fullFeature) {
                         var cmapiTemplate = Handlebars.compile(cmapiHBS);
@@ -83,12 +87,12 @@ define([
                         return html;
                     },
                     /**
-                     * Description needed. 
+                     * Info needed. 
                      * @function
                      * @instance
-                     * @param  {Object} feature - Description needed.
-                     * @param  {Object} overlayId - Description needed.
-                     * @memberof Sandbox.dataServices.cmapi
+                     * @param  {Object} feature - Info needed.
+                     * @param  {Object} overlayId - Info needed.
+                     * @memberof Sandbox.dataServices.cmapi.infoWinTemplate
                      * @returns return;
                      */
                     "postRenderingAction": function(feature, overlayId){ return; }
