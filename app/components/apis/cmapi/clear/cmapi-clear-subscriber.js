@@ -3,28 +3,29 @@
  * Does nothing for now.
  */
 define([
-], function () {
+    './cmapi-clear'
+], function (cmapiClear) {
     var context,
         parent;
 
 	var exposed = {
-        init: function(thisContext, thisParent) {
+        "init": function(thisContext, thisParent) {
             context = thisContext;
             parent = thisParent;
 
             exposed.start();
         },
-        start: function(args) {
+        "start": function(args) {
             exposed.subscribeOn();
         },
-        stop: function(args) {
+        "stop": function(args) {
             exposed.subscribeOff();
         },
-        subscribeOn: function() {
-            // TODO: if you want to notify CMAPI subscribers of changes to overlays, connect this up
+        "subscribeOn": function() {
+            context.sandbox.on('data.clear.all', cmapiClear.clear);
         },
-        subscribeOff: function() {
-            // TODO: if you want to notify CMAPI subscribers of changes to overlays, connect this up         
+        "subscribeOff": function() {
+            context.sandbox.off('data.clear.all', cmapiClear.clear);
         }
     };	
 

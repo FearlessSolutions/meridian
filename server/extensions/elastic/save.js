@@ -13,31 +13,27 @@ exports.init = function(context){
 
 exports.writeMetadata = function(userName, sessionId, queryId, metadata, callback){
 
-    var routingStr = userName+""+sessionId;
+//    var routingStr = userName+""+sessionId;
 
     var meta = {
         id: queryId,
         data: metadata
     };
 
-    writeJSON(userName, sessionId, routingStr, config.index.metadata, "metadata", meta, callback);
+    writeJSON(userName, sessionId, null, config.index.metadata, "metadata", meta, callback);
 };
 
 
 exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON, callback){
 
-    var routingStr = userName+""+sessionId;
+    var routingStr = userName;
     if (!_.isArray(geoJSON)){
         geoJSON = [geoJSON];
     }
 
-    Metadata.getMetadataByQueryId(queryId, function(err, meta){
+    Metadata.getMetadataByQueryId(userName, queryId, function(err, meta){
         if (!meta || meta.status === 404 && meta.message === 'Not Found'){
-            meta = {
-                queryId: queryId,
-                environment: process.env.NODE_ENV,
-                numRecords: 0
-            };
+            meta = Metadata.create(userName, sessionId, queryId);
         }
 
         var records = [];
@@ -56,13 +52,7 @@ exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON,
             record.featureId = featureId;
             record.queryId = queryId;
 
-            if (!meta.keys){
-                meta.keys = {};
-            }
-
-            _.each(_.keys(record.properties), function(key){
-                meta.keys[key] = true;
-            });
+            meta.addKeys(_.keys(record.properties));
 
             records.push({
                 id: featureId,
@@ -70,8 +60,7 @@ exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON,
             });
         });
 
-        meta.numRecords += geoJSON.length;
-        Metadata.saveMetadata(userName, sessionId, queryId, meta, function(){
+        meta.setNumRecords(meta.getNumRecords() + geoJSON.length).commit(function(){
             writeJSON(userName, sessionId, routingStr, config.index.data, dataType, records, callback);
         });
     });

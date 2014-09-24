@@ -5,12 +5,14 @@ var mapping = require('./mapping');
 var client = require('./client');
 var stream = require('./stream');
 var purge = require('./purge');
+var metadata = require('./metadata');
 
 var uuid = require('node-uuid');
 
 exports.init = function(context){
 
-    var app = context.app;
+    var app = context.app,
+        config = context.sandbox.config.getConfig();
 
     context.sandbox.elastic = {
         query: query,
@@ -19,7 +21,8 @@ exports.init = function(context){
         mapping: mapping,
         client: client,
         stream: stream,
-        purge: purge
+        purge: purge,
+        metadata: metadata
     };
 
     // Init sub-modules as necessary
@@ -42,7 +45,6 @@ exports.init = function(context){
                 res.send(err);
             } else {
                 res.status(200);
-                console.log(response);
                 res.send(response.hits.hits.map(function(ele){return ele._source;}));
             }
         });
@@ -51,7 +53,7 @@ exports.init = function(context){
     app.get('/feature/:id', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         var userName = res.get('Parsed-User');
         var sessionId = res.get('Parsed-SessionId');
-        query.getByFeatureId(userName, sessionId, req.params.id, function(err, response){
+        query.getByFeatureId(userName, null, req.params.id, function(err, response){
             if (err){
                 res.status(500);
                 res.send(err);
@@ -61,6 +63,40 @@ exports.init = function(context){
             }
         });
     });
+
+    app.get('/feature/query/:queryId', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+        var userName = res.get('Parsed-User');
+        var sessionId = res.get('Parsed-SessionId');
+        var queryId = req.params.queryId;
+
+        query.getResultsByQueryId(userName, sessionId, queryId, function(err, results){
+            if (err){
+                res.status(500);
+                res.send(err);
+            } else {
+                res.status(200);
+                res.send(results);
+            }
+        });
+    });
+
+    app.get('/feature/query/:queryId/session/:sessionId', auth.verifyUser, function(req, res){
+        var userName = res.get('Parsed-User');
+        var sessionId = req.params.sessionId;
+        var queryId = req.params.queryId;
+
+        query.getResultsByQueryId(userName, sessionId, queryId,
+            req.query.start, req.query.size, function(err, results){
+            if (err){
+                res.status(500);
+                res.send(err);
+            } else {
+                res.status(200);
+                res.send(results.hits.hits.map(function(ele){return ele._source;}));
+            }
+        });
+    });
+
 
     /**
      * Must be formatted as GeoJSON
@@ -106,8 +142,26 @@ exports.init = function(context){
         );
     });
 
-    app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-        download.pipeCSVToResponse(res.get('Parsed-User'), res.get('Parsed-SessionId'), res);
+//    app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+//        download.pipeCSVToResponse(res.get('Parsed-User'), res.get('Parsed-SessionId'), res);
+//    });
+
+    app.head('/results.csv', auth.verifyUser, function(req, res){
+        var idArray = req.query.ids.split(",");
+        query.getCountByQuery(null, config.index.data, null, {query:{"terms":{"queryId":idArray}}}, function(err, results){
+            if (err){
+                res.status(500);
+                res.send(err);
+            } else {
+                res.status(results.count === 0 ? 204 : 200); // 204 = No Content
+                res.send();
+            }
+        });
+
+    });
+
+    app.get('/results.csv', auth.verifyUser, function(req, res){
+        download.pipeCSVToResponseForQuery(res.get('Parsed-User'), req.query.ids.split(","), res);
     });
 
     app.delete('/clear', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
@@ -120,6 +174,27 @@ exports.init = function(context){
     app.delete('/clear/:queryId', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         purge.deleteRecordsByQueryId(res.get('Parsed-User'), res.get('Parsed-SessionId'),
             req.params.queryId, function(err, results){
+            res.status(err ? 500 : 200);
+            res.send(err ? err : results);
+        });
+    });
+
+    app.get('/metadata/user', auth.verifyUser, function(req, res){
+        metadata.getMetadataByUserId(res.get('Parsed-User'), function(err, results){
+            res.status(err ? 500 : 200);
+            res.send(err ? err : results);
+        });
+    });
+
+    app.get('/metadata/session', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+        metadata.getMetadataBySessionId(res.get('Parsed-User'), res.get('Parsed-SessionId'), function(err, results){
+            res.status(err ? 500 : 200);
+            res.send(err ? err : results);
+        });
+    });
+
+    app.get('/metadata/query/:id', auth.verifyUser, function(req, res){
+        metadata.getMetadataByQueryId(res.get('Parsed-User'), req.params.id, function(err, results){
             res.status(err ? 500 : 200);
             res.send(err ? err : results);
         });

@@ -7,3 +7,27 @@ div[data-aura-component='tools/locator'] .typeahead.dropdown-menu{
 div[data-aura-component='tools/locator'] #locator{
 	width: 450px;
 }
+
+/*Cursor values have to be added to the parent so that disabled buttons can have the desired behavior.
+When active, This will be not be applied until the button is disabled again.*/
+div[data-aura-component='tools/locator'] .input-group-btn{
+	cursor: not-allowed;
+}
+
+.locator.info-win-dialog{
+	font-size: .8em;
+}
+
+.locator.info-win-dialog .title{
+	font-weight: bold;
+	font-size: 14px;
+	text-align: center;
+	margin-left: 30px;
+}
+
+.locator.info-win-dialog .content{
+	position: relative;
+	margin-left: 15px;
+	width: 170px;
+	/*height: 135px;*/
+}

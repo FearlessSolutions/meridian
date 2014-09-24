@@ -299,13 +299,13 @@ define([
         deleteLayer: function(params) {
 
             // TODO: Move this to be handled by the data services (will require reasonable refactor)
-            context.sandbox.utils.ajax({
-                type: 'DELETE',
-                url: '/clear/' + params.layerId,
-                headers: {
-                    'x-meridian-session-id': context.sandbox.sessionId
-                }
-            });
+            // context.sandbox.utils.ajax({
+            //     type: 'DELETE',
+            //     url: '/clear/' + params.layerId,
+            //     headers: {
+            //         'x-meridian-session-id': context.sandbox.sessionId
+            //     }
+            // });
 
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
                 // TODO: do not use deleteDataLayer since the renderer is already receiving the call.
@@ -396,11 +396,35 @@ define([
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
             $querySnapshot.find('.btn-on').addClass('btn-primary');
             $querySnapshot.find('.btn-off').removeClass('btn-primary');
+            snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "timeline.menu.layer.show"
+                });
+            snapshotMenu.enableOption({
+                    "layerId": params.layerId,
+                    "channel": "timeline.menu.layer.hide"
+                });
+            snapshotMenu.enableOption({
+                    "layerId": params.layerId,
+                    "channel": "map.zoom.toLayer"
+                });
         },
         layerToggleOff: function(params) {
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
             $querySnapshot.find('.btn-on').removeClass('btn-primary');
             $querySnapshot.find('.btn-off').addClass('btn-primary');
+            snapshotMenu.enableOption({
+                    "layerId": params.layerId,
+                    "channel": "timeline.menu.layer.show"
+                });
+            snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "timeline.menu.layer.hide"
+                });
+            snapshotMenu.disableOption({
+                    "layerId": params.layerId,
+                    "channel": "map.zoom.toLayer"
+                });
         },
         deleteSnapshot: function(params) {
             var layerState,

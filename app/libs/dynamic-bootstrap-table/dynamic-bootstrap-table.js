@@ -229,7 +229,6 @@ License: MIT
             if(this.clickable) {
                 $('.bodyTable table tr').addClass('clickableRow');
                 $('.bodyTable table tr').on('click', function(event) {
-                    event.preventDefault();
                     var recordId = $(this).attr('record-id');
                     var record = datatable.getRecordById(recordId);
                     datatable.afterRowClick(event, record);

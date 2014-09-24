@@ -8,9 +8,9 @@ define([
         emit;
 
     var exposed = {
-        init: function(thisContext, layerId, errorChannel) {
+        init: function(thisContext, errorChannel) {
             context = thisContext;
-            defaultLayerId = layerId;
+            defaultLayerId = context.sandbox.cmapi.defaultLayerId;
             sendError = errorChannel;
             publisher.init(context);
             subscriber.init(context, exposed);
@@ -146,6 +146,8 @@ define([
 
         if(!context.sandbox.dataStorage.datasets[layerId]) {
             context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
+            context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
+
 
             publisher.publishCreateLayer({
                 "layerId": layerId,
@@ -180,14 +182,14 @@ define([
                     context.sandbox.utils.each(data, function(key, value){
                         var newValue = {};
 
-                        newValue.dataService = 'cmapi';
+                        newValue.dataService = context.sandbox.cmapi.DATASOURCE_NAME;
                         newValue.id = value.featureId;
                         newValue.featureId = value.featureId;
                         newValue.layerId = value.queryId;
                         newValue.geometry = value.geometry;
                         newValue.type = value.type;
                         newValue.properties = {
-                            "dataService": "cmapi"
+                            "dataService": context.sandbox.cmapi.DATASOURCE_NAME
                         };
 
                         context.sandbox.utils.each(value.properties, function(key, value){

@@ -11,7 +11,8 @@ define([
                     "featureId":"Feature ID",
                     "layerId":"Layer ID",
                     "lat": "Lat",
-                    "lon": "Lon"
+                    "lon": "Lon",
+                    "dataService": "Data Service"
                 },
                 addData: function(params) {
                     dataStorage.datasets[params.datasetId].add(params.data);
@@ -25,7 +26,7 @@ define([
                 updateColumns: function(params) {
                     $.each(params.data, function(k, v) {
                         // Skipping id field because it is for backbone modeling
-                        if(($.type(v) === "string" || $.type(v) === "number" || $.type(v) === "boolean") && k !== "id") {
+                        if(($.type(v) === 'string' || $.type(v) === 'number' || $.type(v) === 'boolean') && k !== 'id' && k !== 'type') {
                             if(!dataStorage.columns[k]) {
                                 dataStorage.columns[k] = k;
                             }
@@ -44,11 +45,22 @@ define([
                     var ajax = $.ajax({
                         type: "GET",
                         url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + featureId
-                    }).done(function(data){
+                    }).done(function(data) {
                         callback(data);
                     });
 
                     return ajax;
+                },
+                getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
+                    $.ajax({
+                        type: "GET",
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/query/' + queryId + '/session/' + sessionId +
+                            '?start=' + start + '&size=' + size
+                    }).done(function(data) {
+                        callback(null, data);
+                    }).error(function(error) {
+                        callback(error, null);
+                    });
                 }
 			};
 

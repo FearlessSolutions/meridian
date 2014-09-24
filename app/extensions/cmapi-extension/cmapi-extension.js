@@ -15,7 +15,7 @@ define([
          * -Set up a mock cmapi "dataService'
          * @param app
          */
-        initialize: function(app) {
+        "initialize": function(app) {
             app.sandbox.utils.addCSS(cmapiCSS, 'cmapi-extension-style');
 
             //Set up parent channels
@@ -25,26 +25,29 @@ define([
 
             //Put utility function in sandbox
             app.sandbox.cmapi.getMaxExtent = getMaxExtent;
+            app.sandbox.cmapi.DATASOURCE_NAME = 'cmapi';
+            app.sandbox.cmapi.defaultLayerId = 'cmapi';
 
             //Set up CMAPI as a 'dataService'
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
 
-            app.sandbox.dataServices.cmapi = {};
-            app.sandbox.dataServices.cmapi.infoWinTemplate = {
-                "buildInfoWinTemplate": function(attributes, fullFeature) {
-                    var cmapiTemplate = Handlebars.compile(cmapiHBS);
-                    var html = cmapiTemplate({
-                        "thumbnail": fullFeature.style.iconLarge || fullFeature.style.icon,
-                        "classification": attributes.classification || "", //TODO make this dynamic?
-                        "name": attributes.name,
-                        "attributes": attributes,
-                        "namespace": "cmapi-extension"
-                    });
-                    return html;
-                },
-                "postRenderingAction": function(feature, overlayId){ return; }
+            app.sandbox.dataServices.cmapi = {
+                "infoWinTemplate": {
+                    "buildInfoWinTemplate": function(attributes, fullFeature) {
+                        var cmapiTemplate = Handlebars.compile(cmapiHBS);
+                        var html = cmapiTemplate({
+                            "thumbnail": fullFeature.style.iconLarge || fullFeature.style.icon,
+                            "classification": attributes.classification || "", //TODO make this dynamic?
+                            "name": attributes.name,
+                            "attributes": attributes,
+                            "namespace": "cmapi-extension"
+                        });
+                        return html;
+                    },
+                    "postRenderingAction": function(feature, overlayId){ return; }
+                }
             };
         }
     };

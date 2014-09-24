@@ -17,8 +17,8 @@ require.config({
         datatable: 'libs/dynamic-bootstrap-table/dynamic-bootstrap-table',
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
-        jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min' // Custom build, check file's header to see what it includes
-
+        jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min', // Custom build, check file's header to see what it includes
+        momentJS: 'libs/momentjs-2.8.3/moment.min'
     },
     shim:{
         aura: {
@@ -57,16 +57,16 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
 
     // Listen to CSSWatch trigger (fired from datagrid/main.js)
     $(document).on('css-change', '#datagridContainer', function(event, change){
-        console.log('CSS Change:', change.width, 'height:', change.height);
         $('#mapContainer').css('height', 'calc(100% - 32px - ' + change.height + ')');
         $('div[data-aura-component="rendering-engines/map-openlayers"], #map').css('height', '100%');
         window.dispatchEvent(new Event('resize')); // Trigger OpenLayers to redraw the map
     });
     
     Aura({
-        "debug": true,
+        "debug": false,
         "appName": "Meridian",
-        "sources": {"default": "components"} 
+        "sources": {"default": "components"},
+        "mediator": {"maxListeners": 50}
     })
     .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')
@@ -84,6 +84,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/locator-extension/locator-query-extension')
     .use('extensions/locator-extension/locator-formatData-extension')
     .use('extensions/mock-extension/mock-extension')
+    .use('extensions/fake-extension/fake-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
 //    .use('extensions/csv-upload-extension/csv-upload-extension')
     .start({ "components": "body" });

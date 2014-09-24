@@ -91,6 +91,13 @@ define([
                 "content" : "Slideshow of query snapshots currently in the timeline."
             },
             {
+                "componentName" : "dataHistoryToggleButton",
+                "placement" : "bottom",
+                "width" : "225px",
+                "title": "Data History",
+                "content" : "List of cached datasets that can be restored."
+            },
+            {
                 "componentName" : "userSettings",
                 "placement" : "bottom",
                 "width" : "225px",

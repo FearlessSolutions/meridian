@@ -23,7 +23,9 @@ describe("Elastic Search Integration Test Suite", function(){
         require('../../../server/app').init({
             get:function(){},
             post:function(){},
-            all:function(){}
+            all:function(){},
+            delete:function(){},
+            head:function(){}
         });
 
         save = require('../../../server/extensions/elastic/save');
@@ -34,6 +36,7 @@ describe("Elastic Search Integration Test Suite", function(){
         // It would be better to properly do callbacks within the mapping function
         setTimeout(function(){
             var testUsers = [{'user':'testUser1', 'sessionId':'A7478FB8AB254F608335D1D2F6DE960F'},
+                {'user':'testUser1', 'sessionId':'B7478FB8AB254F608335D1D2F6DE960F'},
                 {'user':'testUser2', 'sessionId':'8DEFBAC7337475D67E6F76E76C76'},
                 {'user':'testUser3', 'sessionId':'ABC6D7EFC7A6D6EF7C7EA7D7F'}];
 
@@ -57,7 +60,7 @@ describe("Elastic Search Integration Test Suite", function(){
                 }
 
                 save.writeGeoJSON(user.user, user.sessionId, user.sessionId, "test", geoJSON, function(err){
-
+                    if (err) console.log(err);
                 });
             });
             return done(null);
@@ -95,6 +98,7 @@ describe("Elastic Search Integration Test Suite", function(){
 //        testResultId = uuid.v4().split("-").join("");
         testQueryId = uuid.v4().split("-").join("");
         save.writeGeoJSON("testUser1", testResultId, testQueryId, "test", geoJSON, function(err){
+            if (err) console.log(err);
             expect(err).to.be.not.ok;
         });
 
@@ -109,6 +113,32 @@ describe("Elastic Search Integration Test Suite", function(){
         });
     });
 
+    it("should be able to retrieve a result set (queryId)", function(done){
+        query.getResultsByQueryId('testUser1', testResultId, testResultId, 0, 10, function(err, results){
+            expect(err).to.be.not.ok;
+            expect(results.length).to.equal(5);
+            done();
+        });
+    });
+
+    it("should be able to retrieve a result set (queryId -- test 2)", function(done){
+        query.getResultsByQueryId('testUser3', 'ABC6D7EFC7A6D6EF7C7EA7D7F',
+            'ABC6D7EFC7A6D6EF7C7EA7D7F', 0, 10, function(err, results){
+            expect(err).to.be.not.ok;
+            expect(results.length).to.equal(5);
+            done();
+        });
+    });
+
+    it("should be able to retrieve a result set (queryId -- test invalid)", function(done){
+        query.getResultsByQueryId('testUser3', 'ABC6D7EFC7A6D6EF7C7EA7D7F',
+            'foo', 0, 10, function(err, results){
+                expect(err).to.be.not.ok;
+                expect(results.length).to.equal(0);
+                done();
+            });
+    });
+
     it("should be able to query a result set (session) for a key/value pair", function(done){
         query.executeQuery('testUser1', testResultId, {query:{"match":{"lon":8}}}, function(err, results){
             expect(err).to.be.not.ok;
@@ -120,7 +150,7 @@ describe("Elastic Search Integration Test Suite", function(){
     it("should be able to page a result set (session)", function(done){
         var count = 0;
 
-        query.streamQuery('testUser1', testResultId, {query:{"match_all":{}}}, 2, function(err, results){
+        query.streamQuery('testUser1', {query:{"match":{"sessionId":testResultId}}}, 2, function(err, results){
             expect(err).to.be.not.ok;
             count += results.hits.hits.length;
             if (results.hits.hits.length === 0){
@@ -153,37 +183,67 @@ describe("Elastic Search Integration Test Suite", function(){
     });
 
     it("should have the correct record count in a query's metadata", function(done){
-        metadataManager.getMetadataByQueryId(testQueryId, function(err, meta){
+        metadataManager.getMetadataByQueryId('testUser1', testQueryId, function(err, meta){
             expect(err).to.be.not.ok;
-            expect(meta.numRecords).to.equal(5);
+            expect(meta.getNumRecords()).to.equal(5);
             done();
         });
     });
 
     it("should have the correct keyset in a query's metadata", function(done){
-        metadataManager.getMetadataByQueryId(testQueryId, function(err, meta){
+        metadataManager.getMetadataByQueryId('testUser1', testQueryId, function(err, meta){
             expect(err).to.be.not.ok;
-            expect(meta.keys.lon).to.be.defined;
-            expect(meta.keys.heading).to.be.defined;
-            expect(meta.keys.dest).to.be.defined;
-            expect(meta.keys.featureId).to.be.defined;
-            expect(meta.keys.queryId).to.be.defined;
+            expect(meta.getKeys().lon).to.be.defined;
+            expect(meta.getKeys().heading).to.be.defined;
+            expect(meta.getKeys().dest).to.be.defined;
+            expect(meta.getKeys().featureId).to.be.defined;
+            expect(meta.getKeys().queryId).to.be.defined;
             done();
         });
     });
 
     it("should be able to fetch metadata by session id", function(done){
-        metadataManager.getMetadataBySessionId(testResultId, function(err, meta){
+        metadataManager.getMetadataBySessionId('testUser1', testResultId, function(err, meta){
             expect(err).to.be.not.ok;
             expect(meta[testQueryId]).to.be.defined;
-            expect(meta[testQueryId].keys.lon).to.be.defined;
+            expect(meta[testQueryId].getKeys().lon).to.be.defined;
             expect(meta['A7478FB8AB254F608335D1D2F6DE960F']).to.be.defined;
-            expect(meta['A7478FB8AB254F608335D1D2F6DE960F'].keys.num).to.be.defined;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F'].getKeys().num).to.be.defined;
             done();
         });
     });
 
-    it("should be able to trigger a CSV download without error", function(done){
+    it("should be able to fetch metadata by user id", function(done){
+        metadataManager.getMetadataByUserId('testUser1', function(err, meta){
+            expect(err).to.be.not.ok;
+            expect(meta[testQueryId]).to.be.defined;
+            expect(meta[testQueryId].getKeys().lon).to.be.defined;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F']).to.be.defined;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F'].getKeys().num).to.be.defined;
+            expect(meta['B7478FB8AB254F608335D1D2F6DE960F']).to.be.defined;
+            expect(meta['B7478FB8AB254F608335D1D2F6DE960F'].getKeys().num).to.be.defined;
+            done();
+        });
+    });
+
+    it("should return no metadata by session id if the session doesn't belong to the user", function(done){
+        metadataManager.getMetadataBySessionId('testUser2', testResultId, function(err, meta){
+            expect(err).to.be.not.ok;
+            expect(meta[testQueryId]).to.not.be.ok;
+            expect(meta['A7478FB8AB254F608335D1D2F6DE960F']).to.not.be.ok;
+            done();
+        });
+    });
+
+    it("should fail to fetch metadata by query id if the query doesn't belong to the user", function(done){
+        metadataManager.getMetadataByQueryId('testUser2', testQueryId, function(err, meta){
+            expect(err).to.be.ok;
+            expect(meta).to.be.not.ok;
+            done();
+        });
+    });
+
+    it("should be able to trigger a CSV download without error (***DEPRECATED METHOD***)", function(done){
         var mockRes = {
             buffer: "",
             headers: {},
@@ -195,7 +255,7 @@ describe("Elastic Search Integration Test Suite", function(){
             },
             end: function(chunk){
                 this.buffer += chunk;
-                expect(this.buffer.length).to.equal(1045);
+                expect(this.buffer.length).to.equal(1287);
                 expect(this.headers['Content-Type']).to.be.defined;
                 expect(this.headers['Content-Disposition']).to.be.defined;
                 done();
@@ -206,5 +266,31 @@ describe("Elastic Search Integration Test Suite", function(){
         };
 
         require('../../../server/extensions/elastic/download').pipeCSVToResponse('testUser1', testResultId, mockRes);
+    });
+
+    it("should be able to trigger a CSV download without error for specified queryIds", function(done){
+        var mockRes = {
+            buffer: "",
+            headers: {},
+            status: function(status){
+                expect(status).to.equal(200);
+            },
+            write: function(chunk){
+                this.buffer += chunk;
+            },
+            end: function(chunk){
+                this.buffer += chunk;
+                expect(this.buffer.length).to.equal(1287);
+                expect(this.headers['Content-Type']).to.be.defined;
+                expect(this.headers['Content-Disposition']).to.be.defined;
+                done();
+            },
+            header: function(header, value){
+                this.headers[header] = value;
+            }
+        };
+
+        var queryIdArray = ["A7478FB8AB254F608335D1D2F6DE960F", testQueryId];
+        require('../../../server/extensions/elastic/download').pipeCSVToResponseForQuery('testUser1', queryIdArray, mockRes);
     });
 });

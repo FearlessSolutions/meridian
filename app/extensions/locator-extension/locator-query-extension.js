@@ -6,10 +6,11 @@ define([
         {
             "Name": "Decimal Degrees(DD)",
             "convert": function(input){
-                var coordinates = input.split(',');
+                var coordinates = input.replace(/\s/g, '').split(',');
+
                 return {
-                    "lon": parseFloat(coordinates[0], 10),
-                    "lat": parseFloat(coordinates[1], 10)
+                    "lon": parseFloat(coordinates[locatorConfiguration.lonIndex], 10),
+                    "lat": parseFloat(coordinates[locatorConfiguration.latIndex], 10)
                 };
             },
             "regex": /(^-?)\d+(\.\d+)?,[\s-]*-?\d+(\.\d+)?\s*$/
@@ -73,7 +74,7 @@ define([
     ];
 
     var exposed = {
-        initialize: function(app) {
+        "initialize": function(app) {
 
             if (!app.sandbox.locator) {
                 app.sandbox.locator = {};
@@ -94,23 +95,23 @@ define([
             app.sandbox.locator.query = function(param, callback) {
 
                 var data = {
-                    address: param,
-                    sensor: false
+                    "address": param,
+                    "sensor": false
                 };
                 app.sandbox.utils.ajax({
-                    type: 'GET',
-                    url: locatorConfiguration.url,
-                    data: data,
-                    dataType: locatorConfiguration.dataType,
-                    timeout: locatorConfiguration.timeout,
-                    error: function(xhr, status, errorThrown) {
+                    "type": "GET",
+                    "url": locatorConfiguration.url,
+                    "data": data,
+                    "dataType": locatorConfiguration.dataType,
+                    "timeout": locatorConfiguration.timeout,
+                    "error": function(xhr, status, errorThrown) {
                         app.sandbox.emit("message.publish", {
                             "messageType": 'error',
                             "messageTitle": 'Location Service',
                             "messageText": errorThrown
                         }); 
                     },
-                    success: function(data) {
+                    "success": function(data) {
                         //return the exact same data value.
                         callback(data);
                     }

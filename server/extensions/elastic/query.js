@@ -1,4 +1,5 @@
 var stream = require('./stream');
+var _ = require('underscore');
 
 var config,
     client;
@@ -17,7 +18,7 @@ exports.updateRecord = function(userName, sessionId, type, updateMap, callback){
                 "_index": config.index.data,
                 "_type": type,
                 "_id": id,
-                "_routing": username+""+sessionId
+                "_routing": userName
             }
         });
         bulkRequest.push({
@@ -28,16 +29,6 @@ exports.updateRecord = function(userName, sessionId, type, updateMap, callback){
     client.bulk({
         "body": bulkRequest
     });
-
-//    client.update({
-//        "index": config.index.data,
-//        "type": type,
-//        "id": id,
-//        "routing": userName+""+sessionId,
-//        "body":{
-//            "doc": updates
-//        }
-//    }, callback);
 };
 
 exports.executeQuery = function(userName, sessionId, query, callback){
@@ -58,17 +49,51 @@ exports.executeQuery = function(userName, sessionId, query, callback){
 
     if (query.sort) {newQuery.sort = query.sort; }
 
-    getJSONByQuery(userName+""+sessionId, config.index.data, null, newQuery, callback);
+    getJSONByQuery(userName, config.index.data, null, newQuery, callback);
 
 };
 
+exports.getResultsByQueryId = function(userName, sessionId, queryId, from, size, callback){
+
+    var routing = userName;
+
+    var query = {
+        "query":{
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "userId": userName
+                        }
+                    },
+                    {
+                        "term": {
+                            "sessionId": sessionId
+                        }
+                    },
+                    {
+                        "term": {
+                            "queryId": queryId
+                        }
+                    }
+                ]
+            }
+
+        },
+        "from": from,
+        "size": size
+    };
+
+    getJSONByQuery(routing, config.index.data, null, query, callback);
+};
+
 exports.executeFilter = function(userId, sessionId, queryId, filter, callback){
-    getJSONByQuery(userId+""+sessionId, config.index.data, null, filter, function(err, results){
+    getJSONByQuery(userId, config.index.data, null, filter, function(err, results){
         callback(results);
     });
 };
 
-exports.streamQuery = function(userName, sessionId, query, pageSize, pageCallback){
+exports.streamQuery = function(userName, query, pageSize, pageCallback){
 
     var newQuery = {
         "query": {
@@ -76,8 +101,7 @@ exports.streamQuery = function(userName, sessionId, query, pageSize, pageCallbac
                 "query": query.query,
                 "filter": {
                     "term": {
-                        "userId": userName,
-                        "sessionId": sessionId
+                        "userId": userName
                     }
                 }
             }
@@ -87,28 +111,71 @@ exports.streamQuery = function(userName, sessionId, query, pageSize, pageCallbac
     stream.stream(null, config.index.data, null, newQuery, pageSize, pageCallback);
 };
 
+// spines -- We're grabbing a record by id so I don't think routing buys any efficiency
+//        -- should check this though (also, step 1 of removing sessionId)
 exports.getByFeatureId = function(userName, sessionId, featureId, callback){
-    var routingStr = userName+""+sessionId;
+    var routingStr = userName;
     getJSONById(routingStr, config.index.data, null, featureId, callback);
 };
 
-exports.getMetadataByQueryId = function(queryId, callback){
-    getJSONById(null, config.index.metadata, null, queryId, callback);
+exports.getMetadataByQueryId = function(userId, queryId, callback){
+    getJSONById(null, config.index.metadata, null, queryId, function(err, results){
+        if (err){
+            callback(err, null);
+        } else if (results._source.userId !== userId){
+            callback("Metadata found but it does not belong to " + userId, null);
+        } else {
+            callback(null, results);
+        }
+    });
 };
 
-exports.getMetadataBySessionId = function(sessionId, callback){
-    var query = {query:{match:{sessionId:sessionId}}};
+exports.getMetadataBySessionId = function(userId, sessionId, callback){
+    var query = {
+        "query":{
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "userId": userId
+                        }
+                    },
+                    {
+                        "term": {
+                            "sessionId": sessionId
+                        }
+                    }
+                ]
+            }
+
+        }
+    };
     getJSONByQuery(null, config.index.metadata, null, query, callback);
 };
 
+exports.getMetadataByUserId = function(userId, callback){
+    var query = {
+        "query":{
+            "match":{
+                "userId":userId
+            }
+        }
+    };
+    getJSONByQuery(null, config.index.metadata, null, query, callback);
+};
 
 var getJSONByQuery = function(routing, index, type, query, callback){
 
     var searchObj = {};
     searchObj.index = index;
     if (routing) { searchObj.routing = routing; }
-    searchObj.body = query;
 
+    // spines - This is a hacky fix, take the time to re-analyze usage of this method and
+    //          future functions should be designed with pagination in mind
+    if (!query.from) { query.from = 0; }
+    if (!query.size) { query.size = 1000; }
+
+    searchObj.body = query;
 
     client.search(searchObj).then(function(resp){
         callback(null, resp);
@@ -128,6 +195,27 @@ var getJSONById = function(routing, index, type, id, callback){
     if (routing){ req.routing = routing; }
 
     client.get(req).then(function(resp){
+        callback(null, resp);
+    }, function(err){
+        callback(err, null);
+    });
+};
+
+/**
+ * Returns the feature count of a user session
+ * @param index data
+ * @param body the limiting query (at least username and session)
+ * @param callback returns the feature count of the session
+ */
+exports.getCountByQuery = function(routing, index, type, body, callback){
+    var req = {
+        "index": index,
+        "body": body
+    };
+
+    if (routing){ req.routing = routing; }
+
+    client.count(req).then(function(resp){
         callback(null, resp);
     }, function(err){
         callback(err, null);
