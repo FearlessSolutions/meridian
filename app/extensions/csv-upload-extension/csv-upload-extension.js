@@ -8,8 +8,21 @@ define([
     var template = Handlebars.compile(csvUploadInfoWinHBS),
         DATASOURCE_NAME = 'csv',
         context;
-
+    /**
+     * @namespace Sandbox.csv
+     * @memberof Sandbox
+     */
+    /**
+     * @exports csv-upload-extension
+     */
     var exposed = {
+        /**
+         * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
+         * This extension exposes {@link Sandbox.csv} to the {@link Sandbox} namespace.
+         * @function
+         * @instance
+         * @param {Object} app Instance of the Meridian application.
+         */
         initialize: function(app) {
             context = app;
             app.sandbox.utils.addCSS(csvUploadInfoWinCSS, 'csv-upload-extension-style');
@@ -43,6 +56,16 @@ define([
 
     return exposed;
 
+    /**
+     * @function
+     * @instance
+     * @param {String} csv - CSV content/data.
+     * @param {String} queryId - Id of the query.
+     * @param {String} queryName - Name of the query.
+     * @param {Function} callback - Executed when ajax is done.
+     * @param {Function} errorCallback - Executed when ajax throws an error.
+     * @memberof Sandbox.csv
+     */
     function upload(csv, queryId, queryName, callback, errorCallback){
         var options = csvUploadConfiguration.upload;
         options.data = {
@@ -56,6 +79,14 @@ define([
             .error(errorCallback);
     }
 
+    /**
+     * Parses and stores data in sandbox.dataStorage using queryId as the datasetId.
+     * @function
+     * @instance
+     * @param {Object} data - CSV content/data.
+     * @param {String} queryId - Id of the query.
+     * @memberof Sandbox.csv
+     */
     function parse(data, queryId){
         data.forEach(function(feature, index){
             var newValue = {};
