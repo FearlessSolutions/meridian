@@ -13,18 +13,14 @@ define([
          * @param  {Object} app Instance of the Meridian application.
          */
         initialize: function(app) {
+            
+            activeAJAXs = [];
             /**
              * Consolidated holding place for open AJAX calls.
              * Cleans and aborts as required.
              * @namespace Sandbox.ajax
+             * @memberof Sandbox
              */
-            /**
-             * Local variable that stores all active AJAX calls.
-             * @var {Array} activeAJAXs
-             * @instance
-             * @memberof Sandbox.ajax
-             */
-            activeAJAXs = [];
             app.sandbox.ajax = {
                 /**
                  * Add a new AJAX to the list.

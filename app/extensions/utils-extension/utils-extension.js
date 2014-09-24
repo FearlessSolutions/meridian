@@ -17,6 +17,7 @@ define([
             var CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
             /**
              * @namespace Sandbox.utils
+             * @memberof Sandbox
              */
             var utils = {
                 /**
@@ -209,6 +210,7 @@ define([
                 /**
                  * A namespace reserved for functions used specificaly for preferences.
                  * @namespace Sandbox.utils.preferences
+                 * @memberof Sandbox.utils
                  */
                 preferences: {
                     /**
