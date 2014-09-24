@@ -69,6 +69,11 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
      * @namespace Sandbox
      */
     /**
+     * Info needed.
+     * @namespace Sandbox.dataServices
+     * @memberof Sandbox
+     */
+    /**
      * A List of all the channels being used as listeners, <b><i>not a namespace</i></b>.<br> To understand how channels work and how
      * they are used, please refer to the {@link http://ozone-development.github.io/meridian/examples/#messaging | Messaging}
      * documentation.<br>
