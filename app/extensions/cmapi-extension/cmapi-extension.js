@@ -11,11 +11,6 @@ define([
      * @property {String} defaultLayerId - Default value is 'cmapi'
      */
     /**
-     * Info needed.
-     * @namespace Sandbox.dataServices
-     * @memberof Sandbox
-     */
-    /**
      * Sets up CMAPI as a 'dataService'
      * @namespace Sandbox.dataServices.cmapi
      * @memberof Sandbox.dataServices
