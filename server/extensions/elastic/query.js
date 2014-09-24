@@ -169,8 +169,13 @@ var getJSONByQuery = function(routing, index, type, query, callback){
     var searchObj = {};
     searchObj.index = index;
     if (routing) { searchObj.routing = routing; }
-    searchObj.body = query;
 
+    // spines - This is a hacky fix, take the time to re-analyze usage of this method and
+    //          future functions should be designed with pagination in mind
+    if (!query.from) { query.from = 0; }
+    if (!query.size) { query.size = 1000; }
+
+    searchObj.body = query;
 
     client.search(searchObj).then(function(resp){
         callback(null, resp);
