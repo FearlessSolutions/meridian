@@ -2,7 +2,7 @@ define([
     'jquery'
 ], function($){
     /**
-      * @exports utilsExtension
+      * @exports utils-extension
       */
     var exposed = {
         /**
