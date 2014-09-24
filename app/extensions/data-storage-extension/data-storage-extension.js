@@ -2,8 +2,35 @@ define([
     'jquery',
     'backbone'
 ], function($, Backbone){
+    /**
+     * @exports data-storage-extension
+     */
     var exposed = {
+        /**
+         * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
+         * This extension exposes {@link Sandbox.dataStorage} to the {@link Sandbox} namespace.
+         * @function
+         * @instance
+         * @param  {Object} app Instance of the Meridian application.
+         */
         "initialize": function(app) {
+            /**
+             * @namespace Sandbox.dataStorage
+             * @memberof Sandbox 
+             */
+            /**
+             * @var
+             * @instance
+             * @property {Object} datasets - 
+             * @property {Object} columns -
+             * @property {String} columns.featureId - Property value: Feature ID
+             * @property {String} columns.layerId - Property value: Layer ID
+             * @property {String} columns.lat - Property value: Lat
+             * @property {String} columns.lon - Property value: Lon
+             * @property {String} columns.dataService - Property value: Data Service  
+             * @property {Function} addData
+             * @memberof Sandbox.dataStorage 
+             */
             var dataStorage = {
 				"datasets": {
                 },
@@ -14,6 +41,14 @@ define([
                     "lon": "Lon",
                     "dataService": "Data Service"
                 },
+                /**
+                 * @function
+                 * @instance
+                 * @param {Object} params 
+                 * @memberof Sandbox.dataStorage
+                 */
+
+                 
                 "addData": function(params) {
                     dataStorage.datasets[params.datasetId].add(params.data);
                     if(dataStorage.datasets) {
