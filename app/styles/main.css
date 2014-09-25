@@ -1,4 +1,4 @@
-/*****************/
+****************/
 /* Color Schemes */
 /*****************/
 .label-navy {
@@ -145,18 +145,69 @@ a {
     margin-left: 0px;
 }
 
+#left-side-menu {
+    position: absolute;
+    z-index: 999;
+    top: 225px;
+    left: 0px;
+    padding: 10px;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    background-color: transparent;
+    background-color: rgba(256, 256, 256, 0.6);
+    border-color: transparent;
+    -webkit-box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+#left-side-menu div:not(:first-child):not(:last-child) .btn {
+    border-radius: 0px;
+    border-top: none;
+}
+#left-side-menu div:first-child .btn {
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+#left-side-menu div:last-child .btn {
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    border-top: none;
+}
+
+#feauxcator a {
+    padding: 6px 8px;
+}
+
 #footer-container {
     position: absolute;
     z-index: 999;
     bottom: 0px;
     width: 100%;
-    height: 25px;
+    height: 20px;
+    font-size: 12px;
     display: inline;
     background-color: transparent;
     background-color: rgba(256, 256, 256, 0.6);
     border-color: transparent;
     -webkit-box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);
     box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.footer-left {
+    position: absolute;
+    bottom:0px;
+    left: 5px;
+}
+.footer-right {
+    position: absolute;
+    bottom:0px;
+    right: 5px;
+}
+.footer-center {
+    position: absolute;
+    bottom:0px;
+    padding-left: 700px;
+    font-weight: bold;
 }
 
 #header-right-container .btn:last-of-type {
@@ -226,4 +277,4 @@ a {
     padding : 3px 5px 3px 5px !important;
     font-weight:bold;
 }
-/* END Bootstro CSS */
+/* END Bootstro CSS 
