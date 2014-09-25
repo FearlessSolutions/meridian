@@ -27,38 +27,32 @@
         <div data-aura-component="controls/basemap-gallery"></div>
         <div data-aura-component="controls/timeline"></div>
         <div data-aura-component="tools/data-history"></div>
-        <div class="container-fluid">
-            <nav id="header-nav" class="navbar navbar-default" role="navigation">
-                <div id="header-left">
-                  <div data-aura-component="tools/locator"></div> 
-                </div>
-                <div id="header-right">
-                    <div id="left-buttons-container">
-                        <div data-aura-component="tools/query"></div>
-                        <!--<div data-aura-component="tools/csv-upload"></div>-->
-                        <div data-aura-component="controls/visual-mode-toggle"></div>
-                        <div data-aura-component="controls/datagrid-toggle"></div>
-                        <div data-aura-component="controls/download"></div>
-                        <div data-aura-component="controls/legend-toggle"></div>
-                        <div data-aura-component="controls/clear-toggle"></div>
-                        <div data-aura-component="tools/support"></div>
-                        <div data-aura-component="controls/internal-pubsub-tester"></div>
-                        <div data-aura-component="controls/playback"></div>
-                        <div data-aura-component="controls/data-history-toggle"></div>
-                    </div>
-                    <div id="right-buttons-container">
-                        <div data-aura-component="displays/event-counter"></div>
-                        <div data-aura-component="controls/user-settings"></div>
-                        <div data-aura-component="displays/progress-notification"></div>
-                    </div>
-                </div>
-            </nav>
-            <div data-aura-component="controls/zoom"></div>
-            <div data-aura-component="displays/mouse-position"></div>
-            <div data-aura-component="displays/notifications"></div>
+        <div id="header-left-container">
+            <div data-aura-component="tools/locator"></div> 
         </div>
+        <div id="header-right-container">
+            <div data-aura-component="tools/query"></div>
+            <!--<div data-aura-component="tools/csv-upload"></div>-->
+            <div data-aura-component="controls/visual-mode-toggle"></div>
+            <div data-aura-component="controls/datagrid-toggle"></div>
+            <div data-aura-component="controls/download"></div>
+            <div data-aura-component="controls/legend-toggle"></div>
+            <div data-aura-component="controls/clear-toggle"></div>
+            <div data-aura-component="tools/support"></div>
+            <div data-aura-component="controls/internal-pubsub-tester"></div>
+            <div data-aura-component="controls/playback"></div>
+            <div data-aura-component="controls/data-history-toggle"></div>
+        </div>
+        <div data-aura-component="controls/zoom"></div>
+        <div data-aura-component="displays/notifications"></div>
         <div data-aura-component="displays/label"></div>
         <div data-aura-component="displays/legend"></div>
+        <div id="footer-container">
+            <div data-aura-component="displays/mouse-position"></div>
+            <div data-aura-component="displays/event-counter"></div>
+            <div data-aura-component="controls/user-settings"></div>
+            <!-- <div data-aura-component="displays/progress-notification"></div> -->
+        </div>
       </div>
       <div data-aura-component="displays/datagrid"></div>
       <div class="banner">(U//FOUO)</div>

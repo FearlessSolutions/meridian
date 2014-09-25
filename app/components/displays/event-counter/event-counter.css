@@ -1,3 +1,7 @@
+div[data-aura-component='displays/event-counter'] {
+	float: right;
+	margin-right: 5px;
+}
 div[data-aura-component='displays/event-counter'] #feature-count .panel {
     margin-bottom: 0;
 }

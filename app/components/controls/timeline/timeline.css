@@ -1,7 +1,7 @@
 div[data-aura-component='controls/timeline'] #timeline {
     position: absolute;
-    right: 10px;
-    bottom: 10px;
+    right: 5px;
+    bottom: 35px;
     z-index: 1010;
     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);

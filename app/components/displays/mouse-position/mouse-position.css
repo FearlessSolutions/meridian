@@ -2,9 +2,10 @@ div[data-aura-component='displays/mouse-position'] .container {
     position: relative;
     float: left;
     z-index: 990;
-    top: 10px;
-    left: 10px;
-    width:auto;    
+    /*top: 10px;
+    left: 10px;*/
+    width:auto;
+    margin-left: 5px;
 }
 
 div[data-aura-component='displays/mouse-position'] #coordinates {
