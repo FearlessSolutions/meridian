@@ -20,11 +20,9 @@ define([
             $maxLat = context.$('.query-form #query-location-maxLat');
 
             $modal.modal({
-                "backdrop": true,
-                "keyboard": true,
+                "backdrop": "static",
+                "keyboard": false,
                 "show": false
-            }).on('hidden.bs.modal', function() {
-                publisher.closeQueryTool();
             });
 
             // $modal.on('shown.bs.dialog', function(){
