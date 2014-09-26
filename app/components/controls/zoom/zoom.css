@@ -1,8 +1,8 @@
 div[data-aura-component='controls/zoom'] #zoom {
     position: absolute;
     z-index: 990;
-    top: 45px;
-    left: 5px;
+    top: 55px;
+    left: 15px;
     -webkit-box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
     box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
 }
