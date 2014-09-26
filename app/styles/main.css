@@ -71,10 +71,13 @@ a {
     outline: 0;
 }
 .glyphicon, .caret {
-    color: #396A92;
+    color: #3276b1;
+}
+.btn-primary .glyphicon{
+    color: #fff;
 }
 .glyphicon:hover, .caret:hover, .btn-default-icon:hover .glyphicon {
-    color: #848586;
+    /*color: #848586;*/
 }
 .btn-default-text {
     background-color: #396A92;
@@ -89,6 +92,10 @@ a {
     color: #fff;
     background-color: #848586;
 }
+/*.btn-default-text.active {
+    color: #fff;
+    background-color: #30597B;
+}*/
 .btn-default-icon {
     background-color: #fff;
     border-color: #396A92;
@@ -145,33 +152,52 @@ a {
     margin-left: 0px;
 }
 
+#visual-mode-toggle-container {
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
 #left-side-menu {
     position: absolute;
-    z-index: 999;
-    top: 225px;
-    left: 0px;
-    padding: 10px;
-    border-bottom-right-radius: 4px;
-    border-top-right-radius: 4px;
+    z-index: 99999;
+    top: 250px;
+    left: -50px;
+    padding: 10px 15px 10px 10px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
     background-color: transparent;
-    background-color: rgba(256, 256, 256, 0.6);
+    background-color: rgba(256, 256, 256, 0.8);
     border-color: transparent;
-    -webkit-box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);
-    box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);
+    /*-webkit-box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);*/
+    -webkit-box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
+    -webkit-transition: left 2s; /* For Safari 3.1 to 6.0 */
+    transition: left .5s;
+}
+
+#left-side-menu .btn {
+    border-color: #428bca;
 }
 
 #left-side-menu div:not(:first-child):not(:last-child) .btn {
     border-radius: 0px;
     border-top: none;
 }
-#left-side-menu div:first-child .btn {
+#left-side-menu .menu-button-group div:first-child .btn {
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
 }
-#left-side-menu div:last-child .btn {
+#left-side-menu .menu-button-group div:last-child .btn {
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;
     border-top: none;
+}
+#left-side-menu .tab-handle {
+    position: absolute;
+    right: 5px;
+    top: 130px;
+    color: #396A92;
 }
 
 #feauxcator a {
@@ -189,8 +215,8 @@ a {
     background-color: transparent;
     background-color: rgba(256, 256, 256, 0.6);
     border-color: transparent;
-    -webkit-box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);
-    box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);
+/*    -webkit-box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 5px 10px 10px rgba(0, 0, 0, 0.2);*/
 }
 
 .footer-left {
@@ -278,3 +304,4 @@ a {
     font-weight:bold;
 }
 /* END Bootstro CSS 
+

@@ -89,4 +89,14 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
 //    .use('extensions/csv-upload-extension/csv-upload-extension')
     .start({ "components": "body" });
 
+
+    $('#left-side-menu').on('mouseover', function() {
+        $(this).css('left','0px');
+    });
+    $('#left-side-menu').on('mouseout', function() {
+        $(this).css('left','-50px');
+    });
+
 });
+
+
