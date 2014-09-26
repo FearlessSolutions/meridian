@@ -1,13 +1,10 @@
 define([
     './query-publisher',
-    'bootstrap',
-    'bootstrapDialog',
-    'jqueryDrag'
+    'bootstrap'
 ], function (publisher) {
     var context,
         MENU_DESIGNATION = 'query-tool',
-        $queryButton,
-        $queryDialog,
+        $modal,
         $maxLon,
         $maxLat,
         $minLon,
@@ -16,30 +13,23 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            $queryButton = context.$('#Query');
-            $queryDialog = context.$('#QueryDialog');
+            $modal = context.$('#query-modal');
             $minLon = context.$('.query-form #query-location-minLon');
             $minLat = context.$('.query-form #query-location-minLat');
             $maxLon = context.$('.query-form #query-location-maxLon');
             $maxLat = context.$('.query-form #query-location-maxLat');
 
-
-            //Activate bootstrap tooltip. 
-            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
-            $queryButton.tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
-                }
+            $modal.modal({
+                "backdrop": true,
+                "keyboard": true,
+                "show": false
+            }).on('hidden.bs.modal', function() {
+                publisher.closeQueryTool();
             });
 
-            context.$('.show-query').click(function(event) {
-                event.preventDefault();
-            });
-
-            $queryDialog.on('shown.bs.dialog', function(){
-                publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
-            });
+            // $modal.on('shown.bs.dialog', function(){
+            //     publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            // });
             
             context.$('.query-form button[type="submit"]').on('click', function(event) {
                 event.preventDefault();                
@@ -108,7 +98,7 @@ define([
                 }
                 
                 if(errorFree){
-                    closeMenu();
+                    publisher.closeQueryTool();
 
                     publisher.executeQuery(queryObject);
 
@@ -126,50 +116,45 @@ define([
 
             context.$('.query-form button[type="cancel"]').on('click', function(event) {
                 event.preventDefault();
-
                 exposed.clearQueryForm();
-                closeMenu();
-
+                publisher.closeQueryTool();
             });
 
-             context.$('.dialog-header button[type="button"].close').on('click', function(event) {
-
+            context.$('.modal-header button[type="button"].close').on('click', function(event) {
+                event.preventDefault();
                 exposed.clearQueryForm();
-
-                publisher.removeBBox();
-             });
+                publisher.closeQueryTool();
+            });
 
             context.$('.query-form #drawBBoxButton').on('click', function(event) {
                 event.preventDefault();
-                
                 closeMenu();
-
                 publisher.drawBBox();
             });
-            
-            $queryButton.on('click', function(event) {
-                event.preventDefault();
+        },
+        open: function(params) {
+            var drawOnDefault = true;
+            if(context.sandbox.queryConfiguration && 
+                typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
+                drawOnDefault = context.sandbox.queryConfiguration.queryDrawOnDefault; 
+            }
 
-                var drawOnDefault = true;
-                if(context.sandbox.queryConfiguration && 
-                    typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
-                    drawOnDefault = context.sandbox.queryConfiguration.queryDrawOnDefault; 
-                }
+            if(drawOnDefault) {
+                closeMenu();
+                publisher.drawBBox();
+            } else {
+                //TODO Publish that the menu is opening (if it is)
+                $modal.modal('toggle');
 
-                if(drawOnDefault) {
-                    closeMenu();
-                    publisher.drawBBox();
-                } else {
-                    //TODO Publish that the menu is opening (if it is)
-                    $queryDialog.dialog('toggle');
-
-                    publisher.removeBBox();
-                    exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
-                }
-            });
+                publisher.removeBBox();
+                exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
+            }
+        },
+        close: function(params) {
+            closeMenu();
         },
         bboxAdded: function(params) {
-            $queryDialog.dialog('show');
+            $modal.modal('show');
             exposed.populateCoordinates(params);   
         },
         populateCoordinates: function(params) {
@@ -191,7 +176,7 @@ define([
         },
         clear: function(){
             exposed.clearQueryForm();
-            $queryDialog.dialog('hide');
+            $modal.modal('hide');
         },
         handleMenuOpening: function(params){
             if(params.componentOpening === MENU_DESIGNATION){
@@ -203,7 +188,7 @@ define([
     };
 
     function closeMenu(){
-        $queryDialog.dialog('hide');
+        $modal.modal('hide');
         publisher.removeBBox();
     }
 
