@@ -14,7 +14,7 @@ define([
         },
         openSupport: function() {
             context.sandbox.emit('support.open');
-        },
+        }
     };
 
     return exposed;

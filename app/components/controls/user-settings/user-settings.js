@@ -15,14 +15,22 @@ define([
         $minLon,
         $maxLat,
         $maxLon,
-        $userSettingsDialog,
-        $queryToolDefaultToggle,
+        $modal,
+        $modalBody,
+        $closeButton;
+
+    var $queryToolDefaultToggle,
         $cursorLocationDefaultToggle;
     
     var exposed = {
         init:function(thisContext) {
             context = thisContext;
-            $userSettingsDialog = context.$("#userSettingsDialog");
+
+            $modal = context.$('#user-settings-modal');
+            $modalBody = context.$('#user-settings-modal .modal-body');
+            $closeButton = context.$('#user-settings-modal.modal button.close');
+
+            // $modalBody = context.$("#userSettingsDialog");
 
             //Activate bootstrap tooltip. 
             //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
@@ -40,12 +48,33 @@ define([
             else{
                 exposed.loadUserSettings();
                 menuDisabled = false;
-            }            
+            }
+
+            $modal.modal({
+                "backdrop": true,
+                "keyboard": true,
+                "show": false
+             }).on('hidden.bs.modal', function() {
+                publisher.closeUserSettings();
+             });
+
+             $closeButton.on('click', function(event) {
+                event.preventDefault();
+                publisher.closeUserSettings();
+            }); 
+
+        },
+        open: function() {
+            publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            $modal.modal('show');
+        },
+        close: function() {
+            $modal.modal('hide');
         },
         makeUserLabel: function() {
             //removed unwanted html and adds the required css files that give the look and location of the button.
             context.$('.caret').remove();
-            $userSettingsDialog.remove(); //to have a cleaner html.
+            $modalBody.remove(); //to have a cleaner html.
             context.$('#userSettings').addClass('disabled');
         },
         loadUserSettings: function() {
@@ -94,7 +123,7 @@ define([
                 "maxLon": context.sandbox.mapConfiguration.initialMaxLon,
                 "minLat": context.sandbox.mapConfiguration.initialMinLat
             });
-            $userSettingsDialog.append(html);
+            $modalBody.append(html);
 
             //After the html is populated, grab jquery objects
             $minLat = context.$('#user-settings-minLat');
@@ -114,11 +143,11 @@ define([
              */
             context.$('#userSettings').on('click', function(event) {
                 event.preventDefault();
-                $userSettingsDialog.dialog('toggle');
+                $modalBody.dialog('toggle');
             });
 
             //Publish when shown
-            $userSettingsDialog.on('shown.bs.dialog', function(){
+            $modalBody.on('shown.bs.dialog', function(){
                 publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
             });
 
@@ -128,17 +157,17 @@ define([
             context.$('.form-horizontal button[type="cancel"]').on('click', function(event) {
                 event.preventDefault();
 
-                $userSettingsDialog.dialog('hide');
+                $modalBody.dialog('hide');
                 resetDialog();
             });
 
             /**
              * user-settings close 'x' button listener.
              */
-            context.$('.dialog-header button[type="button"].close').on('click', function(event) {
-                //TODO publish on channel
-                exposed.closeMenu();
-            });
+            // context.$('.dialog-header button[type="button"].close').on('click', function(event) {
+            //     //TODO publish on channel
+            //     exposed.closeMenu();
+            // });
 
             /**
              * user-settings submit button listener.
@@ -184,7 +213,7 @@ define([
 
                 if(errorFree) {
                     removeCssError();
-                    $userSettingsDialog.dialog('hide');
+                    $modalBody.dialog('hide');
                     //save contents to memory
                     preferencesSaveStatus = context.sandbox.utils.preferences.set('john', {
                         "mapConfiguration": {
@@ -285,7 +314,7 @@ define([
             if(menuDisabled){
                 return;
             }
-            $userSettingsDialog.dialog('hide');
+            $modalBody.dialog('hide');
 
             resetDialog();
         },
@@ -295,6 +324,9 @@ define([
             }else{
                 exposed.closeMenu();
             }
+        },
+        clear: function() {
+            $modalBody.dialog('hide');
         }
     };
 
