@@ -143,7 +143,7 @@ define([
              */
             context.$('#userSettings').on('click', function(event) {
                 event.preventDefault();
-                $modalBody.dialog('toggle');
+                $modal.modal('toggle');
             });
 
             //Publish when shown
@@ -157,7 +157,7 @@ define([
             context.$('.form-horizontal button[type="cancel"]').on('click', function(event) {
                 event.preventDefault();
 
-                $modalBody.dialog('hide');
+                $modal.modal('hide');
                 resetDialog();
             });
 
@@ -172,7 +172,7 @@ define([
             /**
              * user-settings submit button listener.
              */
-            context.$('#userSettingsDialog button[type="save"]').on('click', function(event) {
+            context.$('.form-horizontal button[type="save"]').on('click', function(event) {
                 event.preventDefault();
 
                 var preferencesSaveStatus,
@@ -213,7 +213,7 @@ define([
 
                 if(errorFree) {
                     removeCssError();
-                    $modalBody.dialog('hide');
+                    $modal.modal('hide');
                     //save contents to memory
                     preferencesSaveStatus = context.sandbox.utils.preferences.set('john', {
                         "mapConfiguration": {
@@ -314,7 +314,7 @@ define([
             if(menuDisabled){
                 return;
             }
-            $modalBody.dialog('hide');
+            $modal.modal('hide');
 
             resetDialog();
         },
@@ -326,7 +326,7 @@ define([
             }
         },
         clear: function() {
-            $modalBody.dialog('hide');
+            $modal.modal('hide');
         }
     };
 
