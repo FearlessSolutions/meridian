@@ -57,6 +57,7 @@ exports.create = function(userName, sessionId, queryId){
         createdOn: moment().format('X'),
         expireOn: moment().add(7, 'days').format('X'),
         environment: process.env.NODE_ENV,
+        queryBbox: {},
         numRecords: 0,
         queryName: "",
         rawQuery: {},
@@ -86,6 +87,13 @@ var MetadataBuilder = function(seedMeta){
         },
         setDataSource: function(dataSource){
             meta.dataSource = dataSource;
+            return this;
+        },
+        setQueryBbox: function(boxObj){
+            meta.queryBbox.top = boxObj.top || boxObj.maxLat;
+            meta.queryBbox.bottom = boxObj.bottom || boxObj.minLat;
+            meta.queryBbox.left = boxObj.left || boxObj.minLon;
+            meta.queryBbox.right = boxObj.right || boxObj.maxLon;
             return this;
         },
         setNumRecords: function(numRecords){

@@ -101,7 +101,7 @@ define([
                 lat = params.lat,
                 lon = params.lon;
 
-            centerPoint = new OpenLayers.LonLat(lat, lon);
+            centerPoint = new OpenLayers.LonLat(lon, lat);
             params.map.setCenter(centerPoint.transform(params.map.projectionWGS84, params.map.projection), 8);
         }
     };

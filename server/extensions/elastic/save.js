@@ -26,7 +26,7 @@ exports.writeMetadata = function(userName, sessionId, queryId, metadata, callbac
 
 exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON, callback){
 
-    var routingStr = userName+""+sessionId;
+    var routingStr = userName;
     if (!_.isArray(geoJSON)){
         geoJSON = [geoJSON];
     }

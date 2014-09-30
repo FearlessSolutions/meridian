@@ -76,7 +76,7 @@ define([
                             type: 'feature',
                             geometry: {
                                 type: 'point',
-                                coordinates: [coordinates.lat, coordinates.lon]
+                                coordinates: [coordinates.lon, coordinates.lat]
                             },
                             properties: {}
                         };

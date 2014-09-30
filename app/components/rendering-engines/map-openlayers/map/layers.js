@@ -524,12 +524,24 @@ define([
                 });
             },
             featureselected: function(evt) {
-                var latLonString = evt.feature.geometry.clone().transform(params.map.projection, params.map.projectionWGS84).toShortString();
+                var projectedPoint,
+                    latLonString;
+
+                projectedPoint = evt.feature.geometry.clone().transform(params.map.projection, params.map.projectionWGS84);
+
+                var htmlTemplate =
+                    '<div class="locator info-win-dialog">'+
+                        '<p class="title">Geocoded Location</p>'+
+                        '<div class="content">'+
+                            '<div>Lat: '+projectedPoint.y+'</div>'+
+                            '<div>Lon: '+projectedPoint.x+'</div>'+
+                        '</div>'+
+                    '</div>';
 
                 mapBase.identifyFeature({
                     "map": params.map,
                     "feature": evt.feature,
-                    "content": latLonString
+                    "content": htmlTemplate
                 });
             },
             featureunselected: function(evt) {

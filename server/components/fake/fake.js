@@ -1,5 +1,5 @@
 var csv = require('ya-csv');
-var uuid = require('node-uuid');
+var generateUUID = require('node-uuid').v4;
 
 var db = {};
 var LAT_INDEX = 0;
@@ -48,7 +48,7 @@ function init(){
                 }
 
             }
-            obj.properties.featureId = uuid.v4();
+            obj.properties.featureId = generateUUID();
 
             // Coordinates are lon,lat per GeoJSON spec
             obj.geometry.coordinates = [parseFloat(data[LON_INDEX]), parseFloat(data[LAT_INDEX])];
@@ -81,7 +81,9 @@ exports.query = function(minLat, maxLat, minLon, maxLon, start, pageSize, thrott
                 recordNum += 1;
                 // World's most efficient cursor right here folks
                 if (recordNum > start){
-                    response.push(db[uuid]);
+                    var tempRecord = JSON.parse(JSON.stringify(db[uuid]));
+                    tempRecord.properties.featureId = generateUUID(); // Per Query, ensure a unique featureIDs per record returned from the mock data service (overwrite featureID assigned to fake local DB)
+                    response.push(tempRecord);
                 }
 
             }

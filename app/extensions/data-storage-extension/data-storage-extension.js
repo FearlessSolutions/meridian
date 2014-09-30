@@ -31,6 +31,7 @@ define([
              * @property {Function} addData
              * @memberof Sandbox.dataStorage 
              */
+        initialize: function(app) {
             var dataStorage = {
 				"datasets": {
                 },
@@ -47,18 +48,16 @@ define([
                  * @param {Object} params 
                  * @memberof Sandbox.dataStorage
                  */
-
-                 
                 "addData": function(params) {
                     dataStorage.datasets[params.datasetId].add(params.data);
                     if(dataStorage.datasets) {
                         dataStorage.updateColumns({"data": params.data});
                     }
                 },
-                "getDatasetWhere": function(params) {
+                getDatasetWhere: function(params) {
                     return (dataStorage.datasets[params.datasetId]) ? dataStorage.datasets[params.datasetId].where(params.criteria) : [];
                 },
-                "updateColumns": function(params) {
+                updateColumns: function(params) {
                     $.each(params.data, function(k, v) {
                         // Skipping id field because it is for backbone modeling
                         if(($.type(v) === 'string' || $.type(v) === 'number' || $.type(v) === 'boolean') && k !== 'id' && k !== 'type') {
@@ -68,23 +67,34 @@ define([
                         }
                     });
                 },
-                "getColumns": function() {
+                getColumns: function() {
                     return dataStorage.columns;
                 },
-                "clear": function() {
+                clear: function() {
                     dataStorage.datasets = {};
                 },
-                "getFeatureById": function(params, callback) {
+                getFeatureById: function(params, callback) {
                     var featureId = params.featureId;
                     var feature = {};
                     var ajax = $.ajax({
                         type: "GET",
                         url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + featureId
-                    }).done(function(data){
+                    }).done(function(data) {
                         callback(data);
                     });
 
                     return ajax;
+                },
+                getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
+                    $.ajax({
+                        type: "GET",
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/query/' + queryId + '/session/' + sessionId +
+                            '?start=' + start + '&size=' + size
+                    }).done(function(data) {
+                        callback(null, data);
+                    }).error(function(error) {
+                        callback(error, null);
+                    });
                 }
 			};
 
