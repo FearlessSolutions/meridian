@@ -11,30 +11,32 @@ define([
          * This extension exposes {@link Sandbox.dataStorage} to the {@link Sandbox} namespace.
          * @function
          * @instance
-         * @param  {Object} app Instance of the Meridian application.
+         * @param {Object} app Instance of the Meridian application.
          */
         "initialize": function(app) {
             /**
              * @namespace Sandbox.dataStorage
              * @memberof Sandbox 
              */
-            /**
-             * @var
-             * @instance
-             * @property {Object} datasets - 
-             * @property {Object} columns -
-             * @property {String} columns.featureId - Property value: Feature ID
-             * @property {String} columns.layerId - Property value: Layer ID
-             * @property {String} columns.lat - Property value: Lat
-             * @property {String} columns.lon - Property value: Lon
-             * @property {String} columns.dataService - Property value: Data Service  
-             * @property {Function} addData
-             * @memberof Sandbox.dataStorage 
-             */
-        initialize: function(app) {
             var dataStorage = {
+                /**
+                 * Place holder object for datasets.
+                 * @var
+                 * @instance
+                 * @memberof Sandbox.dataStorage
+                 */
 				"datasets": {
                 },
+                /**
+                 * @var
+                 * @instance
+                 * @property {String} columns.featureId - Property value: Feature ID
+                 * @property {String} columns.layerId - Property value: Layer ID
+                 * @property {String} columns.lat - Property value: Lat
+                 * @property {String} columns.lon - Property value: Lon
+                 * @property {String} columns.dataService - Property value: Data Service  
+                 * @memberof Sandbox.dataStorage
+                 */
                 "columns": {
                     "featureId":"Feature ID",
                     "layerId":"Layer ID",
@@ -43,9 +45,13 @@ define([
                     "dataService": "Data Service"
                 },
                 /**
+                 * Add data to datasets member and update columns using
+                 * {@link Sandbox.dataStorage#updateColumns updateColumns} function.
                  * @function
                  * @instance
-                 * @param {Object} params 
+                 * @param {Object} params - Contains the data to be added.
+                 * @param {Object} params.data - Property added to the 
+                 * {@link Sandbox.dataStorage#datasets datasets} member found in {@link Sandbox.dataStorage}.
                  * @memberof Sandbox.dataStorage
                  */
                 "addData": function(params) {
@@ -54,9 +60,26 @@ define([
                         dataStorage.updateColumns({"data": params.data});
                     }
                 },
+                /**
+                 * getDatasetWhere description needed.
+                 * @function
+                 * @instance
+                 * @param {Object} params - The dataset.
+                 * @param {String} params.datasetId - Id of the dataset.
+                 * @param {String} params.criteria - Criteria used to get the desired dataset.
+                 * @memberof Sandbox.dataStorage
+                 */
                 getDatasetWhere: function(params) {
                     return (dataStorage.datasets[params.datasetId]) ? dataStorage.datasets[params.datasetId].where(params.criteria) : [];
                 },
+                /**
+                 * Update all datastorage columns.
+                 * @function
+                 * @instance
+                 * @param {Object} params - 
+                 * @param {Object} params.data - Properties used to update columns.
+                 * @memberof Sandbox.dataStorage
+                 */
                 updateColumns: function(params) {
                     $.each(params.data, function(k, v) {
                         // Skipping id field because it is for backbone modeling
@@ -67,6 +90,12 @@ define([
                         }
                     });
                 },
+                /**
+                 * Returns column member found in {@link Sandbox.dataStorage}.
+                 * @function
+                 * @instance
+                 * @memberof Sandbox.dataStorage
+                 */
                 getColumns: function() {
                     return dataStorage.columns;
                 },
