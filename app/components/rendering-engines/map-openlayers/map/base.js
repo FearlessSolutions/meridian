@@ -143,7 +143,7 @@ define([
 
             context.sandbox.stateManager.removeAllIdentifiedFeatures();
         },
-        identifyFeature: function(params) { // TODO: what is this being used by?
+        identifyFeature: function(params) { // TODO: what is this being used by? A: Nothing right now. There isn't even a subscriber.
             var popup,
                 feature = params.feature,
                 anchor;
