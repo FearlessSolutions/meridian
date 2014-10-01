@@ -90,11 +90,8 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .start({ "components": "body" });
 
 
-    $('#left-side-menu').on('mouseover', function() {
-        $(this).css('left','0px');
-    });
-    $('#left-side-menu').on('mouseout', function() {
-        $(this).css('left','-50px');
+    $('#left-side-menu').on('click', function() {
+        $(this).toggleClass('active');
     });
 
 });

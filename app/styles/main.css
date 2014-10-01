@@ -177,6 +177,9 @@ a {
     transition: left .5s;
 }
 
+#left-side-menu.active {
+    left: 0px;
+}
 #left-side-menu .btn {
     border-color: #428bca;
 }
