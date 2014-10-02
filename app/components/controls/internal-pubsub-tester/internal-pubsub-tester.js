@@ -1,11 +1,12 @@
 define([
     './internal-pubsub-tester-config',
+    './internal-pubsub-tester-publisher',
     'bootstrap',
     'bootstrapDialog',
     'handlebars',
     'jqueryUI',
     'select2'
-], function (internalPubSubTesterConfig) {
+], function (internalPubSubTesterConfig, publisher) {
     var context,
         currentSubscriptions = [];
 
@@ -14,18 +15,9 @@ define([
         init:function(thisContext) {
             context = thisContext;
 
-            //Activate bootstrap tooltip. 
-            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
-            context.$('#internalPubsubTesterToggleButton').tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
-                }
-            });
-
-            context.$('#internalPubsubTesterToggleButton').on('click', function(event) {
-                event.preventDefault();
-                context.$('#internalPubsubTesterDialog').dialog('toggle');
+            context.$('#internalPubsubTesterDialog').find('.close').on('click', function(e) {
+                e.preventDefault();
+                publisher.hidePubSubTester();
             });
 
             // listen to the button click for publishig message
@@ -81,6 +73,12 @@ define([
             context.$("#internal-pub-channel").select2({
                 placeholder: "Select a Channel"
             });
+        },
+        show: function() {
+            context.$('#internalPubsubTesterDialog').dialog('show');
+        },
+        hide: function() {
+            context.$('#internalPubsubTesterDialog').dialog('hide');
         },
         publishMessage: function() {
             var channelValue = context.$('#internal-pub-channel').val(),

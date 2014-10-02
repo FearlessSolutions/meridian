@@ -9,17 +9,17 @@ div[data-aura-component='displays/legend'] #legendDialog .dialog-dialog{
     position: absolute;
     z-index: 2000;
     margin: 0;
-    opacity: 0.80;
 }
 div[data-aura-component='displays/legend'] #legendDialog .dialog-body {
     padding: 10px 10px 10px 10px;
+    opacity: 0.80;
 }
 div[data-aura-component='displays/legend'] #legendDialog .dialog-header {
-    background-color: #396A92;
+    background-color: #357ebd;
     color: white;
     cursor: move;
 }
-div[data-aura-component='displays/legend'] #legendDialog .dialog-body p{
+div[data-aura-component='displays/legend'] #legendDialog .dialog-body p {
     margin-top: 5px;
 }
 div[data-aura-component='displays/legend'] #legendDialog .empty-body {
