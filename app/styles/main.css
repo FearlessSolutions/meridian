@@ -145,7 +145,7 @@ a {
 }
 #header-right-container div:not(.btn-group) {
     display: inline;
-    margin-left: 5px;
+    /*margin-left: 5px;*/
     float: left;
 }
 #header-right-container div:first-child {
