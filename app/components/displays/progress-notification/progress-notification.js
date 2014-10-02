@@ -5,6 +5,7 @@ define([
         spinner,
         target,
         opts,
+        $progressSpinner;
         progressQueueCount = 0;
 
     var exposed = {
@@ -28,27 +29,29 @@ define([
                 zIndex: 2e9, // The z-index (defaults to 2000000000)
                 // top: '16px', // Top position relative to parent
                 // left: '-40px' // Left position relative to parent
-                top: '50%', // Top position relative to parent
-                left: '50%' // Left position relative to parent
+                top: '', // Top position relative to parent
+                left: '' // Left position relative to parent
             };
-            target = document.getElementsByClassName('spinner')[0];
+            $progressSpinner = context.$('.spinner-container');
+            target = document.getElementsByClassName('spinner-container')[0];
             spinner = new Spinner(opts).spin(target);
         },
         addToQueue: function() {
+            console.debug($progressSpinner.html());
             progressQueueCount += 1;
             if(progressQueueCount) {
-                spinner = new Spinner(opts).spin(target);
+                $progressSpinner.addClass('active');
             }
         },
         removeFromQueue: function() {
             progressQueueCount -= 1;
             if(!progressQueueCount) {
-                spinner.stop();
+                $progressSpinner.removeClass('active');
             }
         },
         clearQueue: function() {
             progressQueueCount = 0;
-            spinner.stop();
+            $progressSpinner.removeClass('active');
         }
     };
 

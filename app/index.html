@@ -34,7 +34,6 @@
             <div data-aura-component="tools/locator"></div> 
         </div>
         <div id="header-right-container">
-            <div data-aura-component="displays/progress-notification"></div>
             <div data-aura-component="controls/visual-mode-toggle"></div>
         </div>
         <div data-aura-component="controls/zoom"></div>
@@ -61,12 +60,20 @@
         <div data-aura-component="displays/legend"></div>
         <div data-aura-component="controls/internal-pubsub-tester"></div>
         <div id="footer-container">
-            <div data-aura-component="displays/progress-notification"></div>
-            <span class="footer-left">
+            <span class="footer-left col-md-4">
                 <div data-aura-component="displays/mouse-position"></div>
             </span>
-            <span class="footer-center"><span class="username">John Smith (JS1234)</span></span>
-            <span class="footer-right">
+            <span class="footer-center col-md-4">
+                <span class="footer-center-left col-md-4">
+                    <div data-aura-component="displays/progress-notification"></div>
+                </span>
+                <span class="footer-center-center col-md-4">
+                    <div class="username">John Smith (JS1234)</div>
+                </span>
+                <span class="footer-center-right col-md-4">
+                </span>
+            </span>
+            <span class="footer-right col-md-4">
                 <div data-aura-component="displays/event-counter"></div>
             </span>
         </div>

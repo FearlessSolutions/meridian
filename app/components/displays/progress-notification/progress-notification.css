@@ -1,5 +1,14 @@
-div[data-aura-component='displays/progress-notification'] .spinner{
+div[data-aura-component='displays/progress-notification'] .spinner-container {
+    display: none;
+}
+div[data-aura-component='displays/progress-notification'] .spinner-container.active {
+    display: inherit;
+}
+div[data-aura-component='displays/progress-notification'] .spinner {
     pointer-events: none;
-/*    margin-right: 28px;
-    margin-top: 16px;*/
+    position: absolute;
+    width: 0px;
+    z-index: 9999;
+    top: 6px;
+    right: 0px;
 }
