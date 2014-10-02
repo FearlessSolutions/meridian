@@ -13,8 +13,8 @@ define([
             context = thisContext;
             totalCount = 0;
             displayedCount = 0;
-            $displayedBadge = context.$('#stats-displayed-features.badge');
-            $totalBadge = context.$('#stats-total-features.badge');
+            $displayedBadge = context.$('#stats-displayed-features');
+            $totalBadge = context.$('#stats-total-features');
         },
         update: function() {
             totalCount = 0;
