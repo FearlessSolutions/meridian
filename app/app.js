@@ -18,8 +18,7 @@ require.config({
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
         jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min', // Custom build, check file's header to see what it includes
-        momentJS: 'libs/momentjs-2.8.3/moment.min',
-        spin: 'libs/spin/spin'
+        momentJS: 'libs/momentjs-2.8.3/moment.min'
     },
     shim:{
         aura: {
@@ -58,7 +57,8 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
 
     // Listen to CSSWatch trigger (fired from datagrid/main.js)
     $(document).on('css-change', '#datagridContainer', function(event, change){
-        $('#mapContainer').css('height', 'calc(100% - 32px - ' + change.height + ')');
+        // $('#mapContainer').css('height', 'calc(100% - 32px - ' + change.height + ')');
+        $('#mapContainer').css('height', 'calc(100% - ' + change.height + ')');
         $('div[data-aura-component="rendering-engines/map-openlayers"], #map').css('height', '100%');
         window.dispatchEvent(new Event('resize')); // Trigger OpenLayers to redraw the map
     });

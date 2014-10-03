@@ -51,7 +51,8 @@ body.embed .banner {
     display: none;
 }
 #mapContainer {
-    height: calc(100% - 32px);
+    /*height: calc(100% - 32px);*/
+    height: 100%;
     width: 100%;
     position: relative;
     overflow: hidden;
@@ -232,13 +233,9 @@ a {
 .footer-center {
     text-align: center;
 }
-.footer-center-left {
-    text-align: right;
-}
 .footer-right {
     text-align: right;
 }
-
 
 #header-right-container .btn:last-of-type {
     border-top-right-radius: 4px;
