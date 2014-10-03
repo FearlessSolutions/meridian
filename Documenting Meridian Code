@@ -1,3 +1,17 @@
+Changes needed around the application: 
+Dataservices having an empty function. Should be documented to ensure users understand its not implemented but if CAN be used once modified? 
+Dataservices templates don't behave the same. Properties in objects, etc. (classification not being set to "" when not found = inconsistency?)
+Dataservices: how thumbnail is being set. 
+
+dataStorage extension utilizing jquery and backbone, instead of using it through the utils namespace. Breaks meridian rules.
+
+
+
+
+
+
+
+
 JSDocs: How to document your Meridian code
 
 For publishers:
