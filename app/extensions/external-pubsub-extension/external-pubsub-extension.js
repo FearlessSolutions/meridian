@@ -26,10 +26,10 @@ define([
             }
 
             /**
-             * Function description needed.
+             * Pushes the callback function to an internal array in the extension.
              * @function onPostMessage
              * @instance
-             * @param {Function} callback - Description needed.
+             * @param {Function} callback - Function added to the internal array of the extension.
              * @memberof Sandbox.external
              */
             app.sandbox.external.onPostMessage = function(callback) {
@@ -52,11 +52,12 @@ define([
     };
 
     /**
-     * Function description needed.
-     * @function receiveMessage
+     * Iterates thorugh the internal callback array and executes each function
+     * passing event into the function.
+     * @function
      * @instance
-     * @param event - Description needed.
-     * @memberof external-pubsub-extension
+     * @param event - Parametere passed to every function in the internal array.
+     * @memberof module:external-pubsub-extension
      */
     function receiveMessage(event) {
         callbacks.forEach(function(callback) {
