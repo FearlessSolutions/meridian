@@ -82,7 +82,8 @@ define([
                         return html;
                     },
                     /**
-                     * Info needed. 
+                     * Not implemented. Developers can modify function to execute any post rendering
+                     * action desired after the info window is loaded.
                      * @function
                      * @instance
                      * @param  {Object} feature - Info needed.
