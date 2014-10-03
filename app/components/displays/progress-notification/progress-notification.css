@@ -9,6 +9,6 @@ div[data-aura-component='displays/progress-notification'] .spinner {
     position: absolute;
     width: 0px;
     z-index: 9999;
-    top: 6px;
-    right: 0px;
+    top: 9px;
+    /*right: 0px;*/
 }
