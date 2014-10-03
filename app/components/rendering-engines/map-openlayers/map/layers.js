@@ -401,7 +401,6 @@ define([
                 record,
                 currentDataService,
                 popup,
-                anchor,
                 selectController;
 
             layerVisibility = context.sandbox.stateManager.getLayerStateById({"layerId": params.layerId}).visible;
@@ -438,9 +437,8 @@ define([
                                 headerHTML = '<span>' + clusterFeatureIndex + ' of ' + clusterFeatureCount + '</span>',
                                 formattedAttributes = {},
                                 bounds,
-                                popup;
-                            anchor= {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, 0)};//-(feature.attributes.height/2))};
-
+                                popup,
+                                anchor= {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, 0)};
 
                             context.sandbox.utils.each(fullFeature.properties, 
                                 function(key, value) {
@@ -457,7 +455,7 @@ define([
                                     formattedAttributes,
                                     fullFeature
                                 ),
-                                anchor,//null,
+                                anchor,
                                 true,
                                 function() {
                                     mapBase.clearMapSelection({
@@ -502,7 +500,7 @@ define([
                 } else {
                     // If not in a cluster, fire the selector event
                     selectController = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-                    selectController.select(feature, "try");
+                    selectController.select(feature);
                 }
             }
         }
@@ -586,15 +584,9 @@ define([
     // TODO: add default listeners for default looking default popups for when in default clustering default mode on default layer in the default map
     function addDefaultListeners(params) {
         params.layer.events.on({
-            beforefeatureselected: function(evt, dataIn) {
-                mapBase.clearMapSelection({
-                    "map": params.map
-                });
-                mapBase.clearMapPopups({
-                    "map": params.map
-                });
+            beforefeatureselected: function(evt) {
             },
-            featureselected: function(evt, dataIn) {
+            featureselected: function(evt) {
                 var popup,
                     infoWinTemplateRef,
                     feature = evt.feature,
@@ -673,9 +665,8 @@ define([
                                 messageText: 'Auto zoom is at maximum zoom level. Please use manual zoom for more detail.'
                             });
                         }
+                        params.map.setCenter(bounds.getCenterLonLat(), zoom);
                     }
-
-//                    params.map.setCenter(bounds.getCenterLonLat(), zoom);
                 }
             },
             featureunselected: function(evt) {
