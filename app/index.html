@@ -15,7 +15,6 @@
     <script data-main="app" src="./bower_components/requirejs/require.js"></script>
   </head>
   <body>
-      <div class="banner">(U//FOUO)</div>
       <div id="mapContainer">
         <div data-aura-component="displays/splash-screen"></div>
         <div data-aura-component="displays/notification-modal"></div>
@@ -64,8 +63,10 @@
                 <div data-aura-component="displays/mouse-position"></div>
             </span>
             <span class="footer-center col-xs-12 col-sm-4 col-md-4">
-                <div data-aura-component="displays/progress-notification"></div>
-                <div class="username">John Smith (JS1234)</div>
+                <div class="footer-center-container">
+                    <div data-aura-component="displays/progress-notification"></div>
+                    <div class="username">John Smith (JS1234)</div>
+                </div>
             </span>
             <span class="footer-right col-sm-4 col-md-4 hidden-xs">
                 <div data-aura-component="displays/event-counter"></div>
@@ -73,6 +74,5 @@
         </div>
       </div>
       <div data-aura-component="displays/datagrid"></div>
-      <div class="banner">(U//FOUO)</div>
   </body>
 </html>

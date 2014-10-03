@@ -1,14 +1,38 @@
-div[data-aura-component='displays/progress-notification'] .spinner-container {
+div[data-aura-component='displays/progress-notification'] {
+	display: inline;
+}
+
+div[data-aura-component='displays/progress-notification'] .spinner.active{
+    display: inline;
+}
+
+div[data-aura-component='displays/progress-notification'] .spinner {
     display: none;
 }
-div[data-aura-component='displays/progress-notification'] .spinner-container.active {
-    display: inherit;
+
+/* Remove these to get rid of the spinner */
+div[data-aura-component='displays/progress-notification'] .spinner-icon {
+	display: inline-flex;
+
+	width: 14px;
+	height: 14px;
+
+	border-top: solid 2px rgba(53, 126, 189, 0.3);
+	border-right: solid 2px rgba(53, 126, 189, 0.3);
+	border-bottom: solid 2px rgba(53, 126, 189, 1);
+	border-left: solid 2px rgba(53, 126, 189, 1);
+
+	border-radius: 50%;
+
+	-webkit-animation: spinner 1.4s infinite linear;
+			animation: spinner 1.4s infinite linear;
 }
-div[data-aura-component='displays/progress-notification'] .spinner {
-    pointer-events: none;
-    position: absolute;
-    width: 0px;
-    z-index: 9999;
-    top: 9px;
-    /*right: 0px;*/
+
+@-webkit-keyframes spinner {
+  0%   { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+@keyframes spinner {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
