@@ -41,8 +41,14 @@ define([
                     }
                 },
                 "keys": {
-                    "percent": "%",
-                    "color": "Color"
+                    "percent": {
+                        "displayName": "%",
+                        "weight": 70
+                    },
+                    "color": {
+                        "displayName": "Color",
+                        "weight": 70
+                    }
                 },
                 "processMapUrl": processMapUrl
             };

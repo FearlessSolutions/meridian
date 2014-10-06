@@ -178,7 +178,8 @@ define([
     function processDataPage(data, params) {
         var layerId,
             newData = [],
-            keys = context.sandbox.dataServices[DATASOURCE_NAME].keys;
+            keys = context.sandbox.dataServices[DATASOURCE_NAME].keys,
+            newKeys = {};
 
         layerId = params.queryId || data[0].properties.queryId;
 
@@ -202,9 +203,10 @@ define([
             if(keys){
                 //For each of the keys required, if that property exists in the feature, hoist it
                 //and give it the specified header name
-                context.sandbox.utils.each(keys, function(key, headerForKey){
+                context.sandbox.utils.each(keys, function(key, keyMetadata){
                     if(dataFeature.properties[key] !== undefined){
-                        newValue[headerForKey] = dataFeature.properties[key]; //Notice that v1 is used as the key
+                        newValue[keyMetadata.displayName] = dataFeature.properties[key];
+                        newKeys[keyMetadata.displayName] = keyMetadata.weight;
                     }
                 });
             }
@@ -233,6 +235,11 @@ define([
             });
 
             newData.push(newValue);
+        });
+
+        //Add new keys for the datagrid
+        context.sandbox.dataStorage.addColumnKeys({
+            "keys": newKeys
         });
 
         // Clear data out from memory
