@@ -40,11 +40,11 @@ define([
                     _.each(collection.models, function(model) {
 
                         var tempObject = {};
-                        storedColumns.forEach(function(entry, index){
-                            if(model.attributes.hasOwnProperty(entry.displayName)) {
-                                tempObject[entry.displayName] = model.attributes[entry.property];
+                        _.each(storedColumns, function(displayName, property){
+                            if(model.attributes.hasOwnProperty(property)) {
+                                tempObject[displayName] = model.attributes[property];
                             } else {
-                                tempObject[entry.displayName] = '';
+                                tempObject[displayName] = '';
                             }
                         });
 

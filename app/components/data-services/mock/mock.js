@@ -206,8 +206,8 @@ define([
                 context.sandbox.utils.each(keys, function(key, keyMetadata){
                     if(dataFeature.properties[key] !== undefined){
                         newValue[keyMetadata.displayName] = dataFeature.properties[key];
-                        if(!newKeys[key]){
-                            newKeys[key] = keyMetadata;
+                        if(!newKeys[keyMetadata.displayName]){
+                            newKeys[keyMetadata.displayName] = keyMetadata;
                         }
                     }
                 });

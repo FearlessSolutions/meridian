@@ -48,7 +48,11 @@ define([
                     });
                 },
                 "getColumns": function() {
-                    return sortedPropertiesArray;
+                    var propertyToDisplayNameMap = {};
+                    sortedPropertiesArray.forEach(function(entry, index){
+                        propertyToDisplayNameMap[entry.property] = entry.displayName;
+                    });
+                    return propertyToDisplayNameMap;
                 },
                 "getColumnsArray": function(){
                     var columnsArray = [];

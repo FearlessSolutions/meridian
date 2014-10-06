@@ -48,7 +48,7 @@ define([
                     "color": {
                         "displayName": "Color",
                         "weight": 70
-                    }
+                    } //TODO mapurl entry
                 },
                 "processMapUrl": processMapUrl
             };
