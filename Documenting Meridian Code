@@ -5,7 +5,7 @@ Dataservices: how thumbnail is being set.
 
 dataStorage extension utilizing jquery and backbone, instead of using it through the utils namespace. Breaks meridian rules.
 
-
+refacto location of queryCoordinates. In the present location, it can be accesed from the namespace and the extension. Is that the desired behaviour?
 
 
 

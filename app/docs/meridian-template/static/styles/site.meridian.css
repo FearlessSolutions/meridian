@@ -5800,8 +5800,8 @@ a.thumbnail:hover {
   background-color: #dddddd;
 }
 .navbar .dropdown-menu a {
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 10px;
+  padding-right: 25px;
   /*font-weight: 500;
   font-size: 115%;*/
 }
