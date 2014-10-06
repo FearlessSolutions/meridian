@@ -1,8 +1,21 @@
 define([
 	'./locator-configuration'
 ], function(locatorConfiguration){
-
+    /**
+     * @namespace Sandbox.locator.formatData
+     * @memberof Sandbox.locator
+     */
+    /**
+     * @exports locator-formatData-extension
+     */
     var exposed = {
+        /**
+         * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
+         * This extension exposes {@link Sandbox.locator.formatData} to the {@link Sandbox.locator} namespace.
+         * @function
+         * @instance
+         * @param {Object} app Instance of the Meridian application.
+         */
         initialize: function(app) {
 
             if (!app.sandbox.locator) {
@@ -14,12 +27,24 @@ define([
             }
 
             /**
-             * Formats data and separates it by names and the data needed to use the typeahead
-             * implementation found in component/tool/locator. (locator.js)
-             * @namespace Sandbox.locator.formatData
-             * @type {Function}
-             * @return {Object}  JSON Object containing an array called 'name' and a 'data' object.
-             * array is used to populate the dropdown from the typeahead. 
+             * Changes data into desired format. Modify this function or provide your own so it works
+             * correctly with the {@link Sandbox.locator.query} implementation, which can also be modified.
+             * This implementation separates the param provided by names and the data needed to use the typeahead
+             * library implemented in <link to component>.
+             * @function formatData
+             * @instance
+             * @param param - Same parameter passed into the success callback of an ajax call. 
+             * @return {Object} Contains an array property called 'name' and an object property
+             * called 'data'. 'Name' is used to populate the dropdown from the typeahead.
+             * @memberof Sandbox.locator.formatData 
+             * @example context.sandbox.locator.query(query, function(data){
+             *   var formattedData = context.sandbox.locator.formatData(data);
+             * }
+             * //formattedData:
+             * {
+             *   "names": names,
+             *   "data": data
+             * };
              */
             app.sandbox.locator.formatData = function(param) {
                 var names = [],

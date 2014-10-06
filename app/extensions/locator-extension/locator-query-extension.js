@@ -1,7 +1,23 @@
 define([
 	'./locator-configuration'
 ], function(locatorConfiguration){
-
+    /**
+     * @namespace Sandbox.locator.query
+     * @memberof Sandbox.locator
+     */
+    /**
+     * @namespace Sandbox.locator.queryCoordinates
+     * @memberof Sandbox.locator
+     */
+    /**
+     * Array of Objects. Each object is a different coordinate system.
+     * @var COORDINATE_SYSYEMS 
+     * @instance
+     * @property {String} Name      - Name of the coordinate system.
+     * @property {Function} convert -  Returns converted coordinates
+     * @property {String} regex     - Expression used to match the input with the desired coordinate system.
+     * @memberof Sandbox.locator.query
+     */
     var COORDINATE_SYSYEMS = [
         {
             "Name": "Decimal Degrees(DD)",
@@ -72,8 +88,18 @@ define([
             "regex": /(^-?)\d+(\.\d+)?[NSEW],[\s-]*-?\d+(\.\d+)?[NSEW]\s*$/
         }
     ];
-
+    /**
+     * @exports locator-query-extension
+     */
     var exposed = {
+         /**
+         * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
+         * This extension exposes {@link Sandbox.locator.query} and
+         * {@link Sandbox.locator.queryCoordinates} to the {@link Sandbox.locator} namespace.
+         * @function
+         * @instance
+         * @param {Object} app Instance of the Meridian application.
+         */
         "initialize": function(app) {
 
             if (!app.sandbox.locator) {
@@ -86,7 +112,19 @@ define([
 
             app.sandbox.locator.queryCoordinates = queryCoordinates;
 
-            
+            /**
+             * Modify this function or provide your own so it works
+             * correctly with the {@link Sandbox.locator.formatData} implementation, which can also be modified.
+             * This implementation sets the data object of the ajax call to work specifically with the default
+             * URL property found in {@link Sandbox.locator#locatorConfiguration locatorConfiguration}.
+             * @function query
+             * @instance
+             * @param  {Object} param - Name of the location 
+             * @param  {Function} callback - Called after a success callback function of an ajax call.
+             * @memberof Sandbox.locator.query
+             * @example context.sandbox.locator.query(query, function(data){
+             * }
+             */
             app.sandbox.locator.query = function(param, callback) {
 
                 var data = {
@@ -119,6 +157,14 @@ define([
 
     return exposed;
 
+    /**
+     * @function
+     * @instance
+     * @param {String} input    
+     * @param {Function} callback - Called when input matches a coordinate system regex.
+     * Null when none found.
+     * @memberof Sandbox.locator.queryCoordinates
+     */
     function queryCoordinates(input, callback){
         var coordinates = null;
         COORDINATE_SYSYEMS.forEach(function(coordinateSystem){
