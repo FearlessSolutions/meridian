@@ -82,9 +82,7 @@ define([
                 });
 
                 context.$('#timeline-container').append(snapshotHTML);
-                $timeline.show();
-                $timeline.scrollLeft(5000);
-                $timeline.fadeIn();
+                exposed.showTimeline();
 
                 snapshotMenu.createMenu({'layerId': layerId});
 
@@ -125,13 +123,17 @@ define([
         },
         hideTimeline: function(params) {
             $timeline.hide();
+            publisher.closeTimeline();
         },
         showTimeline: function(params) {
-			$timeline.show();	
+			$timeline.show();
+            $timeline.scrollLeft(5000);
+            publisher.openTimeline();
 		},
 		clear: function() {
 			context.$('#timeline-container').html('');
             $timeline.hide();
+            publisher.closeTimeline();
 		},
         updateCount: function(params) {
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
