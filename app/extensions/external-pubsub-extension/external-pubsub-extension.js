@@ -13,7 +13,7 @@ define([
         /**
          * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
          * This extension exposes {@link Sandbox.external} to the {@link Sandbox} namespace.
-         * The function adds an even listener on window with "message" as the event. 
+         * It also adds an even listener on window with "message" as the event. 
          * @function
          * @instance
          * @param {Object} app Instance of the Meridian application.
@@ -56,7 +56,7 @@ define([
      * passing event into the function.
      * @function
      * @instance
-     * @param event - Parametere passed to every function in the internal array.
+     * @param event - Passed to every function in the internal array.
      * @memberof module:external-pubsub-extension
      */
     function receiveMessage(event) {
