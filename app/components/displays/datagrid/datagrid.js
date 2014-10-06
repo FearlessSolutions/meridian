@@ -30,34 +30,29 @@ define([
         "open": function() {
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 var compiledData = [],
-                    storedColumns,
+                    storedColumns = context.sandbox.dataStorage.getColumns();
                     datasets = context.sandbox.dataStorage.datasets;
 
                 $datagridContainer.removeClass('hidden');
                 $datagridContainer.height(328);
 
-
-                storedColumns = context.sandbox.dataStorage.getColumns();
-                 _.each(datasets, function(collection) {
+                _.each(datasets, function(collection) {
                     _.each(collection.models, function(model) {
 
                         var tempObject = {};
-                        $.each(storedColumns, function(k, v){
-                            if(model.attributes.hasOwnProperty(k)) {
-                                tempObject[v] = model.attributes[k];
+                        storedColumns.forEach(function(entry, index){
+                            if(model.attributes.hasOwnProperty(entry.displayName)) {
+                                tempObject[entry.displayName] = model.attributes[entry.property];
                             } else {
-                                tempObject[v] = '';
+                                tempObject[entry.displayName] = '';
                             }
                         });
-                        compiledData.push(tempObject);
 
+                        compiledData.push(tempObject);
                     });
                 });
 
-                var columnsArray = [];
-                context.sandbox.utils.each(storedColumns, function(k, v) {
-                    columnsArray.push(v);
-                });
+                var columnsArray = context.sandbox.dataStorage.getColumnsArray();
 
                 if(!myTable) {
                     myTable = $datagridContainer.Datatable({
@@ -114,7 +109,7 @@ define([
             datagridVisible = false;
         },
         "clear": function() {
-            if(myTable) { //In both untill refactor
+            if(myTable) { //In both until refactor
                 myTable.removeAllData();
             }
             exposed.close();
@@ -137,6 +132,8 @@ define([
             if(datagridVisible && myTable) {
                 datasets = context.sandbox.dataStorage.datasets;
 
+
+                //TODO
                 storedColumns = context.sandbox.dataStorage.getColumns();
                  _.each(datasets, function(collection) {
                     _.each(collection.models, function(model) {

@@ -33,26 +33,6 @@ define([
                 },
                 addData: function(params) {
                     dataStorage.datasets[params.datasetId].add(params.data);
-//                    if(dataStorage.datasets) {
-//                        dataStorage.updateColumns({"data": params.data});
-//                    }
-                },
-                /**
-                 * Add columns from new data into dataStorage
-                 * If a column already exists, use the new weight if it is higher
-                 * TODO what happens if multiple datasources have different displayNames for the same property?
-                 * @param params
-                 *      params.keys - The new keys to add to dataStorage
-                 */
-                "addColumnKeys": function(params){
-                    $.each(params.keys, function(newKeyName, newKeyMetadata){
-                        var currentKeyMetadata = dataStorage.columns[newKeyName];
-                        if(!currentKeyMetadata){
-                            dataStorage.columns[newKeyName] = newKeyMetadata;
-                        } else if(currentKeyMetadata.weight < newKeyMetadata.weight){
-                            dataStorage.columns[newKeyName].weight = newKeyMetadata.weight;
-                        }
-                    });
                 },
                 getDatasetWhere: function(params) {
                     return (dataStorage.datasets[params.datasetId]) ? dataStorage.datasets[params.datasetId].where(params.criteria) : [];
@@ -67,8 +47,16 @@ define([
                         }
                     });
                 },
-                getColumns: function() {
-                    return dataStorage.columns;
+                "getColumns": function() {
+                    return sortedPropertiesArray;
+                },
+                "getColumnsArray": function(){
+                    var columnsArray = [];
+                    sortedPropertiesArray.forEach(function(entry, index){
+                        columnsArray.push(entry.displayName);
+                    });
+
+                    return columnsArray;
                 },
                 clear: function() {
                     dataStorage.datasets = {};
@@ -96,26 +84,38 @@ define([
                         callback(error, null);
                     });
                 },
-                "insertKey": function(params){
-                    var property = params.property,
-                        newMetadata = params.metadata,
-                        currentMetadata;
+                "insertKeys": function(params){
+                    $.each(params.keys, function(property, newMetadata){
+                        var propertyEntryArray = columns[property],
+                            index,
+                            entry;
 
-                    dataStorage[property].forEach(function(index, entry){
-                        if(entry.displayName === newMetadata.displayName){
-                            if(entry.weight >= newMetadata.weight){
-                                return;
-                            }else{
-                                binaryDelete();
-                                binaryInsert();
+                        if(!propertyEntryArray){
+                            columns[property] = [newMetadata];
+                            propertyEntryArray = columns[property];
 
-                                return;
+                            binaryInsert(property, newMetadata.displayName, newMetadata.weight);
+                        }else{
+                            for(index = 0; index < propertyEntryArray.length; index++){
+                                entry = propertyEntryArray[index];
+
+                                if(entry.displayName === newMetadata.displayName){
+                                    if(entry.weight >= newMetadata.weight){
+                                        return;
+                                    }else{
+                                        binaryDelete(property, newMetadata.displayName, newMetadata.weight);
+                                        binaryInsert(property, newMetadata.displayName, newMetadata.weight);
+
+                                        return;
+                                    }
+                                }
                             }
+
+                            //No match
+                            columns[property].push(newMetadata);
+                            binaryInsert(property, newMetadata.displayName, newMetadata.weight);
                         }
                     });
-
-                    //No match
-                    binaryInsert();
                 }
 			};
 
@@ -133,13 +133,13 @@ define([
                 };
 
                 if(topIndex === -1){
-                    sortedPropertiesArray.push(property)
+                    sortedPropertiesArray.push(newEntry);
                 }else{
                     while(topIndex >= bottomIndex){
                         middleIndex = Math.floor((bottomIndex + topIndex) / 2);
                         currentEntry = sortedPropertiesArray[middleIndex];
                         if(weight === currentEntry.weight){
-                            //TODO insert
+                            sortedPropertiesArray.splice(middleIndex, 0, newEntry);
 
                             return;
                         }else if(weight < currentEntry.weight){
@@ -150,21 +150,65 @@ define([
                     }
 
                     //Didn't match anything already there
-                    if()
+                    if(weight < middleIndex){
+                        sortedPropertiesArray.splice(middleIndex, 0, newEntry);
+                    }else{
+                        sortedPropertiesArray.splice(middleIndex + 1, 0, newEntry);
+                    }
                 }
-
             };
 
-            var binaryDelete = function(params){
+            var binaryDelete = function(property, displayName, weight){
+                var currentEntry,
+                    bottomIndex = 0,
+                    middleIndex,
+                    topIndex = sortedPropertiesArray.length - 1;
 
+                while(topIndex >= bottomIndex){
+                    middleIndex = Math.floor((bottomIndex + topIndex) / 2);
+                    currentEntry = sortedPropertiesArray[middleIndex];
+                    if(weight === currentEntry.weight){
+                        //Found a matching weight; Find matching entry
+                        bottomIndex = middleIndex;
+                        topIndex = middleIndex;
+                        while(currentEntry.weight === weight){
+                            if(currentEntry.property === property && currentEntry.displayName === displayName){
+                                sortedPropertiesArray.splice(topIndex, 1);
+                                return;
+                            }
+
+                            topIndex++;
+                            currentEntry = sortedPropertiesArray[topIndex];
+                        }
+
+                        //Didn't find on the way up
+                        bottomIndex--;
+                        currentEntry = sortedPropertiesArray[bottomIndex];
+                        while(currentEntry.weight === weight){
+                            if(currentEntry.property === property && currentEntry.displayName === displayName){
+                                sortedPropertiesArray.splice(bottomIndex, 1);
+                                return;
+                            }
+                            bottomIndex--;
+                            currentEntry = sortedPropertiesArray[bottomIndex];
+                        }
+
+                        return;
+                    }else if(weight < currentEntry.weight){
+                        topIndex = middleIndex;
+                    }else{
+                        bottomIndex = middleIndex + 1;
+                    }
+                }
+
+                //Didn't match anything already there
             };
 
             //Fill sortedColumnsArray
-            $.each(dataStorage, function(property, metadata){
-                dataStorage.insertKey({
-                    "property": property,
-                    "metadata": metadata
-                })
+            $.each(columns, function(property, propertyArray){
+                propertyArray.forEach(function(propertyEntry, index){
+                    binaryInsert(property, propertyEntry.displayName, propertyEntry.weight);
+                });
             });
             app.sandbox.dataStorage = dataStorage;
 

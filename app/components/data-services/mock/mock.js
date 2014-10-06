@@ -192,7 +192,7 @@ define([
         context.sandbox.stateManager.setLayerStateById({
             "layerId": layerId,
             "state": {
-                "dataTransferState": 'running'
+                "dataTransferState": "running"
             }
         });
 
@@ -206,7 +206,9 @@ define([
                 context.sandbox.utils.each(keys, function(key, keyMetadata){
                     if(dataFeature.properties[key] !== undefined){
                         newValue[keyMetadata.displayName] = dataFeature.properties[key];
-                        newKeys[keyMetadata.displayName] = keyMetadata.weight;
+                        if(!newKeys[key]){
+                            newKeys[key] = keyMetadata;
+                        }
                     }
                 });
             }
@@ -238,7 +240,7 @@ define([
         });
 
         //Add new keys for the datagrid
-        context.sandbox.dataStorage.addColumnKeys({
+        context.sandbox.dataStorage.insertKeys({
             "keys": newKeys
         });
 
