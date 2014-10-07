@@ -9,7 +9,7 @@ define([
             var columns = {
                 "lat": [{
                     "displayName": "Lat",
-                    "weight": 0
+                    "weight": 80
                 }],
                 "lon":[{
                     "displayName": "Lon",
@@ -17,11 +17,11 @@ define([
                 }],
                 "dataService": [{
                     "displayName": "Data Service",
-                    "weight": 0
+                    "weight": 5
                 }],
                 "featureId": [{
                     "displayName": "Feature ID",
-                    "weight": 0
+                    "weight": 90
                 }],
                 "layerId": [{
                     "displayName": "Layer ID",
@@ -125,10 +125,35 @@ define([
 
             var binaryInsert = function(property, displayName, weight){
                 var newEntry,
-                    currentEntry,
                     bottomIndex = 0,
-                    middleIndex,
-                    topIndex = sortedPropertiesArray.length - 1;
+                    topIndex = sortedPropertiesArray.length - 1,
+                    currentIndex,
+                    currentEntry;
+
+                /**
+                 * Finds the index AFTER the top index where the weight matches.
+                 * This is where the splice should happen
+                 * @param thisIndex
+                 * @param thisWeight
+                 * @returns {*}
+                 */
+                var findTopEqualIndex = function(thisIndex, thisWeight){
+                    var thisEntry = sortedPropertiesArray[thisIndex];
+                    while(thisEntry && thisEntry.weight === thisWeight){
+                        thisIndex++;
+                        thisEntry = sortedPropertiesArray[thisIndex];
+                    }
+
+                    return thisIndex;
+                };
+
+                var checkEndOfArray = function(thisIndex){
+                    if(thisIndex === sortedPropertiesArray.length){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                };
 
                 newEntry = {
                     "property": property,
@@ -139,25 +164,48 @@ define([
                 if(topIndex === -1){
                     sortedPropertiesArray.push(newEntry);
                 }else{
-                    while(topIndex >= bottomIndex){
-                        middleIndex = Math.floor((bottomIndex + topIndex) / 2);
-                        currentEntry = sortedPropertiesArray[middleIndex];
-                        if(weight === currentEntry.weight){
-                            sortedPropertiesArray.splice(middleIndex, 0, newEntry);
+                    while(bottomIndex <= topIndex){
+                        currentIndex = (bottomIndex + topIndex) / 2 | 0;
+                        currentEntry = sortedPropertiesArray[currentIndex];
+
+                        //If top and bottom indicies are the same, then we found the correct middle
+                        if(bottomIndex === topIndex){
+                            if(currentEntry.weight === weight){
+                                currentIndex = findTopEqualIndex(topIndex, weight);
+                                if(checkEndOfArray(currentIndex)){
+                                    sortedPropertiesArray.push(newEntry);
+                                }else{
+                                    sortedPropertiesArray.splice(currentIndex);
+                                }
+                            }else if(currentEntry.weight < weight){
+                                sortedPropertiesArray.splice(currentIndex, 0, newEntry);
+                            }else {
+                                currentIndex++; //It should be put on the right, so increment; check for end of array
+                                if(checkEndOfArray(currentIndex)){
+                                    sortedPropertiesArray.push(newEntry);
+                                }else{
+                                    sortedPropertiesArray.splice(currentIndex, 0, newEntry);
+                                }
+                            }
 
                             return;
-                        }else if(weight < currentEntry.weight){
-                            topIndex = middleIndex;
                         }else{
-                            bottomIndex = middleIndex + 1;
-                        }
-                    }
+                            if(currentEntry.weight < weight){
+                                topIndex = currentIndex - 1;
+                            }else if(currentEntry.weight > weight){
+                                bottomIndex = currentIndex + 1;
+                            }else{
+                                //They are equal; Find top entry that matches, and insert there
+                                currentIndex = findTopEqualIndex(currentIndex, weight);
+                                if(checkEndOfArray(currentIndex)){
+                                    sortedPropertiesArray.push(newEntry);
+                                } else{
+                                    sortedPropertiesArray.splice(findTopEqualIndex(currentIndex, weight), 0, newEntry);
+                                }
 
-                    //Didn't match anything already there
-                    if(weight < middleIndex){
-                        sortedPropertiesArray.splice(middleIndex, 0, newEntry);
-                    }else{
-                        sortedPropertiesArray.splice(middleIndex + 1, 0, newEntry);
+                                return;
+                            }
+                        }
                     }
                 }
             };
@@ -169,7 +217,7 @@ define([
                     topIndex = sortedPropertiesArray.length - 1;
 
                 while(topIndex >= bottomIndex){
-                    middleIndex = Math.floor((bottomIndex + topIndex) / 2);
+                    middleIndex = (bottomIndex + topIndex) / 2 | 0;
                     currentEntry = sortedPropertiesArray[middleIndex];
                     if(weight === currentEntry.weight){
                         //Found a matching weight; Find matching entry
@@ -199,7 +247,7 @@ define([
 
                         return;
                     }else if(weight < currentEntry.weight){
-                        topIndex = middleIndex;
+                        topIndex = middleIndex - 1;
                     }else{
                         bottomIndex = middleIndex + 1;
                     }
