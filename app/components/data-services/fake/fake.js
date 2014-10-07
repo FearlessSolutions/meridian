@@ -178,7 +178,8 @@ define([
     function processDataPage(data, params) {
         var layerId,
             newData = [],
-            keys = context.sandbox.dataServices[DATASOURCE_NAME].keys;
+            keys = context.sandbox.dataServices[DATASOURCE_NAME].keys,
+            newKeys = {};
 
         layerId = params.queryId || data[0].properties.queryId;
 
@@ -191,7 +192,7 @@ define([
         context.sandbox.stateManager.setLayerStateById({
             "layerId": layerId,
             "state": {
-                "dataTransferState": 'running'
+                "dataTransferState": "running"
             }
         });
 
@@ -202,9 +203,12 @@ define([
             if(keys){
                 //For each of the keys required, if that property exists in the feature, hoist it
                 //and give it the specified header name
-                context.sandbox.utils.each(keys, function(key, headerForKey){
-                    if(dataFeature.properties[key] !== undefined){
-                        newValue[headerForKey] = dataFeature.properties[key]; //Notice that v1 is used as the key
+                context.sandbox.utils.each(keys, function(index, keyMetadata){
+                    if(dataFeature.properties[keyMetadata.property] !== undefined){
+                        newValue[keyMetadata.property] = dataFeature.properties[keyMetadata.property];
+                        if(!newKeys[keyMetadata.property]){
+                            newKeys[keyMetadata.property] = keyMetadata;
+                        }
                     }
                 });
             }
@@ -231,6 +235,11 @@ define([
             });
 
             newData.push(newValue);
+        });
+
+        //Add new keys for the datagrid
+        context.sandbox.dataStorage.insertKeys({
+            "keys": newKeys
         });
 
         // Clear data out from memory

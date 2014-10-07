@@ -1,7 +1,7 @@
 define([
     'jquery',
     'backbone'
-], function($, Backbone){
+], function(){
 
     var exposed = {
         initialize: function(app) {
@@ -10,12 +10,12 @@ define([
                 "lat": [{
                     "property": "lat",
                     "displayName": "Lat",
-                    "weight": 80
+                    "weight": 100
                 }],
                 "lon":[{
                     "property": "lon",
                     "displayName": "Lon",
-                    "weight": 0
+                    "weight": 100
                 }],
                 "dataService": [{
                     "property": "dataService",
@@ -25,7 +25,7 @@ define([
                 "featureId": [{
                     "property": "featureId",
                     "displayName": "Feature ID",
-                    "weight": 60
+                    "weight": 0
                 }],
                 "layerId": [{
                     "property": "layerId",
@@ -53,11 +53,6 @@ define([
                 },
                 "getColumns": function() {
                     return sortedPropertiesArray;
-//                    var propertyToDisplayNameMap = {};
-//                    sortedPropertiesArray.forEach(function(entry, index){
-//                        propertyToDisplayNameMap[entry.property] = entry.displayName;
-//                    });
-//                    return propertyToDisplayNameMap;
                 },
                 "getColumnsDisplayNameArray": function(){
                     var columnsArray = [];
@@ -72,15 +67,13 @@ define([
                 },
                 "getFeatureById": function(params, callback) {
                     var featureId = params.featureId;
-                    var feature = {};
-                    var ajax = $.ajax({
+
+                    return ajax = $.ajax({
                         "type": "GET",
                         "url": app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/" + featureId
                     }).done(function(data) {
                         callback(data);
                     });
-
-                    return ajax;
                 },
                 "getResultsByQueryAndSessionId": function(queryId, sessionId, start, size, callback) {
                     $.ajax({

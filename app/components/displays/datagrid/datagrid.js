@@ -30,7 +30,8 @@ define([
         "open": function() {
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 var compiledData = [],
-                    storedColumns = context.sandbox.dataStorage.getColumns(),
+                    tempObject,
+                    columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
                     columnHeaders = context.sandbox.dataStorage.getColumnsDisplayNameArray();
 
                 $datagridContainer.removeClass('hidden');
@@ -39,8 +40,8 @@ define([
                 _.each(context.sandbox.dataStorage.datasets, function(collection) {
                     _.each(collection.models, function(model) {
 
-                        var tempObject = {};
-                        _.each(storedColumns, function(displayMetadata){
+                        tempObject = {};
+                        _.each(columnHeadersMetadata, function(displayMetadata){
                             if(model.attributes.hasOwnProperty(displayMetadata.property)) {
                                 tempObject[displayMetadata.displayName] = model.attributes[displayMetadata.property];
                             } else {
@@ -51,11 +52,6 @@ define([
                         compiledData.push(tempObject);
                     });
                 });
-
-                _.each(storedColumns, function(displayMetatdata){
-
-                })
-                //var columnsArray = context.sandbox.dataStorage.getColumnsArray();
 
                 if(!myTable) {
                     myTable = $datagridContainer.Datatable({
@@ -129,33 +125,30 @@ define([
         },
         "addData": function(params) {
             var compiledData = [],
-                datasets,
+                columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
+                columnHeaders = context.sandbox.dataStorage.getColumnsDisplayNameArray(),
+                tempObject,
                 currentPagination = $('ul.pagination li.active a').html();
 
             if(datagridVisible && myTable) {
-                datasets = context.sandbox.dataStorage.datasets;
-
-
-                //TODO
-                storedColumns = context.sandbox.dataStorage.getColumns();
-                 _.each(datasets, function(collection) {
+                 _.each(context.sandbox.dataStorage.datasets, function(collection) {
                     _.each(collection.models, function(model) {
-
-                        var tempObject = {};
-                        $.each(storedColumns, function(k, v){
-                            if(model.attributes.hasOwnProperty(k)) {
-                                tempObject[v] = model.attributes[k];
+                        tempObject = {};
+                        _.each(columnHeadersMetadata, function(displayMetadata){
+                            if(model.attributes.hasOwnProperty(displayMetadata.property)) {
+                                tempObject[displayMetadata.displayName] = model.attributes[displayMetadata.property];
                             } else {
-                                tempObject[v] = '';
+                                tempObject[displayMetadata.displayName] = '';
                             }
                         });
-                        compiledData.push(tempObject);
 
+                        compiledData.push(tempObject);
                     });
                 });
 
                 // Remove old data
                 myTable.removeAllData();
+                myTable.updateColumns(columnHeaders);
                 // replace data with new Full Data
                 myTable.addData(compiledData);
                 // Make sure the table stays on same page as prior to adding data
