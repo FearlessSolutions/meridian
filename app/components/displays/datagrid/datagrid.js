@@ -30,21 +30,21 @@ define([
         "open": function() {
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 var compiledData = [],
-                    storedColumns = context.sandbox.dataStorage.getColumns();
-                    datasets = context.sandbox.dataStorage.datasets;
+                    storedColumns = context.sandbox.dataStorage.getColumns(),
+                    columnHeaders = context.sandbox.dataStorage.getColumnsDisplayNameArray();
 
                 $datagridContainer.removeClass('hidden');
                 $datagridContainer.height(328);
 
-                _.each(datasets, function(collection) {
+                _.each(context.sandbox.dataStorage.datasets, function(collection) {
                     _.each(collection.models, function(model) {
 
                         var tempObject = {};
-                        _.each(storedColumns, function(displayName, property){
-                            if(model.attributes.hasOwnProperty(property)) {
-                                tempObject[displayName] = model.attributes[property];
+                        _.each(storedColumns, function(displayMetadata){
+                            if(model.attributes.hasOwnProperty(displayMetadata.property)) {
+                                tempObject[displayMetadata.displayName] = model.attributes[displayMetadata.property];
                             } else {
-                                tempObject[displayName] = '';
+                                tempObject[displayMetadata.displayName] = '';
                             }
                         });
 
@@ -52,14 +52,17 @@ define([
                     });
                 });
 
-                var columnsArray = context.sandbox.dataStorage.getColumnsArray();
+                _.each(storedColumns, function(displayMetatdata){
+
+                })
+                //var columnsArray = context.sandbox.dataStorage.getColumnsArray();
 
                 if(!myTable) {
                     myTable = $datagridContainer.Datatable({
                         "sortable": true,
                         "pagination": true,
                         "data": compiledData,
-                        "columns": columnsArray,
+                        "columns": columnHeaders,
                         "searchable": true,
                         "closeable": false,
                         "clickable": true,
@@ -85,7 +88,7 @@ define([
                     });
                 } else {
                     myTable.removeAllData();
-                    myTable.updateColumns(columnsArray);
+                    myTable.updateColumns(columnHeaders);
                     myTable.addData(compiledData);
                 }
 

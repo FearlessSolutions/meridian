@@ -40,16 +40,23 @@ define([
                         return;
                     }
                 },
-                "keys": {
-                    "percent": {
+                "keys": [
+                    {
+                        "property": "percent",
                         "displayName": "%",
                         "weight": 70
                     },
-                    "color": {
+                    {
+                        "property": "color",
                         "displayName": "Color",
                         "weight": 71
-                    } //TODO mapurl entry
-                },
+                    }, //TODO mapurl entry
+                    {
+                        "property": "featureId",
+                        "displayName": "Feature ID",
+                        "weight": 90
+                    }
+                ],
                 "processMapUrl": processMapUrl
             };
         }

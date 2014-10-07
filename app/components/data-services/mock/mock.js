@@ -203,11 +203,11 @@ define([
             if(keys){
                 //For each of the keys required, if that property exists in the feature, hoist it
                 //and give it the specified header name
-                context.sandbox.utils.each(keys, function(key, keyMetadata){
-                    if(dataFeature.properties[key] !== undefined){
-                        newValue[keyMetadata.displayName] = dataFeature.properties[key];
-                        if(!newKeys[keyMetadata.displayName]){
-                            newKeys[keyMetadata.displayName] = keyMetadata;
+                context.sandbox.utils.each(keys, function(index, keyMetadata){
+                    if(dataFeature.properties[keyMetadata.property] !== undefined){
+                        newValue[keyMetadata.property] = dataFeature.properties[keyMetadata.property];
+                        if(!newKeys[keyMetadata.property]){
+                            newKeys[keyMetadata.property] = keyMetadata;
                         }
                     }
                 });
