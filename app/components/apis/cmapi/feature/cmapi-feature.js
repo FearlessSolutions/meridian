@@ -176,6 +176,7 @@ define([
         var newAJAX = context.sandbox.utils.ajax(postOptions)
             .done(function(data, status) {
                 var newData = [],
+                    newKeys = {};
                     featureIds = [];
                     
                 if(status === "success") {
@@ -194,6 +195,14 @@ define([
 
                         context.sandbox.utils.each(value.properties, function(key, value){
                             newValue[key] = value;
+
+                            if(!newKeys[key]){
+                                newKeys[key] = {
+                                    "property": key,
+                                    "displayName": key,
+                                    "weight": 50
+                                }
+                            }
                         });
 
                         delete newValue.queryId;
@@ -220,6 +229,12 @@ define([
                         newData.push(newValue);
                     });
 
+                    //Add new keys for the datagrid; remove "queryId" and featureId- they are added for other things, but not used here
+                    delete newKeys['queryId'];
+                    delete newKeys['featureId'];
+                    context.sandbox.dataStorage.insertKeys({
+                        "keys": newKeys
+                    });
                     publisher.publishPlotFeature({
                         "layerId": layerId,
                         "data": newData
