@@ -6,7 +6,6 @@ require.config({
         jquery: 'bower_components/jquery/dist/jquery',
         bootstrap: 'libs/bootstrap-3.0.3/bootstrap',
         toastr: 'libs/toastr-2.0.1/toastr',
-        bootstrapDialog: 'libs/bootstrap-dialog/bootstrap-dialog',
         jqueryDrag: 'libs/jquery-drag-0.1.0/jquery-drag',
         bootstro: 'libs/bootstro/bootstro',
         typeahead: 'libs/bootstrap3-typeahead-3.0.3/bootstrap3-typeahead',

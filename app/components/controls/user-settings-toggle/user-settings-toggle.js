@@ -1,7 +1,6 @@
 define([
     './user-settings-toggle-publisher',
-    'bootstrap',
-    'bootstrapDialog'
+    'bootstrap'
 ], function (publisher) {
     var context,
         $userSettingsButton;

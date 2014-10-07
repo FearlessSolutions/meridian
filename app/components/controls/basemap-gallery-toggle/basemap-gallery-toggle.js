@@ -1,7 +1,6 @@
 define([
     './basemap-gallery-toggle-publisher',
-    'bootstrap',
-    'bootstrapDialog'
+    'bootstrap'
 ], function (publisher) {
     var context,
         $supportButton;

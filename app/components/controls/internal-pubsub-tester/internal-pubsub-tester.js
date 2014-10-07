@@ -2,7 +2,6 @@ define([
     './internal-pubsub-tester-config',
     './internal-pubsub-tester-publisher',
     'bootstrap',
-    'bootstrapDialog',
     'handlebars',
     'jqueryUI',
     'select2'

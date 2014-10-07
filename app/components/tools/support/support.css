@@ -14,7 +14,7 @@ div[data-aura-component='tools/support'] #support-modal .modal-backdrop.in {
     filter: alpha(opacity=70);
 }
 div[data-aura-component='tools/support'] #support-modal .modal-dialog {
-    margin: 15% auto;
+    margin: 5% auto;
     width: 400px;
 }
 div[data-aura-component='tools/support'] #support-modal .modal-footer {

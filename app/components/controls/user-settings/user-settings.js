@@ -2,7 +2,6 @@ define([
     './user-settings-publisher',
     'text!./user-settings-basemapList.hbs',
     'bootstrap',
-    'bootstrapDialog',
     'handlebars'
 ], function (publisher,userSettingsListHBS) {
 

@@ -1,7 +1,6 @@
 define([
     './query-toggle-publisher',
-    'bootstrap',
-    'bootstrapDialog'
+    'bootstrap'
 ], function (publisher) {
     var context,
         $queryToolButton;
