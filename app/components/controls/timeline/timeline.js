@@ -83,6 +83,7 @@ define([
 
                 context.$('#timeline-container').append(snapshotHTML);
                 exposed.showTimeline();
+                publisher.openTimeline();
 
                 snapshotMenu.createMenu({'layerId': layerId});
 
@@ -123,12 +124,10 @@ define([
         },
         hideTimeline: function(params) {
             $timeline.hide();
-            publisher.closeTimeline();
         },
         showTimeline: function(params) {
 			$timeline.show();
             $timeline.scrollLeft(5000);
-            publisher.openTimeline();
 		},
 		clear: function() {
 			context.$('#timeline-container').html('');
@@ -453,6 +452,7 @@ define([
             //hide timeline if no other layers are present.
             if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0) {
                 exposed.hideTimeline();
+                publisher.closeTimeline();
             }
         }
     };

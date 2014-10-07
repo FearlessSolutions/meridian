@@ -12,6 +12,9 @@ define([
         },
         openTimeline: function(params) {
             context.sandbox.emit('timeline.open');
+        },
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params);
         }
     };
 

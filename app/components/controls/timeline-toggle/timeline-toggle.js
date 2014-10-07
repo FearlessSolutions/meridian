@@ -22,15 +22,25 @@ define([
 
             $timelineButton.on('click', function(event) {
                 event.preventDefault();
+
                 if($timelineButton.hasClass('active')) {
                     publisher.closeTimeline();
                 } else {
                     publisher.openTimeline();
                 }
             });
+            
         },
         setActive: function() {
-            $timelineButton.addClass('active');
+            if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
+                $timelineButton.addClass('active');
+            } else {
+                publisher.publishMessage({
+                    "messageType": "warning",
+                    "messageTitle": "Timeline",
+                    "messageText": "No data to display in timeline."
+                });
+            }
         },
         removeActive: function() {
             $timelineButton.removeClass('active');
