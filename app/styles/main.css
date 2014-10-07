@@ -201,9 +201,13 @@ a {
 }
 #left-side-menu .tab-handle {
     position: absolute;
-    right: 3px;
-    top: 45%;
+    padding-right: 3px;
+    padding-left: 2px;
+    padding-top: 350%;
+    right: 0px;
+    top: 0px;
     color: #396A92;
+    height: 100%;
 }
 
 #feauxcator a {

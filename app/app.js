@@ -90,8 +90,8 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .start({ "components": "body" });
 
 
-    $('#left-side-menu').on('click', function() {
-        $(this).toggleClass('active');
+    $('#left-side-menu .tab-handle').on('click', function() {
+        $(this).parent().toggleClass('active');
     });
 
 });

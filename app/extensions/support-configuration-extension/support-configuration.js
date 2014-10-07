@@ -22,15 +22,15 @@ define([
             },
             {
                 "componentName" : "Query",
-                "placement" : "bottom",
-                "width" : "225px",
+                "placement" : "right",
+                "width" : "250px",
                 "title": "Query Tool",
                 "content" : "Query a series of data stores of your choice and have the data plotted on the map."
             },
             {
                 "componentName" : "cluster-toggle-btn",
                 "placement" : "bottom",
-                "width" : "225px",
+                "width" : "250px",
                 "title": "Cluster Toggle",
                 "content" : "Change data being plotted on the map to appear as clustered features."
             },
@@ -44,83 +44,83 @@ define([
             {
                 "componentName" : "heatmap-toggle-btn",
                 "placement" : "bottom",
-                "width" : "225px",
+                "width" : "250px",
                 "title": "Heat Map Toggle",
                 "content" : "Change data being plotted on the map to appear as a heat map."
             },
             {
                 "componentName" : "dataGridToggleButton",
-                "placement" : "bottom",
-                "width" : "225px",
+                "placement" : "right",
+                "width" : "250px",
                 "title": "Data Grid Toggle",
                 "content" : "Opens a data grid with the data shown on the map."
             },
             {
                 "componentName" : "downloadButton",
-                "placement" : "bottom",
-                "width" : "225px",
+                "placement" : "right",
+                "width" : "250px",
                 "title": "Download Data",
                 "content" : "Download all data found in the map in CSV format."
             },
             {
                 "componentName" : "clear-toggle",
-                "placement" : "bottom",
-                "width" : "225px",
+                "placement" : "right",
+                "width" : "250px",
                 "title": "Clear All Data",
                 "content" : "Removes all data found in the map."
             },
             {
                 "componentName" : "support",
-                "placement" : "bottom",
-                "width" : "225px",
+                "placement" : "right",
+                "width" : "250px",
                 "title": "Support/Help",
                 "content" : "Get support for using the application."
             },
             {
                 "componentName" : "internalPubsubTesterToggleButton",
-                "placement" : "bottom",
+                "placement" : "right",
                 "width" : "250px",
                 "title": "Internal Pub/Sub Tester",
                 "content" : "Test internal messages being sent."
             },
             {
                 "componentName" : "playback",
-                "placement" : "bottom",
-                "width" : "225px",
+                "placement" : "right",
+                "width" : "250px",
                 "title": "Data Layer Slideshow",
                 "content" : "Slideshow of query snapshots currently in the timeline."
             },
             {
                 "componentName" : "dataHistoryToggleButton",
-                "placement" : "bottom",
-                "width" : "225px",
+                "placement" : "right",
+                "width" : "250px",
                 "title": "Data History",
                 "content" : "List of cached datasets that can be restored."
             },
             {
                 "componentName" : "userSettings",
-                "placement" : "bottom",
-                "width" : "225px",
+                "placement" : "right",
+                "width" : "250px",
                 "title": "User Setting Options",
                 "content" : "Configurable settings available to the user. Settings are applied when the application loads. To make them take effect, re-load the webpage."
             },
             {
                 "componentName" : "feature-count",
-                "placement" : "bottom",
-                "width" : "200px",
+                "placement" : "top",
+                "width" : "250px",
                 "title": "Feature Counts",
                 "content" : "Accurate counts will always be kept of both visible and total feature counts."
             },
             {
                 "componentName" : "zoom",
                 "placement" : "right",
-                "width" : "225px",
+                "width" : "250px",
                 "title": "Map Controls",
                 "content" : "Make the Map zoom in and out."
             },
              {
                 "componentName" : "coordinates",
-                "placement" : "bottom",
+                "placement" : "top",
                 "width" : "250px",
                 "title": "Mouse Coordinates",
                 "content" : "It shows the current Lat,Lon position of the mouse."
@@ -128,7 +128,7 @@ define([
             {
                 "componentName" : "basemap-gallery",
                 "placement" : "top",
-                "width" : "225px",
+                "width" : "250px",
                 "title": "Context of your Map",
                 "content" : "Select from a series of base maps that meet your analytic, reporting and display needs."
             }
