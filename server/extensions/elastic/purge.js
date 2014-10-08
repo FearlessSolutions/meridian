@@ -36,6 +36,26 @@ exports.deleteRecordsByQueryId = function(user, sessionId, queryId, callback){
     }, callback);
 };
 
+exports.deleteRecordsByIndices = function(user, indices, callback){
+
+    var body = [];
+
+    indices.forEach(function(index){
+        body.push({
+            "delete": {
+                "_index": index.index._index,
+                "_type": index.index._type,
+                "_id": index.index._id,
+                "_routing": user
+            }
+        });
+    });
+
+    client.bulk({
+        "body": body
+    }, callback);
+};
+
 exports.deleteRecordsForUserSessionId = function(user, sessionId, callback){
     client.deleteByQuery({
         index: "_all",

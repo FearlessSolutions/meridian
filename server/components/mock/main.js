@@ -11,6 +11,7 @@ exports.init = function(context){
     var app = context.app;
     var auth = context.sandbox.auth;
     var save = context.sandbox.elastic.save;
+    var purge = context.sandbox.elastic.purge;
 
     app.post('/query/bbox/mock', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         var minLat = parseFloat(req.body.minLat);
@@ -25,31 +26,82 @@ exports.init = function(context){
         var source = 'mock';
 
         var queryId = req.body.queryId || uuid.v4();
+        var aborted = false;
+
+        //TODO this is how to check if the call was aborted
+        //TODO see how to delete the extra calls
+        //TODO figure out how to stop partally finished queries
+        //TODO Make sure it is consistant (might miss some?)
+        //TODO records probably will not have ids before saving to elastic
+        //TODO putting this inside elastic callback will prevent race condition at the expsense of time
+        //TODO don't save in the first place if already aborted
+        //Just make 'on.close' mark flag; do everything else by the flag.
+        req.on('close', function(firstParam, secondParam){
+            console.log("req closed " + queryId);
+            aborted = true;
+        });
+
+        req.on('end', function(firstParam, secondParam){
+            console.log("req end for " + queryId);
+        });
+
+        res.on('close', function(firstParam, secondParam){
+            console.log("res closed " + queryId);
+            aborted = true;
+        });
+
+        req.on('end', function(firstParam, secondParam){
+            console.log("res end for " + queryId);
+        });
 
 
         mock.query(minLat, maxLat, minLon, maxLon, start, pageSize, throttleMs, function(page){
-
+//            console.log("query finished");
             if (!page || page.length === 0){
+                console.log("no data returned");
                 res.status(204);
                 res.send();
                 return;
             }
 
             var persistData = function(){
-                save.writeGeoJSON(userName, sessionId, queryId, source, page, function(err, results){
-                    if (err){
-                        res.status(500);
-                        res.send(err);
+//                console.log("persist data");
 
-                    } else {
-                        res.status(200);
-                        res.send(page);
-                    }
-                });
+                if(aborted){
+                    console.log("aborted before save");
+                    res.status(403);//TODO find better code; this might not even be required
+                    res.send("Aborted");
+
+                    return;
+                }else{
+//                    console.log("saving data");
+                    save.writeGeoJSON(userName, sessionId, queryId, source, page, function(err, results){
+
+                        console.log("saved data");
+                        //TODO move delete here
+                        //TODO don't send if aborted
+                        if (err){
+                            res.status(500);
+                            res.send(err);
+
+                        } else if(aborted) {
+                            console.log("aborted after save");
+
+                            purge.deleteRecordsByIndices(userName, results.items, function(err, deleteResponse){
+
+                                res.status(204);
+                                res.send("aborted");
+                            });
+                        } else {
+                            res.status(200);
+                            res.send(page);
+                        }
+                    });
+                }
             };
 
-
             if (parseInt(start) === 0){
+                console.log("set up metadata");
                 context.sandbox.elastic.metadata
                     .create(userName, sessionId, queryId)
                     .setQueryName(req.body.queryName)
@@ -61,7 +113,6 @@ exports.init = function(context){
                 persistData();
             }
         });
-
     });
 
     app.post('/query/bbox/mock/dummy', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
