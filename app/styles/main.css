@@ -164,7 +164,7 @@ a {
     top: 50%;
     margin-top: -150px;
     left: -50px;
-    padding: 10px 12px 10px 10px;
+    padding: 10px 0px 10px 10px;
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
     background-color: transparent;
@@ -176,7 +176,7 @@ a {
     box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
     -webkit-transition: left 2s; /* For Safari 3.1 to 6.0 */
     transition: left .5s;
-    cursor: pointer;
+    display: table;
 }
 
 #left-side-menu.active {
@@ -200,14 +200,12 @@ a {
     border-top: none;
 }
 #left-side-menu .tab-handle {
-    position: absolute;
+    display: table-cell;
+    vertical-align: middle;
     padding-right: 3px;
     padding-left: 2px;
-    padding-top: 350%;
-    right: 0px;
-    top: 0px;
     color: #396A92;
-    height: 100%;
+    cursor: pointer;
 }
 
 #feauxcator a {
@@ -266,6 +264,11 @@ a {
 /* Style from Bootstro Library...                         */
 /* to include modified version without changing lib files */
 /**********************************************************/
+
+.popover {
+    z-index: 2000;
+}
+
 .bootstro-next-btn
 {
     float:right;
@@ -288,7 +291,7 @@ a {
 }
 .bootstro-highlight
 {
-    z-index: 9999;
+    z-index: 2000;
     position: relative;
 }
 

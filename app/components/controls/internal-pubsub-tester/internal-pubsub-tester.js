@@ -74,10 +74,10 @@ define([
             });
         },
         show: function() {
-            context.$('#internalPubsubTesterDialog').dialog('show');
+            context.$('#internalPubsubTesterDialog').removeClass('hide');
         },
         hide: function() {
-            context.$('#internalPubsubTesterDialog').dialog('hide');
+            context.$('#internalPubsubTesterDialog').addClass('hide');
         },
         publishMessage: function() {
             var channelValue = context.$('#internal-pub-channel').val(),

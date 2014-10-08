@@ -91,7 +91,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
 
 
     $('#left-side-menu .tab-handle').on('click', function() {
-        $(this).parent().toggleClass('active');
+        $('#left-side-menu').toggleClass('active');
     });
 
 });

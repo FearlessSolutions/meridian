@@ -1,13 +1,12 @@
 div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog  {
-    display: none;
     position: absolute;
-    left: 35%;
-    top: 15%;
+    left: 10%;
+    top: 10%;
 }
 div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog  .dialog-dialog{
     width: 400px;
     position: absolute;
-    z-index: 2000;
+    z-index: 1020;
     margin: 0;
 }
 div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog  .dialog-body {
