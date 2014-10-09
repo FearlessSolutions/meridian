@@ -12,7 +12,6 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-
         },
         /**
          * Create layers that are not accessible to the user, and that don't go away
@@ -397,18 +396,13 @@ define([
                 featureVisibilty,
                 layer,
                 feature,
-                clusterFeatureId,
+                clusterFeatureIndex,
                 clusterFeatureCount,
                 record,
                 currentDataService,
                 popup,
-                infoWinTemplateRef,
-                formattedAttributes = {},
-                anchor,
-                currentFeature,
                 selectController;
 
-            // TODO: If the feature is not hidden and its layer is not hidden: do the identify
             layerVisibility = context.sandbox.stateManager.getLayerStateById({"layerId": params.layerId}).visible;
             featureVisibilty = (context.sandbox.stateManager.layers[params.layerId].hiddenFeatures.indexOf(params.featureId) > -1) ? false : true;
             if(layerVisibility && featureVisibilty) {
@@ -416,13 +410,13 @@ define([
                 feature = layer.getFeatureBy('featureId', params.featureId);
                 //If no feature is found, it is most likely because it was hidden in a cluster
                 if(!feature) {
-                    context.sandbox.utils.each(layer.features, function(k1, v1) {
-                        if(v1.cluster) {
-                            context.sandbox.utils.each(v1.cluster, function(k2, v2) {
-                                if(params.featureId === v2.featureId) {
-                                    feature = v1;
-                                    record = v2;
-                                    clusterFeatureId = k2 + 1;
+                    context.sandbox.utils.each(layer.features, function(layerFeatureIndex, layerFeature) {
+                        if(layerFeature.cluster) {
+                            context.sandbox.utils.each(layerFeature.cluster, function(clusterIndex, clusterFeature) {
+                                if(params.featureId === clusterFeature.featureId) {
+                                    feature = layerFeature;
+                                    record = clusterFeature;
+                                    clusterFeatureIndex = clusterIndex + 1;
                                     clusterFeatureCount = feature.cluster.length;
                                 }
                             });
@@ -440,10 +434,11 @@ define([
                         {"featureId": record.featureId},
                         function(fullFeature) {
                             var infoWinTemplateRef = context.sandbox.dataServices[currentDataService].infoWinTemplate,
-                                headerHTML = '<span>' + clusterFeatureId + ' of ' + clusterFeatureCount + '</span>',
+                                headerHTML = '<span>' + clusterFeatureIndex + ' of ' + clusterFeatureCount + '</span>',
                                 formattedAttributes = {},
                                 bounds,
-                                popup;
+                                popup,
+                                anchor= {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, 0)};
 
                             context.sandbox.utils.each(fullFeature.properties, 
                                 function(key, value) {
@@ -454,13 +449,13 @@ define([
                                     }
                             });
                             popup = new OpenLayers.Popup.FramedCloud('popup',
-                                OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                                OpenLayers.LonLat.fromString(feature.geometry.getCentroid().toShortString()),
                                 null,
                                 headerHTML + infoWinTemplateRef.buildInfoWinTemplate(
                                     formattedAttributes,
                                     fullFeature
                                 ),
-                                null,
+                                anchor,
                                 true,
                                 function() {
                                     mapBase.clearMapSelection({
@@ -497,6 +492,9 @@ define([
                                     record.featureId
                                 ]
                             });
+                            //You still need to "select" the cluster, since that is how deselect is fired.
+                            selectController = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                            selectController.select(feature);
                         }
                     );
                 } else {
@@ -587,12 +585,6 @@ define([
     function addDefaultListeners(params) {
         params.layer.events.on({
             beforefeatureselected: function(evt) {
-                mapBase.clearMapSelection({
-                    "map": params.map
-                });
-                mapBase.clearMapPopups({
-                    "map": params.map
-                });
             },
             featureselected: function(evt) {
                 var popup,
@@ -609,48 +601,46 @@ define([
                     context.sandbox.dataStorage.getFeatureById({
                         "featureId": feature.featureId}, 
                         function(fullFeature) {
-                            if(fullFeature.geometry.type === 'Point') { // TODO: remove check when we support identifying non-point features
-                                infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
-                                context.sandbox.utils.each(fullFeature.properties,
-                                    function(k, v) {
-                                        if((context.sandbox.utils.type(v) === "string" ||
-                                            context.sandbox.utils.type(v) === "number" ||
-                                            context.sandbox.utils.type(v) === "boolean")) {
-                                            formattedAttributes[k] = v;
-                                        }
-                                });
-
-                                anchor= {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, -(feature.attributes.height/2))};
-                                popup = new OpenLayers.Popup.FramedCloud('popup',
-                                    OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
-                                    null,
-                                    infoWinTemplateRef.buildInfoWinTemplate(
-                                        formattedAttributes,
-                                        fullFeature
-                                    ),
-                                    anchor,
-                                    true,
-                                    function() {
-                                        mapBase.clearMapSelection({
-                                            "map": params.map
-                                        });
-                                        mapBase.clearMapPopups({
-                                            "map": params.map
-                                        });
+                            infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
+                            context.sandbox.utils.each(fullFeature.properties,
+                                function(k, v) {
+                                    if((context.sandbox.utils.type(v) === "string" ||
+                                        context.sandbox.utils.type(v) === "number" ||
+                                        context.sandbox.utils.type(v) === "boolean")) {
+                                        formattedAttributes[k] = v;
                                     }
-                                );
-                                feature.popup = popup;
-                                params.map.addPopup(popup);
-                                infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
+                            });
 
-                                context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
-                                    "layerId": feature.layer.layerId,
-                                    "featureIds": [
-                                        feature.featureId
-                                    ]
-                                });
-                            }
-                        } 
+                            anchor= {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, -(feature.attributes.height/2))};
+                            popup = new OpenLayers.Popup.FramedCloud('popup',
+                                OpenLayers.LonLat.fromString(feature.geometry.getCentroid().toShortString()),
+                                null,
+                                infoWinTemplateRef.buildInfoWinTemplate(
+                                    formattedAttributes,
+                                    fullFeature
+                                ),
+                                anchor,
+                                true,
+                                function() {
+                                    mapBase.clearMapSelection({
+                                        "map": params.map
+                                    });
+                                    mapBase.clearMapPopups({
+                                        "map": params.map
+                                    });
+                                }
+                            );
+                            feature.popup = popup;
+                            params.map.addPopup(popup);
+                            infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
+
+                            context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
+                                "layerId": feature.layer.layerId,
+                                "featureIds": [
+                                    feature.featureId
+                                ]
+                            });
+                        }
                     );
                 } else {
                     bounds = feature.geometry.getBounds();
@@ -659,37 +649,33 @@ define([
                     });
                     zoom = params.map.getZoomForExtent(bounds);
 
-                    // To prevent zooming in too far
-                    // Sources don't always provide the correct information
-                    // as to what levels they have imagery for.
-                    //
-                    // Clicking a cluster should never zoom the user out.
-                    maxAuto = context.sandbox.mapConfiguration.maxAutoZoomLevel;
-                    if(zoom > maxAuto) {
-                        zoom = params.map.zoom > maxAuto ? params.map.zoom : maxAuto;
-                        publisher.publishMessage({
-                            messageType: 'warning',
-                            messageTitle: 'Auto Zoom',
-                            messageText: 'Auto zoom is at maximum zoom level. Please use manual zoom for more detail.'
-                        });
+                    //If there is a popup already attached, just zoom to the cluster (done below)
+                    if(!feature.popup){
+                        // To prevent zooming in too far
+                        // Sources don't always provide the correct information
+                        // as to what levels they have imagery for.
+                        //
+                        // Clicking a cluster should never zoom the user out.
+                        maxAuto = context.sandbox.mapConfiguration.maxAutoZoomLevel;
+                        if(zoom > maxAuto) {
+                            zoom = params.map.zoom > maxAuto ? params.map.zoom : maxAuto;
+                            publisher.publishMessage({
+                                messageType: 'warning',
+                                messageTitle: 'Auto Zoom',
+                                messageText: 'Auto zoom is at maximum zoom level. Please use manual zoom for more detail.'
+                            });
+                        }
+                        params.map.setCenter(bounds.getCenterLonLat(), zoom);
                     }
-                    params.map.setCenter(bounds.getCenterLonLat(), zoom);
                 }
             },
             featureunselected: function(evt) {
                 var feature = evt.feature;
 
-                if(!feature.cluster) {
-                    context.sandbox.dataStorage.getFeatureById({
-                        "featureId": feature.featureId}, 
-                        function(fullFeature) {
-                            if(fullFeature.geometry.type === 'Point') { // TODO: remove check when we support identifying non-point features
-                                params.map.removePopup(feature.popup);
-                                feature.popup.destroy();
-                                feature.popup = null;
-                            }
-                        }
-                    );
+                if(feature.popup){
+                    params.map.removePopup(feature.popup);
+                    feature.popup.destroy();
+                    feature.popup = null;
                 }
             }
         });
