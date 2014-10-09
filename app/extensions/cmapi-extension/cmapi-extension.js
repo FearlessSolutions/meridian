@@ -38,7 +38,7 @@ define([
                     "buildInfoWinTemplate": function(attributes, fullFeature) {
                         var cmapiTemplate = Handlebars.compile(cmapiHBS);
                         var html = cmapiTemplate({
-                            "thumbnail": fullFeature.style.iconLarge || fullFeature.style.icon,// || "",
+                            "thumbnail": fullFeature.style.iconLarge || fullFeature.style.icon,
                             "classification": attributes.classification || "", //TODO make this dynamic?
                             "name": attributes.name,
                             "attributes": attributes,
