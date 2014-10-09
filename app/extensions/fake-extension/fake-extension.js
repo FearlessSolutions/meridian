@@ -32,6 +32,11 @@ define([
                         "property": "valid",
                         "displayName": "Valid",
                         "weight": 75
+                    },
+                    {
+                        "property": "color",
+                        "displayName": "ColoR",
+                        "weight": 69
                     }
                 ]
             };

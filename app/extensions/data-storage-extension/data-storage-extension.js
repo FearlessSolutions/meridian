@@ -164,7 +164,7 @@ define([
                             if(currentEntry.weight === weight){
                                 currentIndex = findTopEqualIndex(topIndex, weight);
                                 if(checkEndOfArray(currentIndex)){
-                                    sortedPropertiesArray.push(newMetadata);
+                                    sortedPropertiesArray.push(newMetadata, 0, newMetadata);
                                 }else{
                                     sortedPropertiesArray.splice(currentIndex);
                                 }
