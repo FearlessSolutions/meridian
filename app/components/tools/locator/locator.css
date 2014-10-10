@@ -13,3 +13,21 @@ When active, This will be not be applied until the button is disabled again.*/
 div[data-aura-component='tools/locator'] .input-group-btn{
 	cursor: not-allowed;
 }
+
+.locator.info-win-dialog{
+	font-size: .8em;
+}
+
+.locator.info-win-dialog .title{
+	font-weight: bold;
+	font-size: 14px;
+	text-align: center;
+	margin-left: 30px;
+}
+
+.locator.info-win-dialog .content{
+	position: relative;
+	margin-left: 15px;
+	width: 170px;
+	/*height: 135px;*/
+}

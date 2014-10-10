@@ -11,7 +11,8 @@ var uuid = require('node-uuid');
 
 exports.init = function(context){
 
-    var app = context.app;
+    var app = context.app,
+        config = context.sandbox.config.getConfig();
 
     context.sandbox.elastic = {
         query: query,
@@ -52,7 +53,7 @@ exports.init = function(context){
     app.get('/feature/:id', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         var userName = res.get('Parsed-User');
         var sessionId = res.get('Parsed-SessionId');
-        query.getByFeatureId(userName, sessionId, req.params.id, function(err, response){
+        query.getByFeatureId(userName, null, req.params.id, function(err, response){
             if (err){
                 res.status(500);
                 res.send(err);
@@ -84,13 +85,14 @@ exports.init = function(context){
         var sessionId = req.params.sessionId;
         var queryId = req.params.queryId;
 
-        query.getResultsByQueryId(userName, sessionId, queryId, function(err, results){
+        query.getResultsByQueryId(userName, sessionId, queryId,
+            req.query.start, req.query.size, function(err, results){
             if (err){
                 res.status(500);
                 res.send(err);
             } else {
                 res.status(200);
-                res.send(results);
+                res.send(results.hits.hits.map(function(ele){return ele._source;}));
             }
         });
     });
@@ -140,8 +142,26 @@ exports.init = function(context){
         );
     });
 
-    app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-        download.pipeCSVToResponse(res.get('Parsed-User'), res.get('Parsed-SessionId'), res);
+//    app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+//        download.pipeCSVToResponse(res.get('Parsed-User'), res.get('Parsed-SessionId'), res);
+//    });
+
+    app.head('/results.csv', auth.verifyUser, function(req, res){
+        var idArray = req.query.ids.split(",");
+        query.getCountByQuery(null, config.index.data, null, {query:{"terms":{"queryId":idArray}}}, function(err, results){
+            if (err){
+                res.status(500);
+                res.send(err);
+            } else {
+                res.status(results.count === 0 ? 204 : 200); // 204 = No Content
+                res.send();
+            }
+        });
+
+    });
+
+    app.get('/results.csv', auth.verifyUser, function(req, res){
+        download.pipeCSVToResponseForQuery(res.get('Parsed-User'), req.query.ids.split(","), res);
     });
 
     app.delete('/clear', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
