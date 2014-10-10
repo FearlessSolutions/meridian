@@ -1,0 +1,16 @@
+div[data-aura-component='tools/upload-data'] .dialog-dialog{
+    margin: 0;
+    width: 490px;
+    position: absolute;
+    z-index: 2000;
+}
+div[data-aura-component='tools/upload-data'] .dialog-body{
+    padding-bottom: 0;
+}
+div[data-aura-component='tools/upload-data'] .control-label{
+    padding-right: 0px;
+}
+
+div[data-aura-component='tools/upload-data'] #open-file{
+    cursor: pointer;
+}
