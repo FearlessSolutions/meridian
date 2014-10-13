@@ -8,53 +8,53 @@ var fs = require('fs'),
         "options": []
     };
 
-exports.toGeoJSON = function(pathToInputFile, pathToOutputFile) {
+exports.toGeoJSON = function(streamIn, streamOut) {
     exports.execute({
-        "pathToInputFile": pathToInputFile,
-        "pathToOutputFile": pathToOutputFile,
+        "streamIn": streamIn,
+        "streamOut": streamOut,
         "format": "GeoJSON",
         "skipFailures": true
     });
-}
+};
 
-exports.toCSV = function(pathToInputFile, pathToOutputFile) {
+exports.toCSV = function(streamIn, streamOut) {
     exports.execute({
-        "pathToInputFile": pathToInputFile,
-        "pathToOutputFile": pathToOutputFile,
+        "streamIn": streamIn,
+        "streamOut": streamOut,
         "format": "CSV",
         "skipFailures": true
     });
-}
+};
 
-exports.toKML = function(pathToInputFile, pathToOutputFile) {
+exports.toKML = function(streamIn, streamOut) {
     exports.execute({
-        "pathToInputFile": pathToInputFile,
-        "pathToOutputFile": pathToOutputFile,
+        "streamIn": streamIn,
+        "streamOut": streamOut,
         "format": "KML",
         "skipFailures": true
     });
-}
+};
 
-exports.toShapefile = function(pathToInputFile, pathToOutputFile) {
+exports.toShapefile = function(streamIn, streamOut) {
     exports.execute({
-        "pathToInputFile": pathToInputFile,
-        "pathToOutputFile": pathToOutputFile,
+        "streamIn": streamIn,
+        "streamOut": streamOut,
         "format": "ESRI Shapefile",
         "skipFailures": true
     });
-}
+};
 
 exports.execute = function(params) {
-    if(params.pathToInputFile && params.pathToOutputFile) {
+    if(params.streamIn && params.streamOut) {
         try {
-            ogr2ogr(params.pathToInputFile)
+            ogr2ogr(params.streamIn)
                 .project(params.projection || transformationConfig.projection)
                 .format(params.format || transformationConfig.format)
                 .timeout(params.timeout || transformationConfig.timeout)
                 .skipfailures(params.skipFailures || transformationConfig.skipFailures)
                 .options(params.options || transformationConfig.options)
                 .stream()
-                .pipe(fs.createWriteStream(params.pathToOutputFile));
+                .pipe(params.streamOut);
         }
         catch(err) {
             console.log(err);

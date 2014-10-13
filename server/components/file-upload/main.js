@@ -15,9 +15,9 @@ exports.init = function(context){
         auth = context.sandbox.auth,
         save = context.sandbox.elastic.save, //TODO save
         ogrTransform = context.sandbox.transform,
-        mimetypeToTranformFunctionMap;
+        mimetypeToTransformFunctionMap;
 
-    mimetypeToTranformFunctionMap = {
+    mimetypeToTransformFunctionMap = {
         "text/csv": ogrTransform.fromCSV,
         "text/json": ogrTransform.fromGeoJSON, //TODO see what the meme for geoJSON actually is
         "text/kml": ogrTransform.fromKML //TODO see what the meme for KML actually is
@@ -57,37 +57,45 @@ exports.init = function(context){
         req.pipe(req.busboy);
         req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
             //Run the correct function for the mimetype to convert fine to geoJSON
-            mimetypeToTranformFunctionMap[mimetype](file, function(er, data){
-                if(er){
-                    res.status(500);
-                    res.send(er);
-                }else{
-                    _.each(data.features, function(feature, index){
-                        var featureId = feature.properties.featureId || feature.properties.id || uuid.v4();
+            var mimeTypeTransformFunction = mimetypeToTranformFunctionMap[mimetype];
+            if(mimeTypeTransformFunction){
+                mimetypeToTransformFunctionMap[mimetype](file, function(er, data){
+                    if(er){
+                        res.status(500);
+                        res.send(er);
+                    }else{
+                        _.each(data.features, function(feature, index){
+                            var featureId = feature.properties.featureId || feature.properties.id || uuid.v4();
 
-                        feature.featureId = featureId;
-                        feature.properties.featureId = featureId;
-                        feature.queryId = queryId;
-                        //TODO more fields? //TODO check for required fields?
+                            feature.featureId = featureId;
+                            feature.properties.featureId = featureId;
+                            feature.queryId = queryId;
+                            //TODO more fields? //TODO check for required fields?
 
-                        data.features[index] = feature;
-                    });
+                            data.features[index] = feature;
+                        });
 
-                    save.writeGeoJSON(userName, sessionId, queryId, 'SOMETHING', data.features, function(err){ //TODO decide what "SOMETHING" should be
-                        if(err){
-                            console.log('error:' + err);
-                            res.status(500);
-                            res.send(err);
-                        }else{
-                            console.log('ingest complete');
-                            res.status(200);
-                            res.set('Content-Type', 'application/json');
-                            res.setHeader('Content-Type', 'application/json');
-                            res.json(data.features);
-                        }
-                    });
-                }
-            });
+                        save.writeGeoJSON(userName, sessionId, queryId, 'UNKNOWN', data.features, function(err){
+                            if(err){
+                                console.log('error:' + err);
+                                res.status(500);
+                                res.send(err);
+                            }else{
+                                console.log('ingest complete');
+                                res.status(200);
+                                res.set('Content-Type', 'application/json');
+                                res.setHeader('Content-Type', 'application/json');
+                                res.json(data.features);
+                            }
+                        });
+                    }
+                });
+            }else {
+                console.log('error: Mimetype ' + mimetype + 'not supported');
+                res.status(500);
+                res.send('error: Mimetype ' + mimetype + 'not supported');
+            }
+
         });
     });
 };
