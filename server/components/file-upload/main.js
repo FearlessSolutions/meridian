@@ -73,7 +73,7 @@ exports.init = function(context){
                         data.features[index] = feature;
                     });
 
-                    save.writeGeoJSON(userName, sessionId, queryId, 'SOMETHING', data.features, function(err){
+                    save.writeGeoJSON(userName, sessionId, queryId, 'SOMETHING', data.features, function(err){ //TODO decide what "SOMETHING" should be
                         if(err){
                             console.log('error:' + err);
                             res.status(500);
