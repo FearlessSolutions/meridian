@@ -191,7 +191,9 @@ define([
     }
 
     function deleteDataset(datasetId, dataSessionId) {
-        publisher.deleteDataset(datasetId);
+        publisher.deleteDataset({
+            "layerId": datasetId
+        });
         context.sandbox.utils.ajax({
             type: 'DELETE',
             url: '/clear/' + datasetId + '/' + dataSessionId
