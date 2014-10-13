@@ -61,3 +61,37 @@ exports.execute = function(params) {
         }
     }
 }
+
+/**
+ * Convert CSV filestream to geoJSON for processing
+ * @param file Filestream
+ * @param callback function(error, data) Should handle error or processed data (if error, no data)
+ */
+exports.fromCSV = function(file, callback){
+    ogr2ogr(file, 'csv').exec(function(er, data){
+        callback(er, data);
+    });
+};
+
+/**
+ * Convert KML filestream to geoJSON for processing
+ * @param file Filestream
+ * @param callback function(error, data) Should handle error or processed data (if error, no data)
+ */
+exports.fromKML = function(file, callback){
+    ogr2ogr(file, 'KML').exec(function(er, data){
+        callback(er, data);
+    });
+};
+
+/**
+ * Convert geoJSON filestream to geoJSON for processing
+ * @param file Filestream
+ * @param callback function(error, data) Should handle error or processed data (if error, no data)
+ */
+exports.fromGeoJSON = function(file, callback){
+    ogr2ogr(file, 'GeoJSON').exec(function(er, data){
+        callback(er, data);
+    });
+};
+

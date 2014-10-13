@@ -26,13 +26,10 @@ exports.init = function(app){
     use('extensions/elastic');
     use('extensions/gazetteer');
     use('extensions/transformation');
-    use('extensions/ogr-converter'); //TODO clean this up/remove
 
     // Components
     use('components/mock');
     use('components/fake');
-//    use('components/csv-upload');
-    use('components/utils'); //TODO Is this not needed?
     use('components/file-upload'); //TODO clean this up/remove
 
 };

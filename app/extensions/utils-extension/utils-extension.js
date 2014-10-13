@@ -151,6 +151,23 @@ define([
                         callback(text);
                     };
                 },
+                /**
+                 * Return the extension of a file.
+                 * This assumes that the last '.' shows the extension.
+                 * @param file
+                 * @returns {*}
+                 */
+                "getFileExtension": function(file){
+                    var filenameParts;
+
+                    if(!file){
+                        return;
+                    }
+
+                    filenameParts = file.name.split('.');
+
+                    return filenameParts[filenameParts.length - 1];
+                },
                 pageHeight: function(el){
                     if(el) {
                         return $(el).height();

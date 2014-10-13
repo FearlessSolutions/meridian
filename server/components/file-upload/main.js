@@ -13,8 +13,15 @@ var uuid = require('node-uuid');
 exports.init = function(context){
     var app = context.app,
         auth = context.sandbox.auth,
-        save = context.sandbox.elastic.save,
-        ogr = context.sandbox.ogr;
+        save = context.sandbox.elastic.save, //TODO save
+        ogrTransform = context.sandbox.transform,
+        mimetypeToTranformFunctionMap;
+
+    mimetypeToTranformFunctionMap = {
+        "text/csv": ogrTransform.fromCSV,
+        "text/json": ogrTransform.fromGeoJSON, //TODO see what the meme for geoJSON actually is
+        "text/kml": ogrTransform.fromKML //TODO see what the meme for KML actually is
+    };
 
     /**
      * Endpoint for uploading a CSV to the server
@@ -49,9 +56,8 @@ exports.init = function(context){
         //The req.busboy property is added by the connect-busboy middleware
         req.pipe(req.busboy);
         req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-            ogr.toGeoJSON(file, function(er, data){
-                var queryId;
-
+            //Run the correct function for the mimetype to convert fine to geoJSON
+            mimetypeToTranformFunctionMap[mimetype](file, function(er, data){
                 if(er){
                     res.status(500);
                     res.send(er);
@@ -62,15 +68,24 @@ exports.init = function(context){
                         feature.featureId = featureId;
                         feature.properties.featureId = featureId;
                         feature.queryId = queryId;
-                        //TODO more fields?
+                        //TODO more fields? //TODO check for required fields?
 
                         data.features[index] = feature;
                     });
 
-                    res.status(200);
-                    res.set('Content-Type', 'application/json');
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(data.features);
+                    save.writeGeoJSON(userName, sessionId, queryId, 'SOMETHING', data.features, function(err){
+                        if(err){
+                            console.log('error:' + err);
+                            res.status(500);
+                            res.send(err);
+                        }else{
+                            console.log('ingest complete');
+                            res.status(200);
+                            res.set('Content-Type', 'application/json');
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(data.features);
+                        }
+                    });
                 }
             });
         });
