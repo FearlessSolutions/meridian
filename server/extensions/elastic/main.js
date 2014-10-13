@@ -172,6 +172,18 @@ exports.init = function(context){
     });
 
     app.delete('/clear/:queryId/:sessionId', auth.verifyUser, function(req, res){
+        purge.deleteMetadataByQueryId(
+            req.params.queryId, 
+            function(err, results){
+                res.status(err ? 500 : 200);
+                res.send(err ? err : results);
+            }
+        );
+        purge.deleteMetadataByQueryId(res.get('Parsed-User'), req.params.sessionId,
+            req.params.queryId, function(err, results){
+            res.status(err ? 500 : 200);
+            res.send(err ? err : results);
+        });
         purge.deleteRecordsByQueryId(res.get('Parsed-User'), req.params.sessionId,
             req.params.queryId, function(err, results){
             res.status(err ? 500 : 200);
