@@ -92,10 +92,12 @@ define([
                     publisher.restoreDataset(data);
                     publisher.closeDataHistory();
                 });
-                // context.$('.data-history-detail-view .data-action-delete').on('click', function(event) {
-                //     // Delete the dataset
-                //     console.debug('Will delete dataset ' + tempData.datasetId + ' here.');
-                // });
+                context.$('.data-history-detail-view .data-action-delete').on('click', function(event) {
+                    // Delete the dataset
+                    deleteDataset(tempData.datasetId, tempData.dataSessionId);
+                    exposed.hideDetailedInfo();
+                    exposed.updateDataHistory();
+                });
 
                 $modalBody.addClass('finiteHeight');
                 context.$('.data-history-summary-list-container').addClass('hidden');
@@ -155,10 +157,12 @@ define([
                     publisher.restoreDataset(currentDataArray[context.$(this).parent().parent().data('datasetid')]);
                     publisher.closeDataHistory();
                 });
-                // context.$('.data-history-list .data-action-delete').on('click', function(event) {
-                //     // Delete the dataset
-                //     console.debug('Will delete dataset ' + context.$(this).parent().parent().data('datasetid') + ' here.');
-                // });
+                context.$('.data-history-list .data-action-delete').on('click', function(event) {
+                    // Delete the dataset
+                    deleteDataset(context.$(this).parent().parent().data('datasetid'), 
+                        context.$(this).parent().parent().data('datasessionid'));
+                    exposed.updateDataHistory();
+                });
             });
         }
     };
@@ -184,6 +188,14 @@ define([
             var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
             return result * sortOrder;
         };
+    }
+
+    function deleteDataset(datasetId, dataSessionId) {
+        publisher.deleteDataset(datasetId);
+        context.sandbox.utils.ajax({
+            type: 'DELETE',
+            url: '/clear/' + datasetId + '/' + dataSessionId
+        });
     }
 
     return exposed;

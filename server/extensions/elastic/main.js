@@ -171,8 +171,8 @@ exports.init = function(context){
        });
     });
 
-    app.delete('/clear/:queryId', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-        purge.deleteRecordsByQueryId(res.get('Parsed-User'), res.get('Parsed-SessionId'),
+    app.delete('/clear/:queryId/:sessionId', auth.verifyUser, function(req, res){
+        purge.deleteRecordsByQueryId(res.get('Parsed-User'), req.params.sessionId,
             req.params.queryId, function(err, results){
             res.status(err ? 500 : 200);
             res.send(err ? err : results);
