@@ -195,8 +195,9 @@ define([
         context.sandbox.utils.ajax({
             type: 'DELETE',
             url: '/clear/' + datasetId + '/' + dataSessionId
-        }).done(function() {
+        }).done(function(res,data,thing) {
             console.debug('i am here');
+            // setTimeout(function(){exposed.updateDataHistory();}, 500);
             exposed.updateDataHistory();
         });
     }

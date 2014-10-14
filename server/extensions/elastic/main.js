@@ -175,20 +175,22 @@ exports.init = function(context){
         purge.deleteMetadataByQueryId(
             req.params.queryId, 
             function(err, results){
-                res.status(err ? 500 : 200);
-                res.send(err ? err : results);
+                if(err) {
+                    res.status(500).send(err);
+                } else {
+                    purge.deleteRecordsByQueryId(
+                        res.get('Parsed-User'), 
+                        req.params.sessionId,
+                        req.params.queryId, 
+                        function(err, results){
+                            res.status(err ? 500 : 200);
+                            res.send(err ? err : results);
+                        }
+                    );
+                }
             }
         );
-        purge.deleteMetadataByQueryId(res.get('Parsed-User'), req.params.sessionId,
-            req.params.queryId, function(err, results){
-            res.status(err ? 500 : 200);
-            res.send(err ? err : results);
-        });
-        purge.deleteRecordsByQueryId(res.get('Parsed-User'), req.params.sessionId,
-            req.params.queryId, function(err, results){
-            res.status(err ? 500 : 200);
-            res.send(err ? err : results);
-        });
+       
     });
 
     app.get('/metadata/user', auth.verifyUser, function(req, res){
