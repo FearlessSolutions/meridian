@@ -178,7 +178,8 @@ define([
     function processDataPage(data, params) {
         var layerId,
             newData = [],
-            keys = context.sandbox.dataServices[DATASOURCE_NAME].keys;
+            keys = context.sandbox.dataServices[DATASOURCE_NAME].keys,
+            layerState;
 
         layerId = params.queryId || data[0].properties.queryId;
 
@@ -238,10 +239,20 @@ define([
         // Clear data out from memory
         data = [];
 
-        publisher.plotFeatures({
-            "layerId": layerId,
-            "data": newData
+        layerState = context.sandbox.stateManager.getLayerStateById({
+            "layerId": layerId
         });
+
+        console.debug(layerState.dataTransferState);
+        if(layerState.dataTransferState !== 'running'){
+            console.debug("caught stopped!!");
+        }else{
+            publisher.plotFeatures({
+                "layerId": layerId,
+                "data": newData
+            });
+        }
+
     }
 
     function handleError(params) {

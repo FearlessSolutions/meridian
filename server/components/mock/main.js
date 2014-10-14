@@ -93,6 +93,7 @@ exports.init = function(context){
                                 res.send("aborted");
                             });
                         } else {
+                            console.log("returned");
                             res.status(200);
                             res.send(page);
                         }
