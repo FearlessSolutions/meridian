@@ -20,7 +20,7 @@ exports.init = function(context){
     mimetypeToTransformFunctionMap = {
         "text/csv": ogrTransform.fromCSV,
         "text/json": ogrTransform.fromGeoJSON, //TODO see what the meme for geoJSON actually is
-        "text/kml": ogrTransform.fromKML //TODO see what the meme for KML actually is
+        "application/vnd.google-earth.kml+xml": ogrTransform.fromKML
     };
 
     /**
@@ -56,10 +56,13 @@ exports.init = function(context){
         //The req.busboy property is added by the connect-busboy middleware
         req.pipe(req.busboy);
         req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+
+            console.log(mimetype);
+
             //Run the correct function for the mimetype to convert fine to geoJSON
-            var mimeTypeTransformFunction = mimetypeToTranformFunctionMap[mimetype];
+            var mimeTypeTransformFunction = mimetypeToTransformFunctionMap[mimetype];
             if(mimeTypeTransformFunction){
-                mimetypeToTransformFunctionMap[mimetype](file, function(er, data){
+                mimeTypeTransformFunction(file, function(er, data){
                     if(er){
                         res.status(500);
                         res.send(er);

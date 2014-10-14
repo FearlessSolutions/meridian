@@ -23,7 +23,7 @@ define([
                         var html = template({
                             "attributes": attributes,
                             "classification": attributes.classification,
-                            "thumbnail": "./extensions/map-configuration-extension/images/markerIcons/marker.png"
+                            "thumbnail": "./extensions/map-configuration-extension/images/markerIcons/marker-2x-80x80.png"
                         });
 
                         return html;
