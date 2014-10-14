@@ -10,9 +10,11 @@ define([
         initialize: function() {
             this.sandbox.utils.addCSS(uploadDataToolCSS, 'tool-uploadData-component-style');
 
-            var configOptions = this.sandbox.dataServices.UPLOADED_FILE.configuration;
-            var uploadDataToolTemplate = Handlebars.compile(uploadDataToolHBS);
-            var html = uploadDataToolTemplate({
+            var configOptions = this.sandbox.dataServices.UPLOADED_FILE.configuration,
+                uploadDataToolTemplate = Handlebars.compile(uploadDataToolHBS),
+                html;
+
+            html = uploadDataToolTemplate({
                 "classifications": configOptions.classifications,
                 "filetypes": configOptions.filetypes
             });

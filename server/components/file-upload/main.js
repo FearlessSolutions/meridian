@@ -19,7 +19,7 @@ exports.init = function(context){
 
     mimetypeToTransformFunctionMap = {
         "text/csv": ogrTransform.fromCSV,
-        "text/json": ogrTransform.fromGeoJSON, //TODO see what the meme for geoJSON actually is
+        "application/octet-stream": ogrTransform.fromGeoJSON,
         "application/vnd.google-earth.kml+xml": ogrTransform.fromKML
     };
 
@@ -56,9 +56,6 @@ exports.init = function(context){
         //The req.busboy property is added by the connect-busboy middleware
         req.pipe(req.busboy);
         req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-
-            console.log(mimetype);
-
             //Run the correct function for the mimetype to convert fine to geoJSON
             var mimeTypeTransformFunction = mimetypeToTransformFunctionMap[mimetype];
             if(mimeTypeTransformFunction){
@@ -73,7 +70,7 @@ exports.init = function(context){
                             feature.featureId = featureId;
                             feature.properties.featureId = featureId;
                             feature.queryId = queryId;
-                            //TODO more fields? //TODO check for required fields?
+                            //TODO check for required fields?
 
                             data.features[index] = feature;
                         });
@@ -84,7 +81,6 @@ exports.init = function(context){
                                 res.status(500);
                                 res.send(err);
                             }else{
-                                console.log('ingest complete');
                                 res.status(200);
                                 res.set('Content-Type', 'application/json');
                                 res.setHeader('Content-Type', 'application/json');
@@ -94,9 +90,9 @@ exports.init = function(context){
                     }
                 });
             }else {
-                console.log('error: Mimetype ' + mimetype + 'not supported');
+                console.log('error: Mimetype ' + mimetype + ' not supported');
                 res.status(500);
-                res.send('error: Mimetype ' + mimetype + 'not supported');
+                res.send('error: Mimetype ' + mimetype + ' not supported');
             }
 
         });

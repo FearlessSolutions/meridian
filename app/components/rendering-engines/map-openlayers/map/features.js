@@ -256,7 +256,7 @@ define([
                 "forces": true
             });
         },
-        updateFeatures: function(params) {  // TODO: finish method to support full feature updating (attirbutes, styles, etc.)
+        updateFeatures: function(params) {  // TODO: finish method to support full feature updating (attributes, styles, etc.)
             var layerId = params.layerId,
                 featureObjects = params.featureObjects,
                 layer = params.map.getLayersBy('layerId', layerId)[0];

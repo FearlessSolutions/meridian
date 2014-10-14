@@ -12,6 +12,9 @@ define([
             },
             "csv": {
                 "extension":".csv"
+            },
+            "geojson": {
+                "extension":".geojson"
             }
         }
     };

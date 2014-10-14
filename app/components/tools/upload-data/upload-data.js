@@ -84,13 +84,13 @@ define([
                     filetype,
                     classification,
                     queryId,
-                    queryName, //TODO test with filename that includes '&'
+                    queryName,
                     newAJAX;
 
                 //TODO handle multiple files?
                 if(file){
                     queryId = context.sandbox.utils.UUID();
-                    queryName = file.name; //Use the file name as the query name //TODO allow the user to name it?
+                    queryName = file.name; //Use the file name as the query name
                     filetype = context.sandbox.utils.getFileExtension(file);
                     classification = $classification.val();
 
@@ -231,7 +231,7 @@ define([
     function publishData(data, queryId, queryName){
         var newData = [];
 
-        if(data.length === 0){ //TODO?
+        if(data.length === 0){
             publishFinished(queryId, queryName);
             return;
         }
@@ -241,7 +241,7 @@ define([
 
             //No keys, so skip that step
 
-            newValue.dataService = data[index].dataService = DATASOURCE_NAME; //TODO will it come back with the correct service name already?
+            newValue.dataService = data[index].dataService = DATASOURCE_NAME;
 
             newValue.layerId = queryId;
             newValue.id = newValue.featureId = data[index].id = feature.properties.featureId;

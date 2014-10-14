@@ -73,4 +73,3 @@ app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));
 
 // Initiate routes
 require('./server/app').init(app);
-

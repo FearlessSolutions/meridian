@@ -30,6 +30,6 @@ exports.init = function(app){
     // Components
     use('components/mock');
     use('components/fake');
-    use('components/file-upload'); //TODO clean this up/remove
+    use('components/file-upload');
 
 };
