@@ -4,7 +4,7 @@ define([
     'text!./data-history-detail-view.hbs',
     'bootstrap',
     'handlebars',
-    'momentJS'
+    'moment'
 ], function (publisher, dataHistoryEntryHBS, dataHistoryDetailViewHBS) {
     var context,
         dataHistoryEntryTemplate,
