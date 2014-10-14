@@ -5,6 +5,7 @@ var fs = require('fs');
 var _ = require('underscore');
 var uuid = require('node-uuid');
 
+var DATASOURCE_NAME = "upload";
 /**
  * Entry point for initialized the application
  *
@@ -75,7 +76,7 @@ exports.init = function(context){
                             data.features[index] = feature;
                         });
 
-                        save.writeGeoJSON(userName, sessionId, queryId, 'UNKNOWN', data.features, function(err){
+                        save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, data.features, function(err){
                             if(err){
                                 console.log('error:' + err);
                                 res.status(500);
