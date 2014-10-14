@@ -1,3 +1,7 @@
+div[data-aura-component='tools/upload-data'] #uploadDataDialog {
+    display: none;
+}
+
 div[data-aura-component='tools/upload-data'] .dialog-dialog{
     margin: 0;
     width: 490px;

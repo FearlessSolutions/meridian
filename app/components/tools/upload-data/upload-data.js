@@ -148,6 +148,7 @@ define([
             });
 
             context.$('#upload-cancel').on('click', close); //Handle close
+            close();
         },
         "handleMenuOpening": function(args){
             if(args.componentOpening === MENU_DESIGNATION){
