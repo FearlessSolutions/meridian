@@ -6,13 +6,15 @@ var _ = require('underscore');
 var uuid = require('node-uuid');
 
 var DATASOURCE_NAME = "upload";
+var context;
 /**
  * Entry point for initialized the application
  *
  * @param app - Express application to add endpoints if needed
  */
-exports.init = function(context){
-    var app = context.app,
+exports.init = function(thisContext){
+    var context = thisContext,
+        app = context.app,
         auth = context.sandbox.auth,
         save = context.sandbox.elastic.save, //TODO save
         ogrTransform = context.sandbox.transform,
@@ -65,29 +67,35 @@ exports.init = function(context){
                         res.status(500);
                         res.send(er);
                     }else{
-                        _.each(data.features, function(feature, index){
-                            var featureId = feature.properties.featureId || feature.properties.id || uuid.v4();
+                        context.sandbox.elastic.metadata
+                            .create(userName, sessionId, queryId)
+                            .setQueryName(queryName)
+                            .setDataSource(DATASOURCE_NAME)
+                            .commit(function(){
+                                _.each(data.features, function(feature, index){
+                                    var featureId = feature.properties.featureId || feature.properties.id || uuid.v4();
 
-                            feature.featureId = featureId;
-                            feature.properties.featureId = featureId;
-                            feature.queryId = queryId;
-                            //TODO check for required fields?
+                                    feature.featureId = featureId;
+                                    feature.properties.featureId = featureId;
+                                    feature.queryId = queryId;
+                                    //TODO check for required fields?
 
-                            data.features[index] = feature;
-                        });
+                                    data.features[index] = feature;
+                                });
 
-                        save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, data.features, function(err){
-                            if(err){
-                                console.log('error:' + err);
-                                res.status(500);
-                                res.send(err);
-                            }else{
-                                res.status(200);
-                                res.set('Content-Type', 'application/json');
-                                res.setHeader('Content-Type', 'application/json');
-                                res.json(data.features);
-                            }
-                        });
+                                save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, data.features, function(err){
+                                    if(err){
+                                        console.log('error:' + err);
+                                        res.status(500);
+                                        res.send(err);
+                                    }else{
+                                        res.status(200);
+                                        res.set('Content-Type', 'application/json');
+                                        res.setHeader('Content-Type', 'application/json');
+                                        res.json(data.features);
+                                    }
+                                });
+                            });
                     }
                 });
             }else {

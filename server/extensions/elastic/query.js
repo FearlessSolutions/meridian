@@ -162,11 +162,6 @@ exports.getMetadataByUserId = function(userId, callback){
                         "term": {
                             "userId": userId
                         }
-                    },
-                    {
-                        "term": {
-                            "valid": true
-                        }
                     }
                 ]
             }
