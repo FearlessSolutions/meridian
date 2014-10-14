@@ -96,7 +96,6 @@ define([
                     // Delete the dataset
                     deleteDataset(tempData.datasetId, tempData.dataSessionId);
                     exposed.hideDetailedInfo();
-                    exposed.updateDataHistory();
                 });
 
                 $modalBody.addClass('finiteHeight');
@@ -161,7 +160,6 @@ define([
                     // Delete the dataset
                     deleteDataset(context.$(this).parent().parent().data('datasetid'), 
                         context.$(this).parent().parent().data('datasessionid'));
-                    exposed.updateDataHistory();
                 });
             });
         }
@@ -197,6 +195,9 @@ define([
         context.sandbox.utils.ajax({
             type: 'DELETE',
             url: '/clear/' + datasetId + '/' + dataSessionId
+        }).done(function() {
+            console.debug('i am here');
+            exposed.updateDataHistory();
         });
     }
 
