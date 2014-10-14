@@ -289,7 +289,7 @@ define([
             "messageText": queryName + " Upload Complete"
         });
 
-        publisher.publishFinished({"queryId": queryId});
+        publisher.publishFinished({"layerId": queryId});
     }
 
     function publishError(queryId, queryName){

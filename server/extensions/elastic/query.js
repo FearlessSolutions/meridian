@@ -156,8 +156,19 @@ exports.getMetadataBySessionId = function(userId, sessionId, callback){
 exports.getMetadataByUserId = function(userId, callback){
     var query = {
         "query":{
-            "match":{
-                "userId":userId
+            "bool":{
+                "must": [
+                    {
+                        "term": {
+                            "userId": userId
+                        }
+                    },
+                    {
+                        "term": {
+                            "valid": true
+                        }
+                    }
+                ]
             }
         }
     };
