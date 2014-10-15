@@ -21,13 +21,6 @@ define([
                 "content" : "Find any geographic location by entering its name or set of coordinates. Users are instantly panned and zoomed to that location."
             },
             {
-                "componentName" : "Query",
-                "placement" : "right",
-                "width" : "250px",
-                "title": "Query Tool",
-                "content" : "Query a series of data stores of your choice and have the data plotted on the map."
-            },
-            {
                 "componentName" : "cluster-toggle-btn",
                 "placement" : "bottom",
                 "width" : "250px",
@@ -49,6 +42,20 @@ define([
                 "content" : "Change data being plotted on the map to appear as a heat map."
             },
             {
+                "componentName" : "zoom",
+                "placement" : "right",
+                "width" : "250px",
+                "title": "Map Controls",
+                "content" : "Make the Map zoom in and out."
+            },
+            {
+                "componentName" : "queryToggleButton",
+                "placement" : "right",
+                "width" : "250px",
+                "title": "Query Tool",
+                "content" : "Query a series of data stores of your choice and have the data plotted on the map."
+            },
+            {
                 "componentName" : "dataGridToggleButton",
                 "placement" : "right",
                 "width" : "250px",
@@ -56,11 +63,11 @@ define([
                 "content" : "Opens a data grid with the data shown on the map."
             },
             {
-                "componentName" : "downloadButton",
+                "componentName" : "legendToggleButton",
                 "placement" : "right",
                 "width" : "250px",
-                "title": "Download Data",
-                "content" : "Download all data found in the map in CSV format."
+                "title": "Map Legend Toggle",
+                "content" : "Opens a legend for the layers shown on the map."
             },
             {
                 "componentName" : "clear-toggle",
@@ -68,20 +75,6 @@ define([
                 "width" : "250px",
                 "title": "Clear All Data",
                 "content" : "Removes all data found in the map."
-            },
-            {
-                "componentName" : "support",
-                "placement" : "right",
-                "width" : "250px",
-                "title": "Support/Help",
-                "content" : "Get support for using the application."
-            },
-            {
-                "componentName" : "internalPubsubTesterToggleButton",
-                "placement" : "right",
-                "width" : "250px",
-                "title": "Internal Pub/Sub Tester",
-                "content" : "Test internal messages being sent."
             },
             {
                 "componentName" : "playback",
@@ -98,32 +91,53 @@ define([
                 "content" : "List of cached datasets that can be restored."
             },
             {
-                "componentName" : "userSettings",
+                "componentName" : "csv",
+                "placement" : "right",
+                "width" : "250px",
+                "title": "Upload Data",
+                "content" : "Upload data to the map."
+            },
+            {
+                "componentName" : "downloadButton",
+                "placement" : "right",
+                "width" : "250px",
+                "title": "Download Data",
+                "content" : "Download all data found in the map in CSV format."
+            },
+            {
+                "componentName" : "basemapGalleryToggleButton",
+                "placement" : "right",
+                "width" : "250px",
+                "title": "Basemap Gallery Toggle",
+                "content" : "Toggle the visibility of the Basemap Gallery tool."
+            },
+            {
+                "componentName" : "timelineToggleButton",
+                "placement" : "right",
+                "width" : "250px",
+                "title": "Timeline Toggle",
+                "content" : "Toggle the visibility of the Timeline tool."
+            },
+            {
+                "componentName" : "internalPubsubTesterToggleButton",
+                "placement" : "right",
+                "width" : "250px",
+                "title": "Internal Pub/Sub Tester",
+                "content" : "Test internal messages being sent."
+            },
+            {
+                "componentName" : "userSettingsToggleButton",
                 "placement" : "right",
                 "width" : "250px",
                 "title": "User Setting Options",
                 "content" : "Configurable settings available to the user. Settings are applied when the application loads. To make them take effect, re-load the webpage."
             },
             {
-                "componentName" : "feature-count",
-                "placement" : "top",
-                "width" : "250px",
-                "title": "Feature Counts",
-                "content" : "Accurate counts will always be kept of both visible and total feature counts."
-            },
-            {
-                "componentName" : "zoom",
+                "componentName" : "supportToggleButton",
                 "placement" : "right",
                 "width" : "250px",
-                "title": "Map Controls",
-                "content" : "Make the Map zoom in and out."
-            },
-             {
-                "componentName" : "coordinates",
-                "placement" : "top",
-                "width" : "250px",
-                "title": "Mouse Coordinates",
-                "content" : "It shows the current Lat,Lon position of the mouse."
+                "title": "Support/Help",
+                "content" : "Get support for using the application."
             },
             {
                 "componentName" : "basemap-gallery",
@@ -131,6 +145,20 @@ define([
                 "width" : "250px",
                 "title": "Context of your Map",
                 "content" : "Select from a series of base maps that meet your analytic, reporting and display needs."
+            },
+            {
+                "componentName" : "coordinates",
+                "placement" : "top",
+                "width" : "250px",
+                "title": "Mouse Coordinates",
+                "content" : "It shows the current Lat,Lon position of the mouse."
+            },
+            {
+                "componentName" : "feature-count",
+                "placement" : "top",
+                "width" : "250px",
+                "title": "Feature Counts",
+                "content" : "Accurate counts will always be kept of both visible and total feature counts."
             }
 
 
