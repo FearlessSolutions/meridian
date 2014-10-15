@@ -33,29 +33,29 @@ var exports = {
      */
     convertKmlToGeoJSON: function(kml, callback){
         var kmlDom,
-            converted;
+            payload = null,
+            errorMessage = null;
 
         // Lazy check for large files to prevent blocking
-        if (kml.length > kmlLengthCap){
-            callback("KML exceeds max string size (" + kmlLengthCap + ")", null);
-            return;
+        if (kml.length < kmlLengthCap) {
+            // Attempt to parse kml string into a jsdom
+            kmlDom = jsdom(kml);
+            if (kmlDom) {
+                // Convert kml into GeoJSON
+                payload = toGeoJson.kml(kmlDom);
+                if (!payload) {
+                    payload = null;
+                    errorMessage = "Failed to convert KML into GeoJSON";
+                }
+            } else {
+                errorMessage = "Failed to parse KML";
+            }
+        } else {
+            errorMessage = "KML exceeds max string size (" + kmlLengthCap + ")";
         }
 
-        // Attempt to parse kml string into a jsdom
-        kmlDom = jsdom(kml);
-        if (!kmlDom){
-            callback("Failed to parse KML", null);
-            return;
-        }
+        callback(errorMessage, payload);
 
-        // Convert kml into GeoJSON
-        converted = toGeoJson.kml(kmlDom);
-        if (!converted){
-            callback("Failed to convert KML into GeoJSON", null);
-            return;
-        }
-
-        callback(null, converted);
     }
 };
 
