@@ -199,6 +199,9 @@ a {
     border-top-left-radius: 0px;
     border-top: none;
 }
+#left-side-menu .menu-button-group div .popover .btn {
+    border-radius: 4px;
+}
 #left-side-menu .tab-handle {
     display: table-cell;
     vertical-align: middle;
