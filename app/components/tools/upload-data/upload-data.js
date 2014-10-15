@@ -238,19 +238,22 @@ define([
         }
 
         data.forEach(function(feature, index){
-            var newValue = {};
+            var newValue;
+
+            data[index].dataService = DATASOURCE_NAME;
 
             //No keys, so skip that step
-
-            newValue.dataService = data[index].dataService = DATASOURCE_NAME;
-
-            newValue.layerId = queryId;
-            newValue.id = newValue.featureId = data[index].id = feature.properties.featureId;
-            newValue.geometry = feature.geometry;
-            newValue.type = feature.type;
-            newValue.properties = {};
-            newValue.lat = feature.geometry.coordinates[1];
-            newValue.lon = feature.geometry.coordinates[0];
+            newValue = {
+                "dataService": DATASOURCE_NAME,
+                "layerId": queryId,
+                "id": feature.properties.featureId,
+                "featureId": feature.properties.featureId,
+                "geometry": feature.geometry,
+                "type": feature.type,
+                "properties" : {},
+                "lat": feature.geometry.coordinates[1],
+                "lon": feature.geometry.coordinates[0]
+            };
 
             context.sandbox.dataStorage.addData({
                 "datasetId": queryId,
@@ -267,13 +270,13 @@ define([
 
         publisher.publishData({
             "layerId": queryId,
-            "data": data
+            "data": newData
         });
 
         publisher.publishMessage({
             "messageType": "info",
             "messageTitle": "Data Upload",
-            "messageText": data.length + " events have been added to the " + queryName + " layer."
+            "messageText": newData.length + " events have been added to the " + queryName + " layer."
         });
 
         publishFinished(queryId, queryName);
