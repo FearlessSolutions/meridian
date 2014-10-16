@@ -1,22 +1,27 @@
-div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog {
-    display: none;
+div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog  {
+    position: absolute;
+    left: 10%;
+    top: 10%;
 }
-
-div[data-aura-component='controls/internal-pubsub-tester'] .dialog-dialog {
+div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog  .dialog-dialog{
     width: 400px;
     position: absolute;
-    z-index: 2000;
+    z-index: 1020;
     margin: 0;
 }
-
-div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog .dialog-body {
-    padding: 10px 20px 10px 20px;
+div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog  .dialog-body {
+    padding: 10px 10px 10px 10px;
 }
-
-div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog .dialog-header {
+div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog  .dialog-header {
+    background-color: #357ebd;
+    color: white;
     cursor: move;
 }
-
+div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog  .dialog-header .close {
+    color: white;
+    opacity: .85;
+    text-shadow: none;
+}
 div[data-aura-component='controls/internal-pubsub-tester'] #internalPubsubTesterDialog ul.dropdown-menu-form {
     padding: 10px;
     max-height: 300px;
