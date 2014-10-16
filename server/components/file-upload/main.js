@@ -4,6 +4,10 @@ var fs = require('fs');
 // NPM Libraries
 var _ = require('underscore');
 var uuid = require('node-uuid');
+var path = require('path');
+var os = require('os');
+
+
 
 var DATASOURCE_NAME = "upload";
 var context;
@@ -61,48 +65,189 @@ exports.init = function(thisContext){
         req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
             //Run the correct function for the mimetype to convert fine to geoJSON
             var mimeTypeTransformFunction = mimetypeToTransformFunctionMap[mimetype];
-            if(mimeTypeTransformFunction){
-                mimeTypeTransformFunction(file, function(er, data){
-                    if(er){
-                        res.status(500);
-                        res.send(er);
-                    }else{
-                        context.sandbox.elastic.metadata
-                            .create(userName, sessionId, queryId)
-                            .setQueryName(queryName)
-                            .setDataSource(DATASOURCE_NAME)
-                            .commit(function(){
-                                _.each(data.features, function(feature, index){
-                                    var featureId = feature.properties.featureId || feature.properties.id || uuid.v4();
+            if(mimeTypeTransformFunction) {
 
-                                    feature.featureId = featureId;
-                                    feature.properties.featureId = featureId;
-                                    feature.queryId = queryId;
-                                    //TODO check for required fields?
+//                var saveTo = path.join(os.tmpDir(), path.basename(fieldname));
+//                file.pipe(fs.createWriteStream(saveTo));
 
-                                    data.features[index] = feature;
-                                });
+//                req.busboy.on('finish', function () {
+//                    var savedFs = fs.createReadStream(saveTo);
+//                var savedFs = fs.createReadStream('dl3.csv')
+//                var savedFs = fs.createReadStream('Random-Points-100k.csv')
 
-                                save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, data.features, function(err){
-                                    if(err){
-                                        console.log('error:' + err);
-                                        res.status(500);
-                                        res.send(err);
-                                    }else{
-                                        res.status(200);
-                                        res.set('Content-Type', 'application/json');
-                                        res.setHeader('Content-Type', 'application/json');
-                                        res.json(data.features);
-                                    }
-                                });
+                    mimeTypeTransformFunction(file, function (er, data) {
+
+
+                        if (er) {
+                            res.status(500);
+                            res.send(er);
+                        } else {
+                            console.log("sending 200")
+                            res.status(200);
+                            res.set('Content-Type', 'application/json');
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(data.features);
+                            return;
+
+
+                            save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, data.features, function (err) {
+                                if (err) {
+                                    console.log('error:' + err);
+                                    res.status(500);
+                                    res.send(err);
+                                } else {
+                                    console.log("sending 200")
+                                    res.status(200);
+                                    res.set('Content-Type', 'application/json');
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.json(data.features);
+                                }
                             });
-                    }
-                });
-            }else {
-                console.log('error: Mimetype ' + mimetype + ' not supported');
-                res.status(500);
-                res.send('error: Mimetype ' + mimetype + ' not supported');
+
+
+                            return;
+//                            context.sandbox.elastic.metadata
+//                                .create(userName, sessionId, queryId)
+//                                .setQueryName(queryName)
+//                                .setDataSource(DATASOURCE_NAME)
+//                                .commit(function () {
+                                    var CHUNK_SIZE = 1000;
+
+                                    _.each(data.features, function (feature, index) {
+                                        var featureId = feature.properties.featureId || feature.properties.id || uuid.v4();
+
+                                        feature.featureId = featureId;
+                                        feature.properties.featureId = featureId;
+                                        feature.queryId = queryId;
+                                        //TODO check for required fields?
+
+                                        data.features[index] = feature;
+                                    });
+
+                                    var saveRecursive = function(chunkIndex, callback){
+//                                        callback(null);
+//
+//                                        return;
+
+
+
+
+                                        console.log("save chunk ", chunkIndex)
+                                        var chunk;
+
+                                        if(chunkIndex < data.features.length){
+                                            callback(null);
+                                            return ; // Normal end; No error
+                                        }
+
+                                        chunk = (chunkIndex + CHUNK_SIZE) < data.features.length
+                                            ? data.features.slice(chunkIndex, chunkIndex + CHUNK_SIZE)
+                                            : data.features.slice(chunkIndex); //Goes to the end
+
+                                        save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, chunk, function (err) {
+                                            if (err) {
+                                                console.log('error:' + err);
+                                                callback(err);
+
+                                                return;
+                                            } else {
+                                                console.log("saving...")
+                                                saveRecursive(chunkIndex + CHUNK_SIZE, callback);
+                                            }
+                                        });
+                                    };
+
+
+                                    console.log("features to proccess: ", data.features.length)
+                                    //Start the chunk saving at index 0, when done, handle error and return status
+                                    saveRecursive(0, function(err){
+                                        console.log("finished saving ", err)
+                                        if(err){
+                                            console.log('error:' + err);
+                                            res.status(500);
+                                            res.send(err);
+                                        }else{
+                                            console.log("sending back 200")
+                                            res.status(200);
+                                            res.set('Content-Type', 'application/json');
+                                            res.setHeader('Content-Type', 'application/json');
+                                            res.json(data.features);
+                                        }
+                                    });
+
+
+                                    //Chop up the features so that elastic doesn't bomb
+//                                    finished = false;
+//                                    for(chunkIndex = 0; chunkIndex < data.features.length && !finished, chunkIndex += CHUNK_SIZE){
+//                                        chunk = (chunkIndex + CHUNK_SIZE) < data.features.length
+//                                            ? data.features.slice(chunkIndex, chunkIndex + CHUNK_SIZE)
+//                                            : data.features.slice(chunkIndex); //Goes to the end
+//
+//                                        save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, chunk, function (err) {
+//                                            if (err) {
+//                                                console.log('error:' + err);
+//                                                res.status(500);
+//                                                res.send(err);
+//                                            } else {
+//                                                res.status(200);
+//                                                res.set('Content-Type', 'application/json');
+//                                                res.setHeader('Content-Type', 'application/json');
+//                                                res.json(data.features);
+//                                            }
+//                                        });
+//                                    }
+//                                });
+                        }
+                    });
+//                });
+
             }
+
+
+
+
+
+//                mimeTypeTransformFunction(file, function(er, data){
+//                    if(er){
+//                        res.status(500);
+//                        res.send(er);
+//                    }else{
+//                        context.sandbox.elastic.metadata
+//                            .create(userName, sessionId, queryId)
+//                            .setQueryName(queryName)
+//                            .setDataSource(DATASOURCE_NAME)
+//                            .commit(function(){
+//                                _.each(data.features, function(feature, index){
+//                                    var featureId = feature.properties.featureId || feature.properties.id || uuid.v4();
+//
+//                                    feature.featureId = featureId;
+//                                    feature.properties.featureId = featureId;
+//                                    feature.queryId = queryId;
+//                                    //TODO check for required fields?
+//
+//                                    data.features[index] = feature;
+//                                });
+//
+//                                save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, data.features, function(err){
+//                                    if(err){
+//                                        console.log('error:' + err);
+//                                        res.status(500);
+//                                        res.send(err);
+//                                    }else{
+//                                        res.status(200);
+//                                        res.set('Content-Type', 'application/json');
+//                                        res.setHeader('Content-Type', 'application/json');
+//                                        res.json(data.features);
+//                                    }
+//                                });
+//                            });
+//                    }
+//                });
+//            }else {
+//                console.log('error: Mimetype ' + mimetype + ' not supported');
+//                res.status(500);
+//                res.send('error: Mimetype ' + mimetype + ' not supported');
+//            }
 
         });
     });
