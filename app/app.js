@@ -87,11 +87,16 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/fake-extension/fake-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
 //    .use('extensions/csv-upload-extension/csv-upload-extension')
-    .start({ "components": "body" });
+    .start({ "components": "body" })
+    .then(function(){
+        $('#left-side-menu').css('display','table').animate({
+            left: "0px"
+          }, 500);
+    });
 
 
     $('#left-side-menu .tab-handle').on('click', function() {
-        $('#left-side-menu').toggleClass('active');
+        $('#left-side-menu').toggleClass('docked');
     });
 
 });

@@ -176,11 +176,10 @@ a {
     box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
     -webkit-transition: left 2s; /* For Safari 3.1 to 6.0 */
     transition: left .5s;
-    display: table;
 }
 
-#left-side-menu.active {
-    left: 0px;
+#left-side-menu.docked {
+    left: -50px !important; /* override the inline style added by jquery animate */
 }
 #left-side-menu .btn {
     border-color: #428bca;
