@@ -1,3 +1,6 @@
+div[data-aura-component='controls/visual-mode-toggle']  div.popover .bootstro-nav-wrapper {
+    margin-top: 20px;
+}
 div[data-aura-component='controls/visual-mode-toggle']  div.popover .btn.bootstro-next-btn {
     right: 10px;
     position: absolute;
