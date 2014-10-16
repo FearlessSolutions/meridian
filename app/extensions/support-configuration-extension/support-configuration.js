@@ -139,20 +139,20 @@ define([
                 "title": "Support/Help",
                 "content" : "Get support for using the application."
             },
-            {
-                "componentName" : "basemap-gallery",
-                "placement" : "top",
-                "width" : "250px",
-                "title": "Context of your Map",
-                "content" : "Select from a series of base maps that meet your analytic, reporting and display needs."
-            },
-            {
-                "componentName" : "timeline",
-                "placement" : "top",
-                "width" : "250px",
-                "title": "Timeline Tool",
-                "content" : "Display information and and provide control over individual data layers."
-            },
+            // {
+            //     "componentName" : "basemap-gallery",
+            //     "placement" : "top",
+            //     "width" : "250px",
+            //     "title": "Context of your Map",
+            //     "content" : "Select from a series of base maps that meet your analytic, reporting and display needs."
+            // },
+            // {
+            //     "componentName" : "timeline",
+            //     "placement" : "top",
+            //     "width" : "250px",
+            //     "title": "Timeline Tool",
+            //     "content" : "Display information and and provide control over individual data layers."
+            // },
             {
                 "componentName" : "coordinates",
                 "placement" : "top",
