@@ -143,7 +143,7 @@ define([
 
             context.sandbox.stateManager.removeAllIdentifiedFeatures();
         },
-        identifyFeature: function(params) { // TODO: what is this being used by?
+        identifyFeature: function(params) { // TODO: what is this being used by? A: Nothing right now. There isn't even a subscriber.
             var popup,
                 feature = params.feature,
                 anchor;
@@ -151,7 +151,7 @@ define([
             anchor = {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, -(feature.attributes.height/2))};
             popup = new OpenLayers.Popup.FramedCloud(
                 'popup',
-                OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                OpenLayers.LonLat.fromString(feature.geometry.toShortString()), //TODO centroid
                 null,
                 params.content,
                 anchor,
