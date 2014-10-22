@@ -4,11 +4,104 @@ define([
 
 /**
  * @namespace Sandbox.mapConfiguration
- * @property {String} defaulMapEngine - The default values for parties.
- * @property {String} defaultBaseMap
- * @property {Array} basemaps Array of basemap Objects. 
- * @property {String} basemaps.basemap
- * @property {String} basemaps.type
+ * @namespcace Sandbox
+ * 
+ * @property {String} defaulMapEngine   - Default map renderer.
+ * @property {String} defaultBaseMap    - Default map tile service. Must be a valid name found in the basemaps array.
+ * @property {Number} initialMinLat     - Minimum Latitude used in the initial extent.
+ * @property {Number} initialMinLon     - Minimum Longitude used in the initial extent.
+ * @property {Number} initialMaxLat     - Maximum Latitude used in the initial extent.
+ * @property {Number} initialMaxLon     - Maximum Longitude used in the initial extent.
+ * @property {Number} maxAutoZoomLevel  - Maximum zoom level allowed.
+ * @property {String} projection        - Spatial reference.
+ * @property {String} defaultVisualMode - Default visual mode.
+ * @property {Number} defaultTileWidth  - Default Tile width.
+ * @property {Number} defaultTileHeight - Default Tile height.
+ * 
+ * @property {Array}  basemaps           - Array of tile service Objects.
+ * @property {String} basemaps.basemap   - Name of the basemap tile service.
+ * @property {String} basemaps.type      - Type of the map tile service.
+ * @property {String} basemaps.url       - URL of the map tile service.
+ * @property {String} basemaps.thumbnail - URL for the image used in basemap gallery component.
+ * @property {String} basemaps.label     - Name used for tooltips.
+ * 
+ * @property {Object} markerIcons                        - Collection of map marker settings.
+ * @property {Object} markerIcons.default                - Settings for default map markers.
+ * @property {String} markerIcons.default.icon           - URL of the small marker. 
+ * @property {String} markerIcons.default.iconLarge      - URL of the large marker.
+ * @property {Number} markerIcons.default.height         - Height of the marker.
+ * @property {Number} markerIcons.default.width          - Width of the marker.
+ * @property {Number} markerIcons.default.graphicYOffset - Pixel offset along the positive y axis for displacing the marker icon.
+ * 
+ * @property {Object} clustering                                  - Clustering Settings.
+ * @property {Object} clustering.colors                           - Color settings for clustering.
+ * @property {String} clustering.colors.low                       - RBG color for the low threshold.
+ * @property {String} clustering.colors.mid                       - RBG color for the mid threshold.
+ * @property {String} clustering.colors.high                      - RBG color for the high threshold.
+ * 
+ * @property {Object} thresholds                                  - Threshold settings for the clustering strategy. OpenLayers always applies the strategy.
+ * @property {Object} thresholds.clustering                       - Cluster threshold settings.
+ * @property {Number} thresholds.clustering.distance              - Pixel distance between features that should be considered a single cluster.
+ * @property {Number} thresholds.clustering.threshold             - Minimum amount of points needed inside the pixel radius to create a cluster.
+ * @property {Object} thresholds.noClustering                     - No-clustering threshold settings. Since the cluster strategy is always applied in the renderer, these properties have specific values so it behaves like single points instead of clusters.
+ * @property {Number} thresholds.noClustering.distance            - Pixel distance between features that should be considered a single cluster.
+ * @property {Number} thresholds.noClustering.threshold           - Minimum amount of points needed inside the pixel radius to create a cluster. Value set to Number.MAX_VALUE, meaning they should not cluster. 
+ *                                                                
+ * @property {Object} symbolizers                                 - Symbolizer settings.
+ * @property {Object} symbolizers.lowSymbolizer                   - Symbolizer settings for the low threshold.
+ * @property {String} symbolizers.lowSymbolizer.fillColor         - RGB hex fill color that matches the clustering.colors.low value. (Inner part of the cluster).
+ * @property {Number} symbolizers.lowSymbolizer.fillOpacity       - Fill opacity (0-1).
+ * @property {String} symbolizers.lowSymbolizer.strokeColor       - Color for line stroke that matches the clustering.colors.low value. (Outer rim of the cluster).
+ * @property {Number} symbolizers.lowSymbolizer.strokeOpacity     - Stroke opacity (0-1).
+ * @property {Number} symbolizers.lowSymbolizer.strokeWidth       - Pixel stroke width.
+ * @property {Number} symbolizers.lowSymbolizer.pointRadius       - Pixel point radius.
+ * @property {String} symbolizers.lowSymbolizer.label             - Text of the point.
+ * @property {Number} symbolizers.lowSymbolizer.labelOutlineWidth - Pixel outline width.
+ * @property {Number} symbolizers.lowSymbolizer.labelYOffset      - Pixel offset along the positive y axis for label displacement.
+ * @property {String} symbolizers.lowSymbolizer.fontColor         - Color applied to the label.
+ * @property {Number} symbolizers.lowSymbolizer.fontOpacity       - Font opacity (0-1).
+ * @property {String} symbolizers.lowSymbolizer.fontSize          - Font size for the label.
+ * 
+ * @property {Object} symbolizers.midSymbolizer                   - Symbolizer settings for the mid threshold.
+ * @property {String} symbolizers.midSymbolizer.fillColor         - RGB hex fill color that matches the clustering.colors.mid value. (Inner part of the cluster).
+ * @property {Number} symbolizers.midSymbolizer.fillOpacity       - Fill opacity (0-1).
+ * @property {String} symbolizers.midSymbolizer.strokeColor       - Color for line stroke that matches the clustering.colors.mid value. (Outer rim of the cluster).
+ * @property {Number} symbolizers.midSymbolizer.strokeOpacity     - Stroke opacity (0-1).
+ * @property {Number} symbolizers.midSymbolizer.strokeWidth       - Pixel stroke width.
+ * @property {Number} symbolizers.midSymbolizer.pointRadius       - Pixel point radius.
+ * @property {String} symbolizers.midSymbolizer.label             - Text of the point.
+ * @property {Number} symbolizers.midSymbolizer.labelOutlineWidth - Pixel outline width.
+ * @property {Number} symbolizers.midSymbolizer.labelYOffset      - Pixel offset along the positive y axis for label displacement.
+ * @property {String} symbolizers.midSymbolizer.fontColor         - Color applied to the label.
+ * @property {Number} symbolizers.midSymbolizer.fontOpacity       - Font opacity (0-1).
+ * @property {String} symbolizers.midSymbolizer.fontSize          - Font size for the label.     
+ *
+ * @property {Object} symbolizers.highSymbolizer                   - Symbolizer settings for the high threshold.
+ * @property {String} symbolizers.highSymbolizer.fillColor         - RGB hex fill color that matches the clustering.colors.high value. (Inner part of the cluster).
+ * @property {Number} symbolizers.highSymbolizer.fillOpacity       - Fill opacity (0-1).
+ * @property {String} symbolizers.highSymbolizer.strokeColor       - Color for line stroke that matches the clustering.colors.high value. (Outer rim of the cluster).
+ * @property {Number} symbolizers.highSymbolizer.strokeOpacity     - Stroke opacity (0-1).
+ * @property {Number} symbolizers.highSymbolizer.strokeWidth       - Pixel stroke width.
+ * @property {Number} symbolizers.highSymbolizer.pointRadius       - Pixel point radius.
+ * @property {String} symbolizers.highSymbolizer.label             - Text of the point.
+ * @property {Number} symbolizers.highSymbolizer.labelOutlineWidth - Pixel outline width.
+ * @property {Number} symbolizers.highSymbolizer.labelYOffset      - Pixel offset along the positive y axis for label displacement.
+ * @property {String} symbolizers.highSymbolizer.fontColor         - Color applied to the label.
+ * @property {Number} symbolizers.highSymbolizer.fontOpacity       - Font opacity (0-1).
+ * @property {String} symbolizers.highSymbolizer.fontSize          - Font size for the label.  
+ *
+ * @property {Object} symbolizers.noClusterSymbolizer                 - Symbolizer settings for no cluster.
+ * @property {String} symbolizers.noClusterSymbolizer.externalGraphic - URL to an external graphic that will be used for rendering points.
+ * @property {String} symbolizers.noClusterSymbolizer.graphicOpacity  - Opacity (0-1) for the external graphic.
+ * @property {String} symbolizers.noClusterSymbolizer.pointRadius     - Pixel point radius.
+ * @property {String} symbolizers.noClusterSymbolizer.graphicHeight   - Pixel height for sizing the external graphic.
+ * @property {String} symbolizers.noClusterSymbolizer.graphicWidth    - Pixel width for sizing the external graphic.
+ *
+ * @property {String} basemapGalleryMaxHeight                         - Max height for the basemap gallery.
+ * 
+ * @property {Object}  cursorLocation                                 - Settings for the cursor location component.
+ * @property {Boolean} cursorLocation.defaultDisplay                  - If the component will be displayed.
+ *
  */
   var mapConfiguration = {
     "defaultMapEngine" : "OpenLayers",
@@ -69,7 +162,7 @@ define([
         "high": "rgb(102, 0, 102"
       },
       "thresholds": {
-        "clustering": {"distance": 25, "threshold": 2},
+        "clustering": {"distance":25, "threshold": 2},
         "noClustering": {"distance": 1, "threshold": Number.MAX_VALUE}
       },
       "symbolizers": {

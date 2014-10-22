@@ -7,11 +7,12 @@ define([
 	 */
 	var exposed = {
 		/**
-		 * Funciton utilized by Meridian to init all extensions. 
-		 * This extention exposes {@link Sandbox.mapConfiguration} to the {@link Sandbox} namespace.
-		 * @instance
-		 * @param  {Object} app Instance of the Meridian application.
-		 */
+         * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
+         * This extension exposes {@link Sandbox.mapConfiguration} to the {@link Sandbox} namespace.
+         * @function
+         * @instance
+         * @param  {Object} app - Instance of the Meridian application.
+         */
 		initialize: function(app) {
 			app.sandbox.mapConfiguration = mapConfiguration;
 		}
