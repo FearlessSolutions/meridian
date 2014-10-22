@@ -27,6 +27,7 @@ define([
 				"datasets": {
                 },
                 /**
+                 * These properties are used by the datagrid as the columns shown in the grid.
                  * @namespace Sandbox.dataStorage.columns
                  * @property {String} columns.featureId   - Property value: Feature ID
                  * @property {String} columns.layerId     - Property value: Layer ID
