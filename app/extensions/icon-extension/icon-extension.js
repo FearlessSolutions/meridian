@@ -71,12 +71,12 @@ define([
      * @memberof module:icons-extension
      */
     function calculateIcon(feature) {
-        if(feature.style) {
+        if($.isEmptyObject(feature.style)) {
+            // If there is no style, use default
+            return context.sandbox.mapConfiguration.markerIcons.default;
+        } else {
             // If a style is provided on the feature, use it
             return feature.style;
-        } else {
-            // Otherwise use a default configuration
-            return context.sandbox.mapConfiguration.markerIcons.default;
         }
     }
 

@@ -4,9 +4,8 @@ require.config({
         handlebars: 'bower_components/handlebars/handlebars',
         underscore: 'bower_components/underscore/underscore',
         jquery: 'bower_components/jquery/dist/jquery',
-        bootstrap: 'libs/bootstrap-3.0.3/bootstrap',
+        bootstrap: 'libs/bootstrap-3.2.0/bootstrap',
         toastr: 'libs/toastr-2.0.1/toastr',
-        bootstrapDialog: 'libs/bootstrap-dialog/bootstrap-dialog',
         jqueryDrag: 'libs/jquery-drag-0.1.0/jquery-drag',
         bootstro: 'libs/bootstro/bootstro',
         typeahead: 'libs/bootstrap3-typeahead-3.0.3/bootstrap3-typeahead',
@@ -18,7 +17,7 @@ require.config({
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
         jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min', // Custom build, check file's header to see what it includes
-        momentJS: 'libs/momentjs-2.8.3/moment.min'
+        moment: 'libs/momentjs-2.8.3/moment.min'
     },
     shim:{
         aura: {
@@ -57,7 +56,8 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
 
     // Listen to CSSWatch trigger (fired from datagrid/main.js)
     $(document).on('css-change', '#datagridContainer', function(event, change){
-        $('#mapContainer').css('height', 'calc(100% - 32px - ' + change.height + ')');
+        // $('#mapContainer').css('height', 'calc(100% - 32px - ' + change.height + ')');
+        $('#mapContainer').css('height', 'calc(100% - ' + change.height + ')');
         $('div[data-aura-component="rendering-engines/map-openlayers"], #map').css('height', '100%');
         window.dispatchEvent(new Event('resize')); // Trigger OpenLayers to redraw the map
     });
@@ -82,7 +82,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
      * @namespace Channels
      */
     Aura({
-        "debug": false,
+        "debug": true,
         "appName": "Meridian",
         "sources": {"default": "components"},
         "mediator": {"maxListeners": 50}
@@ -106,6 +106,18 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/fake-extension/fake-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
 //    .use('extensions/csv-upload-extension/csv-upload-extension')
-    .start({ "components": "body" });
+    .start({ "components": "body" })
+    .then(function(){
+        $('#left-side-menu').css('display','table').animate({
+            left: "0px"
+          }, 500);
+    });
+
+
+    $('#left-side-menu .tab-handle').on('click', function() {
+        $('#left-side-menu').toggleClass('docked');
+    });
 
 });
+
+

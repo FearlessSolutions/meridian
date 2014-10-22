@@ -1,7 +1,6 @@
 define([
     './data-history-toggle-publisher',
-    'bootstrap',
-    'bootstrapDialog'
+    'bootstrap'
 ], function (publisher) {
     var context,
         $dataHistoryButton;

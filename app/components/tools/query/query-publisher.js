@@ -23,6 +23,12 @@ define([
         },
         clear: function(){
             context.sandbox.emit("data.clear.all");
+        },
+        closeQueryTool: function(params) {
+            context.sandbox.emit('query.tool.close');
+        },
+        openQueryTool: function(params) {
+            context.sandbox.emit('query.tool.open');
         }
     };
 

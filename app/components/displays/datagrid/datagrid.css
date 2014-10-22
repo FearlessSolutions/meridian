@@ -4,8 +4,9 @@ div[data-aura-component='displays/datagrid'] #datagridContainer {
     bottom: 0;
     z-index: 1020;
 	background-color: #ffffff;
-    -webkit-box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);
-	box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);
+    border-top: 1px solid #dddddd;
+    /*-webkit-box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);*/
     position: relative;
 }
 

@@ -7,7 +7,6 @@
 define([
     './csv-upload-publisher',
     'bootstrap',
-    'bootstrapDialog',
     'jqueryDrag',
     'handlebars'
 ], function (publisher) {

@@ -64,6 +64,11 @@ define([
                     "styleMap": message.styleMap
                 });
 
+                publisher.publishMessage({
+                    messageType: 'success',
+                    messageTitle: 'Layer Management',
+                    messageText: 'A new layer has been created.'
+                });
             }
 		},
         /**

@@ -1,0 +1,7 @@
+div[data-aura-component='displays/user-info'] {
+    display: inline;
+}
+div[data-aura-component='displays/user-info'] .user-info {
+    display: inline;
+    padding-left: 5px;
+}
