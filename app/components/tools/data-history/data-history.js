@@ -15,7 +15,10 @@ define([
         $cancelButton,
         $closeButton,
         $dataHistoryListTable,
-        $dataHistoryDetailView;
+        $dataHistoryDetailView,
+        $noDataLabel,
+        currentDataArray = [].
+        currentDataSet = {};
     
     var exposed = {
         init: function(thisContext) {
@@ -30,6 +33,7 @@ define([
             $closeButton = context.$('#data-history-modal.modal button.close');
             $dataHistoryListTable = context.$('#data-history-modal.modal .data-history-list');
             $dataHistoryDetailView = context.$('#data-history-modal.modal .data-history-detail-view');
+            $noDataLabel = context.$('#data-history-modal.modal p.noDataLabel');
 
             $modal.modal({
                 "backdrop": true,
@@ -120,11 +124,8 @@ define([
                 }
             })
             .done(function(data) {
-                var tempDataArray = [],
-                    currentDataArray = {};
-
-                // Clear previous data history list
-                $dataHistoryListTable.empty();
+                currentDataArray = [];
+                currentDataSet = {};
 
                 context.sandbox.utils.each(data, function(index, dataEntry) {
                     var tempDataEntry = {
@@ -136,34 +137,45 @@ define([
                         "rawDate": dataEntry.createdOn,
                         "dataRecordCount": dataEntry.numRecords
                     };
-                    tempDataArray.push(tempDataEntry);
-                    currentDataArray[dataEntry.queryId] = dataEntry;
+                    currentDataArray.push(tempDataEntry);
+                    currentDataSet[dataEntry.queryId] = dataEntry;
                 });
 
-                tempDataArray.sort(dynamicSort('-rawDate'));
+                currentDataArray.sort(dynamicSort('-rawDate'));
 
-                context.sandbox.utils.each(tempDataArray, function(index, tempDataEntry) {
-                    var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);
-                    $dataHistoryListTable.append(dataHistoryEntry);
-                });
-
-                context.$('.data-history-list .data-action-info').on('click', function(event) {
-                    exposed.showDetailedInfo({
-                        "datasetId": context.$(this).parent().parent().data('datasetid')
-                    });
-                });
-                context.$('.data-history-list .data-action-restore').on('click', function(event) {
-                    publisher.restoreDataset(currentDataArray[context.$(this).parent().parent().data('datasetid')]);
-                    publisher.closeDataHistory();
-                });
-                context.$('.data-history-list .data-action-delete').on('click', function(event) {
-                    // Delete the dataset
-                    deleteDataset(context.$(this).parent().parent().data('datasetid'), 
-                        context.$(this).parent().parent().data('datasessionid'));
-                });
+                populateDataHistoryTable();
             });
         }
     };
+
+    function populateDataHistoryTable() {
+        $dataHistoryListTable.empty();
+        context.sandbox.utils.each(currentDataArray, function(index, tempDataEntry) {
+            var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);
+            $dataHistoryListTable.append(dataHistoryEntry);
+        });
+        
+        if($dataHistoryListTable.children().length === 0) {
+            $noDataLabel.removeClass('hide');
+        } else {
+            $noDataLabel.addClass('hide');
+        }
+
+        context.$('.data-history-list .data-action-info').on('click', function(event) {
+            exposed.showDetailedInfo({
+                "datasetId": context.$(this).parent().parent().data('datasetid')
+            });
+        });
+        context.$('.data-history-list .data-action-restore').on('click', function(event) {
+            publisher.restoreDataset(currentDataSet[context.$(this).parent().parent().data('datasetid')]);
+            publisher.closeDataHistory();
+        });
+        context.$('.data-history-list .data-action-delete').on('click', function(event) {
+            // Delete the dataset
+            deleteDataset(context.$(this).parent().parent().data('datasetid'), 
+                context.$(this).parent().parent().data('datasessionid'));
+        });
+    }
 
     function generateDataHistoryEntryRow(dataHistoryEntryObject) {
         return dataHistoryEntryTemplate({
@@ -196,8 +208,16 @@ define([
             type: 'DELETE',
             url: '/clear/' + datasetId + '/' + dataSessionId
         }).done(function() {
-            console.debug('i am here');
-            exposed.updateDataHistory();
+            var newDataArray = [];
+            context.sandbox.utils.each(currentDataArray, function(index, tempDataEntry) {
+                if(tempDataEntry.datasetId !== datasetId) {
+                    newDataArray.push(tempDataEntry);
+                } else {
+                    delete currentDataSet[datasetId];
+                }
+            });
+            currentDataArray = newDataArray;
+            populateDataHistoryTable();
         });
     }
 
