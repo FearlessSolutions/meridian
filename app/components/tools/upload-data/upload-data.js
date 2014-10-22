@@ -230,7 +230,10 @@ define([
     }
 
     function publishData(data, queryId, queryName){
-        var newData = [];
+        var chunk = [],
+            chunks = [],
+            chunksIndex = 0;
+            CHUNK_SIZE = 1000;
 
         if(data.length === 0){
             publishFinished(queryId, queryName);
@@ -265,19 +268,38 @@ define([
                 newValue.properties[styleKey] = styleValue;
             });
 
-            newData.push(newValue);
+            chunk.push(newValue);
+
+            // Deal with chunk state
+            if((index % CHUNK_SIZE) === 0){
+                chunks.push(chunk);
+                chunksIndex++;
+                chunk = [];
+            }
         });
 
-        publisher.publishData({
-            "layerId": queryId,
-            "data": newData
-        });
+        //Push remaining values into chunk array. This might be an empty array, but that is ok.
+        chunks.push(chunk);
 
-        publisher.publishMessage({
-            "messageType": "info",
-            "messageTitle": "Data Upload",
-            "messageText": newData.length + " events have been added to the " + queryName + " layer."
-        });
+        console.debug("Ready to publish", data.length);
+        console.debug("chunks", chunks.length);
+
+
+        //Publish the data, one chunk at a time
+        for(chunksIndex = 0; chunksIndex < chunks.length; chunksIndex++){
+            console.debug("publishing ", chunksIndex);
+            chunk = chunks[chunksIndex];
+            publisher.publishData({
+                "layerId": queryId,
+                "data": chunk
+            });
+
+            publisher.publishMessage({
+                "messageType": "info",
+                "messageTitle": "Data Upload",
+                "messageText": chunk.length + " events have been added to the " + queryName + " layer."
+            });
+        }
 
         publishFinished(queryId, queryName);
     }

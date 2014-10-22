@@ -82,35 +82,43 @@ exports.init = function(thisContext){
                             res.status(500);
                             res.send(er);
                         } else {
-                            console.log("sending 200")
-                            res.status(200);
-                            res.set('Content-Type', 'application/json');
-                            res.setHeader('Content-Type', 'application/json');
-                            res.json(data.features);
-                            return;
 
 
-                            save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, data.features, function (err) {
-                                if (err) {
-                                    console.log('error:' + err);
-                                    res.status(500);
-                                    res.send(err);
-                                } else {
-                                    console.log("sending 200")
-                                    res.status(200);
-                                    res.set('Content-Type', 'application/json');
-                                    res.setHeader('Content-Type', 'application/json');
-                                    res.json(data.features);
-                                }
-                            });
+
+//                            console.log("sending 200")
+//                            res.status(200);
+//                            res.set('Content-Type', 'application/json');
+//                            res.setHeader('Content-Type', 'application/json');
+//                            res.json(data.features);
+
+//                            return;
 
 
-                            return;
-//                            context.sandbox.elastic.metadata
-//                                .create(userName, sessionId, queryId)
-//                                .setQueryName(queryName)
-//                                .setDataSource(DATASOURCE_NAME)
-//                                .commit(function () {
+
+
+
+//
+//                            save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, data.features, function (err) {
+//                                if (err) {
+//                                    console.log('error:' + err);
+//                                    res.status(500);
+//                                    res.send(err);
+//                                } else {
+//                                    console.log("sending 200")
+//                                    res.status(200);
+//                                    res.set('Content-Type', 'application/json');
+//                                    res.setHeader('Content-Type', 'application/json');
+//                                    res.json(data.features);
+//                                }
+//                            });
+//                            return;
+
+
+                            context.sandbox.elastic.metadata
+                                .create(userName, sessionId, queryId)
+                                .setQueryName(queryName)
+                                .setDataSource(DATASOURCE_NAME)
+                                .commit(function () {
                                     var CHUNK_SIZE = 1000;
 
                                     _.each(data.features, function (feature, index) {
@@ -124,25 +132,22 @@ exports.init = function(thisContext){
                                         data.features[index] = feature;
                                     });
 
-                                    var saveRecursive = function(chunkIndex, callback){
-//                                        callback(null);
-//
-//                                        return;
 
 
 
-
+                                    var saveRecursive = function(chunkIndex, featuresToProcess, callback){
                                         console.log("save chunk ", chunkIndex)
+                                        console.log("length", featuresToProcess.length);
                                         var chunk;
 
-                                        if(chunkIndex < data.features.length){
+                                        if(chunkIndex >= featuresToProcess.length){
                                             callback(null);
                                             return ; // Normal end; No error
                                         }
 
-                                        chunk = (chunkIndex + CHUNK_SIZE) < data.features.length
-                                            ? data.features.slice(chunkIndex, chunkIndex + CHUNK_SIZE)
-                                            : data.features.slice(chunkIndex); //Goes to the end
+                                        chunk = (chunkIndex + CHUNK_SIZE) < featuresToProcess.length
+                                            ? featuresToProcess.slice(chunkIndex, chunkIndex + CHUNK_SIZE)
+                                            : featuresToProcess.slice(chunkIndex); //Goes to the end
 
                                         save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, chunk, function (err) {
                                             if (err) {
@@ -152,7 +157,7 @@ exports.init = function(thisContext){
                                                 return;
                                             } else {
                                                 console.log("saving...")
-                                                saveRecursive(chunkIndex + CHUNK_SIZE, callback);
+                                                saveRecursive(chunkIndex + CHUNK_SIZE, featuresToProcess, callback);
                                             }
                                         });
                                     };
@@ -160,51 +165,23 @@ exports.init = function(thisContext){
 
                                     console.log("features to proccess: ", data.features.length)
                                     //Start the chunk saving at index 0, when done, handle error and return status
-                                    saveRecursive(0, function(err){
+                                    saveRecursive(0, data.features, function(err){
                                         console.log("finished saving ", err)
                                         if(err){
                                             console.log('error:' + err);
                                             res.status(500);
                                             res.send(err);
                                         }else{
-                                            console.log("sending back 200")
+                                            console.log("sending back 200: ", data.features.length)
                                             res.status(200);
                                             res.set('Content-Type', 'application/json');
                                             res.setHeader('Content-Type', 'application/json');
                                             res.json(data.features);
                                         }
                                     });
-
-
-                                    //Chop up the features so that elastic doesn't bomb
-//                                    finished = false;
-//                                    for(chunkIndex = 0; chunkIndex < data.features.length && !finished, chunkIndex += CHUNK_SIZE){
-//                                        chunk = (chunkIndex + CHUNK_SIZE) < data.features.length
-//                                            ? data.features.slice(chunkIndex, chunkIndex + CHUNK_SIZE)
-//                                            : data.features.slice(chunkIndex); //Goes to the end
-//
-//                                        save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, chunk, function (err) {
-//                                            if (err) {
-//                                                console.log('error:' + err);
-//                                                res.status(500);
-//                                                res.send(err);
-//                                            } else {
-//                                                res.status(200);
-//                                                res.set('Content-Type', 'application/json');
-//                                                res.setHeader('Content-Type', 'application/json');
-//                                                res.json(data.features);
-//                                            }
-//                                        });
-//                                    }
-//                                });
+                                });
                         }
                     });
-//                });
-
-            }
-
-
-
 
 
 //                mimeTypeTransformFunction(file, function(er, data){
@@ -243,11 +220,11 @@ exports.init = function(thisContext){
 //                            });
 //                    }
 //                });
-//            }else {
-//                console.log('error: Mimetype ' + mimetype + ' not supported');
-//                res.status(500);
-//                res.send('error: Mimetype ' + mimetype + ' not supported');
-//            }
+            }else {
+                console.log('error: Mimetype ' + mimetype + ' not supported');
+                res.status(500);
+                res.send('error: Mimetype ' + mimetype + ' not supported');
+            }
 
         });
     });
