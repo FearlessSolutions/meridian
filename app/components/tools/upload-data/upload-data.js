@@ -294,18 +294,22 @@ define([
 
         //For each feature, create the minimized feature to be stored locally, with all the fields needed for datagrid
         context.sandbox.utils.each(data, function(dataIndex, dataFeature){
-            var newValue = {};
+            var newValue;
 
-            newValue.dataService = data[dataIndex].dataService = DATASOURCE_NAME;
+            data[dataIndex].dataService = DATASOURCE_NAME;
 
-            newValue.layerId = queryId;
-            newValue.id = data[dataIndex].id = dataFeature.properties.featureId;
-            newValue.geometry = dataFeature.geometry;
-            newValue.type = dataFeature.type;
-            newValue.properties = dataFeature.properties || {};
-            newValue.lat = dataFeature.geometry.coordinates[1];
-            newValue.lon = dataFeature.geometry.coordinates[0];
-            newValue.featureId = dataFeature.properties.featureId;
+            //No keys, so skip that step
+            newValue = {
+                "dataService": DATASOURCE_NAME,
+                "layerId": queryId,
+                "id": feature.properties.featureId,
+                "featureId": feature.properties.featureId,
+                "geometry": feature.geometry,
+                "type": feature.type,
+                "properties" : {},
+                "lat": feature.geometry.coordinates[1],
+                "lon": feature.geometry.coordinates[0]
+            };
 
             context.sandbox.dataStorage.addData({
                 datasetId: queryId,
@@ -327,85 +331,7 @@ define([
             layerId: queryId,
             data: newData
         });
-
-
-
-//        var queryId = params.queryId,
-//            queryName = params.queryName,
-//            chunk = [],
-//            chunks = [],
-//            chunksIndex = 0,
-//            CHUNK_SIZE = 1000;
-//
-//        if(data.length === 0){
-//            publishFinished(queryId, queryName);
-//            return;
-//        }
-//
-//        data.forEach(function(feature, index){
-//            var newValue;
-//
-//            data[index].dataService = DATASOURCE_NAME;
-//
-//            //No keys, so skip that step
-//            newValue = {
-//                dataService: DATASOURCE_NAME,
-//                layerId: queryId,
-//                id: feature.properties.featureId,
-//                featureId: feature.properties.featureId,
-//                geometry: feature.geometry,
-//                type: feature.type,
-//                properties: {},
-//                lat: feature.geometry.coordinates[1],
-//                lon: feature.geometry.coordinates[0]
-//            };
-//
-//            context.sandbox.dataStorage.addData({
-//                datasetId: queryId,
-//                data: newValue
-//            });
-//
-//            // Add style properties for map features, but not for local dataset storage
-//            context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(feature), function(styleKey, styleValue){
-//                newValue.properties[styleKey] = styleValue;
-//            });
-//
-//            chunk.push(newValue);
-//
-//            // Deal with chunk state
-//            if((index % CHUNK_SIZE) === 0){
-//                chunks.push(chunk);
-//                chunksIndex++;
-//                chunk = [];
-//            }
-//        });
-//
-//        //Push remaining values into chunk array. This might be an empty array, but that is ok.
-//        chunks.push(chunk);
-//
-//        console.debug("Ready to publish", data.length);
-//        console.debug("chunks", chunks.length);
-//
-//
-//        //Publish the data, one chunk at a time
-//        for(chunksIndex = 0; chunksIndex < chunks.length; chunksIndex++){
-//            console.debug("publishing ", chunksIndex);
-//            chunk = chunks[chunksIndex];
-//            publisher.publishData({
-//                layerId: queryId,
-//                data: chunk
-//            });
-//
-//            publisher.publishMessage({
-//                messageType: 'info',
-//                messageTitle: 'Data Upload',
-//                messageText: chunk.length + ' events have been added to the ' + queryName + ' layer.'
-//            });
-//        }
-//
-//        markQueryFinished(queryId, queryName);
     }
-
 
 
     function markQueryFinished(queryId, queryName){
