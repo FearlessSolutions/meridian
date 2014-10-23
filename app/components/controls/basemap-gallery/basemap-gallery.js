@@ -94,6 +94,12 @@ define([
                 hideBasemapGallery //mouseleave
             );
 
+        },
+        show: function() {
+            $basemapGallery.show();
+        },
+        hide: function() {
+            $basemapGallery.hide();
         }
     };
 

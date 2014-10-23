@@ -17,7 +17,10 @@ define([
         },
         publishShowLayer: function(args) {
             context.sandbox.emit('map.layer.show', args); 
-        }
+        },
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
+        },
     };
 
     return exposed;

@@ -7,6 +7,12 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
+        closeTimeline: function(params) {
+            context.sandbox.emit('timeline.close');
+        },
+        openTimeline: function(params) {
+            context.sandbox.emit('timeline.open');
+        },
         createLayer: function(params) {
             context.sandbox.emit('map.layer.create', params);
         },
