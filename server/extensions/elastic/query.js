@@ -6,7 +6,7 @@ var config,
 
 exports.init = function(context){
     config = context.sandbox.config.getConfig();
-    client = context.sandbox.elastic.client.newClient();
+    client = context.sandbox.elastic.client.getClient();
 };
 
 exports.updateRecord = function(userName, sessionId, type, updateMap, callback){

@@ -79,6 +79,7 @@ exports.init = function(thisContext){
 
 
                         if (er) {
+                            console.log("error in parser", er)
                             res.status(500);
                             res.send(er);
                         } else {
@@ -172,11 +173,19 @@ exports.init = function(thisContext){
                                             res.status(500);
                                             res.send(err);
                                         }else{
+
                                             console.log("sending back 200: ", data.features.length)
-                                            res.status(200);
-                                            res.set('Content-Type', 'application/json');
-                                            res.setHeader('Content-Type', 'application/json');
-                                            res.json(data.features);
+                                            context.sandbox.elastic.refresh(function(){
+                                                console.log("sessionId ", sessionId)
+                                                console.log("queryId ", queryId)
+                                                res.status(200);
+//                                            res.set('Content-Type', 'application/json');
+//                                            res.setHeader('Content-Type', 'application/json');
+                                                res.send({
+                                                    queryId: queryId,
+                                                    count: data.features.length
+                                                });
+                                            });
                                         }
                                     });
                                 });

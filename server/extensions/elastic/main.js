@@ -22,7 +22,8 @@ exports.init = function(context){
         client: client,
         stream: stream,
         purge: purge,
-        metadata: metadata
+        metadata: metadata,
+        refresh: client.refresh
     };
 
     // Init sub-modules as necessary

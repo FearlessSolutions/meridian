@@ -6,11 +6,11 @@ define([
     'handlebars'
 ], function(configuration, uploadDataInfoWinHBS, uploadDataInfoWinCSS) {
     var template = Handlebars.compile(uploadDataInfoWinHBS),
-        DATASOURCE_NAME = 'UPLOADED_FILE',
+        DATASOURCE_NAME = 'upload',
         context;
 
     var exposed = {
-        "initialize": function(app) {
+        initialize: function(app) {
             context = app;
             app.sandbox.utils.addCSS(uploadDataInfoWinCSS, 'upload-data-extension-style');
 
@@ -18,19 +18,19 @@ define([
                 app.sandbox.dataServices = {};
             }
             app.sandbox.dataServices[DATASOURCE_NAME] = {
-                "infoWinTemplate": {
-                    "buildInfoWinTemplate": function(attributes){
+                infoWinTemplate: {
+                    buildInfoWinTemplate: function(attributes){
                         var html = template({
-                            "attributes": attributes,
-                            "classification": attributes.classification,
-                            "thumbnail": "./extensions/map-configuration-extension/images/markerIcons/marker-2x-80x80.png"
+                            attributes: attributes,
+                            classification: attributes.classification,
+                            thumbnail: './extensions/map-configuration-extension/images/markerIcons/marker-2x-80x80.png'
                         });
 
                         return html;
                     },
-                    "postRenderingAction": function(){}
+                    postRenderingAction: function(){}
                 },
-                "configuration": configuration
+                configuration: configuration
             };
 
             if(!app.sandbox.upload){
@@ -57,16 +57,16 @@ define([
         url = url.replace('{{classification}}', params.classification);
 
         return $.ajax({
-            "type": "POST",
-            "url": url,
-            "processData": false,
-            "contentType": false,
-            "data": formData,
-            "mimeType": "multipart/form-data",
-            "accepts": "application/json",
-            "dataType": "json",
-            "success": callback,
-            "error": errorCallback
+            type: 'POST',
+            url: url,
+            processData: false,
+            contentType: false,
+            data: formData,
+            mimeType: 'multipart/form-data',
+            accepts: 'application/json',
+            dataType: 'json',
+            success: callback,
+            error: errorCallback
         });
     }
 

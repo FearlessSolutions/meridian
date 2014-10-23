@@ -5,14 +5,14 @@ define([
     var exposed = {
         initialize: function(app) {
             var dataStorage = {
-				"datasets": {
+				datasets: {
                 },
-                "columns": {
-                    "featureId":"Feature ID",
-                    "layerId":"Layer ID",
-                    "lat": "Lat",
-                    "lon": "Lon",
-                    "dataService": "Data Service"
+                columns: {
+                    featureId:'Feature ID',
+                    layerId: 'Layer ID',
+                    lat: 'Lat',
+                    lon: 'Lon',
+                    dataService: 'Data Service'
                 },
                 addData: function(params) {
                     dataStorage.datasets[params.datasetId].add(params.data);
@@ -43,7 +43,7 @@ define([
                     var featureId = params.featureId;
                     var feature = {};
                     var ajax = $.ajax({
-                        type: "GET",
+                        type: 'GET',
                         url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + featureId
                     }).done(function(data) {
                         callback(data);
@@ -53,7 +53,7 @@ define([
                 },
                 getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
                     $.ajax({
-                        type: "GET",
+                        type: 'GET',
                         url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/query/' + queryId + '/session/' + sessionId +
                             '?start=' + start + '&size=' + size
                     }).done(function(data) {

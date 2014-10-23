@@ -63,7 +63,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     });
     
     Aura({
-        "debug": false,
+        "debug": true,
         "appName": "Meridian",
         "sources": {"default": "components"},
         "mediator": {"maxListeners": 50}

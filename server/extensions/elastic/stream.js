@@ -1,7 +1,7 @@
 var client ;
 
 exports.init = function(context){
-    client = context.sandbox.elastic.client.newClient();
+    client = context.sandbox.elastic.client.getClient();
 };
 
 exports.stream = function(routing, index, type, query, pageSize, pageCallback){

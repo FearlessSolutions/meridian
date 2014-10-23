@@ -13,7 +13,7 @@ define([
 ], function (publisher) {
     var context,
         MENU_DESIGNATION = "upload-data",
-        DATASOURCE_NAME = "UPLOADED_FILE",
+        DATASOURCE_NAME = "upload",
         $dialog,
         $file,
         $dummyFile,
@@ -21,7 +21,7 @@ define([
         $submit;
 
     var exposed = {
-        "init": function(thisContext) {
+        init: function(thisContext) {
             context = thisContext;
             $dialog = context.$('#uploadDataDialog');
             $file = context.$('#file');
@@ -98,48 +98,48 @@ define([
                     context.sandbox.dataStorage.datasets[queryId] = new Backbone.Collection();
                     context.sandbox.dataStorage.datasets[queryId].dataService = DATASOURCE_NAME;
 
-                    publisher.createLayer({
-                        "layerId": queryId,
-                        "name": queryName,
-                        "selectable": true
+                    createLayer({
+                        queryId: queryId,
+                        queryName: queryName,
+                        selectable: true
                     });
 
                     publisher.addToProgressQueue();
 
                     publisher.publishMessage({
-                        "messageType": "success",
-                        "messageTitle": "Data Upload",
-                        "messageText": "Data upload was started."
+                        messageType: 'success',
+                        messageTitle: 'Data Upload',
+                        messageText: 'Data upload was started.'
                     });
 
                     // Try the upload
-                    newAJAX = context.sandbox.upload.file(
-                        {
-                            "queryId": queryId,
-                            "queryName": queryName,
-                            "file": file,
-                            "filetype": filetype,
-                            "classification": classification
-                        },
-                        //Success callback
-                        function(data){
-                            publishData(data, queryId, queryName);
-                        },
-                        //Error callback
-                        function(status, jqXHR){
-                            publishError(queryId, queryName);
+                    newAJAX = context.sandbox.upload.file({
+                        queryId: queryId,
+                        queryName: queryName,
+                        file: file,
+                        filetype: filetype,
+                        classification: classification
+                    }, function(data){ //Success callback
+                            exposed.restoreDataset({
+                                queryId: queryId,
+                                queryName: queryName,
+                                sessionId: context.sandbox.sessionId,
+                                dataSource: DATASOURCE_NAME
+                            });
+                        }, function(status, jqXHR){ //Error callback
+                            markQueryError(queryId, queryName, status);
                         }
                     );
 
                     context.sandbox.ajax.addActiveAJAX({
-                        "newAJAX": newAJAX,
-                        "layerId": queryId
+                        newAJAX: newAJAX,
+                        layerId: queryId
                     });
 
                     context.sandbox.stateManager.setLayerStateById({
-                        "layerId": queryId,
-                        "state": {
-                            "dataTransferState": 'running'
+                        layerId: queryId,
+                        state: {
+                            dataTransferState: 'running'
                         }
                     });
 
@@ -150,14 +150,14 @@ define([
             context.$('#upload-cancel').on('click', close); //Handle close
             close();
         },
-        "handleMenuOpening": function(args){
+        handleMenuOpening: function(args){
             if(args.componentOpening === MENU_DESIGNATION){
                 return;
             }else{
                 close();
             }
         },
-        "stopQuery": function(params){
+        stopQuery: function(params){
             var layerState,
                 dataTransferState;
 
@@ -167,7 +167,7 @@ define([
             }
 
             context.sandbox.ajax.stopQuery({
-                "layerId": params.layerId
+                layerId: params.layerId
             });
 
             // Handle notifcations and state
@@ -178,23 +178,23 @@ define([
 
                 if(dataTransferState !== 'stopped' && dataTransferState !== 'finished') {
                     publisher.publishMessage({
-                        "messageType": "warning",
-                        "messageTitle": "Data Service",
-                        "messageText": "Query data transfer was stopped."
+                        messageType: 'warning',
+                        messageTitle: 'Data Service',
+                        messageText: 'Query data transfer was stopped.'
                     });
 
                     publisher.removeFromProgressQueue();
 
                     context.sandbox.stateManager.setLayerStateById({
-                        "layerId": params.layerId,
-                        "state": {
-                            "dataTransferState": 'stopped'
+                        layerId: params.layerId,
+                        state: {
+                            dataTransferState: 'stopped'
                         }
                     });
                 }
             }
         },
-        "clear": function() {
+        clear: function() {
             var queryId;
             $dummyFile.val('');
             $submit.attr('disabled', true);
@@ -206,6 +206,51 @@ define([
                     delete context.sandbox.dataStorage.datasets[queryId];
                 }
             }
+        },
+        deleteDataset: function(params){
+
+        },
+        restoreDataset: function(params){
+            var queryId = params.queryId,
+                queryName = params.queryName,
+                getPage,
+                RESTORE_PAGE_SIZE = 500;
+
+            if(params.dataSource !== DATASOURCE_NAME){
+                return;
+            }
+
+            if(!context.sandbox.dataStorage.datasets[queryId]) {
+                createLayer({
+                    queryId: params.queryId,
+                    name: queryName,
+                    minLat: params.queryBbox ? params.queryBbox.bottom : null,
+                    minLon: params.queryBbox ? params.queryBbox.left : null,
+                    maxLat: params.queryBbox ? params.queryBbox.top : null,
+                    maxLon: params.queryBbox ? params.queryBbox.right : null
+                });
+
+                markQueryStart(queryName);
+            }
+
+
+            getPage = function(params, start, pageSize){
+                context.sandbox.dataStorage.getResultsByQueryAndSessionId(queryId, params.sessionId, start, pageSize, function(err, results){
+                    if(err) {
+                        markQueryError(queryId, queryName, err);
+                    } else if (!results || results.length === 0) {
+                        markQueryFinished(queryId, queryName);
+                    } else {
+                        processDataPage(results, {
+                            queryId: queryId,
+                            name: queryName
+                        });
+                        getPage(params, start + RESTORE_PAGE_SIZE, RESTORE_PAGE_SIZE);
+                    }
+                });
+            };
+
+            getPage(params, 0, RESTORE_PAGE_SIZE);
         }
     };
 
@@ -221,129 +266,211 @@ define([
 
     function setFileError(){
         publisher.publishMessage({
-            "messageType": "warning",
-            "messageTitle": "Data Upload",
-            "messageText": "File type not supported for upload"
+            messageType: 'warning',
+            messageTitle: 'Data Upload',
+            messageText: 'File type not supported for upload'
         });
 
         $dummyFile.parent().addClass('has-error');
     }
 
-    function publishData(data, queryId, queryName){
-        var chunk = [],
-            chunks = [],
-            chunksIndex = 0;
-            CHUNK_SIZE = 1000;
+    function processDataPage(data, params){
+        var queryId = params.queryId || data[0].properties.queryId,
+            queryName = params.queryName,
+            newData = [];
 
-        if(data.length === 0){
-            publishFinished(queryId, queryName);
-            return;
-        }
+        publisher.publishMessage({
+            messageType: 'info',
+            messageTitle: 'Data Service',
+            messageText: data.length+ ' events have been added to ' + queryName + ' query layer.'
+        });
 
-        data.forEach(function(feature, index){
-            var newValue;
-
-            data[index].dataService = DATASOURCE_NAME;
-
-            //No keys, so skip that step
-            newValue = {
-                "dataService": DATASOURCE_NAME,
-                "layerId": queryId,
-                "id": feature.properties.featureId,
-                "featureId": feature.properties.featureId,
-                "geometry": feature.geometry,
-                "type": feature.type,
-                "properties" : {},
-                "lat": feature.geometry.coordinates[1],
-                "lon": feature.geometry.coordinates[0]
-            };
-
-            context.sandbox.dataStorage.addData({
-                "datasetId": queryId,
-                "data": newValue
-            });
-
-            // Add style properties for map features, but not for local dataset storage
-            context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(feature), function(styleKey, styleValue){
-                newValue.properties[styleKey] = styleValue;
-            });
-
-            chunk.push(newValue);
-
-            // Deal with chunk state
-            if((index % CHUNK_SIZE) === 0){
-                chunks.push(chunk);
-                chunksIndex++;
-                chunk = [];
+        context.sandbox.stateManager.setLayerStateById({
+            layerId: queryId,
+            state: {
+                dataTransferState: 'running'
             }
         });
 
-        //Push remaining values into chunk array. This might be an empty array, but that is ok.
-        chunks.push(chunk);
+        //For each feature, create the minimized feature to be stored locally, with all the fields needed for datagrid
+        context.sandbox.utils.each(data, function(dataIndex, dataFeature){
+            var newValue = {};
 
-        console.debug("Ready to publish", data.length);
-        console.debug("chunks", chunks.length);
+            newValue.dataService = data[dataIndex].dataService = DATASOURCE_NAME;
 
+            newValue.layerId = queryId;
+            newValue.id = data[dataIndex].id = dataFeature.properties.featureId;
+            newValue.geometry = dataFeature.geometry;
+            newValue.type = dataFeature.type;
+            newValue.properties = dataFeature.properties || {};
+            newValue.lat = dataFeature.geometry.coordinates[1];
+            newValue.lon = dataFeature.geometry.coordinates[0];
+            newValue.featureId = dataFeature.properties.featureId;
 
-        //Publish the data, one chunk at a time
-        for(chunksIndex = 0; chunksIndex < chunks.length; chunksIndex++){
-            console.debug("publishing ", chunksIndex);
-            chunk = chunks[chunksIndex];
-            publisher.publishData({
-                "layerId": queryId,
-                "data": chunk
+            context.sandbox.dataStorage.addData({
+                datasetId: queryId,
+                data: newValue
             });
 
-            publisher.publishMessage({
-                "messageType": "info",
-                "messageTitle": "Data Upload",
-                "messageText": chunk.length + " events have been added to the " + queryName + " layer."
+            // Add style properties for map features, but not for local dataset storage
+            context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(dataFeature), function(styleKey, styleValue){
+                newValue.properties[styleKey] = styleValue;
             });
-        }
 
-        publishFinished(queryId, queryName);
+            newData.push(newValue);
+        });
+
+        // Clear data out from memory
+        data = [];
+
+        publisher.publishData({
+            layerId: queryId,
+            data: newData
+        });
+
+
+
+//        var queryId = params.queryId,
+//            queryName = params.queryName,
+//            chunk = [],
+//            chunks = [],
+//            chunksIndex = 0,
+//            CHUNK_SIZE = 1000;
+//
+//        if(data.length === 0){
+//            publishFinished(queryId, queryName);
+//            return;
+//        }
+//
+//        data.forEach(function(feature, index){
+//            var newValue;
+//
+//            data[index].dataService = DATASOURCE_NAME;
+//
+//            //No keys, so skip that step
+//            newValue = {
+//                dataService: DATASOURCE_NAME,
+//                layerId: queryId,
+//                id: feature.properties.featureId,
+//                featureId: feature.properties.featureId,
+//                geometry: feature.geometry,
+//                type: feature.type,
+//                properties: {},
+//                lat: feature.geometry.coordinates[1],
+//                lon: feature.geometry.coordinates[0]
+//            };
+//
+//            context.sandbox.dataStorage.addData({
+//                datasetId: queryId,
+//                data: newValue
+//            });
+//
+//            // Add style properties for map features, but not for local dataset storage
+//            context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(feature), function(styleKey, styleValue){
+//                newValue.properties[styleKey] = styleValue;
+//            });
+//
+//            chunk.push(newValue);
+//
+//            // Deal with chunk state
+//            if((index % CHUNK_SIZE) === 0){
+//                chunks.push(chunk);
+//                chunksIndex++;
+//                chunk = [];
+//            }
+//        });
+//
+//        //Push remaining values into chunk array. This might be an empty array, but that is ok.
+//        chunks.push(chunk);
+//
+//        console.debug("Ready to publish", data.length);
+//        console.debug("chunks", chunks.length);
+//
+//
+//        //Publish the data, one chunk at a time
+//        for(chunksIndex = 0; chunksIndex < chunks.length; chunksIndex++){
+//            console.debug("publishing ", chunksIndex);
+//            chunk = chunks[chunksIndex];
+//            publisher.publishData({
+//                layerId: queryId,
+//                data: chunk
+//            });
+//
+//            publisher.publishMessage({
+//                messageType: 'info',
+//                messageTitle: 'Data Upload',
+//                messageText: chunk.length + ' events have been added to the ' + queryName + ' layer.'
+//            });
+//        }
+//
+//        markQueryFinished(queryId, queryName);
     }
 
 
 
-    function publishFinished(queryId, queryName){
+    function markQueryFinished(queryId, queryName){
         publisher.removeFromProgressQueue();
 
         publisher.publishMessage({
-            "messageType": "success",
-            "messageTitle": "Data Upload",
-            "messageText": queryName + " Upload Complete"
+            messageType: 'success',
+            messageTitle: 'Data Upload',
+            messageText: queryName + ' Upload Complete'
         });
 
         publisher.publishFinished({"layerId": queryId});
     }
 
-    function publishError(queryId, queryName){
+    function markQueryError(queryId, queryName, error){
         publisher.removeFromProgressQueue();
 
         //If the error was because we aborted, ignore
-        if(e.statusText === "abort"){
+        if(error === 'abort'){
             return;
         }
 
         publisher.publishMessage({
-            "messageType": "error",
-            "messageTitle": "Data Upload",
-            "messageText": "Connection to upload service failed for " + queryName
+            messageType: 'error',
+            messageTitle: 'Data Upload',
+            messageText: 'Connection to upload service failed for ' + queryName
         });
 
         context.sandbox.stateManager.setLayerStateById({
-            "layerId": queryId,
-            "state": {
-                "dataTransferState": 'error'
+            layerId: queryId,
+            state: {
+                dataTransferState: 'error'
             }
         });
 
         publisher.publishError({
-            "layerId": queryId
+            layerId: queryId
         });
 
         return false;
     }
 
+    function createLayer(params){
+        context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
+        context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
+
+        publisher.createLayer({
+            layerId: params.queryId,
+            name: params.queryName,
+            selectable: true,
+            coords: {
+                minLat: params.minLat,
+                minLon: params.minLon,
+                maxLat: params.maxLat,
+                maxLon: params.maxLon
+            }
+        });
+    }
+
+    function markQueryStart(queryName) {
+        publisher.publishMessage({
+            messageType: 'success',
+            messageTitle: 'Data Service',
+            messageText: queryName + ' query initiated'
+        });
+        publisher.addToProgressQueue();
+    }
 });

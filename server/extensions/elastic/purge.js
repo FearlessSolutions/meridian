@@ -3,7 +3,7 @@ var config,
 
 exports.init = function(context){
     config = context.sandbox.config.getConfig();
-    client = context.sandbox.elastic.client.newClient();
+    client = context.sandbox.elastic.client.getClient();
 };
 
 exports.deleteRecordsByQueryId = function(user, sessionId, queryId, callback){
