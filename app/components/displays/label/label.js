@@ -1,6 +1,5 @@
 define([
     'bootstrap',
-    'bootstrapDialog',
     'jqueryUI'
 ], function () {
     var context;
@@ -24,10 +23,10 @@ define([
 
             context.$('.dialog-title').html(labelTitle);
             context.$('.dialog-body').html(labelDescription);    
-            context.$('#labelContainer').dialog('show');
+            context.$('#labelContainer').removeClass('hide');
         },
         removeLabel: function(){
-            context.$('#labelContainer').dialog('hide');
+            context.$('#labelContainer').addClass('hide');
         }
     };
 

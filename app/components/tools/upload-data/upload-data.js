@@ -6,15 +6,11 @@
  */
 define([
     './upload-data-publisher',
-    'bootstrap',
-    'bootstrapDialog',
-    'jqueryDrag',
-    'handlebars'
+    'bootstrap'
 ], function (publisher) {
     var context,
-        MENU_DESIGNATION = "upload-data",
         DATASOURCE_NAME = "upload",
-        $dialog,
+        $modal,
         $file,
         $dummyFile,
         $classification,
@@ -23,7 +19,7 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            $dialog = context.$('#uploadDataDialog');
+            $modal = context.$('#upload-data-modal');
             $file = context.$('#file');
             $dummyFile = context.$('#dummy-file');
             $classification = context.$('#classification');
@@ -31,15 +27,12 @@ define([
 
             $submit.attr('disabled', true); //Start with submit disabled until a file is added
 
-            //Toggle the menu on UI click
-            context.$('#uploadData').on('click', function(event){
-                event.preventDefault();
-                $dialog.dialog('toggle');
-            });
-
-            //When the menu is opened, let the app know
-            $dialog.on('shown.bs.dialog', function(){
-                publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            $modal.modal({
+                "backdrop": true,
+                "keyboard": true,
+                "show": false
+            }).on('hidden.bs.modal', function() {
+                publisher.closeUploadTool();
             });
 
             //Tie the hidden <file> input with the pretty UI one
@@ -143,19 +136,12 @@ define([
                         }
                     });
 
-                    close();
+                    publisher.closeUploadTool();
                 }
             });
 
-            context.$('#upload-cancel').on('click', close); //Handle close
-            close();
-        },
-        handleMenuOpening: function(args){
-            if(args.componentOpening === MENU_DESIGNATION){
-                return;
-            }else{
-                close();
-            }
+            context.$('#upload-cancel').on('click', publisher.closeUploadTool); //Handle close
+            publisher.closeUploadTool();
         },
         stopQuery: function(params){
             var layerState,
@@ -243,7 +229,7 @@ define([
                     } else {
                         processDataPage(results, {
                             queryId: queryId,
-                            name: queryName
+                            queryName: queryName
                         });
                         getPage(params, start + RESTORE_PAGE_SIZE, RESTORE_PAGE_SIZE);
                     }
@@ -251,14 +237,17 @@ define([
             };
 
             getPage(params, 0, RESTORE_PAGE_SIZE);
+        },
+        show: function(){
+            $modal.modal('show');
+        },
+        hide: function(){
+            $modal.modal('hide');
         }
     };
 
     return exposed;
 
-    function close(){
-        $dialog.dialog('hide');
-    }
 
     function removeFileError(){
         $dummyFile.parent().removeClass('has-error');
@@ -302,13 +291,13 @@ define([
             newValue = {
                 "dataService": DATASOURCE_NAME,
                 "layerId": queryId,
-                "id": feature.properties.featureId,
-                "featureId": feature.properties.featureId,
-                "geometry": feature.geometry,
-                "type": feature.type,
+                "id": dataFeature.properties.featureId,
+                "featureId": dataFeature.properties.featureId,
+                "geometry": dataFeature.geometry,
+                "type": dataFeature.type,
                 "properties" : {},
-                "lat": feature.geometry.coordinates[1],
-                "lon": feature.geometry.coordinates[0]
+                "lat": dataFeature.geometry.coordinates[1],
+                "lon": dataFeature.geometry.coordinates[0]
             };
 
             context.sandbox.dataStorage.addData({

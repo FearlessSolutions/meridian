@@ -2,40 +2,26 @@ define([
     './support-publisher',
     'bootstro',
     'bootstrap',
-    'bootstrapDialog'
 ], function (publisher, bootstro) {
 
     var context,
         contentLoaded = false,
         MENU_DESIGNATION = 'support-dialog',
-        $supportDialog,
-        $supportButton;
+        $modal,
+        $modalBody,
+        $closeButton;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            $supportDialog = context.$('#SupportDialog');
+
+            $modal = context.$('#support-modal');
+            $modalBody = context.$('#support-modal .modal-body');
+            $closeButton = context.$('#support-modal.modal button.close');
             $supportButton = context.$('#support');
 
-            //Activate bootstrap tooltip. 
-            //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
-            $supportButton.tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
-                }
-            });
-
-            $supportButton.on('click', function(event) {
-                event.preventDefault();
-                $supportDialog.dialog('toggle');
-            });
-
-            $supportDialog.on('shown.bs.dialog', function(){
-                publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
-            });
-
             context.$('#tour').on('click', function(event) {
+                publisher.closeSupport();
                 $supportButton.trigger('click');
 
                 if(contentLoaded === false){
@@ -59,20 +45,33 @@ define([
                 bootstro.start('.bootstro');
             });
 
+            $modal.modal({
+                "backdrop": true,
+                "keyboard": true,
+                "show": false
+             }).on('hidden.bs.modal', function() {
+                publisher.closeSupport();
+             });
+
+             $closeButton.on('click', function(event) {
+                event.preventDefault();
+                publisher.closeSupport();
+            }); 
+
            
         },
-        handleMenuOpening: function(params){
-            if(params.componentOpening === MENU_DESIGNATION){
-                return;
-            }else{
-                closeMenu();
-            }
+        open: function() {
+            publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            $modal.modal('show');
+        },
+        close: function() {
+            $modal.modal('hide');
+        },
+        clear: function() {
+            $modal.modal('hide');
         }
     };
 
     return exposed;
 
-    function closeMenu(){
-        $supportDialog.dialog('hide');
-    }
 });

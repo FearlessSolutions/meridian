@@ -35,10 +35,10 @@ define([
                 "backdrop": true,
                 "keyboard": true,
                 "show": false
-             }).on('hidden.bs.modal', function() {
+            }).on('hidden.bs.modal', function() {
                 publisher.closeDataHistory();
                 exposed.hideDetailedInfo();
-             });
+            });
 
             $closeButton.on('click', function(event) {
                 event.preventDefault();

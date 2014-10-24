@@ -6,6 +6,8 @@ div[data-aura-component='tools/locator'] .typeahead.dropdown-menu{
 
 div[data-aura-component='tools/locator'] #locator{
 	width: 450px;
+    -webkit-box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
 }
 
 /*Cursor values have to be added to the parent so that disabled buttons can have the desired behavior.

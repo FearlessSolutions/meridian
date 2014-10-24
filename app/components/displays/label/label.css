@@ -1,5 +1,4 @@
 div[data-aura-component='displays/label'] #labelContainer {
-    display: none;
     position: absolute;
     left: 50px;
     top: 55px;
@@ -7,7 +6,7 @@ div[data-aura-component='displays/label'] #labelContainer {
 div[data-aura-component='displays/label'] #labelContainer .dialog-dialog{
     width: 400px;
     position: absolute;
-    z-index: 2000;
+    z-index: 1020;
     margin: 0;
     opacity: 0.80;
 }

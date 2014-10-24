@@ -585,6 +585,8 @@ define([
     function addDefaultListeners(params) {
         params.layer.events.on({
             beforefeatureselected: function(evt) {
+                var selectController = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                selectController.unselectAll();
             },
             featureselected: function(evt) {
                 var popup,

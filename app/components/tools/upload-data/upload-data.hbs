@@ -1,14 +1,11 @@
-<a href="#" id="uploadData" type="button" class="btn btn-default-icon">
-    <span class="glyphicon glyphicon-open"></span>
-</a>
-<div id="uploadDataDialog" class="dialog fade" >
-    <div class="dialog-dialog">
-        <div class="dialog-content">
-            <div class="dialog-header">
-                <button type="button" class="close" data-dismiss="dialog" aria-hidden="true">&times;</button>
-                <p class="dialog-title">Upload File</p>
+<div id="upload-data-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="data-upload-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header dialog-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <p class="modal-title">Upload File</p>
             </div>
-            <div class="dialog-body">
+            <div class="modal-body">
                 <form id="upload-form" class="form-horizontal" role="form">
                     <input id="file" type="file" name="uploadFile" accept="{{#each filetypes}}{{this.extension}},{{/each}}" style="display:none"> <!-- hidden file -->
 
@@ -36,13 +33,13 @@
                     </div>
                 </form>
 
-                <div class="row text-justify text-center"><strong>By selecting 'Upload', you agree that everything is classified properly</strong></div>
+                <div class="row text-center"><strong>By selecting 'Upload', you agree that everything is classified properly</strong></div>
             </div>
 
-            <div class="dialog-footer text-right">
+            <div class="modal-footer text-right">
                 <button id="upload-submit" type="submit" class="btn btn-primary">Upload</button>
                 <button id="upload-cancel" type="cancel" class="btn btn-primary">Cancel</button>
             </div>
-        </div><!-- /.dialog-content -->
-    </div><!-- /.dialog-dialog -->
-</div><!-- /.dialog -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

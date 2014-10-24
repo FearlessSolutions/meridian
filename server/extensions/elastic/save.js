@@ -42,6 +42,9 @@ exports.writeGeoJSON = function(userName, sessionId, queryId, dataType, geoJSON,
             if(!record.properties){
                 record.properties = {};
             }
+            if(!record.style){
+                record.style = {};
+            }
 
             // TODO: add a check to ensure the featureId has not already been used by this user/session
             featureId = record.properties.featureId || uuid.v4();

@@ -1,7 +1,4 @@
-<a href="#" id="internalPubsubTesterToggleButton" type="button" class="btn btn-default-icon" data-toggle="tooltip" data-placement="bottom" data-title="Developer Pub/Sub Tester">
-    <span class="glyphicon glyphicon-random"></span>
-</a>
-<div id="internalPubsubTesterDialog" class="dialog fade">
+<div id="internalPubsubTesterDialog" class="dialog hide">
     <div class="dialog-dialog">
         <div class="dialog-content">
             <div class="dialog-header">
@@ -30,7 +27,7 @@
                                 {{/each}}
                             </select>
                             <textarea id="internal-pub-message" class="form-control" rows="12"></textarea>
-                            <button id="publish" class="btn btn-default-text pull-right">Publish!</button>
+                            <button id="publish" class="btn btn-primary pull-right">Publish!</button>
                         </fieldset>
                       </div>
                     </div>
@@ -49,7 +46,7 @@
                                     Channels
                                     <b class="caret"></b>
                                 </button>
-                                <button id="subscribe" class="btn btn btn-default-text"><span class="glyphicon glyphicon-ok"></span>Update</button>
+                                <button id="subscribe" class="btn btn btn-primary"><span class="glyphicon glyphicon-ok"></span>Update</button>
                                 <ul class="dropdown-menu dropdown-menu-form subscription-list" role="menu">
                                     {{#each channelList}}
                                         <span class="menu-group">{{channelGroup}}</span>

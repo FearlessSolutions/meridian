@@ -18,6 +18,12 @@ define([
         },
         changeBasemap: function(params) {
             context.sandbox.emit('map.basemap.change', params);
+        },
+        closeUserSettings: function() {
+            context.sandbox.emit('settings.close');
+        },
+        openUserSettings: function() {
+            context.sandbox.emit('settings.open');
         }
     };
 
