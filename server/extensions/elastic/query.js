@@ -155,12 +155,12 @@ exports.getMetadataBySessionId = function(userId, sessionId, callback){
 
 exports.getMetadataByUserId = function(userId, callback){
     var query = {
-        "query":{
-            "bool":{
-                "must": [
+        query:{
+            bool:{
+                must: [
                     {
-                        "term": {
-                            "userId": userId
+                        term: {
+                            userId: userId
                         }
                     }
                 ]

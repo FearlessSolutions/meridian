@@ -3,18 +3,18 @@ define([
 ], function() {
 
     var configuration = {
-        "classifications":[
-            "U"
+        classifications:[
+            'U'
         ],
-        "filetypes":{
-            "kml": {
-                "extension":".kml"
+        filetypes:{
+            kml: {
+                extension:'.kml'
             },
-            "csv": {
-                "extension":".csv"
+            csv: {
+                extension: '.csv'
             },
-            "geojson": {
-                "extension":".geojson"
+            geojson: {
+                extension: '.geojson'
             }
         }
     };

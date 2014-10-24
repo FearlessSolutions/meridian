@@ -20,7 +20,7 @@ app.use(connect.json());
 app.use(connect.urlencoded());
 
 /**
- * Copy of connect-busbo/.index.js
+ * Copy of connect-busboy/.index.js
  * This should make it so that we do not have to upgrade connect for now.
  * TODO upgrade connect, use connect-busboy, and remove this.
  * @type {exports}

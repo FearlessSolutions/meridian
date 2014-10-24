@@ -157,7 +157,7 @@ define([
                  * @param file
                  * @returns {*}
                  */
-                "getFileExtension": function(file){
+                getFileExtension: function(file){
                     var filenameParts;
 
                     if(!file){

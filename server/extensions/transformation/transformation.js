@@ -1,46 +1,46 @@
 var fs = require('fs'),
     ogr2ogr = require('ogr2ogr'),
     transformationConfig = { // Defaults from the OGR2OGR module
-        "projection": "EPSG:4326",
-        "format": "GeoJSON",
-        "timeout": 15000,
-        "skipFailures": false,
-        "options": []
+        projection: 'EPSG:4326',
+        format: 'GeoJSON',
+        timeout: 15000,
+        skipFailures: false,
+        options: []
     };
 
 exports.toGeoJSON = function(streamIn, streamOut) {
     exports.execute({
-        "streamIn": streamIn,
-        "streamOut": streamOut,
-        "format": "GeoJSON",
-        "skipFailures": true
+        streamIn: streamIn,
+        streamOut: streamOut,
+        format: 'GeoJSON',
+        skipFailures: true
     });
 };
 
 exports.toCSV = function(streamIn, streamOut) {
     exports.execute({
-        "streamIn": streamIn,
-        "streamOut": streamOut,
-        "format": "CSV",
-        "skipFailures": true
+        streamIn: streamIn,
+        streamOut: streamOut,
+        format: 'CSV',
+        skipFailures: true
     });
 };
 
 exports.toKML = function(streamIn, streamOut) {
     exports.execute({
-        "streamIn": streamIn,
-        "streamOut": streamOut,
-        "format": "KML",
-        "skipFailures": true
+        streamIn: streamIn,
+        streamOut: streamOut,
+        format: 'KML',
+        skipFailures: true
     });
 };
 
 exports.toShapefile = function(streamIn, streamOut) {
     exports.execute({
-        "streamIn": streamIn,
-        "streamOut": streamOut,
-        "format": "ESRI Shapefile",
-        "skipFailures": true
+        streamIn: streamIn,
+        streamOut: streamOut,
+        format: 'ESRI Shapefile',
+        skipFailures: true
     });
 };
 
@@ -60,7 +60,7 @@ exports.execute = function(params) {
             console.log(err);
         }
     }
-}
+};
 
 /**
  * Convert CSV filestream to geoJSON for processing

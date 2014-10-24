@@ -28,9 +28,9 @@ define([
             $submit.attr('disabled', true); //Start with submit disabled until a file is added
 
             $modal.modal({
-                "backdrop": true,
-                "keyboard": true,
-                "show": false
+                backdrop: true,
+                keyboard: true,
+                show: false
             }).on('hidden.bs.modal', function() {
                 publisher.closeUploadTool();
             });
@@ -185,13 +185,13 @@ define([
             $dummyFile.val('');
             $submit.attr('disabled', true);
 
-            //TODO check for datasource
-            //TODO handle AJAX
             for(queryId in context.sandbox.dataStorage.datasets){
                 if(context.sandbox.dataStorage.datasets[queryId].dataService === DATASOURCE_NAME){
                     delete context.sandbox.dataStorage.datasets[queryId];
                 }
             }
+
+            context.sandbox.ajax.clear();
         },
         deleteDataset: function(params){
 
@@ -289,15 +289,15 @@ define([
 
             //No keys, so skip that step
             newValue = {
-                "dataService": DATASOURCE_NAME,
-                "layerId": queryId,
-                "id": dataFeature.properties.featureId,
-                "featureId": dataFeature.properties.featureId,
-                "geometry": dataFeature.geometry,
-                "type": dataFeature.type,
-                "properties" : {},
-                "lat": dataFeature.geometry.coordinates[1],
-                "lon": dataFeature.geometry.coordinates[0]
+                dataService: DATASOURCE_NAME,
+                layerId: queryId,
+                id: dataFeature.properties.featureId,
+                featureId: dataFeature.properties.featureId,
+                geometry: dataFeature.geometry,
+                type: dataFeature.type,
+                properties : {},
+                lat: dataFeature.geometry.coordinates[1],
+                lon: dataFeature.geometry.coordinates[0]
             };
 
             context.sandbox.dataStorage.addData({
