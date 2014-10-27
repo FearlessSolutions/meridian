@@ -55,28 +55,28 @@ define([
 
                 if(!myTable) {
                     myTable = $datagridContainer.Datatable({
-                        "sortable": true,
-                        "pagination": true,
-                        "data": compiledData,
-                        "columns": columnHeaders,
-                        "searchable": true,
-                        "closeable": false,
-                        "clickable": true,
-                        "afterRowClick": function(event, target) {
+                        sortable: true,
+                        pagination: true,
+                        data: compiledData,
+                        columns: columnHeaders,
+                        searchable: true,
+                        closeable: false,
+                        clickable: true,
+                        afterRowClick: function(event, target) {
 
                             //If it was a link, as set below, do not identify the point.
                             if(event.originalEvent.isLink){
                                 event.stopPropagation(); //Stop doing other stuff if it is a point
                             }else if(event.which === MOUSE_CLICK_LEFT) { 
                                 publisher.identifyRecord({
-                                    "featureId": target['Feature ID'],
-                                    "layerId": target['Layer ID']
+                                    featureId: target['Feature ID'],
+                                    layerId: target['Layer ID']
                                 });
                             } else if (event.which === MOUSE_CLICK_RIGHT) {
                                 datagridContextMenu.showMenu({
-                                    "featureId": target['Feature ID'],
-                                    "layerId": target['Layer ID'],
-                                    "event": event
+                                    featureId: target['Feature ID'],
+                                    layerId: target['Layer ID'],
+                                    event: event
                                 });
                             }
                         },
@@ -99,7 +99,7 @@ define([
                 datagridVisible = false;
             }
         },
-        "close": function() {
+        close: function() {
             $datagridContainer.addClass('hidden');
             $datagridContainer.height(0);
             if(myTable) {
@@ -107,23 +107,23 @@ define([
             }
             datagridVisible = false;
         },
-        "clear": function() {
+        clear: function() {
             if(myTable) { //In both until refactor
                 myTable.removeAllData();
             }
             exposed.close();
         },
-        "reload": function() {
+        reload: function() {
             if(datagridVisible) {
                 exposed.open();
             }
         },
-        "refresh": function() {
+        refresh: function() {
             if(datagridVisible && myTable) {
                 myTable.updateTable();
             }
         },
-        "addData": function(params) {
+        addData: function(params) {
             var compiledData = [],
                 columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
                 columnHeaders = context.sandbox.dataStorage.getColumnsDisplayNameArray(),

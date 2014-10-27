@@ -7,54 +7,44 @@ define([
         initialize: function(app) {
             var sortedPropertiesArray = [];
             var columns = {
-                "lat": [{
-                    "property": "lat",
-                    "displayName": "Lat",
-                    "weight": 100
+                lat: [{
+                    property: "lat",
+                    displayName: "Lat",
+                    weight: 100
                 }],
-                "lon":[{
-                    "property": "lon",
-                    "displayName": "Lon",
-                    "weight": 100
+                lon:[{
+                    property: "lon",
+                    displayName: "Lon",
+                    weight: 100
                 }],
-                "dataService": [{
-                    "property": "dataService",
-                    "displayName": "Data Service",
-                    "weight": 5
+                dataService: [{
+                    property: "dataService",
+                    displayName: "Data Service",
+                    weight: 5
                 }],
-                "featureId": [{
-                    "property": "featureId",
-                    "displayName": "Feature ID",
-                    "weight": 0
+                featureId: [{
+                    property: "featureId",
+                    displayName: "Feature ID",
+                    weight: 0
                 }],
-                "layerId": [{
-                    "property": "layerId",
-                    "displayName": "Layer ID",
-                    "weight": 0
+                layerId: [{
+                    property: "layerId",
+                    displayName: "Layer ID",
+                    weight: 0
                 }]
             };
             var dataStorage = {
-				"datasets": {}, //Start empty
-                "addData": function(params) {
+				datasets: {}, //Start empty
+                addData: function(params) {
                     dataStorage.datasets[params.datasetId].add(params.data);
                 },
-                "getDatasetWhere": function(params) {
+                getDatasetWhere: function(params) {
                     return (dataStorage.datasets[params.datasetId]) ? dataStorage.datasets[params.datasetId].where(params.criteria) : [];
                 },
-                "updateColumns": function(params) {
-                    $.each(params.data, function(k, v) {
-                        // Skipping id field because it is for backbone modeling
-                        if(($.type(v) === 'string' || $.type(v) === 'number' || $.type(v) === 'boolean') && k !== 'id' && k !== 'type') {
-                            if(!dataStorage.columns[k]) {
-                                dataStorage.columns[k] = k;
-                            }
-                        }
-                    });
-                },
-                "getColumns": function() {
+                getColumns: function() {
                     return sortedPropertiesArray;
                 },
-                "getColumnsDisplayNameArray": function(){
+                getColumnsDisplayNameArray: function(){
                     var columnsArray = [];
                     sortedPropertiesArray.forEach(function(entry, index){
                         columnsArray.push(entry.displayName);
@@ -62,23 +52,23 @@ define([
 
                     return columnsArray;
                 },
-                "clear": function() {
+                clear: function() {
                     dataStorage.datasets = {};
                 },
-                "getFeatureById": function(params, callback) {
+                getFeatureById: function(params, callback) {
                     var featureId = params.featureId;
 
                     return ajax = $.ajax({
-                        "type": "GET",
-                        "url": app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/" + featureId
+                        type: "GET",
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/" + featureId
                     }).done(function(data) {
                         callback(data);
                     });
                 },
-                "getResultsByQueryAndSessionId": function(queryId, sessionId, start, size, callback) {
+                getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
                     $.ajax({
-                        "type": "GET",
-                        "url": app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/query/" + queryId + "/session/" + sessionId +
+                        type: "GET",
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/query/" + queryId + "/session/" + sessionId +
                             "?start=" + start + "&size=" + size
                     }).done(function(data) {
                         callback(null, data);
@@ -86,7 +76,7 @@ define([
                         callback(error, null);
                     });
                 },
-                "insertKeys": function(params){
+                insertKeys: function(params){
                     $.each(params.keys, function(property, newMetadata){
                         var propertyEntryArray = columns[newMetadata.property],
                             index,
@@ -164,7 +154,7 @@ define([
                             if(currentEntry.weight === weight){
                                 currentIndex = findTopEqualIndex(topIndex, weight);
                                 if(checkEndOfArray(currentIndex)){
-                                    sortedPropertiesArray.push(newMetadata, 0, newMetadata);
+                                    sortedPropertiesArray.push(newMetadata);
                                 }else{
                                     sortedPropertiesArray.splice(currentIndex);
                                 }
