@@ -82,9 +82,8 @@ define([
                 });
 
                 context.$('#timeline-container').append(snapshotHTML);
-                $timeline.show();
-                $timeline.scrollLeft(5000);
-                $timeline.fadeIn();
+                exposed.showTimeline();
+                publisher.openTimeline();
 
                 snapshotMenu.createMenu({'layerId': layerId});
 
@@ -127,11 +126,13 @@ define([
             $timeline.hide();
         },
         showTimeline: function(params) {
-			$timeline.show();	
+			$timeline.show();
+            $timeline.scrollLeft(5000);
 		},
 		clear: function() {
 			context.$('#timeline-container').html('');
             $timeline.hide();
+            publisher.closeTimeline();
 		},
         updateCount: function(params) {
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
@@ -451,6 +452,7 @@ define([
             //hide timeline if no other layers are present.
             if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0) {
                 exposed.hideTimeline();
+                publisher.closeTimeline();
             }
         }
     };

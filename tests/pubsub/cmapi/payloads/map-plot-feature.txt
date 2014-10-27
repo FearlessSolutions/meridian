@@ -60,7 +60,7 @@
                         ]
                     },
                     "properties":{
-
+                        "p2": "test prop 2"
                     },
                     "name":"crossingLine",
                     "id":"id_2",

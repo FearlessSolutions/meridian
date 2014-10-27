@@ -3,7 +3,6 @@ define([
     './legend-publisher',
     'handlebars',
     'bootstrap',
-    'bootstrapDialog',
     'jqueryUI'
 ], function (imageHBS, publisher) {
     var context,
@@ -40,10 +39,10 @@ define([
             exposed.show();
         },
         hide: function() {
-            $legend.dialog('hide');
+            $legend.addClass('hide');
         },
         show: function() {
-            $legend.dialog('show');
+            $legend.removeClass('hide');
         },
         clear: function() {
             exposed.hide();

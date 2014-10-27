@@ -1,13 +1,15 @@
 define([
 	'./support'
-], function (supportDialog) {
+], function (support) {
     var context;
 
 	var exposed = {
-        init: function(thisContext){
+        init: function(thisContext) {
             context = thisContext;
 
-            context.sandbox.on('menu.opening', supportDialog.handleMenuOpening);
+            context.sandbox.on('support.close', support.close);
+            context.sandbox.on('support.open', support.open);
+            context.sandbox.on('data.clear.all', support.clear);
         }
     };	
 

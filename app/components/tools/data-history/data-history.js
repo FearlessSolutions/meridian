@@ -4,7 +4,7 @@ define([
     'text!./data-history-detail-view.hbs',
     'bootstrap',
     'handlebars',
-    'momentJS'
+    'moment'
 ], function (publisher, dataHistoryEntryHBS, dataHistoryDetailViewHBS) {
     var context,
         dataHistoryEntryTemplate,
@@ -35,10 +35,10 @@ define([
                 "backdrop": true,
                 "keyboard": true,
                 "show": false
-             }).on('hidden.bs.modal', function() {
+            }).on('hidden.bs.modal', function() {
                 publisher.closeDataHistory();
                 exposed.hideDetailedInfo();
-             });
+            });
 
             $closeButton.on('click', function(event) {
                 event.preventDefault();

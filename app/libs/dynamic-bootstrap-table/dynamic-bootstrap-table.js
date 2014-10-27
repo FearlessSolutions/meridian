@@ -405,7 +405,7 @@ License: MIT
                     '<div class="searchField input-group">'+
                         '<input type="text" class="form-control" data-placement="bottom" title="Search on field text">'+
                         '<span class="input-group-btn">'+
-                            '<button class="btn btn-default-text" type="button">'+
+                            '<button class="btn btn-primary" type="button">'+
                                 '<span class="glyphicon glyphicon-search"></span>'+
                             '</button>'+
                         '</span>'+

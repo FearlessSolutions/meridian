@@ -3,12 +3,16 @@ define([
     'text!./internal-pubsub-tester.css',
     'text!./internal-pubsub-tester.hbs',
     './internal-pubsub-tester-config',
+    './internal-pubsub-tester-publisher',
+    './internal-pubsub-tester-subscriber',
     'handlebars'
 ], function (
     internalPubSubTester,
     internalPubSubTesterCss,
     internalPubSubTesterHBS,
-    internalPubSubTesterConfig
+    internalPubSubTesterConfig,
+    internalPubsubTesterPublisher,
+    internalPubsubTesterSubscriber
 ){
     return {
         initialize: function() {
@@ -43,6 +47,8 @@ define([
             this.html(html);
 
             internalPubSubTester.init(this);
+            internalPubsubTesterPublisher.init(this);
+            internalPubsubTesterSubscriber.init(this);
         }
     };
 });

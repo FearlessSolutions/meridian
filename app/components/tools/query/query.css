@@ -1,12 +1,32 @@
-div[data-aura-component='tools/query'] #QueryDialog {
-    display: none;
+body.dialog-open .modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1030;
+  background-color: #000000;
+  display: none;
 }
-div[data-aura-component='tools/query'] #QueryDialog .dialog-dialog {
+
+div[data-aura-component='tools/query'] .modal-backdrop.in {
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+}
+div[data-aura-component='tools/query'] #query-modal .modal-dialog {
+    margin: 5% auto;
     width: 300px;
-    position: absolute;
-    z-index: 2000;
-    margin: 0;
 }
+div[data-aura-component='tools/query'] #query-modal .modal-footer {
+    text-align:center;
+}
+div[data-aura-component='tools/query'] #query-modal {
+    overflow-y: hidden;
+}
+div[data-aura-component='tools/query'] .modal-body {
+    padding: 0px 20px 0px 20px;
+}
+
 div[data-aura-component='tools/query'] .form-group.diamond-top {
     width: 75px;
     margin-left: auto;
@@ -36,7 +56,4 @@ div[data-aura-component='tools/query'] .query-form #drawBBoxButton {
 }
 div[data-aura-component='tools/query'] .query-form .diamond-middle {
     text-align: center;
-}
-div[data-aura-component='tools/query'] #QueryDialog .dialog-body {
-    padding: 0px 20px 0px 20px;
 }

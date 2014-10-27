@@ -16,6 +16,10 @@
     height: 135px;
 }
 
+.cmapi-extension.info-win-dialog .content.short{
+    width: 400px;
+}
+
 .cmapi-extension.info-win-dialog .imgDiv{
     float: left;
     width: 80px;
