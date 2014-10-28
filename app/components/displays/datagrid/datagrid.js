@@ -12,7 +12,7 @@ define([
         MOUSE_CLICK_RIGHT = 3;
 
     var exposed = {
-        "init": function(thisContext) {
+        init: function(thisContext) {
             context = thisContext;
             datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
@@ -20,14 +20,14 @@ define([
                 publisher.closeDatagrid();
             });
         },
-        "toggleGrid": function() {
+        toggleGrid: function() {
             if($datagridContainer.hasClass('hidden')) {
                 exposed.open();
             }else {
                 exposed.close();
             }
         },
-        "open": function() {
+        open: function() {
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 var compiledData = [],
                     tempObject,
@@ -37,11 +37,11 @@ define([
                 $datagridContainer.removeClass('hidden');
                 $datagridContainer.height(328);
 
-                _.each(context.sandbox.dataStorage.datasets, function(collection) {
-                    _.each(collection.models, function(model) {
+                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionIndex, collection) {
+                    context.sandbox.utils.each(collection.models, function(modelIndex, model) {
 
                         tempObject = {};
-                        _.each(columnHeadersMetadata, function(displayMetadata){
+                        context.sandbox.utils.each(columnHeadersMetadata, function(displayMetadataIndex, displayMetadata){
                             if(model.attributes.hasOwnProperty(displayMetadata.property)) {
                                 tempObject[displayMetadata.displayName] = model.attributes[displayMetadata.property];
                             } else {
@@ -80,7 +80,7 @@ define([
                                 });
                             }
                         },
-                        "addRowClasses": addCustomClasses
+                        addRowClasses: addCustomClasses
                     });
                 } else {
                     myTable.removeAllData();
@@ -131,10 +131,10 @@ define([
                 currentPagination = $('ul.pagination li.active a').html();
 
             if(datagridVisible && myTable) {
-                 _.each(context.sandbox.dataStorage.datasets, function(collection) {
-                    _.each(collection.models, function(model) {
+                 context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionIndex, collection) {
+                    context.sandbox.utils.each(collection.models, function(modelIndex, model) {
                         tempObject = {};
-                        _.each(columnHeadersMetadata, function(displayMetadata){
+                        context.sandbox.utils.each(columnHeadersMetadata, function(displayMetadataIndex, displayMetadata){
                             if(model.attributes.hasOwnProperty(displayMetadata.property)) {
                                 tempObject[displayMetadata.displayName] = model.attributes[displayMetadata.property];
                             } else {
@@ -159,10 +159,10 @@ define([
 
     function addCustomClasses(params) {
         if(
-            !context.sandbox.stateManager.getLayerStateById({"layerId": params.record['Layer ID']}).visible ||
+            !context.sandbox.stateManager.getLayerStateById({layerId: params.record['Layer ID']}).visible ||
             context.sandbox.stateManager.layers[params.record['Layer ID']].hiddenFeatures.indexOf(params.record['Feature ID']) > -1
         ){
-            return ["hiddenFeature"];
+            return ['hiddenFeature'];
         } else {
             return [];
         }

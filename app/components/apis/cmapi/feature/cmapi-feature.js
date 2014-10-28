@@ -51,12 +51,12 @@ define([
                 return;
             } else if(!message.format || message.format === 'geojson') {
                 context.sandbox.stateManager.addHiddenFeaturesByLayerId({
-                    "layerId": message.overlayId,
-                    "featureIds": [message.featureId]
+                    layerId: message.overlayId,
+                    featureIds: [message.featureId]
                 });
                 publisher.publishHideFeatures({
-                    "layerId": message.overlayId,
-                    "featureIds": [message.featureId]
+                    layerId: message.overlayId,
+                    featureIds: [message.featureId]
                 });
             } else if(message.format === 'kml') {
                 sendError('map.feature.unplot', message, 'KML is not currently supported');
@@ -150,25 +150,25 @@ define([
 
 
             publisher.publishCreateLayer({
-                "layerId": layerId,
-                "name": message.name || layerId,
-                "selectable": ('selectable' in message) ? message.selectable : true,
-                "coords": message.coords,
+                layerId: layerId,
+                name: message.name || layerId,
+                selectable: ('selectable' in message) ? message.selectable : true,
+                coords: message.coords,
                 // Temporary overwrite of symbolizers
-                "symbolizers": message.symbolizers,
-                "styleMap": message.styleMap
+                symbolizers: message.symbolizers,
+                styleMap: message.styleMap
             });
         }
 
         postOptions = {
-            "type": "POST",
-            "url": context.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature",
-            "data": {
-                "queryId": layerId,
-                "data": message.feature.features
+            type: 'POST',
+            url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature',
+            data: {
+                queryId: layerId,
+                data: message.feature.features
             },
-            "xhrFields": {
-                "withCredentials": true
+            xhrFields: {
+                withCredentials: true
             }
         };
 
@@ -179,7 +179,7 @@ define([
                     newKeys = {};
                     featureIds = [];
                     
-                if(status === "success") {
+                if(status === 'success') {
                     context.sandbox.utils.each(data, function(key, value){
                         var newValue = {};
 
@@ -190,7 +190,7 @@ define([
                         newValue.geometry = value.geometry;
                         newValue.type = value.type;
                         newValue.properties = {
-                            "dataService": context.sandbox.cmapi.DATASOURCE_NAME
+                            dataService: context.sandbox.cmapi.DATASOURCE_NAME
                         };
 
                         context.sandbox.utils.each(value.properties, function(key, value){
@@ -198,9 +198,9 @@ define([
 
                             if(!newKeys[key]){
                                 newKeys[key] = {
-                                    "property": key,
-                                    "displayName": key,
-                                    "weight": 50
+                                    property: key,
+                                    displayName: key,
+                                    weight: 50
                                 }
                             }
                         });
@@ -233,11 +233,11 @@ define([
                     delete newKeys['queryId'];
                     delete newKeys['featureId'];
                     context.sandbox.dataStorage.insertKeys({
-                        "keys": newKeys
+                        keys: newKeys
                     });
                     publisher.publishPlotFeature({
-                        "layerId": layerId,
-                        "data": newData
+                        layerId: layerId,
+                        data: newData
                     });
 
                     if(message.zoom === true) {
@@ -245,8 +245,8 @@ define([
                             featureIds.push(v.featureId);
                         });
                         publisher.publishZoomToFeatures({
-                            "layerId": layerId,
-                            "featureIds": featureIds
+                            layerId: layerId,
+                            featureIds: featureIds
                         });
                     } else if(message.dataZoom) {
                         var extent,
@@ -268,10 +268,10 @@ define([
                         maxLonDelta = Math.abs(extent.maxLon) * 0.25;
 
                         publisher.publishCenterOnBounds({
-                            "minLat": extent.minLat - minLatDelta,
-                            "minLon": extent.minLon - minLonDelta,
-                            "maxLat": extent.maxLat + maxLatDelta,
-                            "maxLon": extent.maxLon + maxLonDelta
+                            minLat: extent.minLat - minLatDelta,
+                            minLon: extent.minLon - minLonDelta,
+                            maxLat: extent.maxLat + maxLatDelta,
+                            maxLon: extent.maxLon + maxLonDelta
                         });
                     }
 
@@ -289,8 +289,8 @@ define([
             });
 
         context.sandbox.ajax.addActiveAJAX({
-            "newAJAX": newAJAX,
-            "layerId": layerId
+            newAJAX: newAJAX,
+            layerId: layerId
         });
 
         //TODO: collection-wide style map?
