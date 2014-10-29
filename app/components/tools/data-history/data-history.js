@@ -12,7 +12,6 @@ define([
         MENU_DESIGNATION = 'data-history',
         $modal,
         $modalBody,
-        $cancelButton,
         $closeButton,
         $dataHistoryListTable,
         $dataHistoryDetailView;
@@ -32,9 +31,9 @@ define([
             $dataHistoryDetailView = context.$('#data-history-modal.modal .data-history-detail-view');
 
             $modal.modal({
-                "backdrop": true,
-                "keyboard": true,
-                "show": false
+                backdrop: true,
+                keyboard: true,
+                show: false
             }).on('hidden.bs.modal', function() {
                 publisher.closeDataHistory();
                 exposed.hideDetailedInfo();
@@ -48,7 +47,7 @@ define([
             context.$('.expiration span').tooltip();
         },
         open: function() {
-            publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            publisher.publishOpening({componentOpening: MENU_DESIGNATION});
 
             // Populate Data History table
             exposed.updateDataHistory();
@@ -67,22 +66,25 @@ define([
                 }
             })
             .done(function(data) {
-                var tempData = {
-                    "datasetId": data.queryId,
-                    "dataSessionId": data.sessionId,
-                    "dataSource": data.dataSource || "N/A",
-                    "dataName": data.queryName || "N/A",
-                    "dataDate": moment.unix(data.createdOn).format("MMMM Do YYYY, h:mm:ss a") || "N/A",
-                    "dataRecordCount": data.numRecords || "N/A",
-                    "dataExpiresOn": moment.unix(data.expireOn).format("MMMM Do YYYY, h:mm:ss a") || "N/A",
-                    "dataStatus": "N/A",
-                    "rawDataObject": data.rawQuery || "N/A"
+                var tempData,
+                    rawDataObjectString,
+                    dataHistoryDetailView;
+                tempData = {
+                    datasetId: data.queryId,
+                    dataSessionId: data.sessionId,
+                    dataSource: data.dataSource || 'N/A',
+                    dataName: data.queryName || 'N/A',
+                    dataDate: moment.unix(data.createdOn).format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
+                    dataRecordCount: data.numRecords || 'N/A',
+                    dataExpiresOn: moment.unix(data.expireOn).format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
+                    dataStatus: 'N/A',
+                    rawDataObject: data.rawQuery || 'N/A'
                 };
 
-                var rawDataObjectString = JSON.stringify(tempData.rawDataObject, null, "  ");
+                rawDataObjectString = JSON.stringify(tempData.rawDataObject, null, '  ');
                 tempData.rawDataObject = rawDataObjectString;
 
-                var dataHistoryDetailView = dataHistoryDetailViewTemplate(tempData);
+                dataHistoryDetailView = dataHistoryDetailViewTemplate(tempData);
                 $dataHistoryDetailView.html(dataHistoryDetailView);
 
                 context.$('.data-history-detail-view .data-history-modal-back-to-list').on('click', function(event) {
@@ -126,14 +128,20 @@ define([
                 $dataHistoryListTable.empty();
 
                 context.sandbox.utils.each(data, function(index, dataEntry) {
-                    var tempDataEntry = {
-                        "datasetId": dataEntry.queryId,
-                        "dataSessionId": dataEntry.sessionId,
-                        "dataSource": dataEntry.dataSource,
-                        "dataName": dataEntry.queryName,
-                        "dataDate": moment.unix(dataEntry.createdOn).fromNow(),
-                        "rawDate": dataEntry.createdOn,
-                        "dataRecordCount": dataEntry.numRecords
+                    var now = moment(), //This needs to be done now to prevent race condition later
+                        dataDate = moment.unix(dataEntry.createdOn),
+                        expireDate = moment.unix(dataEntry.expireOn),
+                        tempDataEntry;
+
+                    tempDataEntry = {
+                        datasetId: dataEntry.queryId,
+                        dataSessionId: dataEntry.sessionId,
+                        dataSource: dataEntry.dataSource,
+                        dataName: dataEntry.queryName,
+                        dataDate: dataDate.fromNow(),
+                        rawDate: dataEntry.createdOn,
+                        isExpired: expireDate.isBefore(now),
+                        dataRecordCount: dataEntry.numRecords
                     };
                     tempDataArray.push(tempDataEntry);
                     currentDataArray[dataEntry.queryId] = dataEntry;
@@ -142,41 +150,26 @@ define([
                 tempDataArray.sort(dynamicSort('-rawDate'));
 
                 context.sandbox.utils.each(tempDataArray, function(index, tempDataEntry) {
-                    var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);
+                    var dataHistoryEntry = dataHistoryEntryTemplate(tempDataEntry);
                     $dataHistoryListTable.append(dataHistoryEntry);
                 });
 
                 context.$('.data-history-list .data-action-info').on('click', function(event) {
                     exposed.showDetailedInfo({
-                        "datasetId": context.$(this).parent().parent().data('datasetid')
+                        datasetId: context.$(this).parent().parent().data('datasetid')
                     });
                 });
                 context.$('.data-history-list .data-action-restore').on('click', function(event) {
                     publisher.restoreDataset(currentDataArray[context.$(this).parent().parent().data('datasetid')]);
                     publisher.closeDataHistory();
                 });
-                // context.$('.data-history-list .data-action-delete').on('click', function(event) {
-                //     // Delete the dataset
-                //     console.debug('Will delete dataset ' + context.$(this).parent().parent().data('datasetid') + ' here.');
-                // });
             });
         }
     };
 
-    function generateDataHistoryEntryRow(dataHistoryEntryObject) {
-        return dataHistoryEntryTemplate({
-            "datasetId": dataHistoryEntryObject.datasetId,
-            "dataSessionId": dataHistoryEntryObject.dataSessionId,
-            "dataSource": dataHistoryEntryObject.dataSource,
-            "dataName": dataHistoryEntryObject.dataName,
-            "dataDate": dataHistoryEntryObject.dataDate,
-            "dataRecordCount": dataHistoryEntryObject.dataRecordCount
-        });
-    }
-
     function dynamicSort(property) {
         var sortOrder = 1;
-        if(property[0] === "-") {
+        if(property[0] === '-') {
             sortOrder = -1;
             property = property.substr(1);
         }

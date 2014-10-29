@@ -11,7 +11,7 @@
         <button type="button" class="btn btn-default-icon data-action-info">
             <span class="glyphicon glyphicon-info-sign"></span>
         </button>
-        <button type="button" class="btn btn-default-icon data-action-restore">
+        <button type="button" class="btn btn-default-icon data-action-restore" {{#if isExpired}}disabled{{/if}}>
             <span class="glyphicon glyphicon-map-marker"></span>
         </button>
         {{!-- <button type="button" class="btn btn-default-icon data-action-delete">
