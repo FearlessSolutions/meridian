@@ -6,9 +6,24 @@ define([
 ], function(mockHbs, mockInfoWinCSS, mapUrlHBS) {
     var context,
         mapUrlTemplate;
-
+    /**
+     * Sets up mock as a 'dataService'.
+     * @namespace Sandbox.dataServices.mock
+     * @memberof Sandbox.dataServices
+     */
+    /**
+     * Sets up mock as a 'dataService'.
+     * @exports mock-extension
+     */
     var exposed = {
-        "initialize": function(app) {
+        /**
+         * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
+         * This extension exposes {@link Sandbox.dataServices.mock} to the {@link Sandbox} namespace.
+         * @function
+         * @instance
+         * @param {Object} app Instance of the Meridian application.
+         */
+        initialize: function(app) {
             context = app;
             mapUrlTemplate = Handlebars.compile(mapUrlHBS);
 
@@ -17,8 +32,31 @@ define([
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
+            /**
+             * Sets up mock as a 'dataService'.
+             * @namespace Sandbox.dataServices.mock
+             * @memberof Sandbox.dataServices
+             */
             app.sandbox.dataServices.mock = {
+                /**
+                 * Info needed.
+                 * @namespace Sandbox.dataServices.mock.infoWinTemplate
+                 * @memberof Sandbox.dataServices.mock
+                 */
                 "infoWinTemplate": {
+                    /**
+                     * Creates html template with the values provided to the function.
+                     * @function
+                     * @instance
+                     * @param {Object} attributes
+                     * @param {String} [attributes.classification=""] - Empty string will be used if not provided.
+                     * @param {String} attributes.name
+                     * @param {Object} fullFeature                    - Feature containting custom style for its markers.
+                     * @param {Object} fullFeature.style              - Style settings of the feature.
+                     * @param {String} fullFeature.style.iconLarge    - fullFeature.style.icon will be used if iconLarge is not provided.
+                     * @return Handlebar template.
+                     * @memberof Sandbox.dataServices.mock.infoWinTemplate
+                     */
                     "buildInfoWinTemplate": function(attributes, fullFeature) {
                         var mockTemplate = Handlebars.compile(mockHbs);
                         var html;
@@ -28,7 +66,7 @@ define([
 
                         html = mockTemplate({
                             "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
-                            "classification": attributes.classification,
+                            "classification": attributes.classification || "",
                             "name": attributes.name,
                             "attributes": attributes,
                             "namespace": "mock-extension"
@@ -36,14 +74,36 @@ define([
 
                         return html;
                     },
-                    "postRenderingAction": function(feature, layerId) {
+                    /**
+                     * NOT IMPLEMENTED. Developers can modify this function to execute any post-rendering
+                     * action desired after the info window is loaded.
+                     * @function
+                     * @instance
+                     * @param  {Object} feature   - Info needed.
+                     * @param  {Object} overlayId - Info needed.
+                     * @memberof Sandbox.dataServices.mock.infoWinTemplate
+                     */
+                    postRenderingAction: function(feature, layerId) {
                         return;
                     }
                 },
+                /**
+                 * Info needed.
+                 * @namespace Sandbox.dataServices.mock.keys
+                 * @property {String} percent - Property value: "%"
+                 * @property {String} color   - Property value: "Color"
+                 * @memberof Sandbox.dataServices.mock
+                 */
                 "keys": {
                     "percent": "%",
                     "color": "Color"
                 },
+                /**
+                 * Info needed.
+                 * @namespace Sandbox.dataServices.mock.processMapUrl
+                 * @property {String} processMapUrl - Compiled Handlebars template.
+                 * @memberof Sandbox.dataServices.mock
+                 */
                 "processMapUrl": processMapUrl
             };
         }

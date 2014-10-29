@@ -3,7 +3,7 @@ define([
     'text!./fake-info-win.css',
     'handlebars'
 ], function(fakeHbs, fakeInfoWinCSS) {
-     /**
+    /**
      * Sets up fake as a 'dataService'.
      * @namespace Sandbox.dataServices.fake
      * @memberof Sandbox.dataServices
@@ -39,17 +39,19 @@ define([
                      * @function
                      * @instance
                      * @param {Object} attributes
-                     * @param {String} attributes.classification
+                     * @param {String} [attributes.classification=""] - Empty string will be used if not provided.
                      * @param {String} attributes.name
-                     * @param {Object} fullFeature - Used in Sandbox.icons.getIconForFeature and then applied .iconLargeor .icon.
+                     * @param {Object} fullFeature                    - Feature containting custom style for its markers.
+                     * @param {Object} fullFeature.style              - Style settings of the feature.
+                     * @param {String} [fullFeature.style.iconLarge]  - fullFeature.style.icon will be used if iconLarge is not provided.
                      * @return Handlebar template.
                      * @memberof Sandbox.dataServices.fake.infoWinTemplate
                      */
-                    "buildInfoWinTemplate": function(attributes, fullFeature) {
+                    buildInfoWinTemplate: function(attributes, fullFeature) {
                         var fakeTemplate = Handlebars.compile(fakeHbs);
                         var html = fakeTemplate({
                             "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
-                            "classification": attributes.classification,
+                            "classification": attributes.classification || "",
                             "name": attributes.name,
                             "attributes": attributes,
                             "namespace": "fake-extension"
@@ -61,12 +63,11 @@ define([
                      * action desired after the info window is loaded.
                      * @function
                      * @instance
-                     * @param  {Object} feature - Info needed.
+                     * @param  {Object} feature   - Info needed.
                      * @param  {Object} overlayId - Info needed.
                      * @memberof Sandbox.dataServices.fake.infoWinTemplate
-                     * @returns return;
                      */
-                    "postRenderingAction": function(feature, layerId) {
+                    postRenderingAction: function(feature, layerId) {
                         return;
                     }
                 },

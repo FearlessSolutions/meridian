@@ -63,10 +63,11 @@ define([
                      * @function
                      * @instance
                      * @param {Object} attributes
-                     * @param {String} [attributes.classification=""] Empty string will be used if not provided.
-                     * @param {String} attributes.name - Description needed.
-                     * @param {Object} fullFeature 
-                     * @param {String} [fullFeature.style.iconLarge] - fullFeature.style.icon will be used if iconLarge is not provided.
+                     * @param {String} [attributes.classification=""] - Empty string will be used if not provided.
+                     * @param {String} attributes.name                - Description needed.
+                     * @param {Object} fullFeature                    - Feature containting custom style for its markers.
+                     * @param {Object} fullFeature.style              - Style settings of the feature.
+                     * @param {String} fullFeature.style.iconLarge    - fullFeature.style.icon will be used if iconLarge is not provided.
                      * @return Handlebar template.
                      * @memberof Sandbox.dataServices.cmapi.infoWinTemplate
                      */
@@ -86,12 +87,11 @@ define([
                      * action desired after the info window is loaded.
                      * @function
                      * @instance
-                     * @param  {Object} feature - Info needed.
+                     * @param  {Object} feature   - Info needed.
                      * @param  {Object} overlayId - Info needed.
                      * @memberof Sandbox.dataServices.cmapi.infoWinTemplate
-                     * @returns return;
                      */
-                    "postRenderingAction": function(feature, overlayId){ return; }
+                    postRenderingAction: function(feature, overlayId){ return; }
                 }
             };
         }
