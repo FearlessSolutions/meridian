@@ -139,6 +139,7 @@ define([
                 if(event.originalEvent.clipboardData && event.originalEvent.clipboardData.getData){
                     pasteText= event.originalEvent.clipboardData.getData('text/plain');
                     $locatorInput.typeahead('lookup', pasteText); //Manual lookup
+                    $locatorInput.val(pasteText); //Manual lookup
                 }
 
                 return false; //Prevent other handlers
