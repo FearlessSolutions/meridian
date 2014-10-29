@@ -3,7 +3,7 @@ define([
 ], function(mapConfiguration) {
 
 	/**
-	 * @exports MapConfigurationExtension
+	 * @exports mapConfiguration-extension
 	 */
 	var exposed = {
 		/**
