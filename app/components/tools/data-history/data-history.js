@@ -66,18 +66,25 @@ define([
                 }
             })
             .done(function(data) {
-                var tempData,
+                var now = moment(), //This needs to be done now to prevent race condition later
+                    dataDate = moment.unix(data.createdOn),
+                    expireDate = moment.unix(data.expireOn),
+                    isExpired = expireDate.isBefore(now),
+                    tempData,
                     rawDataObjectString,
-                    dataHistoryDetailView;
+                    dataHistoryDetailView,
+                    dataStatus = isExpired ? 'Expired' : 'N/A';
+
                 tempData = {
                     datasetId: data.queryId,
                     dataSessionId: data.sessionId,
                     dataSource: data.dataSource || 'N/A',
                     dataName: data.queryName || 'N/A',
-                    dataDate: moment.unix(data.createdOn).format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
+                    dataDate: dataDate.format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
                     dataRecordCount: data.numRecords || 'N/A',
-                    dataExpiresOn: moment.unix(data.expireOn).format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
-                    dataStatus: 'N/A',
+                    dataExpiresOn: expireDate.format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
+                    isExpired: isExpired,
+                    dataStatus: dataStatus,
                     rawDataObject: data.rawQuery || 'N/A'
                 };
 

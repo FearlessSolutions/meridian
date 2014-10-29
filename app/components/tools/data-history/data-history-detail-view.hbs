@@ -15,7 +15,7 @@
         <button type="button" class="btn btn-default-icon data-history-modal-back-to-list">
             <span class="glyphicon glyphicon-arrow-left"></span>
         </button>
-        <button type="button" class="btn btn-default-icon data-action-restore">
+        <button type="button" class="btn btn-default-icon data-action-restore" {{#if isExpired}}disabled{{/if}}>
             <span class="glyphicon glyphicon-map-marker"></span>
         </button>
         {{!-- <button type="button" class="btn btn-default-icon data-action-delete" data-datasetid="{{datasetId}}">
