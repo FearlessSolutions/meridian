@@ -6,32 +6,32 @@ define([
  * @namespace Sandbox.mapConfiguration
  * @namespcace Sandbox
  * 
- * @property {String} defaulMapEngine   - Default map renderer.
- * @property {String} defaultBaseMap    - Default map tile service. Must be a valid name found in the basemaps array.
- * @property {Number} initialMinLat     - Minimum Latitude used in the initial extent.
- * @property {Number} initialMinLon     - Minimum Longitude used in the initial extent.
- * @property {Number} initialMaxLat     - Maximum Latitude used in the initial extent.
- * @property {Number} initialMaxLon     - Maximum Longitude used in the initial extent.
- * @property {Number} maxAutoZoomLevel  - Maximum zoom level allowed.
- * @property {String} projection        - Spatial reference.
- * @property {String} defaultVisualMode - Default visual mode.
- * @property {Number} defaultTileWidth  - Default Tile width.
- * @property {Number} defaultTileHeight - Default Tile height.
+ * @property {String} defaulMapEngine                             - Default map renderer.
+ * @property {String} defaultBaseMap                              - Default map tile service. Must be a valid name found in the basemaps array.
+ * @property {Number} initialMinLat                               - Minimum Latitude used in the initial extent.
+ * @property {Number} initialMinLon                               - Minimum Longitude used in the initial extent.
+ * @property {Number} initialMaxLat                               - Maximum Latitude used in the initial extent.
+ * @property {Number} initialMaxLon                               - Maximum Longitude used in the initial extent.
+ * @property {Number} maxAutoZoomLevel                            - Maximum zoom level allowed.
+ * @property {String} projection                                  - Spatial reference.
+ * @property {String} defaultVisualMode                           - Default visual mode.
+ * @property {Number} defaultTileWidth                            - Default Tile width.
+ * @property {Number} defaultTileHeight                           - Default Tile height.
  * 
- * @property {Array}  basemaps           - Array of tile service Objects.
- * @property {String} basemaps.basemap   - Name of the basemap tile service.
- * @property {String} basemaps.type      - Type of the map tile service.
- * @property {String} basemaps.url       - URL of the map tile service.
- * @property {String} basemaps.thumbnail - URL for the image used in basemap gallery component.
- * @property {String} basemaps.label     - Name used for tooltips.
+ * @property {Array}  basemaps                                    - Array of tile service Objects.
+ * @property {String} basemaps.basemap                            - Name of the basemap tile service.
+ * @property {String} basemaps.type                               - Type of the map tile service.
+ * @property {String} basemaps.url                                - URL of the map tile service.
+ * @property {String} basemaps.thumbnail                          - URL for the image used in basemap gallery component.
+ * @property {String} basemaps.label                              - Name used for tooltips.
  * 
- * @property {Object} markerIcons                        - Collection of map marker settings.
- * @property {Object} markerIcons.default                - Settings for default map markers.
- * @property {String} markerIcons.default.icon           - URL of the small marker. 
- * @property {String} markerIcons.default.iconLarge      - URL of the large marker.
- * @property {Number} markerIcons.default.height         - Height of the marker.
- * @property {Number} markerIcons.default.width          - Width of the marker.
- * @property {Number} markerIcons.default.graphicYOffset - Pixel offset along the positive y axis for displacing the marker icon.
+ * @property {Object} markerIcons                                 - Collection of map marker settings.
+ * @property {Object} markerIcons.default                         - Settings for default map markers.
+ * @property {String} markerIcons.default.icon                    - URL of the small marker. 
+ * @property {String} markerIcons.default.iconLarge               - URL of the large marker.
+ * @property {Number} markerIcons.default.height                  - Height of the marker.
+ * @property {Number} markerIcons.default.width                   - Width of the marker.
+ * @property {Number} markerIcons.default.graphicYOffset          - Pixel offset along the positive y axis for displacing the marker icon.
  * 
  * @property {Object} clustering                                  - Clustering Settings.
  * @property {Object} clustering.colors                           - Color settings for clustering.
