@@ -23,9 +23,9 @@ define([
             //No need to specify container to make the tooltip appear in one line. 
             //Still added to keep consistency.
             $locator.tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
+                container: 'body',
+                delay: {
+                    show: 500
                 }
             });
 
@@ -33,11 +33,11 @@ define([
                 var input = $locatorInput.val();
                 event.preventDefault();
 
-                if(selectedLocation === null || input === "") {/*Extra precaution, button should be disabled anyways.*/
+                if(selectedLocation === null || input === '') {/*Extra precaution, button should be disabled anyways.*/
                     publisher.publishMessage({
-                        "messageType": 'warning',
-                        "messageTitle": 'Search',
-                        "messageText": 'No valid location selected. Please try again.'
+                        messageType: 'warning',
+                        messageTitle: 'Search',
+                        messageText: 'No valid location selected. Please try again.'
                     });
                     $locatorButton.attr('disabled', true); 
                 }else if('lat' in selectedLocation) { //It is coordinates
@@ -133,6 +133,16 @@ define([
                     return item;
                 }
             });
+
+            $locatorInput.on('paste', function(event){
+                var pasteText;
+                if(event.originalEvent.clipboardData && event.originalEvent.clipboardData.getData){
+                    pasteText= event.originalEvent.clipboardData.getData('text/plain');
+                    $locatorInput.typeahead('lookup', pasteText); //Manual lookup
+                }
+
+                return false; //Prevent other handlers
+            });
         },
         goToLocation: function() {
             publisher.zoomToLocation({
@@ -146,8 +156,8 @@ define([
         },//end of goToLocation
         markLocation: function(coordinates) {
             publisher.markLocation({
-                "layerId": "static_geolocator",
-                "data": [context.sandbox.utils.createGeoJson(coordinates)]
+                layerId: 'static_geolocator',
+                data: [context.sandbox.utils.createGeoJson(coordinates)]
             });
             publisher.setMapCenter(coordinates);
         },
