@@ -99,16 +99,24 @@ define([
                     "color": "Color"
                 },
                 /**
-                 * Info needed.
+                 * 
                  * @namespace Sandbox.dataServices.mock.processMapUrl
-                 * @property {String} processMapUrl - Compiled Handlebars template.
+                 * @property {Function} processMapUrl -  Function found in {@link module:mock-extension#processMapUrl}
                  * @memberof Sandbox.dataServices.mock
                  */
                 "processMapUrl": processMapUrl
             };
         }
     };
-
+    /**
+     * Creates object with lat and lon keys found in attributes and passes the object into the internal mapUrlTemplate.
+     * @function
+     * @instance
+     * @param {Object} attributes     - 
+     * @param {String} attributes.lat - Latitude.
+     * @param {String} attributes.lon - Longitude.
+     * @memberof module:mock-extension
+     */
     function processMapUrl(attributes){
         return mapUrlTemplate({
             "lat": attributes.lat,
