@@ -8,6 +8,7 @@ define([
             context = thisContext;
             context.sandbox.on('basemapGallery.close', basemapGallery.hide);
             context.sandbox.on('basemapGallery.open', basemapGallery.show);
+            context.sandbox.on('map.basemap.change', basemapGallery.changeBasemap);
         }
     };	
 
