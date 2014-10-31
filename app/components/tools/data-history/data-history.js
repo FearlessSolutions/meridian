@@ -218,6 +218,11 @@ define([
             });
             currentDataArray = newDataArray;
             populateDataHistoryTable();
+            publisher.publishMessage( {
+                "messageType": "success",
+                "messageTitle": "Data History",
+                "messageText": "Dataset successfully removed"
+            });
         });
     }
 
