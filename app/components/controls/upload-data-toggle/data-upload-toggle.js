@@ -13,9 +13,9 @@ define([
             //Activate bootstrap tooltip. 
             //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
             $toggleButton.tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
+                container: 'body',
+                delay: {
+                    show: 500
                 }
             });
 
