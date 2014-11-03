@@ -21,6 +21,9 @@ app.use(connect.urlencoded());
 // Server static content
 app.use('/', express.static(__dirname + '/app'));
 app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));
+app.use('/basic', express.static(__dirname + '/app/modes/basic'));
+app.use('/basic-with-settings', express.static(__dirname + '/app/modes/basic-with-settings'));
+app.use('/embedded', express.static(__dirname + '/app/modes/embedded'));
 
 // Initiate routes
 require('./server/app').init(app);
