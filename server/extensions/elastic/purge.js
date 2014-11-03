@@ -6,6 +6,14 @@ exports.init = function(context){
     client = context.sandbox.elastic.client.newClient();
 };
 
+exports.deleteMetadataByQueryId = function(queryId, callback){
+    client.delete({
+        index: config.index.metadata,
+        type: "metadata",
+        id: queryId
+    }, callback);
+};
+
 exports.deleteRecordsByQueryId = function(user, sessionId, queryId, callback){
     client.deleteByQuery({
         index: "_all",
