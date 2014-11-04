@@ -45,24 +45,35 @@ define([
             $file.on('change', function(){
                 var file = context.$(this)[0].files[0],
                     fileExtension,
+                    FILE_SIZE_LIMIT = 10000000, //10M
                     isValidFileExtension = false;
                 $dummyFile.val(context.$(this).val());
 
                 if(file){
-                    fileExtension = context.sandbox.utils.getFileExtension(file);
-                    context.sandbox.utils.each(context.sandbox.dataServices[DATASOURCE_NAME].configuration.filetypes,
-                        function(filetype, filetypeProperties){
-                            if(filetype === fileExtension){
-                                isValidFileExtension = true;
-                            }
-                    });
-
-                    if(isValidFileExtension){
-                        removeFileError();
-                        $submit.attr('disabled', false);
-                    }else{
-                        setFileError();
+                    if(file.size > FILE_SIZE_LIMIT){
+                        $dummyFile.parent().addClass('has-error');
                         $submit.attr('disabled', true);
+                        publisher.publishMessage({
+                            messageType: 'error',
+                            messageTitle: 'Data Upload',
+                            messageText: 'File too big - 10MB limit'
+                        });
+                    }else{
+                        fileExtension = context.sandbox.utils.getFileExtension(file);
+                        context.sandbox.utils.each(context.sandbox.dataServices[DATASOURCE_NAME].configuration.filetypes,
+                            function(filetype, filetypeProperties){
+                                if(filetype === fileExtension){
+                                    isValidFileExtension = true;
+                                }
+                            });
+
+                        if(isValidFileExtension){
+                            removeFileError();
+                            $submit.attr('disabled', false);
+                        }else{
+                            setFileError();
+                            $submit.attr('disabled', true);
+                        }
                     }
                 }else{
                     removeFileError(); //'no file' is valid, or at least not an error
