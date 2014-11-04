@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8">
     <title>Meridian Map</title>
-    <link rel="stylesheet" href="/../../libs/bootstrap-3.0.3/css/bootstrap.css">
-    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="/../../libs/bootstrap-3.2.0/css/bootstrap.css">
     <link rel="stylesheet" href="/../../styles/main.css">
     <link rel="stylesheet" href="main-overide.css">
-    <!-- endbuild -->
+
     <script data-main="../../app" src="/../../bower_components/requirejs/require.js"></script>
   </head>
   <body>
     <div id="mapContainer">
+      <div data-aura-component="apis/cmapi"></div>
       <div data-aura-component="rendering-engines/map-openlayers"></div>
     </div>
   </body>

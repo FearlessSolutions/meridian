@@ -58,6 +58,11 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body ta
   margin-bottom: 0px; 
 }
 
+div[data-aura-component='tools/data-history'] #data-history-modal .modal-body p.noDataLabel {
+  margin-top: 20px;
+  text-align: center;
+}
+
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table th, 
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table td {
   border-top: none;

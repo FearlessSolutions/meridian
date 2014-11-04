@@ -3,22 +3,33 @@
   <head>
     <meta charset="utf-8">
     <title>Meridian Map</title>
-    <link rel="stylesheet" href="/../../libs/bootstrap-3.0.3/css/bootstrap.css">
-    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="/../../libs/bootstrap-3.2.0/css/bootstrap.css">
     <link rel="stylesheet" href="/../../styles/main.css">
     <link rel="stylesheet" href="./main-overide.css">
-
-    <!-- endbuild -->
+    
     <script data-main="../../app" src="/../../bower_components/requirejs/require.js"></script>
+
   </head>
   <body>
-    <div class="banner">(U//FOUO)</div>
     <div id="mapContainer">
+      <div data-aura-component="apis/cmapi"></div>
       <div data-aura-component="rendering-engines/map-openlayers"></div>
-      <div id="settings-container">
-        <div data-aura-component="controls/user-settings" data-aura-label="true"></div>
+
+      <div id="footer-container">
+        <span class="footer-left col-sm-4 col-md-4 hidden-xs">
+            <!-- <div data-aura-component="displays/mouse-position"></div> -->
+        </span>
+        <span class="footer-center col-xs-12 col-sm-4 col-md-4">
+            <div class="footer-center-container">
+                <div data-aura-component="displays/progress-notification"></div>
+                <div data-aura-component="displays/user-info"></div>
+            </div>
+        </span>
+        <span class="footer-right col-sm-4 col-md-4 hidden-xs">
+            <!-- <div data-aura-component="displays/event-counter"></div> -->
+        </span>
       </div>
+
     </div>
-    <div class="banner">(U//FOUO)</div>
   </body>
 </html>

@@ -182,7 +182,7 @@ License: MIT
     line-height: 32px;
 }
 
-.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+/*.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
     background-color: #396A92;
     border-color: #396A92;
 }
@@ -193,7 +193,7 @@ License: MIT
 
 a {
     color: #396A92;
-}
+}*/
 
 .pagination:hover {
     cursor: pointer;

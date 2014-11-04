@@ -1,10 +1,4 @@
-#settings-container {
-	position: absolute;
-	top: 10px;
-	right: 10px;
-	z-index: 1010;
-}
-
-#settings-container .dialog-dialog {
-	margin: 0px -300px;
+#left-side-menu .menu-button-group div:last-child .btn {
+	border-top-style: solid;
+	border-top-width: 1px;
 }

@@ -2,9 +2,10 @@ define([
     'text!./basemap-gallery.css', 
     'text!./basemap-gallery.hbs',
     './basemap-gallery',
+    './basemap-gallery-subscriber',
     './basemap-gallery-publisher',
     'handlebars'
-], function(basemapGalleryCSS, basemapGalleryHBS, basemapGallery, basemapGalleryPublisher) {
+], function(basemapGalleryCSS, basemapGalleryHBS, basemapGallery, basemapGallerySubscriber, basemapGalleryPublisher) {
 
     return {
         initialize: function() {
@@ -26,6 +27,7 @@ define([
             });
             this.html(html);
 
+            basemapGallerySubscriber.init(this);
             basemapGalleryPublisher.init(this);
             basemapGallery.init(this);
         }
