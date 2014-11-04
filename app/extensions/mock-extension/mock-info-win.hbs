@@ -20,10 +20,9 @@
 	<div class="exportFeature">
 	    <div class="exportGroup">
             <select class="form-control">
-              <option value="volvo">Volvo</option>
-              <option value="saab">Saab</option>
-              <option value="mercedes">Mercedes</option>
-              <option value="audi">Audi</option>
+                {{#each exports}}
+                    <option value="{{@key}}">{{{this}}}</option>
+                {{/each}}
             </select>
             <button type="button" class="btn btn-default">Export</button>
         </div>

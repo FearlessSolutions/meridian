@@ -2,9 +2,11 @@ define([
     'text!./mock-info-win.hbs',
     'text!./mock-info-win.css',
     'text!./mock-map-url.hbs',
+    './mock-configuration',
+    'jquery',
     'bootstrap',
     'handlebars'
-], function(mockHbs, mockInfoWinCSS, mapUrlHBS) {
+], function(mockHbs, mockInfoWinCSS, mapUrlHBS, mockConfig, $) {
     var context,
         mapUrlTemplate;
 
@@ -32,13 +34,25 @@ define([
                             "classification": attributes.classification,
                             "name": attributes.name,
                             "attributes": attributes,
-                            "namespace": "mock-extension"
+                            "namespace": "mock-extension",
+                            "exports": mockConfig.exports
                         });
 
                         return html;
                     },
                     "postRenderingAction": function(feature, layerId) {
-                        return;
+                        $('.mock-extension .exportFeature .exportGroup .btn').on('click', function(){
+                            // .text() = Human Readable, .val() = channel name
+                            var channelName = $('.mock-extension .exportFeature .exportGroup select').find(':selected').val();
+                            switch(channelName){
+                                case "export.download.geojson":
+                                    console.log("Download GeoJSON Handler");
+                                    context.sandbox.emit('export.download.geojson', {featureId: feature.featureId});
+                                    break;
+                                default:
+                                    console.log("ERROR: Unknown channel -- " + channelName);
+                            }
+                        });
                     }
                 },
                 "keys": {
