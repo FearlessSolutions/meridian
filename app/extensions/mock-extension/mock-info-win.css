@@ -2,6 +2,32 @@
 	font-size: .8em;
 }
 
+.mock-extension .exportFeature{
+    padding-top: 5px;
+    overflow: auto;
+}
+
+.mock-extension .exportFeature .exportGroup {
+    float: right;
+}
+
+.mock-extension .exportFeature .exportGroup select{
+    display: inline;
+    height: 22px;
+    width: auto;
+    font-size: 12px;
+    margin-top: 5px;
+    color: #000000;
+}
+
+.mock-extension .exportFeature .exportGroup .btn{
+    display: inline;
+    height: 22px;
+    padding: 5px 7px;
+    font-size: 12px;
+    line-height: 0px;
+}
+
 .mock-extension.info-win-dialog .title{
 	font-weight: bold;
 	font-size: 14px;

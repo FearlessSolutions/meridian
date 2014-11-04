@@ -2,6 +2,7 @@ define([
     'text!./mock-info-win.hbs',
     'text!./mock-info-win.css',
     'text!./mock-map-url.hbs',
+    'bootstrap',
     'handlebars'
 ], function(mockHbs, mockInfoWinCSS, mapUrlHBS) {
     var context,
