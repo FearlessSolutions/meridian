@@ -1,5 +1,5 @@
 var fs = require('fs'),
-    ogr2ogr = require('ogr2ogr'),
+    ogr2ogr = require('meridian-ogr2ogr'),
     transformationConfig = { // Defaults from the OGR2OGR module
         projection: 'EPSG:4326',
         format: 'GeoJSON',
