@@ -46,8 +46,13 @@ define([
                             var channelName = $('.mock-extension .exportFeature .exportGroup select').find(':selected').val();
                             switch(channelName){
                                 case "export.download.geojson":
-                                    console.log("Download GeoJSON Handler");
-                                    context.sandbox.emit('export.download.geojson', {featureId: feature.featureId});
+                                    context.sandbox.emit(channelName, {featureId: feature.featureId});
+                                    break;
+                                case "export.google.maps":
+                                    context.sandbox.dataStorage.getFeatureById({featureId: feature.featureId}, function(feature){
+                                        context.sandbox.emit(channelName, {lat: feature.geometry.coordinates[1],
+                                            lon: feature.geometry.coordinates[0]});
+                                    });
                                     break;
                                 default:
                                     console.log("ERROR: Unknown channel -- " + channelName);
