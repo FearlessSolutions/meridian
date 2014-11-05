@@ -9,25 +9,25 @@ body.dialog-open .modal-backdrop {
   display: none;
 }
 
-div[data-aura-component='tools/support'] #support-modal .modal-backdrop.in {
+div[data-aura-component='tools/download-picker'] #download-picker-modal .modal-backdrop.in {
     opacity: 0.7;
     filter: alpha(opacity=70);
 }
-div[data-aura-component='tools/support'] #support-modal .modal-dialog {
+div[data-aura-component='tools/download-picker'] #download-picker-modal .modal-dialog {
     margin: 5% auto;
     width: 400px;
 }
-div[data-aura-component='tools/support'] #support-modal .modal-footer {
+div[data-aura-component='tools/download-picker'] #download-picker-modal .modal-footer {
     text-align:center;
 }
-div[data-aura-component='tools/support'] #support-modal {
+div[data-aura-component='tools/download-picker'] #download-picker-modal {
     overflow-y: hidden;
 }
-div[data-aura-component='tools/support'] #support-modal .modal-body {
+div[data-aura-component='tools/download-picker'] #download-picker-modal .modal-body {
     max-height: 280px;
     padding: 20px;
 }
-div[data-aura-component='tools/support'] #support-modal .modal-body .support-actions {
+div[data-aura-component='tools/download-picker'] #download-picker-modal .modal-body .download-picker-actions {
     margin-left: auto;
     margin-right: auto;
     text-align:center;
