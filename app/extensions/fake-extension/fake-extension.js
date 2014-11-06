@@ -1,10 +1,19 @@
 define([
     'text!./fake-info-win.hbs',
     'text!./fake-info-win.css',
+    './fake-configuration',
+    'jquery',
+    'bootstrap',
     'handlebars'
-], function(fakeHbs, fakeInfoWinCSS) {
+], function(fakeHbs, fakeInfoWinCSS, fakeConfig, $) {
+
+    var context;
+
     var exposed = {
         initialize: function(app) {
+
+            context = app;
+
             app.sandbox.utils.addCSS(fakeInfoWinCSS, 'fake-extension-style');
 
             if (!app.sandbox.dataServices) {
@@ -19,7 +28,8 @@ define([
                             "classification": attributes.classification,
                             "name": attributes.name,
                             "attributes": attributes,
-                            "namespace": "fake-extension"
+                            "namespace": "fake-extension",
+                            "exports": fakeConfig.exports
                         });
                         return html;
                     },
