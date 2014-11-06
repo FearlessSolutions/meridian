@@ -2,6 +2,32 @@
 	font-size: .8em;
 }
 
+.fake-extension .exportFeature{
+	padding-top: 5px;
+	overflow: auto;
+}
+
+.fake-extension .exportFeature .exportGroup {
+	float: right;
+}
+
+.fake-extension .exportFeature .exportGroup select{
+	display: inline;
+	height: 22px;
+	width: auto;
+	font-size: 12px;
+	margin-top: 5px;
+	color: #000000;
+}
+
+.fake-extension .exportFeature .exportGroup .btn{
+	display: inline;
+	height: 22px;
+	padding: 5px 7px;
+	font-size: 12px;
+	line-height: 0px;
+}
+
 .fake-extension.info-win-dialog .title{
 	font-weight: bold;
 	font-size: 14px;
