@@ -18,6 +18,12 @@ define([
         },
         restoreDataset: function(params) {
             context.sandbox.emit('data.restore', params);
+        },
+        deleteDataset: function(params) {
+            context.sandbox.emit('map.layer.delete', params);
+        },
+        publishMessage: function(params) {
+            context.sandbox.emit('message.publish', params); 
         }
     };
 

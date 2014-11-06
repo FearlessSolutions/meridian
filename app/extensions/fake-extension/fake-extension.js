@@ -20,20 +20,20 @@ define([
                 app.sandbox.dataServices = {};
             }
             app.sandbox.dataServices.fake = {
-                "infoWinTemplate": {
-                    "buildInfoWinTemplate": function(attributes, fullFeature) {
+                infoWinTemplate: {
+                    buildInfoWinTemplate: function(attributes, fullFeature) {
                         var fakeTemplate = Handlebars.compile(fakeHbs);
-                        var html = fakeTemplate({
-                            "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
-                            "classification": attributes.classification,
-                            "name": attributes.name,
-                            "attributes": attributes,
-                            "namespace": "fake-extension",
-                            "exports": fakeConfig.exports
+
+                        return fakeTemplate({
+                            thumbnail: app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
+                            classification: attributes.classification,
+                            name: attributes.name,
+                            attributes: attributes,
+                            namespace: 'fake-extension',
+                            exports: fakeConfig.exports
                         });
-                        return html;
                     },
-                    "postRenderingAction": function(feature, layerId) {
+                    postRenderingAction: function(feature, layerId) {
                         $('.fake-extension .exportFeature .exportGroup .btn').on('click', function(){
                             // .text() = Human Readable, .val() = channel name
                             var channelName = $('.fake-extension .exportFeature .exportGroup select').find(':selected').val();
@@ -53,9 +53,13 @@ define([
                         });
                     }
                 },
-                "keys": {
-                    "valid": "Valid"
-                }
+                keys: [
+                    {
+                        property: 'valid',
+                        displayName: 'Valid',
+                        weight: 75
+                    }
+                ]
             };
         }
     };
