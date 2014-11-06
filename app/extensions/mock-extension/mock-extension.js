@@ -40,6 +40,7 @@ define([
                         return;
                     }
                 },
+                //See data-storage-extension for key variable descriptions
                 keys: [
                     {
                         property: 'percent',

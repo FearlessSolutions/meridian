@@ -7,6 +7,9 @@ define([
         initialize: function(app) {
             var sortedPropertiesArray = [];
             //Default columns for the datagrid.
+            // property = given property from data
+            // displayName = text to display in the datagrid as a header
+            // weight How important the column is. Higher weight = more important = more to the left
             var columns = {
                 lat: [{
                     property: "lat",
