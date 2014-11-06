@@ -67,6 +67,7 @@ define([
                 merge: $.merge, // for help see jquery.merge
                 now: $.now, // for help see jquery.now
                 parseJSON: $.parseJSON, // for help see jquery.parseJSON
+                isEmptyObject: $.isEmptyObject,
                 preferences: {
                     get: function(key){
                         if(typeof(Storage)!=="undefined"){
