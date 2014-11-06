@@ -28,7 +28,6 @@ define([
                 $picker.append(optionHTML);
             });
 
-
             $modal.modal({
                 backdrop: true,
                 keyboard: true,
@@ -49,7 +48,6 @@ define([
                     });
                     return;
                 }
-
 
                 publisher.export({
                     channel: channel
