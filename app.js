@@ -65,8 +65,6 @@ app.use(function(req, res, next){
     next();
 });
 
-
-
 // Server static content
 app.use('/', express.static(__dirname + '/app'));
 app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));

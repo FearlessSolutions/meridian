@@ -92,9 +92,6 @@ exports.init = function(thisContext){
                                         data.features[index] = feature;
                                     });
 
-
-
-
                                     saveRecursive = function(chunkIndex, featuresToProcess, callback){
                                         var chunk;
 
