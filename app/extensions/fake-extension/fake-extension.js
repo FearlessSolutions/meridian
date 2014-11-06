@@ -11,25 +11,29 @@ define([
                 app.sandbox.dataServices = {};
             }
             app.sandbox.dataServices.fake = {
-                "infoWinTemplate": {
-                    "buildInfoWinTemplate": function(attributes, fullFeature) {
+                infoWinTemplate: {
+                    buildInfoWinTemplate: function(attributes, fullFeature) {
                         var fakeTemplate = Handlebars.compile(fakeHbs);
-                        var html = fakeTemplate({
-                            "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
-                            "classification": attributes.classification,
-                            "name": attributes.name,
-                            "attributes": attributes,
-                            "namespace": "fake-extension"
+
+                        return fakeTemplate({
+                            thumbnail: app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
+                            classification: attributes.classification,
+                            name: attributes.name,
+                            attributes: attributes,
+                            namespace: 'fake-extension'
                         });
-                        return html;
                     },
-                    "postRenderingAction": function(feature, layerId) {
+                    postRenderingAction: function(feature, layerId) {
                         return;
                     }
                 },
-                "keys": {
-                    "valid": "Valid"
-                }
+                keys: [
+                    {
+                        property: 'valid',
+                        displayName: 'Valid',
+                        weight: 75
+                    }
+                ]
             };
         }
     };

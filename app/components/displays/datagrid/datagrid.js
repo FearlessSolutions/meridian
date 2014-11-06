@@ -12,7 +12,7 @@ define([
         MOUSE_CLICK_RIGHT = 3;
 
     var exposed = {
-        "init": function(thisContext) {
+        init: function(thisContext) {
             context = thisContext;
             datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
@@ -20,77 +20,71 @@ define([
                 publisher.closeDatagrid();
             });
         },
-        "toggleGrid": function() {
+        toggleGrid: function() {
             if($datagridContainer.hasClass('hidden')) {
                 exposed.open();
             }else {
                 exposed.close();
             }
         },
-        "open": function() {
+        open: function() {
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 var compiledData = [],
-                    storedColumns,
-                    datasets = context.sandbox.dataStorage.datasets;
+                    tempObject,
+                    columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
+                    columnHeaders = context.sandbox.dataStorage.getColumnsDisplayNameArray();
 
                 $datagridContainer.removeClass('hidden');
                 $datagridContainer.height(328);
 
+                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionIndex, collection) {
+                    context.sandbox.utils.each(collection.models, function(modelIndex, model) {
 
-                storedColumns = context.sandbox.dataStorage.getColumns();
-                 _.each(datasets, function(collection) {
-                    _.each(collection.models, function(model) {
-
-                        var tempObject = {};
-                        $.each(storedColumns, function(k, v){
-                            if(model.attributes.hasOwnProperty(k)) {
-                                tempObject[v] = model.attributes[k];
+                        tempObject = {};
+                        context.sandbox.utils.each(columnHeadersMetadata, function(displayMetadataIndex, displayMetadata){
+                            if(model.attributes.hasOwnProperty(displayMetadata.property)) {
+                                tempObject[displayMetadata.displayName] = model.attributes[displayMetadata.property];
                             } else {
-                                tempObject[v] = '';
+                                tempObject[displayMetadata.displayName] = '';
                             }
                         });
+
                         compiledData.push(tempObject);
-
                     });
-                });
-
-                var columnsArray = [];
-                context.sandbox.utils.each(storedColumns, function(k, v) {
-                    columnsArray.push(v);
                 });
 
                 if(!myTable) {
                     myTable = $datagridContainer.Datatable({
-                        "sortable": true,
-                        "pagination": true,
-                        "data": compiledData,
-                        "columns": columnsArray,
-                        "searchable": true,
-                        "closeable": false,
-                        "clickable": true,
-                        "afterRowClick": function(event, target) {
+                        sortable: true,
+                        pagination: true,
+                        data: compiledData,
+                        columns: columnHeaders,
+                        searchable: true,
+                        closeable: false,
+                        clickable: true,
+                        afterRowClick: function(event, target) {
 
                             //If it was a link, as set below, do not identify the point.
                             if(event.originalEvent.isLink){
                                 event.stopPropagation(); //Stop doing other stuff if it is a point
                             }else if(event.which === MOUSE_CLICK_LEFT) { 
                                 publisher.identifyRecord({
-                                    "featureId": target['Feature ID'],
-                                    "layerId": target['Layer ID']
+                                    featureId: target['Feature ID'],
+                                    layerId: target['Layer ID']
                                 });
                             } else if (event.which === MOUSE_CLICK_RIGHT) {
                                 datagridContextMenu.showMenu({
-                                    "featureId": target['Feature ID'],
-                                    "layerId": target['Layer ID'],
-                                    "event": event
+                                    featureId: target['Feature ID'],
+                                    layerId: target['Layer ID'],
+                                    event: event
                                 });
                             }
                         },
-                        "addRowClasses": addCustomClasses
+                        addRowClasses: addCustomClasses
                     });
                 } else {
                     myTable.removeAllData();
-                    myTable.updateColumns(columnsArray);
+                    myTable.updateColumns(columnHeaders);
                     myTable.addData(compiledData);
                 }
 
@@ -105,7 +99,7 @@ define([
                 datagridVisible = false;
             }
         },
-        "close": function() {
+        close: function() {
             $datagridContainer.addClass('hidden');
             $datagridContainer.height(0);
             if(myTable) {
@@ -113,49 +107,48 @@ define([
             }
             datagridVisible = false;
         },
-        "clear": function() {
-            if(myTable) { //In both untill refactor
+        clear: function() {
+            if(myTable) { //In both until refactor
                 myTable.removeAllData();
             }
             exposed.close();
         },
-        "reload": function() {
+        reload: function() {
             if(datagridVisible) {
                 exposed.open();
             }
         },
-        "refresh": function() {
+        refresh: function() {
             if(datagridVisible && myTable) {
                 myTable.updateTable();
             }
         },
-        "addData": function(params) {
+        addData: function(params) {
             var compiledData = [],
-                datasets,
+                columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
+                columnHeaders = context.sandbox.dataStorage.getColumnsDisplayNameArray(),
+                tempObject,
                 currentPagination = $('ul.pagination li.active a').html();
 
             if(datagridVisible && myTable) {
-                datasets = context.sandbox.dataStorage.datasets;
-
-                storedColumns = context.sandbox.dataStorage.getColumns();
-                 _.each(datasets, function(collection) {
-                    _.each(collection.models, function(model) {
-
-                        var tempObject = {};
-                        $.each(storedColumns, function(k, v){
-                            if(model.attributes.hasOwnProperty(k)) {
-                                tempObject[v] = model.attributes[k];
+                 context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionIndex, collection) {
+                    context.sandbox.utils.each(collection.models, function(modelIndex, model) {
+                        tempObject = {};
+                        context.sandbox.utils.each(columnHeadersMetadata, function(displayMetadataIndex, displayMetadata){
+                            if(model.attributes.hasOwnProperty(displayMetadata.property)) {
+                                tempObject[displayMetadata.displayName] = model.attributes[displayMetadata.property];
                             } else {
-                                tempObject[v] = '';
+                                tempObject[displayMetadata.displayName] = '';
                             }
                         });
-                        compiledData.push(tempObject);
 
+                        compiledData.push(tempObject);
                     });
                 });
 
                 // Remove old data
                 myTable.removeAllData();
+                myTable.updateColumns(columnHeaders);
                 // replace data with new Full Data
                 myTable.addData(compiledData);
                 // Make sure the table stays on same page as prior to adding data
@@ -166,10 +159,10 @@ define([
 
     function addCustomClasses(params) {
         if(
-            !context.sandbox.stateManager.getLayerStateById({"layerId": params.record['Layer ID']}).visible ||
+            !context.sandbox.stateManager.getLayerStateById({layerId: params.record['Layer ID']}).visible ||
             context.sandbox.stateManager.layers[params.record['Layer ID']].hiddenFeatures.indexOf(params.record['Feature ID']) > -1
         ){
-            return ["hiddenFeature"];
+            return ['hiddenFeature'];
         } else {
             return [];
         }
