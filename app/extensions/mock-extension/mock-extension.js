@@ -39,7 +39,7 @@ define([
              */
             app.sandbox.dataServices.mock = {
                 /**
-                 * Info needed.
+                 * Encapsulates information window functions and properties.
                  * @namespace Sandbox.dataServices.mock.infoWinTemplate
                  * @memberof Sandbox.dataServices.mock
                  */
@@ -88,7 +88,8 @@ define([
                     }
                 },
                 /**
-                 * Info needed.
+                 * Used to match the key with the properties of the feature and uses the value as an alias for the column 
+                 * header specifically for this datasource. 
                  * @namespace Sandbox.dataServices.mock.keys
                  * @property {String} percent - Property value: "%"
                  * @property {String} color   - Property value: "Color"
@@ -109,7 +110,7 @@ define([
         }
     };
     /**
-     * Creates object with lat and lon keys found in attributes and passes the object into the internal mapUrlTemplate.
+     * Enables access to the mapUrlTemplate found in this extension with the given lat/lon attributes.
      * @function
      * @instance
      * @param {Object} attributes     - 

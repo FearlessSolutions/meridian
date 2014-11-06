@@ -53,7 +53,7 @@ define([
 
             app.sandbox.dataServices.cmapi = {
                 /**
-                 * Info needed.
+                 * Encapsulates information window functions and properties.
                  * @namespace Sandbox.dataServices.cmapi.infoWinTemplate
                  * @memberof Sandbox.dataServices.cmapi
                  */

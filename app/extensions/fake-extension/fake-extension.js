@@ -29,7 +29,7 @@ define([
             
             app.sandbox.dataServices.fake = {
                 /**
-                 * Info needed.
+                * Encapsulates information window functions and properties.
                  * @namespace Sandbox.dataServices.fake.infoWinTemplate
                  * @memberof Sandbox.dataServices.fake
                  */
@@ -72,7 +72,8 @@ define([
                     }
                 },
                 /**
-                 * Info needed.
+                * Used to match the key with the properties of the feature and uses the value as an alias for the column 
+                 * header in datagrid. This is specific for this datasource. 
                  * @namespace Sandbox.dataServices.fake.keys
                  * @property {String} valid - Property value: "Valid"
                  * @memberof Sandbox.dataServices.fake
