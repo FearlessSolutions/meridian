@@ -24,7 +24,23 @@ define([
                         return html;
                     },
                     "postRenderingAction": function(feature, layerId) {
-                        return;
+                        $('.fake-extension .exportFeature .exportGroup .btn').on('click', function(){
+                            // .text() = Human Readable, .val() = channel name
+                            var channelName = $('.fake-extension .exportFeature .exportGroup select').find(':selected').val();
+                            switch(channelName){
+                                case "export.download.geojson":
+                                    context.sandbox.emit(channelName, {featureId: feature.featureId});
+                                    break;
+                                case "export.google.maps":
+                                    context.sandbox.dataStorage.getFeatureById({featureId: feature.featureId}, function(feature){
+                                        context.sandbox.emit(channelName, {lat: feature.geometry.coordinates[1],
+                                            lon: feature.geometry.coordinates[0]});
+                                    });
+                                    break;
+                                default:
+                                    console.log("ERROR: Unknown channel -- " + channelName);
+                            }
+                        });
                     }
                 },
                 "keys": {

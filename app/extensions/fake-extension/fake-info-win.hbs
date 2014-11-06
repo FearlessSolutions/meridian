@@ -17,4 +17,14 @@
 			</table>
 		</div>
 	</div>
+	<div class="exportFeature">
+		<div class="exportGroup">
+			<select class="form-control">
+				{{#each exports}}
+					<option value="{{@key}}">{{{this}}}</option>
+				{{/each}}
+			</select>
+			<button type="button" class="btn btn-default">Export</button>
+		</div>
+	</div>
 </div>
