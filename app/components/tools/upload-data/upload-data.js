@@ -222,7 +222,7 @@ define([
             }else if(!context.sandbox.dataStorage.datasets[queryId]) {
                 createLayer({
                     queryId: queryId,
-                    name: queryName
+                    queryName: queryName
                 });
 
                 markQueryStart(queryName);
