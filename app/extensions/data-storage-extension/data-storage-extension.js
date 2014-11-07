@@ -84,8 +84,9 @@ define([
 
                         if(!propertyEntryArray){
                             columns[newMetadata.property] = [newMetadata];
-
                             binaryInsert(newMetadata);
+
+                            return;
                         }else{
                             for(index = 0; index < propertyEntryArray.length; index++){
                                 entry = propertyEntryArray[index];
@@ -109,8 +110,6 @@ define([
                             binaryInsert(newMetadata);
                         }
                     });
-
-                    console.debug(sortedPropertiesArray);
                 }
 			};
 
@@ -156,7 +155,7 @@ define([
                                 if(checkEndOfArray(currentIndex)){
                                     sortedPropertiesArray.push(newMetadata);
                                 }else{
-                                    sortedPropertiesArray.splice(currentIndex);
+                                    sortedPropertiesArray.splice(currentIndex, 0, newMetadata);
                                 }
                             }else if(currentEntry.weight < weight){
                                 sortedPropertiesArray.splice(currentIndex, 0, newMetadata);
