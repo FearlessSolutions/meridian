@@ -27,6 +27,9 @@ define([
                 exposed.close();
             }
         },
+        /**
+         * Set up the data, columns, and then open the datagrid
+         */
         open: function() {
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 var compiledData = [],

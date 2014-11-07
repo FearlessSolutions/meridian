@@ -6,6 +6,10 @@ define([
     var exposed = {
         initialize: function(app) {
             var sortedPropertiesArray = [];
+            //Default columns for the datagrid.
+            // property = given property from data
+            // displayName = text to display in the datagrid as a header
+            // weight How important the column is. Higher weight = more important = more to the left
             var columns = {
                 lat: [{
                     property: "lat",
@@ -44,6 +48,9 @@ define([
                 getColumns: function() {
                     return sortedPropertiesArray;
                 },
+                /**
+                 *  Get the ordered array of column headers
+                 */
                 getColumnsDisplayNameArray: function(){
                     var columnsArray = [];
                     sortedPropertiesArray.forEach(function(entry, index){
@@ -76,17 +83,24 @@ define([
                         callback(error, null);
                     });
                 },
+                /**
+                 * Insert new keys into sortedPropertiesArray, and note them in columns
+                 * @param params
+                 */
                 insertKeys: function(params){
                     $.each(params.keys, function(property, newMetadata){
                         var propertyEntryArray = columns[newMetadata.property],
                             index,
                             entry;
 
+                        //If there isn't any matching property, add it
                         if(!propertyEntryArray){
                             columns[newMetadata.property] = [newMetadata];
 
                             binaryInsert(newMetadata);
                         }else{
+
+                            //Check to see what the old weight is. If the new one is higher, replace it (delete and re-insert)
                             for(index = 0; index < propertyEntryArray.length; index++){
                                 entry = propertyEntryArray[index];
 
@@ -114,6 +128,14 @@ define([
                 }
 			};
 
+            /**
+             * Insert property into sortedPropertiesArray
+             * This uses a version of binary insert based on weight,
+             * When a new property is inserted, and there is another property with the same weight,
+             * the new property is added after all matching weights
+             * Higher weight == more to the left
+             * @param newMetadata
+             */
             var binaryInsert = function(newMetadata){
                 var weight = newMetadata.weight,
                     bottomIndex = 0,
@@ -138,13 +160,21 @@ define([
                     return thisIndex;
                 };
 
+                /**
+                 * See if the given index is the end of the array
+                 * @param thisIndex
+                 * @returns {boolean}
+                 */
                 var checkEndOfArray = function(thisIndex){
                     return thisIndex === sortedPropertiesArray.length;
                 };
 
-                if(topIndex === -1){
+                if(topIndex === -1){ //The array is empty; just add it
                     sortedPropertiesArray.push(newMetadata);
                 }else{
+
+                    //Keep adjusting the top and bottom indicies to narrow the search;
+                    // insert when correct place is found
                     while(bottomIndex <= topIndex){
                         currentIndex = (bottomIndex + topIndex) / 2 | 0;
                         currentEntry = sortedPropertiesArray[currentIndex];
@@ -194,6 +224,11 @@ define([
                 }
             };
 
+            /**
+             * Remove property from sortedPropertiesArray.
+             * Uses a variant of binary search to find the property
+             * @param metadata
+             */
             var binaryDelete = function(metadata){
                 var property = metadata.property,
                     displayName = metadata.displayName,
@@ -208,7 +243,10 @@ define([
                     currentEntry = sortedPropertiesArray[currentIndex];
 
                     if(weight === currentEntry.weight){
+
                         //Found a matching weight; Find matching entry
+                        // Since we jumped around, we might be in the middle of a group of
+                        // identical weights, so check up and down
                         topIndex = currentIndex;
                         while(topIndex < sortedPropertiesArray.length && currentEntry.weight === weight){
                             if(currentEntry.property === property && currentEntry.displayName === displayName){
@@ -243,7 +281,8 @@ define([
                 //Didn't match anything already there
             };
 
-            //Fill sortedColumnsArray
+
+            //Initialize sortedColumnsArray
             $.each(columns, function(property, propertyArray){
                 propertyArray.forEach(function(propertyEntry, index){
                     binaryInsert(propertyEntry);
