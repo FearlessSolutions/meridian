@@ -96,8 +96,9 @@ define([
                         //If there isn't any matching property, add it
                         if(!propertyEntryArray){
                             columns[newMetadata.property] = [newMetadata];
-
                             binaryInsert(newMetadata);
+
+                            return;
                         }else{
 
                             //Check to see what the old weight is. If the new one is higher, replace it (delete and re-insert)
@@ -123,8 +124,6 @@ define([
                             binaryInsert(newMetadata);
                         }
                     });
-
-                    console.debug(sortedPropertiesArray);
                 }
 			};
 
@@ -186,7 +185,7 @@ define([
                                 if(checkEndOfArray(currentIndex)){
                                     sortedPropertiesArray.push(newMetadata);
                                 }else{
-                                    sortedPropertiesArray.splice(currentIndex);
+                                    sortedPropertiesArray.splice(currentIndex, 0, newMetadata);
                                 }
                             }else if(currentEntry.weight < weight){
                                 sortedPropertiesArray.splice(currentIndex, 0, newMetadata);
