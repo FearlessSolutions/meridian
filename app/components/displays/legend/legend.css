@@ -14,8 +14,6 @@ div[data-aura-component='displays/legend'] #legendDialog .dialog-body {
     opacity: 0.80;
 }
 div[data-aura-component='displays/legend'] #legendDialog .dialog-header {
-    background-color: #357ebd;
-    color: white;
     cursor: move;
 }
 div[data-aura-component='displays/legend'] #legendDialog .dialog-body p {
@@ -28,7 +26,6 @@ div[data-aura-component='displays/legend'] #legendDialog img {
     width: 100%
 }
 div[data-aura-component='displays/legend'] #legendDialog .dialog-header .close {
-    color: white;
     opacity: .85;
     text-shadow: none;
 }
