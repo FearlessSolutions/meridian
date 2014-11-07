@@ -33,7 +33,7 @@ define([
                  * @namespace Sandbox.dataServices.fake.infoWinTemplate
                  * @memberof Sandbox.dataServices.fake
                  */
-                "infoWinTemplate": {
+                infoWinTemplate: {
                     /**
                      * Creates html template with the values provided to the function.
                      * @function
@@ -49,22 +49,22 @@ define([
                      */
                     buildInfoWinTemplate: function(attributes, fullFeature) {
                         var fakeTemplate = Handlebars.compile(fakeHbs);
-                        var html = fakeTemplate({
-                            "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
-                            "classification": attributes.classification || "",
-                            "name": attributes.name,
-                            "attributes": attributes,
-                            "namespace": "fake-extension"
+
+                        return fakeTemplate({
+                            thumbnail: app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
+                            classification: attributes.classification || "",
+                            name: attributes.name,
+                            attributes: attributes,
+                            namespace: 'fake-extension'
                         });
-                        return html;
                     },
                     /**
                      * NOT IMPLEMENTED. Developers can modify function to execute any post rendering
                      * action desired after the info window is loaded.
                      * @function
                      * @instance
-                     * @param  {Object} feature   - Info needed.
-                     * @param  {Object} overlayId - Info needed.
+                     * @param  {Object} feature   -
+                     * @param  {Object} overlayId - 
                      * @memberof Sandbox.dataServices.fake.infoWinTemplate
                      */
                     postRenderingAction: function(feature, layerId) {
@@ -72,15 +72,20 @@ define([
                     }
                 },
                 /**
-                 * Used to match the key with the properties of the feature and uses the value as an alias for the column 
-                 * header in datagrid. This is specific for this datasource. 
+                 * Array of objects with information about the name and location of each property of a feature.
                  * @namespace Sandbox.dataServices.fake.keys
-                 * @property {String} valid - Property value: "Valid"
+                 * @property {String} property    - Name of the property of the feature
+                 * @property {String} displayName - Name used in the datagrid.
+                 * @property {String} weigth      - Number used to specify the location in the datagrid. Higher weight means more to the left.
                  * @memberof Sandbox.dataServices.fake
                  */
-                "keys": {
-                    "valid": "Valid"
-                }
+                keys: [
+                    {
+                        property: 'valid',
+                        displayName: 'Valid',
+                        weight: 75
+                    }
+                ]
             };
         }
     };

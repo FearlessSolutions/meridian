@@ -38,12 +38,13 @@ define([
              * @memberof Sandbox.dataServices
              */
             app.sandbox.dataServices.mock = {
+
                 /**
                  * Encapsulates information window functions and properties.
                  * @namespace Sandbox.dataServices.mock.infoWinTemplate
                  * @memberof Sandbox.dataServices.mock
                  */
-                "infoWinTemplate": {
+                infoWinTemplate: {
                     /**
                      * Creates html template with the values provided to the function.
                      * @function
@@ -57,7 +58,7 @@ define([
                      * @return Handlebar template.
                      * @memberof Sandbox.dataServices.mock.infoWinTemplate
                      */
-                    "buildInfoWinTemplate": function(attributes, fullFeature) {
+                    buildInfoWinTemplate: function(attributes, fullFeature) {
                         var mockTemplate = Handlebars.compile(mockHbs);
                         var html;
 
@@ -65,11 +66,11 @@ define([
                         attributes.mapUrl = processMapUrl(attributes);
 
                         html = mockTemplate({
-                            "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
-                            "classification": attributes.classification || "",
-                            "name": attributes.name,
-                            "attributes": attributes,
-                            "namespace": "mock-extension"
+                            thumbnail: app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
+                            classification: attributes.classification || "",
+                            name: attributes.name,
+                            attributes: attributes,
+                            namespace: 'mock-extension'
                         });
 
                         return html;
@@ -87,25 +88,32 @@ define([
                         return;
                     }
                 },
-                /**
-                 * Used to match the key with the properties of the feature and uses the value as an alias for the column 
-                 * header specifically for this datasource. 
+                 /**
+                 * Array of objects with information about the name and location of each property of a feature.
                  * @namespace Sandbox.dataServices.mock.keys
-                 * @property {String} percent - Property value: "%"
-                 * @property {String} color   - Property value: "Color"
+                 * @property {String} property    - Name of the property of the feature
+                 * @property {String} displayName - Name used in the datagrid.
+                 * @property {String} weigth      - Number used to specify the location in the datagrid. Higher weight means more to the left.
                  * @memberof Sandbox.dataServices.mock
                  */
-                "keys": {
-                    "percent": "%",
-                    "color": "Color"
-                },
+                keys: [
+                    {
+                        property: 'percent',
+                        displayName: '%',
+                        weight: 76
+                    },
+                    {
+                        property: 'color',
+                        displayName: 'Color',
+                        weight: 69
+                    }
+                ],
                 /**
-                 * 
                  * @namespace Sandbox.dataServices.mock.processMapUrl
                  * @property {Function} processMapUrl -  Function found in {@link module:mock-extension#processMapUrl}
                  * @memberof Sandbox.dataServices.mock
                  */
-                "processMapUrl": processMapUrl
+                processMapUrl: processMapUrl
             };
         }
     };
@@ -120,8 +128,8 @@ define([
      */
     function processMapUrl(attributes){
         return mapUrlTemplate({
-            "lat": attributes.lat,
-            "lon": attributes.lon
+            lat: attributes.lat,
+            lon: attributes.lon
         });
     }
 

@@ -1,48 +1,95 @@
 define([
-    'jquery',
-    'backbone'
-], function($, Backbone){
+], function(){
     /**
      * @exports data-storage-extension
      */
     var exposed = {
         /**
          * All Meridian extensions require an 'initialize' function to begin the loading process of the extension.
-         * This extension exposes {@link Sandbox.dataStorage} to the {@link Sandbox} namespace.
+         * This extension exposes {@link Sandbox.dataStorage} to the {@link Sandbox} namespace and sets the defauld columns
+         * for the datagrid.
          * @function
          * @instance
          * @param {Object} app Instance of the Meridian application.
          */
-        "initialize": function(app) {
+        initialize: function(app) {
+            var sortedPropertiesArray = [];
             /**
-             * @namespace Sandbox.dataStorage
-             * @memberof Sandbox 
+             * Default columns for the datagrid. This variable can't be accessed directly.
+             * @var columns
+             * @instance
+             * @property {Array} lat                      - Each object has information about the name and location 
+             *                                              of each feature property. Each object should focus on a different dataSource.
+             * @property {String} lat.property            - Name of the property of the feature
+             * @property {String} lat.displayName         - Name used in the datagrid.
+             * @property {String} lat.weigth              - Number used to specify the location in the datagrid. Higher weight means more to the left.
+             * 
+             * @property {Array} lon                      - Each object has information about the name and location 
+             *                                              of each feature property. Each object should focus on a different dataSource.
+             * @property {String} lon.property            - Name of the property of the feature
+             * @property {String} lon.displayName         - Name used in the datagrid.
+             * @property {String} lon.weigth              - Number used to specify the location in the datagrid. Higher weight means more to the left.
+             * 
+             * @property {Array} dataService              - Each object has information about the name and location 
+             *                                              of each feature property. Each object should focus on a different dataSource.
+             * @property {String} dataService.property    - Name of the property of the feature
+             * @property {String} dataService.displayName - Name used in the datagrid.
+             * @property {String} dataService.weigth      - Number used to specify the location in the datagrid. Higher weight means more to the left.
+             * 
+             * @property {Array} featureId                - Each object has information about the name and location 
+             *                                              of each feature property. Each object should focus on a different dataSource.
+             * @property {String} featureId.property      - Name of the property of the feature
+             * @property {String} featureId.displayName   - Name used in the datagrid.
+             * @property {String} featureId.weigth        - Number used to specify the location in the datagrid. Higher weight means more to the left.
+             * 
+             * @property {Array} layerId                  - Each object has information about the name and location 
+             *                                              of each feature property. Each object should focus on a different dataSource.
+             * @property {String} layerId.property        - Name of the property of the feature
+             * @property {String} layerId.displayName     - Name used in the datagrid.
+             * @property {String} layerId.weigth          - Number used to specify the location in the datagrid. Higher weight means more to the left.
+             * 
+             * @memberof module:data-storage-extension
              */
+            var columns = {
+                lat: [{
+                    property: "lat",
+                    displayName: "Lat",
+                    weight: 100
+                },
+                {
+                    property: "LAT",
+                    displayName: "Lat",
+                    weight: 100
+                }],
+                lon:[{
+                    property: "lon",
+                    displayName: "Lon",
+                    weight: 100
+                }],
+                dataService: [{
+                    property: "dataService",
+                    displayName: "Data Service",
+                    weight: 5
+                }],
+                featureId: [{
+                    property: "featureId",
+                    displayName: "Feature ID",
+                    weight: 0
+                }],
+                layerId: [{
+                    property: "layerId",
+                    displayName: "Layer ID",
+                    weight: 0
+                }]
+            };
+            //namespace: dataStorage is used in multiple files. Defined in app.js for js-docs.
             var dataStorage = {
                 /**
                  * Variable used to hold all datasets.
                  * @namespace Sandbox.dataStorage.datasets
                  * @memberof Sandbox.dataStorage
                  */
-				"datasets": {
-                },
-                /**
-                 * These properties are used by the datagrid as the columns shown in the grid.
-                 * @namespace Sandbox.dataStorage.columns
-                 * @property {String} columns.featureId   - Property value: Feature ID
-                 * @property {String} columns.layerId     - Property value: Layer ID
-                 * @property {String} columns.lat         - Property value: Lat
-                 * @property {String} columns.lon         - Property value: Lon
-                 * @property {String} columns.dataService - Property value: Data Service  
-                 * @memberof Sandbox.dataStorage
-                 */
-                "columns": {
-                    "featureId":"Feature ID",
-                    "layerId":"Layer ID",
-                    "lat": "Lat",
-                    "lon": "Lon",
-                    "dataService": "Data Service"
-                },
+				datasets: {}, //Start empty
                 /**
                  * Add data to {@link Sandbox.dataStorage.datasets datasets} and 
                  * update {@link Sandbox.dataStorage.columns columns} using
@@ -53,11 +100,8 @@ define([
                  * @param {Object} params.data - Property added to {@link Sandbox.dataStorage.datasets}.
                  * @memberof Sandbox.dataStorage
                  */
-                "addData": function(params) {
+                addData: function(params) {
                     dataStorage.datasets[params.datasetId].add(params.data);
-                    if(dataStorage.datasets) {
-                        dataStorage.updateColumns({"data": params.data});
-                    }
                 },
                 /**
                  * Get a dataset based on an Id and criteria provided.
@@ -74,31 +118,27 @@ define([
                     return (dataStorage.datasets[params.datasetId]) ? dataStorage.datasets[params.datasetId].where(params.criteria) : [];
                 },
                 /**
-                 * Update all {@link Sandbox.dataStorage dataStorage} {@link Sandbox.dataStorage.columns columns}.
+                 * Provides the array of sorted Properties. 
                  * @function
                  * @instance
-                 * @param {Object} params      - Contains the data used to update the columns.
-                 * @param {Object} params.data - Properties used to update {@link Sandbox.dataStorage.columns}.
-                 * @memberof Sandbox.dataStorage
-                 */
-                updateColumns: function(params) {
-                    $.each(params.data, function(k, v) {
-                        // Skipping id field because it is for backbone modeling
-                        if(($.type(v) === 'string' || $.type(v) === 'number' || $.type(v) === 'boolean') && k !== 'id' && k !== 'type') {
-                            if(!dataStorage.columns[k]) {
-                                dataStorage.columns[k] = k;
-                            }
-                        }
-                    });
-                },
-                /**
-                 * @function
-                 * @instance
-                 * @return {Object} {@link Sandbox.dataStorage.columns}
                  * @memberof Sandbox.dataStorage
                  */
                 getColumns: function() {
-                    return dataStorage.columns;
+                    return sortedPropertiesArray;
+                },
+                /**
+                 * Provides the ordered array of column headers. 
+                 * @function
+                 * @instance
+                 * @memberof Sandbox.dataStorage
+                 */
+                getColumnsDisplayNameArray: function(){
+                    var columnsArray = [];
+                    sortedPropertiesArray.forEach(function(entry, index){
+                        columnsArray.push(entry.displayName);
+                    });
+
+                    return columnsArray;
                 },
                 /**
                  * Clear all contents in {@link Sandbox.dataStorage.datasets datasets}.
@@ -121,15 +161,13 @@ define([
                  */
                 getFeatureById: function(params, callback) {
                     var featureId = params.featureId;
-                    var feature = {};
-                    var ajax = $.ajax({
+
+                    return ajax = $.ajax({
                         type: "GET",
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + featureId
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/" + featureId
                     }).done(function(data) {
                         callback(data);
                     });
-
-                    return ajax;
                 },
                 /**
                  * Retrieves results based on query and session Id using: 
@@ -147,20 +185,228 @@ define([
                 getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
                     $.ajax({
                         type: "GET",
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/query/' + queryId + '/session/' + sessionId +
-                            '?start=' + start + '&size=' + size
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/query/" + queryId + "/session/" + sessionId +
+                            "?start=" + start + "&size=" + size
                     }).done(function(data) {
                         callback(null, data);
                     }).error(function(error) {
                         callback(error, null);
                     });
+                },
+                /**
+                 * Insert new keys into sortedPropertiesArray, and note them in columns.
+                 * @function
+                 * @instance
+                 * @params params - The new keys.
+                 * @memberof Sandbox.dataStorage
+                 */
+                insertKeys: function(params){
+                    $.each(params.keys, function(property, newMetadata){
+                        var propertyEntryArray = columns[newMetadata.property],
+                            index,
+                            entry;
+
+                        //If there isn't any matching property, add it
+                        if(!propertyEntryArray){
+                            columns[newMetadata.property] = [newMetadata];
+                            binaryInsert(newMetadata);
+
+                            return;
+                        }else{
+
+                            //Check to see what the old weight is. If the new one is higher, replace it (delete and re-insert)
+                            for(index = 0; index < propertyEntryArray.length; index++){
+                                entry = propertyEntryArray[index];
+
+                                if(entry.displayName === newMetadata.displayName){
+                                    if(entry.weight >= newMetadata.weight){
+                                        return;
+                                    }else{
+                                        binaryDelete(entry);
+                                        binaryInsert(newMetadata);
+
+                                        columns[newMetadata.property][index].weight = newMetadata.weight;
+
+                                        return;
+                                    }
+                                }
+                            }
+
+                            //No match
+                            columns[newMetadata.property].push(newMetadata);
+                            binaryInsert(newMetadata);
+                        }
+                    });
                 }
 			};
 
-            app.sandbox.dataStorage = dataStorage;
+            
+              // This function CAN NOT BE ACCESSED directly. Insert property into sortedPropertiesArray
+              // This uses a version of binary insert based on weight.
+              // When a new property is inserted, and there is another property with the same weight,
+              // the new property is added after all matching weights.
+              // Higher weight == more to the left
+              // @param newMetadata
+              // @instance
+              // @memberof module:data-storage-extension
+             
+            var binaryInsert = function(newMetadata){
+                var weight = newMetadata.weight,
+                    bottomIndex = 0,
+                    topIndex = sortedPropertiesArray.length - 1,
+                    currentIndex,
+                    currentEntry;
 
+                
+                  // Finds the index AFTER the top index where the weight matches.
+                  // This is where the splice should happen
+                  // @param thisIndex
+                  // @param thisWeight
+                  // @returns {*}
+                 
+                var findTopEqualIndex = function(thisIndex, thisWeight){
+                    var thisEntry = sortedPropertiesArray[thisIndex];
+                    while(thisEntry && thisEntry.weight === thisWeight){
+                        thisIndex++;
+                        thisEntry = sortedPropertiesArray[thisIndex];
+                    }
+
+                    return thisIndex;
+                };
+
+                
+                  // See if the given index is the end of the array
+                  // @param thisIndex
+                  // @returns {boolean}
+                 
+                var checkEndOfArray = function(thisIndex){
+                    return thisIndex === sortedPropertiesArray.length;
+                };
+
+                if(topIndex === -1){ //The array is empty; just add it
+                    sortedPropertiesArray.push(newMetadata);
+                }else{
+
+                    //Keep adjusting the top and bottom indicies to narrow the search;
+                    // insert when correct place is found
+                    while(bottomIndex <= topIndex){
+                        currentIndex = (bottomIndex + topIndex) / 2 | 0;
+                        currentEntry = sortedPropertiesArray[currentIndex];
+
+                        //If top and bottom indicies are the same, then we found the correct middle
+                        if(bottomIndex === topIndex){
+                            if(currentEntry.weight === weight){
+                                currentIndex = findTopEqualIndex(topIndex, weight);
+                                if(checkEndOfArray(currentIndex)){
+                                    sortedPropertiesArray.push(newMetadata);
+                                }else{
+                                    sortedPropertiesArray.splice(currentIndex, 0, newMetadata);
+                                }
+                            }else if(currentEntry.weight < weight){
+                                sortedPropertiesArray.splice(currentIndex, 0, newMetadata);
+                            }else {
+                                currentIndex++; //It should be put on the right, so increment; check for end of array
+                                if(checkEndOfArray(currentIndex)){
+                                    sortedPropertiesArray.push(newMetadata);
+                                }else{
+                                    sortedPropertiesArray.splice(currentIndex, 0, newMetadata);
+                                }
+                            }
+
+                            return;
+                        }else{
+                            if(currentEntry.weight < weight){
+                                topIndex = currentIndex - 1;
+                            }else if(currentEntry.weight > weight){
+                                bottomIndex = currentIndex + 1;
+                            }else{
+                                //They are equal; Find top entry that matches, and insert there
+                                currentIndex = findTopEqualIndex(currentIndex, weight);
+                                if(checkEndOfArray(currentIndex)){
+                                    sortedPropertiesArray.push(newMetadata);
+                                } else{
+                                    sortedPropertiesArray.splice(findTopEqualIndex(currentIndex, weight), 0, newMetadata);
+                                }
+
+                                return;
+                            }
+                        }
+                    }
+
+                    //It was the highest number so far
+                    sortedPropertiesArray.splice(0, 0, newMetadata);
+                }
+            };
+
+            
+             //  Remove property from sortedPropertiesArray.
+             //  Uses a variant of binary search to find the property
+             // @param metadata
+             
+            var binaryDelete = function(metadata){
+                var property = metadata.property,
+                    displayName = metadata.displayName,
+                    weight = metadata.weight,
+                    currentEntry,
+                    bottomIndex = 0,
+                    topIndex = sortedPropertiesArray.length - 1,
+                    currentIndex;
+
+                while(bottomIndex <= topIndex){
+                    currentIndex = (bottomIndex + topIndex) / 2 | 0;
+                    currentEntry = sortedPropertiesArray[currentIndex];
+
+                    if(weight === currentEntry.weight){
+
+                        //Found a matching weight; Find matching entry
+                        // Since we jumped around, we might be in the middle of a group of
+                        // identical weights, so check up and down
+                        topIndex = currentIndex;
+                        while(topIndex < sortedPropertiesArray.length && currentEntry.weight === weight){
+                            if(currentEntry.property === property && currentEntry.displayName === displayName){
+                                sortedPropertiesArray.splice(topIndex, 1);
+                                return;
+                            }
+
+                            topIndex++;
+                            currentEntry = sortedPropertiesArray[topIndex];
+                        }
+
+                        //Didn't find on the way up
+                        bottomIndex--; //Already checked currentIndex
+                        currentEntry = sortedPropertiesArray[bottomIndex];
+                        while(bottomIndex >= 0 && currentEntry.weight === weight){
+                            if(currentEntry.property === property && currentEntry.displayName === displayName){
+                                sortedPropertiesArray.splice(bottomIndex, 1);
+                                return;
+                            }
+                            bottomIndex--;
+                            currentEntry = sortedPropertiesArray[bottomIndex];
+                        }
+
+                        return;
+                    }else if(currentEntry.weight < weight){
+                        topIndex = currentIndex - 1;
+                    }else{
+                        bottomIndex = currentIndex + 1;
+                    }
+                }
+
+                //Didn't match anything already there
+            };
+
+
+            //Initialize sortedColumnsArray
+            $.each(columns, function(property, propertyArray){
+                propertyArray.forEach(function(propertyEntry, index){
+                    binaryInsert(propertyEntry);
+                });
+            });
+
+            app.sandbox.dataStorage = dataStorage;
         }
     };
+
 
     return exposed;
 
