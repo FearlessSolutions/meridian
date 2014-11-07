@@ -160,7 +160,7 @@ define([
 
                 populateDataHistoryTable();
 
-                context.sandbox.utils.each(tempDataArray, function(index, tempDataEntry) {
+                context.sandbox.utils.each(currentDataArray, function(index, tempDataEntry) {
                     var dataHistoryEntry = dataHistoryEntryTemplate(tempDataEntry);
                     $dataHistoryListTable.append(dataHistoryEntry);
                 });
