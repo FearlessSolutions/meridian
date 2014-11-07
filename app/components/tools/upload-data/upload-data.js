@@ -381,13 +381,7 @@ define([
         publisher.createLayer({
             layerId: params.queryId,
             name: params.queryName,
-            selectable: true,
-            coords: {
-                minLat: params.minLat,
-                minLon: params.minLon,
-                maxLat: params.maxLat,
-                maxLon: params.maxLon
-            }
+            selectable: true
         });
     }
 
