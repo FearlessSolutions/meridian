@@ -22,7 +22,7 @@ define([
 
             // TODO: Need to address how geoJSON feature collections are handled
             geoJsonParser = new OpenLayers.Format.GeoJSON({
-                "ignoreExtraDims": false,
+                "ignoreExtraDims": true, //Sometimes we get points which are 3d. This prevents OL from failing.
                 "internalProjection": params.map.projection,
                 "externalProjection": params.map.projectionWGS84
             });
@@ -256,7 +256,7 @@ define([
                 "forces": true
             });
         },
-        updateFeatures: function(params) {  // TODO: finish method to support full feature updating (attirbutes, styles, etc.)
+        updateFeatures: function(params) {  // TODO: finish method to support full feature updating (attributes, styles, etc.)
             var layerId = params.layerId,
                 featureObjects = params.featureObjects,
                 layer = params.map.getLayersBy('layerId', layerId)[0];

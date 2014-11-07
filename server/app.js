@@ -26,10 +26,11 @@ exports.init = function(app){
     use('extensions/elastic');
     use('extensions/gazetteer');
     use('extensions/kmltogeojson');
+    use('extensions/transformation');
 
     // Components
     use('components/mock');
     use('components/fake');
-    use('components/csv-upload');
+    use('components/file-upload');
 
 };
