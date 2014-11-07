@@ -9,7 +9,7 @@ define([
     'bootstrap'
 ], function (publisher) {
     var context,
-        DATASOURCE_NAME = "upload",
+        DATASOURCE_NAME = 'upload',
         $modal,
         $file,
         $dummyFile,

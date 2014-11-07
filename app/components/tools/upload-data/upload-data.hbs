@@ -10,8 +10,8 @@
                     <input id="file" type="file" name="uploadFile" accept="{{#each filetypes}}{{this.extension}},{{/each}}" style="display:none"> <!-- hidden file -->
 
                     <div class="form-group">
-                        <label for="file" class="col-md-3 control-label">File</label>
-                        <div class="col-md-9">
+                        <label for="file" class="span-1 col-md-3 control-label">File</label>
+                        <div class="col-md-8">
                             <div id="open-file" class="input-group">
                                 <input id="dummy-file" type="text" class="input-large form-control" placeholder="Please select a geojson, kml, or csv file">
                             <span class="input-group-addon">
@@ -22,8 +22,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Classification</label>
-                        <div class="col-md-9">
+                        <label class="span-1 col-md-3 control-label">Classification</label>
+                        <div class="col-md-8">
                             <select id="classification" class="input-group form-control input-large" form="upload-form">
                                 {{#each classifications}}
                                     <option value="{{this}}">{{this}}</option>
