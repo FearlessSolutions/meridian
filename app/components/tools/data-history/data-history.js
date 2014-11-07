@@ -16,7 +16,7 @@ define([
         $dataHistoryListTable,
         $dataHistoryDetailView,
         $noDataLabel,
-        currentDataArray = [].
+        currentDataArray = [],
         currentDataSet = {};
     
     var exposed = {
@@ -134,8 +134,9 @@ define([
                 }
             })
             .done(function(data) {
-                currentDataArray = [];
                 currentDataSet = {};
+                currentDataArray = [];
+
 
                 context.sandbox.utils.each(data, function(index, dataEntry) {
                     var now = moment(), //This needs to be done now to prevent race condition later
@@ -160,22 +161,6 @@ define([
                 currentDataArray.sort(dynamicSort('-rawDate'));
 
                 populateDataHistoryTable();
-
-                context.sandbox.utils.each(currentDataArray, function(index, tempDataEntry) {
-                    var dataHistoryEntry = dataHistoryEntryTemplate(tempDataEntry);
-                    $dataHistoryListTable.append(dataHistoryEntry);
-                });
-
-                context.$('.data-history-list .data-action-info').on('click', function(event) {
-                    exposed.showDetailedInfo({
-                        datasetId: context.$(this).parent().parent().data('datasetid')
-                    });
-                });
-                context.$('.data-history-list .data-action-restore').on('click', function(event) {
-                    publisher.restoreDataset(currentDataArray[context.$(this).parent().parent().data('datasetid')]);
-                    publisher.closeDataHistory();
-                });
-
             });
         }
     };
