@@ -12,7 +12,6 @@ define([
         MENU_DESIGNATION = 'data-history',
         $modal,
         $modalBody,
-        $cancelButton,
         $closeButton,
         $dataHistoryListTable,
         $dataHistoryDetailView,
@@ -36,9 +35,9 @@ define([
             $noDataLabel = context.$('#data-history-modal.modal p.noDataLabel');
 
             $modal.modal({
-                "backdrop": true,
-                "keyboard": true,
-                "show": false
+                backdrop: true,
+                keyboard: true,
+                show: false
             }).on('hidden.bs.modal', function() {
                 publisher.closeDataHistory();
                 exposed.hideDetailedInfo();
@@ -52,7 +51,7 @@ define([
             context.$('.expiration span').tooltip();
         },
         open: function() {
-            publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            publisher.publishOpening({componentOpening: MENU_DESIGNATION});
 
             // Populate Data History table
             exposed.updateDataHistory();
@@ -71,23 +70,33 @@ define([
                 }
             })
             .done(function(data) {
-                var tempData = {
-                    "datasetId": data.queryId,
-                    "dataSessionId": data.sessionId,
-                    "dataSource": data.dataSource || "N/A",
-                    "dataName": data.queryName || "N/A",
-                    "dataDate": moment.unix(data.createdOn).format("MMMM Do YYYY, h:mm:ss a") || "N/A",
-                    "dataRecordCount": data.numRecords || "N/A",
-                    "dataExpiresOn": moment.unix(data.expireOn).format("MMMM Do YYYY, h:mm:ss a") || "N/A",
-                    "dataStatus": "N/A",
-                    "rawDataObject": data.rawQuery || "N/A"
+                var now = moment(), //This needs to be done now to prevent race condition later
+                    dataDate = moment.unix(data.createdOn),
+                    expireDate = moment.unix(data.expireOn),
+                    isExpired = expireDate.isBefore(now),
+                    tempData,
+                    rawDataObjectString,
+                    dataHistoryDetailView,
+                    dataStatus = isExpired ? 'Expired' : 'N/A';
+
+                tempData = {
+                    datasetId: data.queryId,
+                    dataSessionId: data.sessionId,
+                    dataSource: data.dataSource || 'N/A',
+                    dataName: data.queryName || 'N/A',
+                    dataDate: dataDate.format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
+                    dataRecordCount: data.numRecords || 'N/A',
+                    dataExpiresOn: expireDate.format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
+                    isExpired: isExpired,
+                    dataStatus: dataStatus,
+                    rawDataObject: data.rawQuery || 'N/A'
                 };
 
-                var rawDataObjectString = context.sandbox.utils.isEmptyObject(tempData.rawDataObject)
+                rawDataObjectString = context.sandbox.utils.isEmptyObject(tempData.rawDataObject)
                     ? '' : JSON.stringify(tempData.rawDataObject, null,  ' ');
                 tempData.rawDataObject = rawDataObjectString;
 
-                var dataHistoryDetailView = dataHistoryDetailViewTemplate(tempData);
+                dataHistoryDetailView = dataHistoryDetailViewTemplate(tempData);
                 $dataHistoryDetailView.html(dataHistoryDetailView);
 
                 context.$('.data-history-detail-view .data-history-modal-back-to-list').on('click', function(event) {
@@ -129,14 +138,20 @@ define([
                 currentDataSet = {};
 
                 context.sandbox.utils.each(data, function(index, dataEntry) {
-                    var tempDataEntry = {
-                        "datasetId": dataEntry.queryId,
-                        "dataSessionId": dataEntry.sessionId,
-                        "dataSource": dataEntry.dataSource,
-                        "dataName": dataEntry.queryName,
-                        "dataDate": moment.unix(dataEntry.createdOn).fromNow(),
-                        "rawDate": dataEntry.createdOn,
-                        "dataRecordCount": dataEntry.numRecords
+                    var now = moment(), //This needs to be done now to prevent race condition later
+                        dataDate = moment.unix(dataEntry.createdOn),
+                        expireDate = moment.unix(dataEntry.expireOn),
+                        tempDataEntry;
+
+                    tempDataEntry = {
+                        datasetId: dataEntry.queryId,
+                        dataSessionId: dataEntry.sessionId,
+                        dataSource: dataEntry.dataSource,
+                        dataName: dataEntry.queryName,
+                        dataDate: dataDate.fromNow(),
+                        rawDate: dataEntry.createdOn,
+                        isExpired: expireDate.isBefore(now),
+                        dataRecordCount: dataEntry.numRecords
                     };
                     currentDataArray.push(tempDataEntry);
                     currentDataSet[dataEntry.queryId] = dataEntry;
@@ -145,6 +160,22 @@ define([
                 currentDataArray.sort(dynamicSort('-rawDate'));
 
                 populateDataHistoryTable();
+
+                context.sandbox.utils.each(tempDataArray, function(index, tempDataEntry) {
+                    var dataHistoryEntry = dataHistoryEntryTemplate(tempDataEntry);
+                    $dataHistoryListTable.append(dataHistoryEntry);
+                });
+
+                context.$('.data-history-list .data-action-info').on('click', function(event) {
+                    exposed.showDetailedInfo({
+                        datasetId: context.$(this).parent().parent().data('datasetid')
+                    });
+                });
+                context.$('.data-history-list .data-action-restore').on('click', function(event) {
+                    publisher.restoreDataset(currentDataArray[context.$(this).parent().parent().data('datasetid')]);
+                    publisher.closeDataHistory();
+                });
+
             });
         }
     };
@@ -191,7 +222,7 @@ define([
 
     function dynamicSort(property) {
         var sortOrder = 1;
-        if(property[0] === "-") {
+        if(property[0] === '-') {
             sortOrder = -1;
             property = property.substr(1);
         }
