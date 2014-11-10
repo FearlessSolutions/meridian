@@ -74,10 +74,15 @@ define([
                     dataDate = moment.unix(data.createdOn),
                     expireDate = moment.unix(data.expireOn),
                     isExpired = expireDate.isBefore(now),
+                    disableRestore = isExpired, //Use this as default
                     tempData,
                     rawDataObjectString,
                     dataHistoryDetailView,
                     dataStatus = isExpired ? 'Expired' : 'N/A';
+
+                if(context.sandbox.stateManager.layers[data.queryId]){
+                    disableRestore = true;
+                }
 
                 tempData = {
                     datasetId: data.queryId,
@@ -87,7 +92,7 @@ define([
                     dataDate: dataDate.format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
                     dataRecordCount: data.numRecords || 'N/A',
                     dataExpiresOn: expireDate.format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
-                    isExpired: isExpired,
+                    disableRestore: disableRestore,
                     dataStatus: dataStatus,
                     rawDataObject: data.rawQuery || 'N/A'
                 };
@@ -142,7 +147,12 @@ define([
                     var now = moment(), //This needs to be done now to prevent race condition later
                         dataDate = moment.unix(dataEntry.createdOn),
                         expireDate = moment.unix(dataEntry.expireOn),
+                        disableRestore = expireDate.isBefore(now), // Use isExpired as default
                         tempDataEntry;
+
+                    if(context.sandbox.stateManager.layers[dataEntry.queryId]){
+                        disableRestore = true;
+                    }
 
                     tempDataEntry = {
                         datasetId: dataEntry.queryId,
@@ -151,7 +161,7 @@ define([
                         dataName: dataEntry.queryName,
                         dataDate: dataDate.fromNow(),
                         rawDate: dataEntry.createdOn,
-                        isExpired: expireDate.isBefore(now),
+                        disableRestore: disableRestore,
                         dataRecordCount: dataEntry.numRecords
                     };
                     currentDataArray.push(tempDataEntry);
@@ -180,7 +190,7 @@ define([
 
         context.$('.data-history-list .data-action-info').on('click', function(event) {
             exposed.showDetailedInfo({
-                "datasetId": context.$(this).parent().parent().data('datasetid')
+                datasetId: context.$(this).parent().parent().data('datasetid')
             });
         });
         context.$('.data-history-list .data-action-restore').on('click', function(event) {
@@ -196,12 +206,13 @@ define([
 
     function generateDataHistoryEntryRow(dataHistoryEntryObject) {
         return dataHistoryEntryTemplate({
-            "datasetId": dataHistoryEntryObject.datasetId,
-            "dataSessionId": dataHistoryEntryObject.dataSessionId,
-            "dataSource": dataHistoryEntryObject.dataSource,
-            "dataName": dataHistoryEntryObject.dataName,
-            "dataDate": dataHistoryEntryObject.dataDate,
-            "dataRecordCount": dataHistoryEntryObject.dataRecordCount
+            datasetId: dataHistoryEntryObject.datasetId,
+            dataSessionId: dataHistoryEntryObject.dataSessionId,
+            dataSource: dataHistoryEntryObject.dataSource,
+            dataName: dataHistoryEntryObject.dataName,
+            disableRestore: dataHistoryEntryObject.disableRestore,
+            dataDate: dataHistoryEntryObject.dataDate,
+            dataRecordCount: dataHistoryEntryObject.dataRecordCount
         });
     }
 
@@ -219,7 +230,7 @@ define([
 
     function deleteDataset(datasetId, dataSessionId) {
         publisher.deleteDataset({
-            "layerId": datasetId
+            layerId: datasetId
         });
         context.sandbox.utils.ajax({
             type: 'DELETE',
@@ -236,9 +247,9 @@ define([
             currentDataArray = newDataArray;
             populateDataHistoryTable();
             publisher.publishMessage( {
-                "messageType": "success",
-                "messageTitle": "Data History",
-                "messageText": "Dataset successfully removed"
+                messageType: 'success',
+                messageTitle: 'Data History',
+                messageText: 'Dataset successfully removed'
             });
         });
     }
