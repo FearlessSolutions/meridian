@@ -27,10 +27,11 @@ define([
         },
         stopQuery: function(params) {
             var layerState,
-                dataTransferState;
+                dataTransferState,
+                dataset = context.sandbox.dataStorage.datasets[params.layerId];
 
             //If the query is not related to this datasource, ignore
-            if(context.sandbox.dataStorage.datasets[params.layerId].dataService !== DATASOURCE_NAME){
+            if(dataset && dataset.dataService !== DATASOURCE_NAME){
                 return;
             }
 

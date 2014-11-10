@@ -229,9 +229,14 @@ define([
     }
 
     function deleteDataset(datasetId, dataSessionId) {
-        publisher.deleteDataset({
-            layerId: datasetId
-        });
+
+        //If the layer already exists on the map, delete it
+        if(context.sandbox.stateManager.layers[datasetId]){
+            publisher.deleteDataset({
+                layerId: datasetId
+            });
+        }
+
         context.sandbox.utils.ajax({
             type: 'DELETE',
             url: '/clear/' + datasetId + '/' + dataSessionId
