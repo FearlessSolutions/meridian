@@ -200,7 +200,7 @@ define([
         deleteLayer: function(params) {
             var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0],
                 layers = selector.layers,
-                index;
+                identifiedFeatures;
 
             identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
                 "layerId": params.layerId
