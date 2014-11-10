@@ -200,13 +200,14 @@ define([
         deleteLayer: function(params) {
             var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0],
                 layers = selector.layers,
+                layer = params.map.getLayersBy('layerId', params.layerId),
                 identifiedFeatures;
 
             identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
-                "layerId": params.layerId
+                layerId: params.layerId
             });
 
-            if(identifiedFeatures.length) {
+            if(identifiedFeatures && identifiedFeatures.length) {
                 mapBase.clearMapSelection({
                     "map": params.map
                 });
@@ -216,8 +217,9 @@ define([
             }
 
             delete context.sandbox.stateManager.layers[params.layerId];
-            params.map.removeLayer(params.map.getLayersBy('layerId', params.layerId)[0]);
-
+            if(layer && layer.length){
+                params.map.removeLayer(layer[0]);
+            }
 
             context.sandbox.utils.each(layers, function(key, value) {
                 if(value.layerId === params.layerId) {
