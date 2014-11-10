@@ -14,7 +14,8 @@ define([
         $file,
         $dummyFile,
         $classification,
-        $submit;
+        $submit,
+        RESTORE_PAGE_SIZE = 500;
 
     var exposed = {
         init: function(thisContext) {
@@ -124,12 +125,17 @@ define([
                         filetype: filetype,
                         classification: classification
                     }, function(data){ //Success callback
-                            exposed.restoreDataset({
+                            publisher.publishMessage({
+                                messageType: 'success',
+                                messageTitle: 'Data Upload',
+                                messageText: 'Data upload was Uploaded. Starting Import'
+                            });
+
+                            getPage({
                                 queryId: queryId,
                                 queryName: queryName,
-                                sessionId: context.sandbox.sessionId,
-                                dataSource: DATASOURCE_NAME
-                            });
+                                sessionId: context.sandbox.sessionId
+                            }, 0);
                         }, function(status, jqXHR){ //Error callback
                             markQueryError(queryId, queryName, status);
                         }
@@ -169,7 +175,7 @@ define([
             });
 
             // Handle notifcations and state
-            layerState = context.sandbox.stateManager.getLayerStateById({"layerId": params.layerId});
+            layerState = context.sandbox.stateManager.getLayerStateById({layerId: params.layerId});
             if(layerState) {
                 // Check state manager for status of layer, if already stopped or finished don't publish message or change state
                 dataTransferState = layerState.dataTransferState;
@@ -210,45 +216,26 @@ define([
         },
         restoreDataset: function(params){
             var queryId = params.queryId,
-                queryName = params.queryName,
-                getPage,
-                RESTORE_PAGE_SIZE = 500;
+                queryName = params.queryName;
 
             if(params.dataSource !== DATASOURCE_NAME){
-                return;
-            }
-
-            if(!context.sandbox.dataStorage.datasets[queryId]) {
+                return; //This is not the component to handle the restore.
+            }else if(!context.sandbox.dataStorage.datasets[queryId]) {
                 createLayer({
-                    queryId: params.queryId,
-                    name: queryName,
-                    minLat: params.queryBbox ? params.queryBbox.bottom : null,
-                    minLon: params.queryBbox ? params.queryBbox.left : null,
-                    maxLat: params.queryBbox ? params.queryBbox.top : null,
-                    maxLon: params.queryBbox ? params.queryBbox.right : null
+                    queryId: queryId,
+                    queryName: queryName
                 });
 
                 markQueryStart(queryName);
-            }
 
-
-            getPage = function(params, start, pageSize){
-                context.sandbox.dataStorage.getResultsByQueryAndSessionId(queryId, params.sessionId, start, pageSize, function(err, results){
-                    if(err) {
-                        markQueryError(queryId, queryName, err);
-                    } else if (!results || results.length === 0) {
-                        markQueryFinished(queryId, queryName);
-                    } else {
-                        processDataPage(results, {
-                            queryId: queryId,
-                            queryName: queryName
-                        });
-                        getPage(params, start + RESTORE_PAGE_SIZE, RESTORE_PAGE_SIZE);
-                    }
+                getPage(params, 0);
+            }else{
+                publisher.publishMessage({
+                    messageType: 'warning',
+                    messageTitle: 'Data Restore',
+                    messageText: 'Dataset already loaded.'
                 });
-            };
-
-            getPage(params, 0, RESTORE_PAGE_SIZE);
+            }
         },
         show: function(){
             $modal.modal('show');
@@ -259,6 +246,25 @@ define([
     };
 
     return exposed;
+
+    function getPage (params, start){
+        var queryId = params.queryId,
+            queryName = params.queryName;
+
+        context.sandbox.dataStorage.getResultsByQueryAndSessionId(queryId, params.sessionId, start, RESTORE_PAGE_SIZE, function(err, results){
+            if(err) {
+                markQueryError(queryId, queryName, err);
+            } else if (!results || results.length === 0) {
+                markQueryFinished(queryId, queryName);
+            } else {
+                processDataPage(results, {
+                    queryId: queryId,
+                    queryName: queryName
+                });
+                getPage(params, start + RESTORE_PAGE_SIZE, RESTORE_PAGE_SIZE);
+            }
+        });
+    }
 
 
     function removeFileError(){
@@ -382,13 +388,7 @@ define([
         publisher.createLayer({
             layerId: params.queryId,
             name: params.queryName,
-            selectable: true,
-            coords: {
-                minLat: params.minLat,
-                minLon: params.minLon,
-                maxLat: params.maxLat,
-                maxLon: params.maxLon
-            }
+            selectable: true
         });
     }
 
