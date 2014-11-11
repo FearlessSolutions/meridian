@@ -6,7 +6,7 @@ var config,
 
 exports.init = function(context){
     config = context.sandbox.config.getConfig();
-    client = context.sandbox.elastic.client.newClient();
+    client = context.sandbox.elastic.client.getClient();
 };
 
 exports.updateRecord = function(userName, sessionId, type, updateMap, callback){
@@ -155,9 +155,15 @@ exports.getMetadataBySessionId = function(userId, sessionId, callback){
 
 exports.getMetadataByUserId = function(userId, callback){
     var query = {
-        "query":{
-            "match":{
-                "userId":userId
+        query:{
+            bool:{
+                must: [
+                    {
+                        term: {
+                            userId: userId
+                        }
+                    }
+                ]
             }
         }
     };

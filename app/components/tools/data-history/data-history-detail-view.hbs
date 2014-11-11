@@ -15,12 +15,12 @@
         <button type="button" class="btn btn-default-icon data-history-modal-back-to-list">
             <span class="glyphicon glyphicon-arrow-left"></span>
         </button>
-        <button type="button" class="btn btn-default-icon data-action-restore">
+        <button type="button" class="btn btn-default-icon data-action-restore" {{#if disableRestore}}disabled{{/if}}>
             <span class="glyphicon glyphicon-map-marker"></span>
         </button>
-        {{!-- <button type="button" class="btn btn-default-icon data-action-delete" data-datasetid="{{datasetId}}">
+        <button type="button" class="btn btn-default-icon data-action-delete">
             <span class="glyphicon glyphicon-trash"></span>
-        </button> --}}
+        </button>
     </div>
 </div>
 <div class="right-container">

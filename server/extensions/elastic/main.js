@@ -22,7 +22,8 @@ exports.init = function(context){
         client: client,
         stream: stream,
         purge: purge,
-        metadata: metadata
+        metadata: metadata,
+        refresh: client.refresh
     };
 
     // Init sub-modules as necessary
@@ -171,12 +172,26 @@ exports.init = function(context){
        });
     });
 
-    app.delete('/clear/:queryId', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-        purge.deleteRecordsByQueryId(res.get('Parsed-User'), res.get('Parsed-SessionId'),
-            req.params.queryId, function(err, results){
-            res.status(err ? 500 : 200);
-            res.send(err ? err : results);
-        });
+    app.delete('/clear/:queryId/:sessionId', auth.verifyUser, function(req, res){
+        purge.deleteMetadataByQueryId(
+            req.params.queryId, 
+            function(err, results){
+                if(err) {
+                    res.status(500).send(err);
+                } else {
+                    purge.deleteRecordsByQueryId(
+                        res.get('Parsed-User'), 
+                        req.params.sessionId,
+                        req.params.queryId, 
+                        function(err, results){
+                            res.status(err ? 500 : 200);
+                            res.send(err ? err : results);
+                        }
+                    );
+                }
+            }
+        );
+       
     });
 
     app.get('/metadata/user', auth.verifyUser, function(req, res){

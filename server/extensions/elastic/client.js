@@ -2,7 +2,8 @@ var elasticsearch = require('elasticsearch');
 var fs = require('fs');
 
 
-var context;
+var context,
+    singletonClient;
 
 exports.init = function(thisContext){
     context = thisContext;
@@ -10,6 +11,8 @@ exports.init = function(thisContext){
 
 
 /**
+ * Returns the singleton client, creating a new one if one doesn't exist
+ *
  * Config options we allow:
  *
  * protocol -- http / https
@@ -20,7 +23,11 @@ exports.init = function(thisContext){
  *
  * @returns {es.Client}
  */
-exports.newClient = function(options){
+exports.getClient = function(options){
+
+    if(singletonClient){
+        return singletonClient;
+    }
 
     // If no options are provided, use the default ones
     if (!options) {
@@ -37,5 +44,21 @@ exports.newClient = function(options){
     }
     if (options.rejectUnauthorized !== 'undefined') { esOptions.agentConfig.rejectUnauthorized = options.rejectUnauthorized; }
 
-    return new elasticsearch.Client(esOptions);
+    singletonClient = new elasticsearch.Client(esOptions);
+    return singletonClient;
+};
+
+/**
+ * Manually refresh the indicies to make waiting documents available
+ * @param callback
+ */
+exports.refresh = function(callback){
+
+    //If there is not a client, no need to refresh
+    if(!singletonClient){
+        callback();
+    }
+
+    singletonClient.indices.refresh('',callback);
+
 };

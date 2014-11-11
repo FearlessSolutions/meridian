@@ -8,7 +8,7 @@ define([
         mapUrlTemplate;
 
     var exposed = {
-        "initialize": function(app) {
+        initialize: function(app) {
             context = app;
             mapUrlTemplate = Handlebars.compile(mapUrlHBS);
 
@@ -18,8 +18,8 @@ define([
                 app.sandbox.dataServices = {};
             }
             app.sandbox.dataServices.mock = {
-                "infoWinTemplate": {
-                    "buildInfoWinTemplate": function(attributes, fullFeature) {
+                infoWinTemplate: {
+                    buildInfoWinTemplate: function(attributes, fullFeature) {
                         var mockTemplate = Handlebars.compile(mockHbs);
                         var html;
 
@@ -27,32 +27,41 @@ define([
                         attributes.mapUrl = processMapUrl(attributes);
 
                         html = mockTemplate({
-                            "thumbnail": app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
-                            "classification": attributes.classification,
-                            "name": attributes.name,
-                            "attributes": attributes,
-                            "namespace": "mock-extension"
+                            thumbnail: app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
+                            classification: attributes.classification,
+                            name: attributes.name,
+                            attributes: attributes,
+                            namespace: 'mock-extension'
                         });
 
                         return html;
                     },
-                    "postRenderingAction": function(feature, layerId) {
+                    postRenderingAction: function(feature, layerId) {
                         return;
                     }
                 },
-                "keys": {
-                    "percent": "%",
-                    "color": "Color"
-                },
-                "processMapUrl": processMapUrl
+                //See data-storage-extension for key variable descriptions
+                keys: [
+                    {
+                        property: 'percent',
+                        displayName: '%',
+                        weight: 76
+                    },
+                    {
+                        property: 'color',
+                        displayName: 'Color',
+                        weight: 69
+                    }
+                ],
+                processMapUrl: processMapUrl
             };
         }
     };
 
     function processMapUrl(attributes){
         return mapUrlTemplate({
-            "lat": attributes.lat,
-            "lon": attributes.lon
+            lat: attributes.lat,
+            lon: attributes.lon
         });
     }
 
