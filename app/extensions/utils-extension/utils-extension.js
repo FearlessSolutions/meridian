@@ -67,6 +67,7 @@ define([
                 merge: $.merge, // for help see jquery.merge
                 now: $.now, // for help see jquery.now
                 parseJSON: $.parseJSON, // for help see jquery.parseJSON
+                isEmptyObject: $.isEmptyObject,
                 preferences: {
                     get: function(key){
                         if(typeof(Storage)!=="undefined"){
@@ -150,6 +151,23 @@ define([
                         var text = e.target.result;
                         callback(text);
                     };
+                },
+                /**
+                 * Return the extension of a file.
+                 * This assumes that the last '.' shows the extension.
+                 * @param file
+                 * @returns {*}
+                 */
+                getFileExtension: function(file){
+                    var filenameParts;
+
+                    if(!file){
+                        return;
+                    }
+
+                    filenameParts = file.name.split('.');
+
+                    return filenameParts[filenameParts.length - 1];
                 },
                 pageHeight: function(el){
                     if(el) {

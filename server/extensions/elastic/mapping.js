@@ -1,7 +1,7 @@
 exports.init = function(context){
 
     var config = context.sandbox.config.getConfig();
-    var client = context.sandbox.elastic.client.newClient();
+    var client = context.sandbox.elastic.client.getClient();
     var mappings = config.mapping;
 
 
