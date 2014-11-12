@@ -180,35 +180,7 @@ module.exports = function (grunt) {
                         dest: 'dist/app/'
                     }
                 ]
-            }//,
-//            glide: {
-//                files: [
-//                    {
-//                        expand: true,
-//                        cwd: 'app',
-//                        src: ['bower_components/aura/lib/**/*.js', '!bower_components/aura/lib/**/*.min.js'],
-//                        dest: 'glide'
-//                    },
-//                    {
-//                        'glide/bower_components/eventemitter2/lib/eventemitter2.js': 'app/bower_components/eventemitter2/lib/eventemitter2.js'
-//                    },
-//                    {
-//                        'glide/bower_components/handlebars/handlebars.js': 'app/bower_components/handlebars/handlebars.js'
-//                    },
-//                    {
-//                        'glide/bower_components/jquery/dist/jquery.js': 'app/bower_components/jquery/dist/jquery.js'
-//                    },
-//                    {
-//                        'glide/bower_components/requirejs/require.js': 'app/bower_components/requirejs/require.js'
-//                    },
-//                    {
-//                        'glide/bower_components/requirejs-text/text.js': 'app/bower_components/requirejs-text/text.js'
-//                    },
-//                    {
-//                        'glide/bower_components/underscore/underscore.js': 'app/bower_components/underscore/underscore.js'
-//                    }
-//                ]
-//            }
+            }
         },
 
         useminPrepare: {
@@ -418,16 +390,15 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'clean:glide',
 //        'concat',
 //        'jshint',
-        'copy',
+        'copy:dist',
         'useminPrepare',
-        'imagemin',
-        'htmlmin',
-        'cssmin',
+        'imagemin:dist',
+        'htmlmin:dist',
+        'cssmin:dist',
         'usemin',
-        'uglify'
+        'uglify:dist'
         // 'clean:postbuild'
     ]);
 
