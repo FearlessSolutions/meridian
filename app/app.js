@@ -69,7 +69,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
      * @namespace Sandbox
      */
     /**
-     * Info needed.
+     * Namespace containing all the dataServices available in the application.
      * @namespace Sandbox.dataServices
      * @memberof Sandbox
      */
