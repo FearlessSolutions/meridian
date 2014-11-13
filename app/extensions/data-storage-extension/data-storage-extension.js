@@ -15,35 +15,35 @@ define([
         initialize: function(app) {
             var sortedPropertiesArray = [];
             /**
-             * Default columns for the datagrid. This variable can't be accessed directly.
+             * Default columns for the datagrid.
              * @var columns
              * @instance
              * @property {Array} lat                      - Each object has information about the name and location 
-             *                                              of each feature property. Each object should focus on a different dataSource.
+             *                                              of each feature property, and it should focus on a different dataSource.
              * @property {String} lat.property            - Name of the property of the feature
              * @property {String} lat.displayName         - Name used in the datagrid.
              * @property {String} lat.weigth              - Number used to specify the location in the datagrid. Higher weight means more to the left.
              * 
              * @property {Array} lon                      - Each object has information about the name and location 
-             *                                              of each feature property. Each object should focus on a different dataSource.
+             *                                              of each feature property, and it should focus on a different dataSource.
              * @property {String} lon.property            - Name of the property of the feature
              * @property {String} lon.displayName         - Name used in the datagrid.
              * @property {String} lon.weigth              - Number used to specify the location in the datagrid. Higher weight means more to the left.
              * 
              * @property {Array} dataService              - Each object has information about the name and location 
-             *                                              of each feature property. Each object should focus on a different dataSource.
+             *                                              of each feature property, and it should focus on a different dataSource.
              * @property {String} dataService.property    - Name of the property of the feature
              * @property {String} dataService.displayName - Name used in the datagrid.
              * @property {String} dataService.weigth      - Number used to specify the location in the datagrid. Higher weight means more to the left.
              * 
              * @property {Array} featureId                - Each object has information about the name and location 
-             *                                              of each feature property. Each object should focus on a different dataSource.
+             *                                              of each feature property, and it should focus on a different dataSource.
              * @property {String} featureId.property      - Name of the property of the feature
              * @property {String} featureId.displayName   - Name used in the datagrid.
              * @property {String} featureId.weigth        - Number used to specify the location in the datagrid. Higher weight means more to the left.
              * 
              * @property {Array} layerId                  - Each object has information about the name and location 
-             *                                              of each feature property. Each object should focus on a different dataSource.
+             *                                              of each feature property, and it should focus on a different dataSource.
              * @property {String} layerId.property        - Name of the property of the feature
              * @property {String} layerId.displayName     - Name used in the datagrid.
              * @property {String} layerId.weigth          - Number used to specify the location in the datagrid. Higher weight means more to the left.
@@ -82,7 +82,11 @@ define([
                     weight: 0
                 }]
             };
-            //namespace: dataStorage is used in multiple files. Defined in app.js for js-docs.
+            /**
+             * .
+             * @namespace Sandbox.dataStorage
+             * @memberof Sandbox
+             */
             var dataStorage = {
                 /**
                  * Variable used to hold all datasets.
@@ -91,13 +95,12 @@ define([
                  */
 				datasets: {}, //Start empty
                 /**
-                 * Add data to {@link Sandbox.dataStorage.datasets datasets} and 
-                 * update {@link Sandbox.dataStorage.columns columns} using
-                 * {@link Sandbox.dataStorage#updateColumns updateColumns} function.
+                 * Add data to specific dataSet found in {@link Sandbox.dataStorage.datasets datasets} by Id.
                  * @function
                  * @instance
-                 * @param {Object} params      - Contains the data to be added.
-                 * @param {Object} params.data - Property added to {@link Sandbox.dataStorage.datasets}.
+                 * @param {Object} params                - Payload containg the information needed.
+                 * @param {Object} params.datasetId      - Id of the dataSet.
+                 * @param {Object} params.data           - Data to be added.
                  * @memberof Sandbox.dataStorage
                  */
                 addData: function(params) {

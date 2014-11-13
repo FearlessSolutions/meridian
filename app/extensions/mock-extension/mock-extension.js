@@ -8,11 +8,6 @@ define([
         mapUrlTemplate;
     /**
      * Sets up mock as a 'dataService'.
-     * @namespace Sandbox.dataServices.mock
-     * @memberof Sandbox.dataServices
-     */
-    /**
-     * Sets up mock as a 'dataService'.
      * @exports mock-extension
      */
     var exposed = {

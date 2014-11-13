@@ -5,11 +5,6 @@ define([
 ], function(fakeHbs, fakeInfoWinCSS) {
     /**
      * Sets up fake as a 'dataService'.
-     * @namespace Sandbox.dataServices.fake
-     * @memberof Sandbox.dataServices
-     */
-    /**
-     * Sets up fake as a 'dataService'.
      * @exports fake-extension
      */
     var exposed = {
@@ -90,5 +85,10 @@ define([
         }
     };
 
+/**
+     * Sets up fake as a 'dataService'.
+     * @namespace Sandbox.dataServices.fake
+     * @memberof Sandbox.dataServices
+     */
     return exposed;
 });
