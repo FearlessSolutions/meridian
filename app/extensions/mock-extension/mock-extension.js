@@ -41,9 +41,8 @@ define([
                         return html;
                     },
                     postRenderingAction: function(feature, layerId) {
-                        $('.mock-extension .exportFeature .exportGroup .btn').on('click', function(){
-                            // .text() = Human Readable, .val() = channel name
-                            var channelName = $('.mock-extension .exportFeature .exportGroup select').find(':selected').val();
+                        $('.mock-extension .infoDiv .exportFeature .btn').on('click', function(){
+                            var channelName = $('.mock-extension .infoDiv .exportFeature select').find(':selected').val();
                             switch(channelName){
                                 case "export.download.geojson":
                                     context.sandbox.emit(channelName, {featureId: feature.featureId});

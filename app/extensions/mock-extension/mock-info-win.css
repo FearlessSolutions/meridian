@@ -23,7 +23,7 @@
 }
 
 .mock-extension .exportFeature .btn{
-    margin-top: 5px;
+    margin-top: 3px;
 }
 
 .mock-extension.info-win-dialog .title{
@@ -48,6 +48,7 @@
 	text-align: center;
 	padding-bottom: 5px;
 	margin-left: 10px;
+	margin-top: -10px;
 }
 
 .mock-extension.info-win-dialog img{
