@@ -276,7 +276,7 @@ define([
     function queryData(params) {
         var newAJAX = context.sandbox.utils.ajax({
             type: 'POST',
-            url: 'https://localhost:3000/query/bbox/' + params.dataSourceId,
+            url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/query/bbox/' + params.dataSourceId,
             data: {
                 throttleMs: 0,
                 minLat: params.minLat,
