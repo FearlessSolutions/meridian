@@ -34,9 +34,9 @@ define([
                         });
                     },
                     postRenderingAction: function(feature, layerId) {
-                        $('.fake-extension .exportFeature .exportGroup .btn').on('click', function(){
+                        $('.fake-extension .infoDiv .exportFeature .btn').on('click', function(){
                             // .text() = Human Readable, .val() = channel name
-                            var channelName = $('.fake-extension .exportFeature .exportGroup select').find(':selected').val();
+                            var channelName = $('.fake-extension .infoDiv .exportFeature select').find(':selected').val();
                             switch(channelName){
                                 case "export.download.geojson":
                                     context.sandbox.emit(channelName, {featureId: feature.featureId});
