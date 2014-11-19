@@ -150,7 +150,6 @@ define([
                 forever: function(selector, data, fn){
                     $(document).on(selector, data, fn);
                 },
-<<<<<<< HEAD
                 /**
                  * Provides access to jQuery's grep function by exposing it to the {@link Sandbox} namespace.
                  * For more help, see jquery.grep.

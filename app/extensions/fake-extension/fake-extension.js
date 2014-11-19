@@ -27,10 +27,16 @@ define([
 
             app.sandbox.utils.addCSS(fakeInfoWinCSS, 'fake-extension-style');
 
+            //used in other extensions. Defined for jsdocs in app/app.js
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
             
+            /**
+             * Sets up fake as a 'dataService'.
+             * @namespace Sandbox.dataServices.fake
+             * @memberof Sandbox.dataServices
+             */
             app.sandbox.dataServices.fake = {
                 /**
                  * Encapsulates information window functions and properties.
@@ -64,8 +70,7 @@ define([
                         });
                     },
                     /**
-                     * NOT IMPLEMENTED. Developers can modify function to execute any post rendering
-                     * action desired after the info window is loaded.
+                     * Post-rendering action executed after the info window is loaded.
                      * @function
                      * @instance
                      * @param  {Object} feature   -
@@ -110,11 +115,5 @@ define([
             };
         }
     };
-
-    /**
-     * Sets up fake as a 'dataService'.
-     * @namespace Sandbox.dataServices.fake
-     * @memberof Sandbox.dataServices
-     */
     return exposed;
 });

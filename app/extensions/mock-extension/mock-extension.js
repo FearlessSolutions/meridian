@@ -75,8 +75,7 @@ define([
                         return html;
                     },
                     /**
-                     * NOT IMPLEMENTED. Developers can modify this function to execute any post-rendering
-                     * action desired after the info window is loaded.
+                     * Post-rendering action executed after the info window is loaded.
                      * @function
                      * @instance
                      * @param  {Object} feature   - Info needed.
@@ -124,7 +123,7 @@ define([
                 ],
                 /**
                  * @namespace Sandbox.dataServices.mock.processMapUrl
-                 * @property {Function} processMapUrl -  Function found in {@link module:mock-extension#processMapUrl}
+                 * @property {Function} processMapUrl -  Function found in {@link module:mock-extension#processMapUrl mock-extension}
                  * @memberof Sandbox.dataServices.mock
                  */
                 processMapUrl: processMapUrl
@@ -132,7 +131,7 @@ define([
         }
     };
     /**
-     * Enables access to the mapUrlTemplate found in this extension with the given lat/lon attributes.
+     * Returns an instance of the mapUrlTemplate found in this extension with the given lat/lon in attributes.
      * @function
      * @instance
      * @param {Object} attributes     - 

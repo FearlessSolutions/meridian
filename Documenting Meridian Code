@@ -73,7 +73,7 @@ return {
  For extensions:
 
  /**
-  * @exports NameExtension
+  * @exports name-secondName-extension
   */
 var exposed = {
 	/**
