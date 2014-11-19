@@ -22,7 +22,8 @@ exports.init = function(context){
         client: client,
         stream: stream,
         purge: purge,
-        metadata: metadata
+        metadata: metadata,
+        refresh: client.refresh
     };
 
     // Init sub-modules as necessary
@@ -50,14 +51,15 @@ exports.init = function(context){
         });
     });
 
-    app.get('/feature/:id', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+    app.get('/feature/:id', auth.verifyUser, function(req, res){
         var userName = res.get('Parsed-User');
-        var sessionId = res.get('Parsed-SessionId');
         query.getByFeatureId(userName, null, req.params.id, function(err, response){
             if (err){
                 res.status(500);
                 res.send(err);
             } else {
+                res.header('Content-Type', 'application/json');
+                res.header('Content-Disposition', 'attachment; filename=results.geojson');
                 res.status(200);
                 res.send(response._source);
             }

@@ -2,6 +2,30 @@
 	font-size: .8em;
 }
 
+.mock-extension.info-win-dialog .infoDiv{
+	float: left;
+}
+
+.mock-extension.info-win-dialog .exportFeature{
+	width: auto;
+	height: auto;
+	vertical-align: top;
+	text-align: center;
+}
+
+.mock-extension .exportFeature select{
+    clear:left;
+    height: 30px;
+    width: 105px;
+    font-size: 12px;
+    margin-top: 5px;
+    color: #000000;
+}
+
+.mock-extension .exportFeature .btn{
+    margin-top: 3px;
+}
+
 .mock-extension.info-win-dialog .title{
 	font-weight: bold;
 	font-size: 14px;
@@ -22,22 +46,25 @@
 	height: auto;
 	vertical-align: top;
 	text-align: center;
+	padding-bottom: 5px;
+	margin-left: 10px;
+	margin-top: -10px;
 }
 
 .mock-extension.info-win-dialog img{
-	width: 80px;
-	height: 80px;
+	width: 78px;
+	height: 78px;
 }
 
 .mock-extension.info-win-dialog .tableDiv{
 	float: right;
 	vertical-align: top;
-	margin-left: 15px;
-	height: 135px;
-	width: 400px;
+	margin-left: 12px;
+	height: 133px;
+	width: 375px;
 	overflow-y: scroll;
 	overflow-x: hidden;
-	border: 1px solid lightgray;
+	border: 0px solid lightgray;
 }
 
 .mock-extension.info-win-dialog table.table{

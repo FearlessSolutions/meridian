@@ -1,3 +1,5 @@
+[ ![Codeship Status for ozone-development/meridian](https://codeship.com/projects/479f9b90-5167-0132-a553-7262abc25231/status)](https://codeship.com/projects/48335)
+
 ## Requirements
 
 The project uses Grunt for task management. Use of Grunt is optional, but highly recommended.

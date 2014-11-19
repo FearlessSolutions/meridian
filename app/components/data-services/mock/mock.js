@@ -27,10 +27,11 @@ define([
         },
         stopQuery: function(params) {
             var layerState,
-                dataTransferState;
+                dataTransferState,
+                dataset = context.sandbox.dataStorage.datasets[params.layerId];
 
             //If the query is not related to this datasource, ignore
-            if(context.sandbox.dataStorage.datasets[params.layerId].dataService !== DATASOURCE_NAME){
+            if(dataset && dataset.dataService !== DATASOURCE_NAME){
                 return;
             }
 
@@ -277,7 +278,7 @@ define([
     function queryData(params) {
         var newAJAX = context.sandbox.utils.ajax({
             type: 'POST',
-            url: 'https://localhost:3000/query/bbox/' + params.dataSourceId,
+            url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/query/bbox/' + params.dataSourceId,
             data: {
                 throttleMs: 0,
                 minLat: params.minLat,

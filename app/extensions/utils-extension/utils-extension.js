@@ -150,6 +150,7 @@ define([
                 forever: function(selector, data, fn){
                     $(document).on(selector, data, fn);
                 },
+<<<<<<< HEAD
                 /**
                  * Provides access to jQuery's grep function by exposing it to the {@link Sandbox} namespace.
                  * For more help, see jquery.grep.
@@ -364,6 +365,24 @@ define([
                         var text = e.target.result;
                         callback(text);
                     };
+                },
+                /**
+                 * Return the extension of the given file. 
+                 * @param  {File} [file] - The file.
+                 * @function
+                 * @instance
+                 * @memberof Sandbox.utils
+                 */
+                getFileExtension: function(file){
+                    var filenameParts;
+
+                    if(!file){
+                        return;
+                    }
+
+                    filenameParts = file.name.split('.');
+
+                    return filenameParts[filenameParts.length - 1];
                 },
                 /**
                  * Return the height of the element provided. 

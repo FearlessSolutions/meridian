@@ -2,8 +2,11 @@ define([
     'text!./mock-info-win.hbs',
     'text!./mock-info-win.css',
     'text!./mock-map-url.hbs',
+    './mock-configuration',
+    'jquery',
+    'bootstrap',
     'handlebars'
-], function(mockHbs, mockInfoWinCSS, mapUrlHBS) {
+], function(mockHbs, mockInfoWinCSS, mapUrlHBS, mockConfig, $) {
     var context,
         mapUrlTemplate;
     /**
@@ -65,7 +68,8 @@ define([
                             classification: attributes.classification || "",
                             name: attributes.name,
                             attributes: attributes,
-                            namespace: 'mock-extension'
+                            namespace: 'mock-extension',
+                            exports: mockConfig.exports
                         });
 
                         return html;
@@ -80,7 +84,22 @@ define([
                      * @memberof Sandbox.dataServices.mock.infoWinTemplate
                      */
                     postRenderingAction: function(feature, layerId) {
-                        return;
+                        $('.mock-extension .infoDiv .exportFeature .btn').on('click', function(){
+                            var channelName = $('.mock-extension .infoDiv .exportFeature select').find(':selected').val();
+                            switch(channelName){
+                                case "export.download.geojson":
+                                    context.sandbox.emit(channelName, {featureId: feature.featureId});
+                                    break;
+                                case "export.google.maps":
+                                    context.sandbox.dataStorage.getFeatureById({featureId: feature.featureId}, function(feature){
+                                        context.sandbox.emit(channelName, {lat: feature.geometry.coordinates[1],
+                                            lon: feature.geometry.coordinates[0]});
+                                    });
+                                    break;
+                                default:
+                                    console.log("ERROR: Unknown channel -- " + channelName);
+                            }
+                        });
                     }
                 },
                  /**

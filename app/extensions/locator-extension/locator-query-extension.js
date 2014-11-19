@@ -133,7 +133,7 @@ define([
                 };
                 app.sandbox.utils.ajax({
                     "type": "GET",
-                    "url": locatorConfiguration.url,
+                    "url": app.sandbox.utils.getCurrentNodeJSEndpoint() + locatorConfiguration.url,
                     "data": data,
                     "dataType": locatorConfiguration.dataType,
                     "timeout": locatorConfiguration.timeout,
