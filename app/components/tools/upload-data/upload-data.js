@@ -350,7 +350,8 @@ define([
             messageText: queryName + ' Upload Complete'
         });
 
-        publisher.publishFinished({"layerId": queryId});
+        publisher.publishFinished({layerId: queryId});
+        publisher.publishZoomToLayer({layerId: queryId});
     }
 
     function markQueryError(queryId, queryName, error){
