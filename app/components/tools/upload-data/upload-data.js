@@ -14,7 +14,8 @@ define([
         $file,
         $dummyFile,
         $submit,
-        $zoomBox,
+        $zoomYes,
+        $zoomNo,
         RESTORE_PAGE_SIZE = 500;
 
     var exposed = {
@@ -24,7 +25,8 @@ define([
             $file = context.$('#file');
             $dummyFile = context.$('#dummy-file');
             $submit = context.$('#upload-submit');
-            $zoomBox = context.$('#upload-zoom-checkbox');
+            $zoomYes = context.$('#upload-zoom-yes');
+            $zoomNo = context.$('#upload-zoom-no');
 
             $submit.attr('disabled', true); //Start with submit disabled until a file is added
 
@@ -82,14 +84,18 @@ define([
                 }
             });
 
-            //On zoom button click, toggle checkbox
-            context.$('#upload-zoom-button').on('click', function(event){
-                $zoomBox.prop('checked', !$zoomBox.prop('checked'));
+            //On zoom button click, toggle active button
+            $zoomYes.on('click', function(event){
+                if(!$zoomYes.hasClass('active')){
+                    $zoomYes.addClass('active');
+                    $zoomNo.removeClass('active');
+                }
             });
-
-            //Since zoomBox is part of the button, clicking the box would double toggle
-            $zoomBox.on('click', function(event){
-                event.stopPropagation();
+            $zoomNo.on('click', function(event){
+                if(!$zoomNo.hasClass('active')){
+                    $zoomYes.removeClass('active');
+                    $zoomNo.addClass('active');
+                }
             });
 
             //Handle submit
@@ -107,7 +113,7 @@ define([
                     queryId = context.sandbox.utils.UUID();
                     queryName = file.name; //Use the file name as the query name
                     filetype = context.sandbox.utils.getFileExtension(file);
-                    shouldZoom = $zoomBox.prop('checked'); // Make sure to get this BEFORE any ajax stuff
+                    shouldZoom = $zoomYes.hasClass('active'); // Make sure to get this BEFORE any ajax stuff
 
                     //Create a new collection for the data
                     context.sandbox.dataStorage.datasets[queryId] = new Backbone.Collection();
