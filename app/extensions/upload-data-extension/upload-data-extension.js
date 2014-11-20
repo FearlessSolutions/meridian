@@ -22,7 +22,7 @@ define([
                     buildInfoWinTemplate: function(attributes){
                         var html = template({
                             attributes: attributes,
-                            classification: attributes.classification,
+                            title: 'Uploaded Feature',
                             thumbnail: './extensions/map-configuration-extension/images/markerIcons/marker-2x-80x80.png'
                         });
 
@@ -49,12 +49,10 @@ define([
         var url = context.sandbox.utils.getCurrentNodeJSEndpoint() + '/uploadFile' +
             '?queryName={{queryName}}' +
             '&queryId={{queryId}}' +
-            '&filetype={{filetype}}' +
-            '&classification={{classification}}';
+            '&filetype={{filetype}}';
         url = url.replace('{{queryName}}', params.queryName);
         url = url.replace('{{queryId}}', params.queryId);
         url = url.replace('{{filetype}}', params.filetype);
-        url = url.replace('{{classification}}', params.classification);
 
         return $.ajax({
             type: 'POST',

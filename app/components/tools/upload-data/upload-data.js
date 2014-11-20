@@ -13,8 +13,8 @@ define([
         $modal,
         $file,
         $dummyFile,
-        $classification,
         $submit,
+        $zoomBox,
         RESTORE_PAGE_SIZE = 500;
 
     var exposed = {
@@ -23,8 +23,8 @@ define([
             $modal = context.$('#upload-data-modal');
             $file = context.$('#file');
             $dummyFile = context.$('#dummy-file');
-            $classification = context.$('#classification');
             $submit = context.$('#upload-submit');
+            $zoomBox = context.$('#upload-zoom-checkbox');
 
             $submit.attr('disabled', true); //Start with submit disabled until a file is added
 
@@ -82,14 +82,24 @@ define([
                 }
             });
 
+            //On zoom button click, toggle checkbox
+            context.$('#upload-zoom-button').on('click', function(event){
+                $zoomBox.prop('checked', !$zoomBox.prop('checked'));
+            });
+
+            //Since zoomBox is part of the button, clicking the box would double toggle
+            $zoomBox.on('click', function(event){
+                event.stopPropagation();
+            });
+
             //Handle submit
             $submit.on('click', function(){
                 //Get the file from the input
                 var file = $file[0].files[0],
                     filetype,
-                    classification,
                     queryId,
                     queryName,
+                    shouldZoom,
                     newAJAX;
 
                 //TODO handle multiple files?
@@ -97,7 +107,7 @@ define([
                     queryId = context.sandbox.utils.UUID();
                     queryName = file.name; //Use the file name as the query name
                     filetype = context.sandbox.utils.getFileExtension(file);
-                    classification = $classification.val();
+                    shouldZoom = $zoomBox.prop('checked'); // Make sure to get this BEFORE any ajax stuff
 
                     //Create a new collection for the data
                     context.sandbox.dataStorage.datasets[queryId] = new Backbone.Collection();
@@ -122,8 +132,7 @@ define([
                         queryId: queryId,
                         queryName: queryName,
                         file: file,
-                        filetype: filetype,
-                        classification: classification
+                        filetype: filetype
                     }, function(data){ //Success callback
                             publisher.publishMessage({
                                 messageType: 'success',
@@ -134,7 +143,8 @@ define([
                             getPage({
                                 queryId: queryId,
                                 queryName: queryName,
-                                sessionId: context.sandbox.sessionId
+                                sessionId: context.sandbox.sessionId,
+                                shouldZoom: shouldZoom
                             }, 0);
                         }, function(status, jqXHR){ //Error callback
                             markQueryError(queryId, queryName, status);
@@ -256,6 +266,9 @@ define([
                 markQueryError(queryId, queryName, err);
             } else if (!results || results.length === 0) {
                 markQueryFinished(queryId, queryName);
+                if(params.shouldZoom){
+                    publisher.publishZoomToLayer({layerId: queryId});
+                }
             } else {
                 processDataPage(results, {
                     queryId: queryId,
@@ -351,7 +364,6 @@ define([
         });
 
         publisher.publishFinished({layerId: queryId});
-        publisher.publishZoomToLayer({layerId: queryId});
     }
 
     function markQueryError(queryId, queryName, error){
