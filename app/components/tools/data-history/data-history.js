@@ -237,8 +237,10 @@ define([
             });
         }
 
+        //Call the server to delete the features and query
+        //NOTE: this is a GET because DELETE causes problems on the server
         context.sandbox.utils.ajax({
-            type: 'DELETE',
+            type: 'GET',
             url: '/clear/' + datasetId + '/' + dataSessionId
         }).done(function() {
             var newDataArray = [];
