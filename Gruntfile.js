@@ -77,18 +77,6 @@ module.exports = function (grunt) {
 
         // default watch configuration
         watch: {
-            // aura_components_js: {
-            //   files: ['app/components/**/*.js'],
-            //   tasks: ['concat:component_js']
-            // },
-            // aura_components_css: {
-            //   files: ['app/components/**/*.css'],
-            //   tasks: ['concat:component_css']
-            // },
-            // handlebars: {
-            //   files: ['app/components/**/*.hbs'],
-            //   tasks: ['handlebars']
-            // },
             livereload: {
                 options: { livereload: true },
                 files: [
@@ -160,9 +148,6 @@ module.exports = function (grunt) {
             postbuild: '.prebuild',
             docsPubsub: ['app/docs/pubsub/publishers.txt', 'app/docs/pubsub/subscribers.txt']
         },
-
-
-
 
         uglify: {
             options: {
@@ -345,24 +330,6 @@ module.exports = function (grunt) {
             }
         },
 
-        concat: {
-            options: {
-                separator: "\n\n\n\n//--------\n\n\n"
-            }
-            // component_css: {
-            //   src: ['app/styles/*.css', 'app/components/**/*.css'],
-            //   dest: '.prebuild/styles/components.css'
-            // },
-            // component_js: {
-            //   src: ['app/components/**/*.js'],
-            //   dest: '.prebuild/scripts/components.js'
-            // },
-            // extension_js: {
-            //   src: ['app/extensions/**/*.js'],
-            //   dest:'.prebuild/scripts/extensions.js'
-            // }
-        }
-
     });
 
     grunt.registerTask('server', [
@@ -390,8 +357,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-//        'concat',
-//        'jshint',
+        'jshint',
         'copy:dist',
         'useminPrepare',
         'imagemin:dist',
@@ -399,7 +365,6 @@ module.exports = function (grunt) {
         'cssmin:dist',
         'usemin',
         'uglify:dist'
-        // 'clean:postbuild'
     ]);
 
     grunt.registerTask('glide', [
