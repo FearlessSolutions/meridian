@@ -29,7 +29,8 @@
       "moment": "2.8.3",
       "busboy": "0.2.9",
       "togeojson": "0.8.0",
-      "jsdom": "1.0.3"
+      "jsdom": "1.0.3",
+      "ogr2ogr": "0.5.0"
   },
   "devDependencies": {
     "grunt": "0.4.1",
