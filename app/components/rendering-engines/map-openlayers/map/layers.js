@@ -201,19 +201,29 @@ define([
             var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0],
                 layers = selector.layers,
                 layer = params.map.getLayersBy('layerId', params.layerId),
-                identifiedFeatures;
+                layerId = params.layerId,
+                identifiedFeatures,
+                toDeleteIsSelected = false;
 
             identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
-                layerId: params.layerId
+                layerId: layerId
             });
 
             if(identifiedFeatures && identifiedFeatures.length) {
-                mapBase.clearMapSelection({
-                    "map": params.map
+                context.sandbox.utils.each(function(selectedIndex, selectedFeature){
+                    if(selectedFeature.layerId === layerId){
+                        toDeleteIsSelected = true
+                    }
                 });
-                mapBase.clearMapPopups({
-                    "map": params.map
-                });
+
+                if(toDeleteIsSelected){
+                    mapBase.clearMapSelection({
+                        "map": params.map
+                    });
+                    mapBase.clearMapPopups({
+                        "map": params.map
+                    });
+                }
             }
 
             delete context.sandbox.stateManager.layers[params.layerId];
@@ -222,15 +232,15 @@ define([
             }
 
             context.sandbox.utils.each(layers, function(key, value) {
-                if(value.layerId === params.layerId) {
+                if(value.layerId === layerId) {
                     layers.splice(key, 1);
                     return false;
                 }
             });
-            selector.setLayer(layers);
+            selector.setLayer(layers); //Has the side effect of deselecting everything
 
             mapClustering.deleteClusteringLayerOptions({
-                "layerId": params.layerId
+                "layerId": layerId
             });
 
             mapClustering.update({
