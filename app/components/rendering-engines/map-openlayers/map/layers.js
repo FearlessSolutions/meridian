@@ -484,7 +484,7 @@ define([
                             params.map.addPopup(popup);
 
                             context.sandbox.dataServices[currentDataService].infoWinTemplate.postRenderingAction(
-                                record,
+                                fullFeature,
                                 layer.layerId
                             );
 
@@ -636,7 +636,7 @@ define([
                             );
                             feature.popup = popup;
                             params.map.addPopup(popup);
-                            infoWinTemplateRef.postRenderingAction(feature, feature.layer.layerId);
+                            infoWinTemplateRef.postRenderingAction(fullFeature, feature.layer.layerId);
 
                             context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
                                 "layerId": feature.layer.layerId,
