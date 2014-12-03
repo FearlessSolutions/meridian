@@ -27,7 +27,7 @@ The project also uses [JSDOM](https://www.npmjs.org/package/jsdom). Unfortunatel
 - Add a System Variable called `WindowsSDKDir` with the installation location of the Windows SDK. It will most likely be `C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin` or `C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1\Bin`.
 
 
-For other parts of this project, make sure:
+For other parts of the project, make sure:
 
 1. The JAVA_HOME variable is defined. 
 
