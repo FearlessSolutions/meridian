@@ -25,7 +25,7 @@ define([
 
             //Cacluate css
             defaultBasemapCSS = {
-                "width": parseInt($dropdown.width(), 10)
+                width: parseInt($dropdown.width(), 10)
             };
             defaultToggleCSS = {
                 "padding-right" : parseInt($toggle.css('padding-right').replace('px', ''), 10)
@@ -35,22 +35,7 @@ define([
             $basemap.on('click', function(event) {
                 event.preventDefault();
                 var newBasemap = context.$(this).attr('data-basemap');
-                publisher.changeBasemap({"basemap":newBasemap});
-            });
-            $dropdown.find('li a').on('click', function() {
-                var $this = context.$(this);
-                $this.parents('.btn-group').find('.selection').html($this.html())
-                    .val($this.html());
-
-                //destroy old tooltip and then add new information of the new value selected.
-                $toggle.tooltip('destroy');
-                $toggle.tooltip({
-                    'title': $this.find('.img-rounded').attr('data-title'),
-                    "container": "body",
-                    "delay": {
-                        "show": 500
-                    }
-                });
+                publisher.changeBasemap({basemap:newBasemap});
             });
 
             //On dropdown show or hide, change width
@@ -72,9 +57,9 @@ define([
 
             //start tooltips for the values inside the dropdown
             context.$('.img-rounded').tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
+                container: 'body',
+                delay: {
+                    show: 500
                 }
             });
 
@@ -82,9 +67,9 @@ define([
             //Specify container to make the tooltip appear in one line.
             //FF doesn't like tooltips inside buttons, so the entire button has the tooltip information. 
             $toggle.tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
+                container: 'body',
+                delay: {
+                    show: 500
                 }
             });
             
@@ -94,6 +79,21 @@ define([
                 hideBasemapGallery //mouseleave
             );
 
+        },
+        changeBasemap: function(params){
+            var basemap = params.basemap,
+                $imageContainer = context.$('#basemap-selection a[data-basemap=' + basemap + ']'),
+                $selection = context.$('.selection');
+            $selection.html($imageContainer.html());
+
+                $toggle.tooltip('destroy');
+                $toggle.tooltip({
+                    title: $imageContainer.children('img').attr('data-title'),
+                    container: 'body',
+                    delay: {
+                        show: 500
+                    }
+                });
         },
         show: function() {
             $basemapGallery.show();
@@ -112,8 +112,8 @@ define([
 
         //return height to default to find natural height        
         $dropdown.css({
-            "height": "",
-            "overflow-y": "none"
+            height: '',
+            "overflow-y": 'none'
         });
         dropdownHeight = $dropdown.height();
 
@@ -137,8 +137,8 @@ define([
 
             //Apply scroll and height; this changes its width
             $dropdown.css({
-                "overflow-y": "scroll",
-                "height": dropdownMaxHeight
+                "overflow-y": 'scroll',
+                height: dropdownMaxHeight
             });
             dropdownWidth = $dropdown.width();
             openBasemapCSS = {

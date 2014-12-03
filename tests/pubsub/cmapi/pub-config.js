@@ -1,10 +1,16 @@
 define([
 ], function() { 
     var pubConfiguration = {
-        "channels": {
+        channels: {
+            "map.basemap.change":{
+                valid: true,
+                sample:{
+                    "basemap": "imagery"
+                }
+            },
             "map.overlay.create": {
-                "valid":true,
-                "sample": {
+                valid: true,
+                sample: {
                     "name": "Test Name 1",
                     "overlayId": "testOverlayId1",
                     "coords": {
@@ -67,26 +73,26 @@ define([
                 }
             },
             "map.overlay.remove": {
-                "valid": true,
-                "sample": {
+                valid: true,
+                sample: {
                     "overlayId": "testOverlayId1"
                 }
             },
             "map.overlay.hide": {
-                "valid": true,
-                "sample": {
+                valid: true,
+                sample: {
                     "overlayId": "testOverlayId1"
                 }
             },
             "map.overlay.show": {
-                "valid": true,
-                "sample": {
+                valid: true,
+                sample: {
                     "overlayId": "testOverlayId1"
                 }
             },
             "map.feature.plot": {
-                "valid": true,
-                "sample": {
+                valid: true,
+                sample: {
                     "overlayId":"testOverlayId1",
                     "name":"Test Name 1",
                     "format":"geojson",
@@ -117,38 +123,38 @@ define([
                 }
             },
             "map.feature.hide": {
-                "valid": true,
-                "sample": {
+                valid: true,
+                sample: {
                     "overlayId": "testOverlayId1",
                     "featureId": "f1"
                 }
             },
             "map.feature.show": {
-                "valid": true,
-                "sample": {
+                valid: true,
+                sample: {
                     "overlayId": "testOverlayId1",
                     "featureId": "f1",
                     "zoom": false
                 }
             },
             "map.view.zoom": {
-                "valid": true
+                valid: true
             },
             "map.view.center.overlay": {
-                "valid": true,
-                "sample": {
+                valid: true,
+                sample: {
                     "overlayId": "testOverlayId1"
                 }
             },
             "map.view.center.feature": {
-                "valid": true,
-                "sample": {
+                valid: true,
+                sample: {
                     "featureId": "f1"
                 }
             },
             "map.view.center.location": {
-                "valid": true,
-                "sample": {
+                valid: true,
+                sample: {
                     "location": {
                         "lat": 30,
                         "lon": 30
@@ -157,8 +163,8 @@ define([
                 }
             },
             "map.view.center.bounds": { //TODO support zoom, or just best fit?
-                "valid": true,
-                "sample": {
+                valid: true,
+                sample: {
                     "bounds": {
                         "southWest":{
                             "lat": 24.5,
@@ -173,12 +179,12 @@ define([
                 }
             },
             "map.view.center.data": {
-                "valid": true,
-                "sample": {}
+                valid: true,
+                sample: {}
             },
             "map.clear": {
-                "valid": true,
-                "sample": {}
+                valid: true,
+                sample: {}
             }
         }
     };

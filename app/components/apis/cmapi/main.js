@@ -3,12 +3,13 @@
  * Uses the CMAPI category
  */
 define([
+    './basemap/cmapi-basemap',
     './view/cmapi-view',
     './overlay/cmapi-overlay',
     './feature/cmapi-feature',
     './status/cmapi-status',
     './clear/cmapi-clear'
-], function(view, overlay, feature, status, clear) {
+], function(basemap, view, overlay, feature, status, clear) {
     var context,
         processing = {};
 
@@ -19,6 +20,7 @@ define([
         initialize: function() {
             context = this;
             
+            basemap.init(context, sendError, emit);
             feature.init(context, sendError, emit);
             overlay.init(context, sendError, emit);
             status.init(context, sendError, emit);
@@ -27,6 +29,7 @@ define([
 
             context.sandbox.external.onPostMessage(receive);
 
+            processing.basemap = basemap;
             processing.feature = feature;
             processing.overlay = overlay;
             processing.status = status;
