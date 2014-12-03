@@ -198,57 +198,80 @@ define([
          * @param params
          */
         deleteLayer: function(params) {
-            var selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0],
+            var map = params.map,
+                selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0],
                 layers = selector.layers,
-                layer = params.map.getLayersBy('layerId', params.layerId),
+                layer = map.getLayersBy('layerId', params.layerId),
                 layerId = params.layerId,
-                identifiedFeatures,
-                toDeleteIsSelected = false;
+                allIdentifiedFeatures = context.sandbox.stateManager.getAllIdentifiedFeatures() || {};
 
-            identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
-                layerId: layerId
-            });
+            //If the layer to be deleted has selected features, deselect them and remove them from the set of selected
+            if(allIdentifiedFeatures[layerId] && allIdentifiedFeatures[layerId].length) {
+                delete allIdentifiedFeatures[layerId]; //Clear the layer to be deleted from the set
 
-            if(identifiedFeatures && identifiedFeatures.length) {
-                context.sandbox.utils.each(function(selectedIndex, selectedFeature){
-                    if(selectedFeature.layerId === layerId){
-                        toDeleteIsSelected = true
-                    }
+                mapBase.clearMapSelection({
+                    map: map
                 });
-
-                if(toDeleteIsSelected){
-                    mapBase.clearMapSelection({
-                        "map": params.map
-                    });
-                    mapBase.clearMapPopups({
-                        "map": params.map
-                    });
-                }
+                mapBase.clearMapPopups({
+                    map: map
+                });
             }
 
-            delete context.sandbox.stateManager.layers[params.layerId];
-            if(layer && layer.length){
-                params.map.removeLayer(layer[0]);
-            }
+            delete context.sandbox.stateManager.layers[layerId];
 
-            context.sandbox.utils.each(layers, function(key, value) {
-                if(value.layerId === layerId) {
-                    layers.splice(key, 1);
+
+            context.sandbox.utils.each(layers, function(layerIndex, layer) {
+                if(layer.layerId === layerId) {
+                    layers.splice(layerIndex, 1);
                     return false;
                 }
             });
             selector.setLayer(layers); //Has the side effect of deselecting everything
 
+            if(layer && layer.length){
+                map.removeLayer(layer[0]);
+            }
+
             mapClustering.deleteClusteringLayerOptions({
-                "layerId": layerId
+                layerId: layerId
             });
 
             mapClustering.update({
-                "map": params.map
+                map: map
             });
             mapHeatmap.update({
-                "map": params.map
+                map: map
             });
+
+            //Reselect any feature that should be selected
+            context.sandbox.utils.each(layers, function(layerIndex, layer) {
+                var layerIdentifiedFeatures = allIdentifiedFeatures[layer.layerId];
+
+                if(layerIdentifiedFeatures && layerIdentifiedFeatures.length){
+                    context.sandbox.utils.each(layerIdentifiedFeatures, function(identifiedFeatureIndex, identifiedFeatureId){
+                        var featureToBeIdentified = layer.getFeatureByFid(identifiedFeatureId);
+
+                        if(featureToBeIdentified){
+                            selector.select(featureToBeIdentified);
+                        }
+                    });
+                }
+
+            });
+
+
+
+
+//            context.sandbox.utils.each(allIdentifiedFeatures, function(identifiedFeatureLayerId, identifiedFeatureLayerArray){
+//                context.sandbox.utils.each(identifiedFeatureLayerArray, function(identifiedFeatureIndex, identifiedFeatureId){
+//                    exposed.identifyFeature({
+//                        featureId: identifiedFeatureId,
+//                        layerId: identifiedFeatureLayerId,
+//                        map: map
+//                    });
+//                });
+//            });
+
         },
         /**
          * Remove all of the features from a layer, but leave the layer
