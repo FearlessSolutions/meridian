@@ -91,11 +91,11 @@ define([
                 "content" : "List of cached datasets that can be restored."
             },
             {
-                "componentName" : "csv",
-                "placement" : "right",
-                "width" : "250px",
-                "title": "Upload Data",
-                "content" : "Upload data to the map."
+                componentName : 'dataUploadToggleButton',
+                placement : 'right',
+                width : '250px',
+                title: 'Upload Data',
+                content : 'Upload CSV, KML, or geoJSON files to the map.'
             },
             {
                 "componentName" : "downloadButton",

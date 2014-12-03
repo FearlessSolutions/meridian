@@ -6,9 +6,6 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishOpening: function(args){
-            context.sandbox.emit('menu.opening', args);
-        },
         createLayer: function(args){
             context.sandbox.emit('map.layer.create', args);
         },
@@ -23,6 +20,18 @@ define([
         },
         publishError: function(args){
             context.sandbox.emit('data.error', args);
+        },
+        addToProgressQueue: function() {
+            context.sandbox.emit('progress.queue.add');
+        },
+        removeFromProgressQueue: function() {
+            context.sandbox.emit('progress.queue.remove');
+        },
+        openUploadTool: function(){
+            context.sandbox.emit('tool.upload.show');
+        },
+        closeUploadTool: function(){
+            context.sandbox.emit('tool.upload.hide');
         }
     };
 

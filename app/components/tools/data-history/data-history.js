@@ -12,12 +12,11 @@ define([
         MENU_DESIGNATION = 'data-history',
         $modal,
         $modalBody,
-        $cancelButton,
         $closeButton,
         $dataHistoryListTable,
         $dataHistoryDetailView,
         $noDataLabel,
-        currentDataArray = [].
+        currentDataArray = [],
         currentDataSet = {};
     
     var exposed = {
@@ -36,9 +35,9 @@ define([
             $noDataLabel = context.$('#data-history-modal.modal p.noDataLabel');
 
             $modal.modal({
-                "backdrop": true,
-                "keyboard": true,
-                "show": false
+                backdrop: true,
+                keyboard: true,
+                show: false
             }).on('hidden.bs.modal', function() {
                 publisher.closeDataHistory();
                 exposed.hideDetailedInfo();
@@ -52,7 +51,7 @@ define([
             context.$('.expiration span').tooltip();
         },
         open: function() {
-            publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            publisher.publishOpening({componentOpening: MENU_DESIGNATION});
 
             // Populate Data History table
             exposed.updateDataHistory();
@@ -71,22 +70,38 @@ define([
                 }
             })
             .done(function(data) {
-                var tempData = {
-                    "datasetId": data.queryId,
-                    "dataSessionId": data.sessionId,
-                    "dataSource": data.dataSource || "N/A",
-                    "dataName": data.queryName || "N/A",
-                    "dataDate": moment.unix(data.createdOn).format("MMMM Do YYYY, h:mm:ss a") || "N/A",
-                    "dataRecordCount": data.numRecords || "N/A",
-                    "dataExpiresOn": moment.unix(data.expireOn).format("MMMM Do YYYY, h:mm:ss a") || "N/A",
-                    "dataStatus": "N/A",
-                    "rawDataObject": data.rawQuery || "N/A"
+                var now = moment(), //This needs to be done now to prevent race condition later
+                    dataDate = moment.unix(data.createdOn),
+                    expireDate = moment.unix(data.expireOn),
+                    isExpired = expireDate.isBefore(now),
+                    disableRestore = isExpired, //Use this as default
+                    tempData,
+                    rawDataObjectString,
+                    dataHistoryDetailView,
+                    dataStatus = isExpired ? 'Expired' : 'N/A';
+
+                if(context.sandbox.stateManager.layers[data.queryId]){
+                    disableRestore = true;
+                }
+
+                tempData = {
+                    datasetId: data.queryId,
+                    dataSessionId: data.sessionId,
+                    dataSource: data.dataSource || 'N/A',
+                    dataName: data.queryName || 'N/A',
+                    dataDate: dataDate.format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
+                    dataRecordCount: data.numRecords || 'N/A',
+                    dataExpiresOn: expireDate.format('MMMM Do YYYY, h:mm:ss a') || 'N/A',
+                    disableRestore: disableRestore,
+                    dataStatus: dataStatus,
+                    rawDataObject: data.rawQuery || 'N/A'
                 };
 
-                var rawDataObjectString = JSON.stringify(tempData.rawDataObject, null, "  ");
+                rawDataObjectString = context.sandbox.utils.isEmptyObject(tempData.rawDataObject)
+                    ? '' : JSON.stringify(tempData.rawDataObject, null,  ' ');
                 tempData.rawDataObject = rawDataObjectString;
 
-                var dataHistoryDetailView = dataHistoryDetailViewTemplate(tempData);
+                dataHistoryDetailView = dataHistoryDetailViewTemplate(tempData);
                 $dataHistoryDetailView.html(dataHistoryDetailView);
 
                 context.$('.data-history-detail-view .data-history-modal-back-to-list').on('click', function(event) {
@@ -124,18 +139,30 @@ define([
                 }
             })
             .done(function(data) {
-                currentDataArray = [];
                 currentDataSet = {};
+                currentDataArray = [];
+
 
                 context.sandbox.utils.each(data, function(index, dataEntry) {
-                    var tempDataEntry = {
-                        "datasetId": dataEntry.queryId,
-                        "dataSessionId": dataEntry.sessionId,
-                        "dataSource": dataEntry.dataSource,
-                        "dataName": dataEntry.queryName,
-                        "dataDate": moment.unix(dataEntry.createdOn).fromNow(),
-                        "rawDate": dataEntry.createdOn,
-                        "dataRecordCount": dataEntry.numRecords
+                    var now = moment(), //This needs to be done now to prevent race condition later
+                        dataDate = moment.unix(dataEntry.createdOn),
+                        expireDate = moment.unix(dataEntry.expireOn),
+                        disableRestore = expireDate.isBefore(now), // Use isExpired as default
+                        tempDataEntry;
+
+                    if(context.sandbox.stateManager.layers[dataEntry.queryId]){
+                        disableRestore = true;
+                    }
+
+                    tempDataEntry = {
+                        datasetId: dataEntry.queryId,
+                        dataSessionId: dataEntry.sessionId,
+                        dataSource: dataEntry.dataSource,
+                        dataName: dataEntry.queryName,
+                        dataDate: dataDate.fromNow(),
+                        rawDate: dataEntry.createdOn,
+                        disableRestore: disableRestore,
+                        dataRecordCount: dataEntry.numRecords
                     };
                     currentDataArray.push(tempDataEntry);
                     currentDataSet[dataEntry.queryId] = dataEntry;
@@ -163,7 +190,7 @@ define([
 
         context.$('.data-history-list .data-action-info').on('click', function(event) {
             exposed.showDetailedInfo({
-                "datasetId": context.$(this).parent().parent().data('datasetid')
+                datasetId: context.$(this).parent().parent().data('datasetid')
             });
         });
         context.$('.data-history-list .data-action-restore').on('click', function(event) {
@@ -179,18 +206,19 @@ define([
 
     function generateDataHistoryEntryRow(dataHistoryEntryObject) {
         return dataHistoryEntryTemplate({
-            "datasetId": dataHistoryEntryObject.datasetId,
-            "dataSessionId": dataHistoryEntryObject.dataSessionId,
-            "dataSource": dataHistoryEntryObject.dataSource,
-            "dataName": dataHistoryEntryObject.dataName,
-            "dataDate": dataHistoryEntryObject.dataDate,
-            "dataRecordCount": dataHistoryEntryObject.dataRecordCount
+            datasetId: dataHistoryEntryObject.datasetId,
+            dataSessionId: dataHistoryEntryObject.dataSessionId,
+            dataSource: dataHistoryEntryObject.dataSource,
+            dataName: dataHistoryEntryObject.dataName,
+            disableRestore: dataHistoryEntryObject.disableRestore,
+            dataDate: dataHistoryEntryObject.dataDate,
+            dataRecordCount: dataHistoryEntryObject.dataRecordCount
         });
     }
 
     function dynamicSort(property) {
         var sortOrder = 1;
-        if(property[0] === "-") {
+        if(property[0] === '-') {
             sortOrder = -1;
             property = property.substr(1);
         }
@@ -201,11 +229,18 @@ define([
     }
 
     function deleteDataset(datasetId, dataSessionId) {
-        publisher.deleteDataset({
-            "layerId": datasetId
-        });
+
+        //If the layer already exists on the map, delete it
+        if(context.sandbox.stateManager.layers[datasetId]){
+            publisher.deleteDataset({
+                layerId: datasetId
+            });
+        }
+
+        //Call the server to delete the features and query
+        //NOTE: this is a GET because DELETE causes problems on the server
         context.sandbox.utils.ajax({
-            type: 'DELETE',
+            type: 'GET',
             url: '/clear/' + datasetId + '/' + dataSessionId
         }).done(function() {
             var newDataArray = [];
@@ -219,9 +254,9 @@ define([
             currentDataArray = newDataArray;
             populateDataHistoryTable();
             publisher.publishMessage( {
-                "messageType": "success",
-                "messageTitle": "Data History",
-                "messageText": "Dataset successfully removed"
+                messageType: 'success',
+                messageTitle: 'Data History',
+                messageText: 'Dataset successfully removed'
             });
         });
     }
