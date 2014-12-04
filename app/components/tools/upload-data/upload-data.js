@@ -14,8 +14,6 @@ define([
         $file,
         $dummyFile,
         $submit,
-        $zoomYes,
-        $zoomNo,
         RESTORE_PAGE_SIZE = 500;
 
     var exposed = {
@@ -25,8 +23,6 @@ define([
             $file = context.$('#file');
             $dummyFile = context.$('#dummy-file');
             $submit = context.$('#upload-submit');
-            $zoomYes = context.$('#upload-zoom-yes');
-            $zoomNo = context.$('#upload-zoom-no');
 
             $submit.attr('disabled', true); //Start with submit disabled until a file is added
 
@@ -83,29 +79,16 @@ define([
                     $submit.attr('disabled', true);
                 }
             });
-
-            //On zoom button click, toggle active button
-            $zoomYes.on('click', function(event){
-                if(!$zoomYes.hasClass('active')){
-                    $zoomYes.addClass('active');
-                    $zoomNo.removeClass('active');
-                }
-            });
-            $zoomNo.on('click', function(event){
-                if(!$zoomNo.hasClass('active')){
-                    $zoomYes.removeClass('active');
-                    $zoomNo.addClass('active');
-                }
-            });
-
+            
             //Handle submit
             $submit.on('click', function(){
+                
                 //Get the file from the input
                 var file = $file[0].files[0],
                     filetype,
                     queryId,
                     queryName,
-                    shouldZoom,
+                    shouldZoom = false,
                     newAJAX;
 
                 //TODO handle multiple files?
@@ -113,8 +96,10 @@ define([
                     queryId = context.sandbox.utils.UUID();
                     queryName = file.name; //Use the file name as the query name
                     filetype = context.sandbox.utils.getFileExtension(file);
-                    shouldZoom = $zoomYes.hasClass('active'); // Make sure to get this BEFORE any ajax stuff
-
+                    if (context.$('#zoomOnUpload').is(":checked")) {
+                        shouldZoom = true; 
+                    }
+                    
                     //Create a new collection for the data
                     context.sandbox.dataStorage.datasets[queryId] = new Backbone.Collection();
                     context.sandbox.dataStorage.datasets[queryId].dataService = DATASOURCE_NAME;
