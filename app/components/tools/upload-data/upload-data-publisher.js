@@ -6,20 +6,23 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        createLayer: function(args){
-            context.sandbox.emit('map.layer.create', args);
+        createLayer: function(params){
+            context.sandbox.emit('map.layer.create', params);
         },
-        publishData: function(args){
-            context.sandbox.emit('map.features.plot', args);
+        publishData: function(params){
+            context.sandbox.emit('map.features.plot', params);
         },
-        publishMessage: function(args){
-            context.sandbox.emit('message.publish', args);
+        publishMessage: function(params){
+            context.sandbox.emit('message.publish', params);
         },
-        publishFinished: function(args){
-            context.sandbox.emit('data.finished', args);
+        publishFinished: function(params){
+            context.sandbox.emit('data.finished', params);
         },
-        publishError: function(args){
-            context.sandbox.emit('data.error', args);
+        publishError: function(params){
+            context.sandbox.emit('data.error', params);
+        },
+        publishZoomToLayer: function(params){
+            context.sandbox.emit('map.zoom.toLayer', params);
         },
         addToProgressQueue: function() {
             context.sandbox.emit('progress.queue.add');

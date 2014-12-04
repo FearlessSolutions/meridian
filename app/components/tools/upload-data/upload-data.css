@@ -36,3 +36,7 @@ div[data-aura-component='tools/upload-data'] .control-label{
 div[data-aura-component='tools/upload-data'] #open-file{
     cursor: pointer;
 }
+
+div[data-aura-component='tools/upload-data'] .radio label, .checkbox label{
+    padding-left: 0px;
+}
