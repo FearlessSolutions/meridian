@@ -1,4 +1,5 @@
 require.config({
+    waitSeconds: 30,
     paths: {
         aura: 'bower_components/aura/lib',
         handlebars: 'bower_components/handlebars/handlebars',
