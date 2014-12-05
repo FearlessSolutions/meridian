@@ -1,11 +1,12 @@
 define([
     './datagrid-publisher',
     './datagrid-context-menu',
-    'datatable'
+    'slickcore',
+    'slickgrid'
 ], function (publisher, datagridContextMenu) {
 
     var context,
-        myTable,
+        grid,
         $datagridContainer,
         datagridVisible = false,
         MOUSE_CLICK_LEFT = 1,
@@ -14,11 +15,13 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            datagridContextMenu.init(context);
+//            datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
-            $('#datagridContainer .close').on('click', function(){
-                publisher.closeDatagrid();
-            });
+//            $('#datagridContainer .close').on('click', function(){
+//                publisher.closeDatagrid();
+//            });
+
+            exposed.open();
         },
         toggleGrid: function() {
             if($datagridContainer.hasClass('hidden')) {
@@ -31,78 +34,62 @@ define([
          * Set up the data, columns, and then open the datagrid
          */
         open: function() {
-            if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
-                var compiledData = [],
-                    tempObject,
-                    columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
-                    columnHeaders = context.sandbox.dataStorage.getColumnsDisplayNameArray();
-
-                $datagridContainer.removeClass('hidden');
-                $datagridContainer.height(328);
-
-                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionIndex, collection) {
-                    context.sandbox.utils.each(collection.models, function(modelIndex, model) {
-
-                        tempObject = {};
-                        context.sandbox.utils.each(columnHeadersMetadata, function(displayMetadataIndex, displayMetadata){
-                            if(model.attributes.hasOwnProperty(displayMetadata.property)) {
-                                tempObject[displayMetadata.displayName] = model.attributes[displayMetadata.property];
-                            } else {
-                                tempObject[displayMetadata.displayName] = '';
-                            }
-                        });
-
-                        compiledData.push(tempObject);
-                    });
-                });
-
-                if(!myTable) {
-                    myTable = $datagridContainer.Datatable({
-                        sortable: true,
-                        pagination: true,
-                        data: compiledData,
-                        columns: columnHeaders,
-                        searchable: true,
-                        closeable: false,
-                        clickable: true,
-                        afterRowClick: function(event, target) {
-
-                            //If it was a link, as set below, do not identify the point.
-                            if(event.originalEvent.isLink){
-                                event.stopPropagation(); //Stop doing other stuff if it is a point
-                            }else if(event.which === MOUSE_CLICK_LEFT) { 
-                                publisher.identifyRecord({
-                                    featureId: target['Feature ID'],
-                                    layerId: target['Layer ID']
-                                });
-                            } else if (event.which === MOUSE_CLICK_RIGHT) {
-                                datagridContextMenu.showMenu({
-                                    featureId: target['Feature ID'],
-                                    layerId: target['Layer ID'],
-                                    event: event
-                                });
-                            }
-                        },
-                        addRowClasses: addCustomClasses
-                    });
-                } else {
-                    myTable.removeAllData();
-                    myTable.updateColumns(columnHeaders);
-                    myTable.addData(compiledData);
+            $datagridContainer.removeClass('hidden');
+            $datagridContainer.height(328);
+            var columns = [
+                {
+                    id: 'title',
+                    name: 'Title',
+                    field: 'title'
+                },
+                {
+                    id: '%',
+                    name: '% Complete',
+                    field: 'percent'
+                },
+                {
+                    id: 'color',
+                    name: 'Color',
+                    field: 'color'
                 }
+            ];
 
-                //If a link was clicked, mark the event as such. This happens before 'afterRowClick'
-                context.$('.rowDiv a').on('click', function(e){
-                    e.originalEvent.isLink = true; //The originalEvent is used at all levels during bubbling.
-                });
+            var options = {
+                enableCellNavigation: true,
+                enableColumnReorder: true,
+//                defaultColumnWidth: 100,
+                fullWidthRows: true,
+                autoEdit: false,
+                editable:false,
+                syncColumnCellResize: true,
+                headerRowHeight:25
+            };
 
-                datagridVisible = true;
-            } else {
-                publisher.closeDatagrid();
-                datagridVisible = false;
-            }
+            var data = [
+                {
+                    title: 't1',
+                    color: 'c1',
+                    percent: 'p1',
+                    stuff: 's1'
+                },
+                {
+                    title: 't2',
+                    color: 'c2',
+                    percent: 'p2',
+                    stuff: 's2'
+                },
+                {
+                    title: 't3',
+                    color: 'c3',
+                    percent: 'p3',
+                    stuff: 's3'
+                }
+            ];
+
+            grid = new Slick.Grid('#datagridContainer', data, columns, options);
         },
         close: function() {
+            return;
             $datagridContainer.addClass('hidden');
             $datagridContainer.height(0);
             if(myTable) {
@@ -111,52 +98,26 @@ define([
             datagridVisible = false;
         },
         clear: function() {
+            return;
             if(myTable) { //In both until refactor
                 myTable.removeAllData();
             }
             exposed.close();
         },
         reload: function() {
+            return;
             if(datagridVisible) {
                 exposed.open();
             }
         },
         refresh: function() {
+            return;
             if(datagridVisible && myTable) {
-                myTable.updateTable();
+//                myTable.updateTable();
             }
         },
         addData: function(params) {
-            var compiledData = [],
-                columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
-                columnHeaders = context.sandbox.dataStorage.getColumnsDisplayNameArray(),
-                tempObject,
-                currentPagination = $('ul.pagination li.active a').html();
-
-            if(datagridVisible && myTable) {
-                 context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionIndex, collection) {
-                    context.sandbox.utils.each(collection.models, function(modelIndex, model) {
-                        tempObject = {};
-                        context.sandbox.utils.each(columnHeadersMetadata, function(displayMetadataIndex, displayMetadata){
-                            if(model.attributes.hasOwnProperty(displayMetadata.property)) {
-                                tempObject[displayMetadata.displayName] = model.attributes[displayMetadata.property];
-                            } else {
-                                tempObject[displayMetadata.displayName] = '';
-                            }
-                        });
-
-                        compiledData.push(tempObject);
-                    });
-                });
-
-                // Remove old data
-                myTable.removeAllData();
-                myTable.updateColumns(columnHeaders);
-                // replace data with new Full Data
-                myTable.addData(compiledData);
-                // Make sure the table stays on same page as prior to adding data
-                myTable.updatePaginator(currentPagination);
-            }
+            return;
         }
     };
 
