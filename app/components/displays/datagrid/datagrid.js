@@ -7,6 +7,14 @@ define([
     'slickRowSelectionModel',
     'slickpager'
 ], function (publisher, datagridContextMenu) {
+    //TODO add sort
+    //TODO add server support
+    //TODO put actual data in there
+    //TODO add context menu
+    //TODO add close button
+    //TODO select row
+
+
 
     var context,
         grid,
@@ -58,12 +66,12 @@ define([
             ];
 
             var options = {
-                enableCellNavigation: true,
+//                enableCellNavigation: true,
                 enableColumnReorder: true,
 //                defaultColumnWidth: 100,
                 fullWidthRows: true,
-                autoEdit: false,
-                editable:false,
+//                autoEdit: false,
+//                editable:false,
                 syncColumnCellResize: true,
                 headerRowHeight:25
             };
@@ -93,6 +101,8 @@ define([
             ];
 
             grid = new Slick.Grid('#grid', dataView, columns, options);
+            grid.setSelectionModel(new Slick.RowSelectionModel());
+
             dataView.onRowCountChanged.subscribe(function (e, args) {
                 grid.updateRowCount();
                 grid.render();
