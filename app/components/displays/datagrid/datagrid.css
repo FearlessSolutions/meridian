@@ -12,8 +12,21 @@ div[data-aura-component='displays/datagrid'] #datagridContainer {
     padding-right: 5px;
 }
 
+div[data-aura-component='displays/datagrid'] #grid {
+    width: 100%;
+    height: 300px;
+}
+
+div[data-aura-component='displays/datagrid'] #pager {
+    height: 26px;
+}
+
 div[data-aura-component='displays/datagrid'] .slick-header-column {
     box-sizing: content-box; /** Keeps column re-sizing the same for headers/rows **/
+}
+
+body {
+    /*overflow-y: hidden;*/
 }
 
 /*div[data-aura-component='displays/datagrid'] #datagridContainer .close {*/

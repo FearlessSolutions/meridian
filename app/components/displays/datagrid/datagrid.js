@@ -2,40 +2,43 @@ define([
     './datagrid-publisher',
     './datagrid-context-menu',
     'slickcore',
-    'slickgrid'
+    'slickgrid',
+    'slickdataview',
+    'slickRowSelectionModel',
+    'slickpager'
 ], function (publisher, datagridContextMenu) {
 
     var context,
         grid,
+        dataView,
+        pager,
         $datagridContainer,
         datagridVisible = false,
         MOUSE_CLICK_LEFT = 1,
-        MOUSE_CLICK_RIGHT = 3;
+        MOUSE_CLICK_RIGHT = 3,
+        DEFAULT_GRID_OPTIONS = {
+            enableCellNavigation: true,
+            enableColumnReorder: true,
+//                defaultColumnWidth: 100,
+            fullWidthRows: true,
+            autoEdit: false,
+            editable:false,
+            syncColumnCellResize: true,
+            headerRowHeight:25
+        };
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            dataView = new Slick.Data.DataView();
+            pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
 //            datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
 //            $('#datagridContainer .close').on('click', function(){
 //                publisher.closeDatagrid();
 //            });
 
-            exposed.open();
-        },
-        toggleGrid: function() {
-            if($datagridContainer.hasClass('hidden')) {
-                exposed.open();
-            }else {
-                exposed.close();
-            }
-        },
-        /**
-         * Set up the data, columns, and then open the datagrid
-         */
-        open: function() {
-            $datagridContainer.removeClass('hidden');
-            $datagridContainer.height(328);
+
             var columns = [
                 {
                     id: 'title',
@@ -67,18 +70,21 @@ define([
 
             var data = [
                 {
+                    id: 'i1',
                     title: 't1',
                     color: 'c1',
                     percent: 'p1',
                     stuff: 's1'
                 },
                 {
+                    id: 'i2',
                     title: 't2',
                     color: 'c2',
                     percent: 'p2',
                     stuff: 's2'
                 },
                 {
+                    id: 'i3',
                     title: 't3',
                     color: 'c3',
                     percent: 'p3',
@@ -86,7 +92,36 @@ define([
                 }
             ];
 
-            grid = new Slick.Grid('#datagridContainer', data, columns, options);
+            grid = new Slick.Grid('#grid', dataView, columns, options);
+            dataView.onRowCountChanged.subscribe(function (e, args) {
+                grid.updateRowCount();
+                grid.render();
+            });
+
+            dataView.onRowsChanged.subscribe(function (e, args) {
+                grid.invalidateRows(args.rows);
+                grid.render();
+            });
+
+
+            dataView.setItems(data);
+            exposed.open();
+        },
+        toggleGrid: function() {
+            if($datagridContainer.hasClass('hidden')) {
+                exposed.open();
+            }else {
+                exposed.close();
+            }
+        },
+        /**
+         * Set up the data, columns, and then open the datagrid
+         */
+        open: function() {
+            $datagridContainer.removeClass('hidden');
+            $datagridContainer.height(328);
+            grid.resizeCanvas();
+
         },
         close: function() {
             return;

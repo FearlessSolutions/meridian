@@ -20,11 +20,12 @@ require.config({
         select2: 'libs/select2-3.4.8/select2',
 //        jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min', // Custom build, check file's header to see what it includes
         jqueryUI: 'libs/jquery-ui-1.11.2.custom/jquery-ui.min', // Custom build, check file's header to see what it includes
-        moment: 'libs/momentjs-2.8.3/moment.min',
-
         slickcore: 'libs/SlickGrid-master/slick.core',
         slickgrid: 'libs/SlickGrid-master/slick.grid',
-        slickdataview: 'libs/slickGrid-master/slick.dataview'
+        slickdataview: 'libs/SlickGrid-master/slick.dataview',
+        slickRowSelectionModel: 'libs/SlickGrid-master/plugins/slick.rowselectionmodel',
+        slickpager: 'libs/SlickGrid-master/controls/slick.pager',
+        moment: 'libs/momentjs-2.8.3/moment.min'
     },
     shim:{
         aura: {
@@ -63,6 +64,12 @@ require.config({
             deps: ['slickcore', 'jqueryDrag', 'jqueryDrop']
         },
         slickdataview: {
+            deps: ['slickgrid']
+        },
+        slickRowSelectionModel: {
+            deps: ['slickgrid']
+        },
+        slickpager: {
             deps: ['slickgrid']
         }
     }
