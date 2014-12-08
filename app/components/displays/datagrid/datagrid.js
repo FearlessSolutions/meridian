@@ -180,10 +180,45 @@ define([
 
         },
         hideLayer: function(params){
+            var layerId = params.layerId,
+                layerFeatureCollection = context.sandbox.dataStorage.datasets[layerId];
 
+            if(!layerFeatureCollection){
+                return;
+            }
+
+            dataView.beginUpdate(); //Grouping all the changes together makes it more efficient.
+                context.sandbox.utils.each(layerFeatureCollection.models, function(featureIndex, feature){
+                    var featureId = feature.attributes.featureId,
+                        item = dataView.getItemById(featureId);
+                    item[HIDDEN_PROPERTY] = true;
+                    dataView.updateItem(featureId, item);
+                });
+            dataView.endUpdate();
         },
         showLayer: function(params){
+            var layerId = params.layerId,
+                layerFeatureCollection = context.sandbox.dataStorage.datasets[layerId],
+                layerState = context.sandbox.stateManager.layers[layerId];
 
+            if(!layerFeatureCollection || !layerState){
+                return;
+            }
+
+            dataView.beginUpdate(); //Grouping all the changes together makes it more efficient.
+                context.sandbox.utils.each(layerFeatureCollection.models, function(featureIndex, feature){
+                    var featureId = feature.attributes.featureId,
+                        item = dataView.getItemById(featureId);
+
+                    if(layerState.hiddenFeatures.indexOf(featureId) === -1){ //Not in the hidden feature array
+                        item[HIDDEN_PROPERTY] = false;
+                    }else{
+                        item[HIDDEN_PROPERTY] = true; //The layer isn't hidden, but the feature still is.
+                    }
+
+                    dataView.updateItem(featureId, item);
+                });
+            dataView.endUpdate();
         }
     };
 
@@ -226,7 +261,6 @@ define([
 
         isLayerVisible = layerState.visible;
         layerHiddenFeatures = layerState.hiddenFeatures;
-        layerIdentifiedFeatures = layerState.identifiedFeatures;
 
         context.sandbox.utils.each(features, function (featureIndex, feature) {
             var tempObject = {},
