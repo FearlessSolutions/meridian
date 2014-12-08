@@ -8,11 +8,15 @@ define([
     'slickpager'
 ], function (publisher, datagridContextMenu) {
     //TODO add sort
-    //TODO add server support
+    //TODO add server support  // libs/SlickGrid-master/slick.remotemodel.js
     //TODO put actual data in there
-    //TODO add context menu
+    //TODO add context menu  // http://mleibman.github.io/SlickGrid/examples/example7-events.html
     //TODO add close button
-    //TODO select row
+    //TODO select row triggers
+    //TODO make styling more like old one
+    //TODO make sure featureId is not a default field
+    //TODO mark hide
+    //TODO add search
 
 
 
@@ -24,6 +28,7 @@ define([
         datagridVisible = false,
         MOUSE_CLICK_LEFT = 1,
         MOUSE_CLICK_RIGHT = 3,
+        GRID_CONTAINER_HEIGHT = 328,
         DEFAULT_GRID_OPTIONS = {
             enableCellNavigation: true,
             enableColumnReorder: true,
@@ -40,9 +45,9 @@ define([
             context = thisContext;
             dataView = new Slick.Data.DataView();
             pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
-//            datagridContextMenu.init(context);
+//            datagridContextMenu.init(context); //TODO
             $datagridContainer = context.$('#datagridContainer');
-//            $('#datagridContainer .close').on('click', function(){
+//            $('#datagridContainer .close').on('click', function(){ //TODO
 //                publisher.closeDatagrid();
 //            });
 
@@ -128,40 +133,124 @@ define([
          * Set up the data, columns, and then open the datagrid
          */
         open: function() {
-            $datagridContainer.removeClass('hidden');
-            $datagridContainer.height(328);
-            grid.resizeCanvas();
+            if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
+                var compiledData = [],
+                    tempObject,
+                    columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
+                    columnHeaders = [];
 
+                $datagridContainer.removeClass('hidden');
+                $datagridContainer.height(328);
+
+
+                //TODO this should be done only when new data is added.
+                //Set up headers. They should already be in the correct order.
+                context.sandbox.utils.each(columnHeadersMetadata, function(columnHeaderIndex, columnHeaderMetadata){
+                    columnHeaders.push({
+                        id: columnHeaderMetadata.property + columnHeaderMetadata.displayName,
+                        name: columnHeaderMetadata.displayName,
+                        field: columnHeaderMetadata.property
+                    });
+                });
+
+
+                //TODO this should only be done on new data.
+                //Set up data
+                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionIndex, collection) {
+                    context.sandbox.utils.each(collection.models, function(modelIndex, model) {
+
+                        tempObject = {};
+                        context.sandbox.utils.each(columnHeadersMetadata, function(displayMetadataIndex, displayMetadata){
+                            if(model.attributes.hasOwnProperty(displayMetadata.property)) {
+                                tempObject[displayMetadata.property] = model.attributes[displayMetadata.property];
+                            }
+                        });
+
+                        tempObject.id = model.attributes.featureId; //Each data point needs a unique id
+
+                        compiledData.push(tempObject);
+                    });
+                });
+
+                grid.setColumns(columnHeaders); //Update columns
+                dataView.setItems(compiledData); //Update rows
+
+//                if(!myTable) {
+//                    myTable = $datagridContainer.Datatable({
+//                        sortable: true,
+//                        pagination: true,
+//                        data: compiledData,
+//                        columns: columnHeaders,
+//                        searchable: true,
+//                        closeable: false,
+//                        clickable: true,
+//                        afterRowClick: function(event, target) {
+//
+//                            //If it was a link, as set below, do not identify the point.
+//                            if(event.originalEvent.isLink){
+//                                event.stopPropagation(); //Stop doing other stuff if it is a point
+//                            }else if(event.which === MOUSE_CLICK_LEFT) {
+//                                publisher.identifyRecord({
+//                                    featureId: target['Feature ID'],
+//                                    layerId: target['Layer ID']
+//                                });
+//                            } else if (event.which === MOUSE_CLICK_RIGHT) {
+//                                datagridContextMenu.showMenu({
+//                                    featureId: target['Feature ID'],
+//                                    layerId: target['Layer ID'],
+//                                    event: event
+//                                });
+//                            }
+//                        },
+//                        addRowClasses: addCustomClasses
+//                    });
+//                } else {
+//                    myTable.removeAllData();
+//                    myTable.updateColumns(columnHeaders);
+//                    myTable.addData(compiledData);
+//                }
+
+//                //If a link was clicked, mark the event as such. This happens before 'afterRowClick' //TODO see if this is a problem
+//                context.$('.rowDiv a').on('click', function(e){
+//                    e.originalEvent.isLink = true; //The originalEvent is used at all levels during bubbling.
+//                });
+
+                datagridVisible = true;
+            } else {
+                publisher.closeDatagrid();
+                datagridVisible = false;
+            }
+
+
+            grid.resizeCanvas();
         },
-        close: function() {
-            return;
+        close: function() { //TODO
             $datagridContainer.addClass('hidden');
             $datagridContainer.height(0);
-            if(myTable) {
-                myTable.removeAllData();
-            }
+//            if(myTable) { //TODO remove data on hide
+//                myTable.removeAllData();
+//            }
             datagridVisible = false;
         },
-        clear: function() {
-            return;
-            if(myTable) { //In both until refactor
-                myTable.removeAllData();
-            }
+        clear: function() { //TODO
+//            if(myTable) { //In both until refactor
+//                myTable.removeAllData();
+//            }
             exposed.close();
         },
-        reload: function() {
+        reload: function() { //TODO
             return;
             if(datagridVisible) {
                 exposed.open();
             }
         },
-        refresh: function() {
+        refresh: function() { //TODO
             return;
-            if(datagridVisible && myTable) {
-//                myTable.updateTable();
-            }
+//            if(datagridVisible && myTable) {
+////                myTable.updateTable();
+//            }
         },
-        addData: function(params) {
+        addData: function(params) { //TODO
             return;
         }
     };
