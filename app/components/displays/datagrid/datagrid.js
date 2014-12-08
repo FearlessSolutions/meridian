@@ -33,6 +33,8 @@ define([
         MOUSE_CLICK_LEFT = 1,
         MOUSE_CLICK_RIGHT = 3,
         GRID_CONTAINER_HEIGHT = 328,
+        HIDDEN_CSS = 'hiddenFeature',
+        HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN',
         selectedRows,
         DEFAULT_GRID_OPTIONS = {
             enableCellNavigation: true,
@@ -43,7 +45,8 @@ define([
             editable:false,
             syncColumnCellResize: true,
             headerRowHeight:25,
-            defaultFormatter: gridFormatter
+            defaultFormatter: gridFormatter,
+            multiSelect: false //TODO remove this for multiselect.
         };
 
     var exposed = {
@@ -51,6 +54,8 @@ define([
             context = thisContext;
             selectedRows = [];
             dataView = new Slick.Data.DataView();
+            dataView.getItemMetadata = getItemMetadata;
+
 //            datagridContextMenu.init(context); //TODO
             $datagridContainer = context.$('#datagridContainer');
 //            $('#datagridContainer .close').on('click', function(){ //TODO
@@ -80,8 +85,7 @@ define([
 
 
             /**
-             * Handles both select and deselect.
-             * While we are only using single select, enforce
+             * It is in single select mode for now
              */
             grid.onSelectedRowsChanged.subscribe(function(e, params) {
                 var gridSelectedRowNumbers = params.rows,
@@ -109,6 +113,7 @@ define([
                 exposed.close();
             }
         },
+
         /**
          * Set up the data, columns, and then open the datagrid
          */
@@ -140,16 +145,16 @@ define([
             exposed.close();
         },
         reload: function() {
+            var compiledData = [],
+                columnHeaders = getHeaders();
+
             if(datagridVisible) {
                 exposed.open();
             }
 
-            var compiledData = [],
-                columnHeaders = getHeaders();
-
             //Set up data
-            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionIndex, collection) {
-                var newCompiledData = compileData(collection.models, columnHeaders);
+            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionId, collection) {
+                var newCompiledData = compileData(collectionId, collection.models, columnHeaders);
                 compiledData = compiledData.concat(newCompiledData);
             });
 
@@ -208,10 +213,24 @@ define([
         return columnHeaders;
     }
 
-    function compileData(features, headers){
-        var compiledData = [];
+    function compileData(layerId, features, headers){
+        var compiledData = [],
+            layerState = context.sandbox.stateManager.layers[layerId],
+            isLayerVisible,
+            layerHiddenFeatures,
+            layerIdentifiedFeatures;
+
+        if(!layerState){
+            return [];
+        }
+
+        isLayerVisible = layerState.visible;
+        layerHiddenFeatures = layerState.hiddenFeatures;
+        layerIdentifiedFeatures = layerState.identifiedFeatures;
+
         context.sandbox.utils.each(features, function (featureIndex, feature) {
-            var tempObject = {};
+            var tempObject = {},
+                featureId = feature.attributes.featureId;
 
             context.sandbox.utils.each(headers, function (headerIndex, header) {
                 var fieldName = header.field;
@@ -220,9 +239,13 @@ define([
                 }
             });
 
-            tempObject.id = feature.attributes.featureId; //Each data point needs a unique id
-            tempObject.featureId = feature.attributes.featureId; //Each data point needs a unique id
-            tempObject.layerId = feature.attributes.layerId; //Each data point needs a unique id
+            tempObject.id = featureId; //Each data point needs a unique id
+            tempObject.featureId = featureId; //Each data point needs a unique id
+            tempObject.layerId = layerId; //Each data point needs a unique id
+
+            if(!isLayerVisible || layerHiddenFeatures.indexOf(featureId) > -1){
+                tempObject[HIDDEN_PROPERTY] = true;
+            }
 
             compiledData.push(tempObject);
         });
@@ -235,6 +258,20 @@ define([
             return '';
         }else{
             return value.toString();
+        }
+    }
+
+    //Is run on each cell, deciding if it should be selecable
+    function getItemMetadata(row){
+        var item = dataView.getItem(row);
+
+        if(item[HIDDEN_PROPERTY]) {
+            return    {
+                selectable: false,
+                cssClasses: HIDDEN_CSS
+            };
+        }else{
+            return {}
         }
     }
 
