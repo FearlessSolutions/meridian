@@ -19,11 +19,12 @@ define([
     //TODO Pager: larger pager
     //TODO Pager: Auto show page size options
     //TODO Pager: ??? 'go to' page option
+    //TODO Pager: COULD USE PREVIOUS PAGER
+    //TODO Could use previous header
     //TODO make sure featureId is not a default field
     //TODO mark hide
     //TODO add search
     //TODO Pager was changed: decide what to do about it (move it, rename it, use defaults...)
-
 
 
     var context,
@@ -50,7 +51,6 @@ define([
         init: function(thisContext) {
             context = thisContext;
             dataView = new Slick.Data.DataView();
-            pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
 //            datagridContextMenu.init(context); //TODO
             $datagridContainer = context.$('#datagridContainer');
 //            $('#datagridContainer .close').on('click', function(){ //TODO
@@ -87,32 +87,33 @@ define([
                 headerRowHeight:25
             };
 
-            var data = [
-                {
-                    id: 'i1',
-                    title: 't1',
-                    color: 'c1',
-                    percent: 'p1',
-                    stuff: 's1'
-                },
-                {
-                    id: 'i2',
-                    title: 't2',
-                    color: 'c2',
-                    percent: 'p2',
-                    stuff: 's2'
-                },
-                {
-                    id: 'i3',
-                    title: 't3',
-                    color: 'c3',
-                    percent: 'p3',
-                    stuff: 's3'
-                }
-            ];
+//            var data = [
+//                {
+//                    id: 'i1',
+//                    title: 't1',
+//                    color: 'c1',
+//                    percent: 'p1',
+//                    stuff: 's1'
+//                },
+//                {
+//                    id: 'i2',
+//                    title: 't2',
+//                    color: 'c2',
+//                    percent: 'p2',
+//                    stuff: 's2'
+//                },
+//                {
+//                    id: 'i3',
+//                    title: 't3',
+//                    color: 'c3',
+//                    percent: 'p3',
+//                    stuff: 's3'
+//                }
+//            ];
 
-            grid = new Slick.Grid('#grid', dataView, columns, options);
+            grid = new Slick.Grid('#grid', dataView, [], options);
             grid.setSelectionModel(new Slick.RowSelectionModel());
+            pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
 
             dataView.onRowCountChanged.subscribe(function (e, args) {
                 grid.updateRowCount();
@@ -124,8 +125,7 @@ define([
                 grid.render();
             });
 
-
-            dataView.setItems(data);
+//            dataView.setItems(data);
             exposed.open();
         },
         toggleGrid: function() {
@@ -139,6 +139,7 @@ define([
          * Set up the data, columns, and then open the datagrid
          */
         open: function() {
+            console.debug('open');
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 var compiledData = [],
                     tempObject,
@@ -147,39 +148,6 @@ define([
 
                 $datagridContainer.removeClass('hidden');
                 $datagridContainer.height(328);
-
-
-                //TODO this should be done only when new data is added.
-                //Set up headers. They should already be in the correct order.
-                context.sandbox.utils.each(columnHeadersMetadata, function(columnHeaderIndex, columnHeaderMetadata){
-                    columnHeaders.push({
-                        id: columnHeaderMetadata.property + columnHeaderMetadata.displayName,
-                        name: columnHeaderMetadata.displayName,
-                        field: columnHeaderMetadata.property
-                    });
-                });
-
-
-                //TODO this should only be done on new data.
-                //Set up data
-                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionIndex, collection) {
-                    context.sandbox.utils.each(collection.models, function(modelIndex, model) {
-
-                        tempObject = {};
-                        context.sandbox.utils.each(columnHeadersMetadata, function(displayMetadataIndex, displayMetadata){
-                            if(model.attributes.hasOwnProperty(displayMetadata.property)) {
-                                tempObject[displayMetadata.property] = model.attributes[displayMetadata.property];
-                            }
-                        });
-
-                        tempObject.id = model.attributes.featureId; //Each data point needs a unique id
-
-                        compiledData.push(tempObject);
-                    });
-                });
-
-                grid.setColumns(columnHeaders); //Update columns
-                dataView.setItems(compiledData); //Update rows
 
 //                if(!myTable) {
 //                    myTable = $datagridContainer.Datatable({
@@ -233,31 +201,62 @@ define([
         close: function() { //TODO
             $datagridContainer.addClass('hidden');
             $datagridContainer.height(0);
-//            if(myTable) { //TODO remove data on hide
+//            if(myTable) { //TODO remove data on hide //TODO do we actually want to do this?
 //                myTable.removeAllData();
 //            }
             datagridVisible = false;
         },
-        clear: function() { //TODO
-//            if(myTable) { //In both until refactor
-//                myTable.removeAllData();
-//            }
+        clear: function() {
+            grid.setItems([]);
+            grid.setColumns([]);
+
             exposed.close();
         },
-        reload: function() { //TODO
-            return;
-            if(datagridVisible) {
+        reload: function() {
+            console.debug('reload');
+            if(datagridVisible) { //TODO Do we need this?
                 exposed.open();
             }
+
+            var compiledData = [],
+                columnHeaders = getHeaders();
+
+
+            //TODO this should only be done on new data.
+            //Set up data
+            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionIndex, collection) {
+                var newCompiledData = compileData(collection.models, columnHeaders);
+                compiledData = compiledData.concat(newCompiledData);
+            });
+
+            grid.setColumns(columnHeaders); //Update columns
+            dataView.setItems(compiledData); //Update rows
         },
-        refresh: function() { //TODO
+        refresh: function() { //TODO Do we need this?
             return;
 //            if(datagridVisible && myTable) {
 ////                myTable.updateTable();
 //            }
         },
-        addData: function(params) { //TODO
-            return;
+        /**
+         * We assume that any new data is already part of the dataset.
+         * @param params
+         */
+        addData: function(params) { //TODO Find way to ignore aoi, then add new data when actual data
+            console.debug('adding data');
+            exposed.reload();
+        },
+        hideFeatures: function(params){
+
+        },
+        showFeatures: function(params){
+
+        },
+        hideLayer: function(params){
+
+        },
+        showLayer: function(params){
+
         }
     };
 
@@ -272,6 +271,41 @@ define([
         }
     }
 
+    function getHeaders(){
+        var columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
+            columnHeaders = [];            //Set up headers. They should already be in the correct order.
+
+        context.sandbox.utils.each(columnHeadersMetadata, function (columnHeaderIndex, columnHeaderMetadata) {
+            columnHeaders.push({
+                id: columnHeaderMetadata.property + columnHeaderMetadata.displayName,
+                name: columnHeaderMetadata.displayName,
+                field: columnHeaderMetadata.property
+            });
+        });
+
+        return columnHeaders;
+    }
+
+    function compileData(features, headers){
+        var compiledData = [];
+        context.sandbox.utils.each(features, function (featureIndex, feature) {
+            var tempObject = {};
+
+            context.sandbox.utils.each(headers, function (headerIndex, header) {
+                var fieldName = header.field;
+                if (feature.attributes.hasOwnProperty(fieldName)) {
+                    tempObject[fieldName] = feature.attributes[fieldName];
+                }
+            });
+
+            tempObject.id = feature.attributes.featureId; //Each data point needs a unique id
+
+            compiledData.push(tempObject);
+        });
+
+        return compiledData;
+    }
+
     return exposed;
-    
+
 });
