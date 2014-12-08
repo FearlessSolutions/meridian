@@ -201,6 +201,8 @@ define([
         context.sandbox.utils.each(data, function(dataIndex, dataFeature){
             var newValue = {};
 
+            dataFeature.properties.mapUrl = context.sandbox.dataServices[DATASOURCE_NAME].processMapUrl(dataFeature.properties); //Add the map url
+
             if(keys){
                 //For each of the keys required, if that property exists in the feature, hoist it
                 //and give it the specified header name

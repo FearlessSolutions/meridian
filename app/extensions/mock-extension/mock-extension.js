@@ -70,6 +70,21 @@ define([
                         property: 'color',
                         displayName: 'Color',
                         weight: 69
+                    },
+                    {
+                        property: 'mapUrl',
+                        displayName: 'MapUrl',
+                        weight: 69
+                    },
+                    {
+                        property: "featureId",
+                        displayName: "Feature ID",
+                        weight: 0
+                    },
+                    {
+                        property: "layerId",
+                        displayName: "Layer ID",
+                        weight: 0
                     }
                 ],
                 processMapUrl: processMapUrl

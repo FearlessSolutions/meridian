@@ -25,16 +25,6 @@ define([
                     property: "dataService",
                     displayName: "Data Service",
                     weight: 5
-                }],
-                featureId: [{
-                    property: "featureId",
-                    displayName: "Feature ID",
-                    weight: 0
-                }],
-                layerId: [{
-                    property: "layerId",
-                    displayName: "Layer ID",
-                    weight: 0
                 }]
             };
             var dataStorage = {
