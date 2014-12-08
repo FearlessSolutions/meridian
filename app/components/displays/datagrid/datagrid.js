@@ -14,9 +14,15 @@ define([
     //TODO add close button
     //TODO select row triggers
     //TODO make styling more like old one
+    //TODO      column widths
+    //TODO      coloring? (I like the default)
+    //TODO Pager: larger pager
+    //TODO Pager: Auto show page size options
+    //TODO Pager: ??? 'go to' page option
     //TODO make sure featureId is not a default field
     //TODO mark hide
     //TODO add search
+    //TODO Pager was changed: decide what to do about it (move it, rename it, use defaults...)
 
 
 
