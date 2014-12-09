@@ -18,7 +18,6 @@ define([
     //TODO Pager: ??? 'go to' page option
     //TODO Pager: COULD USE PREVIOUS PAGER
     //TODO Could use previous header
-    //TODO mark hide
     //TODO add search
     //TODO Pager was changed: decide what to do about it (move it, rename it, use defaults...)
 
@@ -107,6 +106,22 @@ define([
                     item: item,
                     event: e
                 });
+            });
+
+            grid.onSort.subscribe(function(e, params){
+                var sortcol = params.sortCol.field,
+                    comparer;
+
+                comparer = function(a, b){
+                    var x = a[sortcol],
+                        y = b[sortcol];
+
+                    return (x == y ? 0 : (x > y ? 1 : -1));
+                };
+
+                // using native sort with comparer
+                // preferred method but can be very slow in IE with huge datasets
+                dataView.sort(comparer, params.sortAsc);
             });
 
             exposed.open();
@@ -276,7 +291,8 @@ define([
             columnHeaders.push({
                 id: columnHeaderMetadata.property + columnHeaderMetadata.displayName,
                 name: columnHeaderMetadata.displayName,
-                field: columnHeaderMetadata.property
+                field: columnHeaderMetadata.property,
+                sortable: true
             });
         });
 
