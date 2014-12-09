@@ -27,10 +27,12 @@ define([
         pager,
         $datagridContainer,
         datagridVisible = false,
+        selectedRows,
         GRID_CONTAINER_HEIGHT = 328,
         HIDDEN_CSS = 'hiddenFeature',
         HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN',
-        selectedRows,
+        ENTER_KEY = 13,
+
         DEFAULT_GRID_OPTIONS = {
             enableCellNavigation: true,
             enableColumnReorder: true,
@@ -50,12 +52,17 @@ define([
             selectedRows = [];
             dataView = new Slick.Data.DataView();
             dataView.getItemMetadata = getItemMetadata;
+            dataView.setFilter(searchFilter);
+            dataView.setFilterArgs({
+                searchString: ''
+            });
 
             datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
-//            $('#datagridContainer .close').on('click', function(){ //TODO
-//                publisher.closeDatagrid();
-//            });
+
+            context.$('.close').on('click', function(){
+                publisher.closeDatagrid();
+            });
 
             grid = new Slick.Grid('#grid', dataView, [], DEFAULT_GRID_OPTIONS);
             grid.setSelectionModel(new Slick.RowSelectionModel());
@@ -124,6 +131,25 @@ define([
                 dataView.sort(comparer, params.sortAsc);
             });
 
+            context.$('#grid-search-btn').on('click', function(e){
+                var searchString = context.$('#grid-search-text').val();
+                Slick.GlobalEditorLock.cancelCurrentEdit(); //Stop any edits taking place
+
+                dataView.setFilterArgs({
+                    searchString: searchString
+                });
+                dataView.refresh();
+            });
+
+            //If the user hits 'enter' while entering a search, run the search
+            context.$('#grid-search-text').on('keydown', function(e){
+                var key = e.keyCode;
+
+                if(key === ENTER_KEY){
+                    context.$('#grid-search-btn').click();
+                }
+            });
+
             exposed.open();
         },
         toggleGrid: function() {
@@ -153,9 +179,7 @@ define([
         close: function() {
             $datagridContainer.addClass('hidden');
             $datagridContainer.height(0);
-//            if(myTable) { //TODO remove data on hide //TODO do we actually want to do this?
-//                myTable.removeAllData();
-//            }
+
             datagridVisible = false;
         },
         clear: function() {
@@ -385,4 +409,20 @@ define([
 
     return exposed;
 
+
+    function searchFilter(item, params){
+        var searchString = params.searchString,
+            found = false;
+
+        context.sandbox.utils.each(item, function(field, value){
+            if (typeof value !== 'undefined' && value != null
+                && value.toString().toLowerCase().indexOf(searchString) != -1) {
+                found = true;
+                return false; //this breaks the $.each loop
+            }
+        });
+
+
+        return found;
+    }
 });
