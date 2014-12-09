@@ -7,9 +7,7 @@ define([
     'slickRowSelectionModel',
     'slickpager'
 ], function (publisher, datagridContextMenu) {
-    //TODO add sort
     //TODO add server support  // libs/SlickGrid-master/slick.remotemodel.js
-    //TODO add close button
     //TODO make styling more like old one
     //TODO      column widths
     //TODO      coloring? (I like the default)
@@ -18,7 +16,6 @@ define([
     //TODO Pager: ??? 'go to' page option
     //TODO Pager: COULD USE PREVIOUS PAGER
     //TODO Could use previous header
-    //TODO add search
     //TODO Pager was changed: decide what to do about it (move it, rename it, use defaults...)
 
     var context,
