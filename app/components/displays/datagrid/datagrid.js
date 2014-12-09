@@ -22,7 +22,7 @@ define([
     //TODO mark hide
     //TODO add search
     //TODO Pager was changed: decide what to do about it (move it, rename it, use defaults...)
-
+    http://mleibman.github.io/SlickGrid/examples/example7-events.html
 
     var context,
         grid,
@@ -56,7 +56,7 @@ define([
             dataView = new Slick.Data.DataView();
             dataView.getItemMetadata = getItemMetadata;
 
-//            datagridContextMenu.init(context); //TODO
+            datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
 //            $('#datagridContainer .close').on('click', function(){ //TODO
 //                publisher.closeDatagrid();
@@ -83,7 +83,6 @@ define([
                 }
             });
 
-
             /**
              * It is in single select mode for now
              */
@@ -100,7 +99,18 @@ define([
                         layerId: rowData.layerId
                     });
                 }
+            });
 
+
+            grid.onContextMenu.subscribe(function (e) {
+                e.preventDefault();
+                var cell = grid.getCellFromEvent(e),
+                    item = dataView.getItem(cell.row);
+
+                datagridContextMenu.showMenu({
+                    item: item,
+                    event: e
+                });
             });
 
 
@@ -221,17 +231,6 @@ define([
             dataView.endUpdate();
         }
     };
-
-//    function addCustomClasses(params) {
-//        if(
-//            !context.sandbox.stateManager.getLayerStateById({layerId: params.record['Layer ID']}).visible ||
-//            context.sandbox.stateManager.layers[params.record['Layer ID']].hiddenFeatures.indexOf(params.record['Feature ID']) > -1
-//        ){
-//            return ['hiddenFeature'];
-//        } else {
-//            return [];
-//        }
-//    }
 
     function getHeaders(){
         var columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),

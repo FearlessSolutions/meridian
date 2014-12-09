@@ -33,18 +33,20 @@ div[data-aura-component='displays/datagrid'] .hiddenFeature {
     /*margin: 10px;*/
 /*}*/
 
-/*div[data-aura-component='displays/datagrid'] .slick-header-columns {*/
-    /*height: 25px;*/
-/*}*/
-
-/*div[data-aura-component='displays/datagrid'] #datagridContainer tr.hiddenFeature {*/
-    /*color: #cecece;*/
-/*}*/
-
-/*div[data-aura-component='displays/datagrid'] .datagrid-context-menu {*/
+/*div[data-aura-component='displays/datagrid'] #menu {*/
     /*z-index: 1090;*/
+    /*display: none;*/
+    /*position: absolute;*/
 /*}*/
 
-/*div[data-aura-component='displays/datagrid'] .rowDiv {*/
-    /*cursor: pointer;*/
-/*}*/
+div[data-aura-component='displays/datagrid'] #menu {
+    /*background: #e1efc7;*/
+    /*border: 1px solid gray;*/
+    /*padding: 2px;*/
+    /*display: inline-block;*/
+    /*min-width: 100px;*/
+    /*-moz-box-shadow: 2px 2px 2px silver;*/
+    /*-webkit-box-shadow: 2px 2px 2px silver;*/
+    position: absolute;
+    z-index: 99999;
+}
