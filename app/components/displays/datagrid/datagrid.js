@@ -183,10 +183,40 @@ define([
          * @param params
          */
         hideFeatures: function(params){
+            var layerId = params.layerId,
+                featureIds = params.featureIds;
 
+            if(!layerId || !featureIds){
+                return;
+            }
+
+            dataView.beginUpdate(); //Grouping all the changes together makes it more efficient.
+                context.sandbox.utils.each(featureIds, function(featureIndex, featureId){
+                    var item = dataView.getItemById(featureId);
+                    if(item){
+                        item[HIDDEN_PROPERTY] = true;
+                        dataView.updateItem(featureId, item);
+                    }
+                });
+            dataView.endUpdate();
         },
         showFeatures: function(params){
+            var layerId = params.layerId,
+                featureIds = params.featureIds;
 
+            if(!layerId || !featureIds){
+                return;
+            }
+
+            dataView.beginUpdate(); //Grouping all the changes together makes it more efficient.
+            context.sandbox.utils.each(featureIds, function(featureIndex, featureId){
+                var item = dataView.getItemById(featureId);
+                if(item){
+                    item[HIDDEN_PROPERTY] = false;
+                    dataView.updateItem(featureId, item);
+                }
+            });
+            dataView.endUpdate();
         },
         hideLayer: function(params){
             var layerId = params.layerId,
@@ -200,8 +230,10 @@ define([
                 context.sandbox.utils.each(layerFeatureCollection.models, function(featureIndex, feature){
                     var featureId = feature.attributes.featureId,
                         item = dataView.getItemById(featureId);
-                    item[HIDDEN_PROPERTY] = true;
-                    dataView.updateItem(featureId, item);
+                    if(item){
+                        item[HIDDEN_PROPERTY] = true;
+                        dataView.updateItem(featureId, item);
+                    }
                 });
             dataView.endUpdate();
         },
