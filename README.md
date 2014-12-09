@@ -1,6 +1,21 @@
 [ ![Codeship Status for ozone-development/meridian](https://codeship.com/projects/479f9b90-5167-0132-a553-7262abc25231/status)](https://codeship.com/projects/48335)
 
-## Requirements
+# Meridian
+Event-driven, framework-agnostic, extensible architecture for mapping applications. Meridian wraps code into reusable and decoupled components and/or extensions that can easily communicate with each other. 
+
+## Embed Meridian:
+
+Just include the following `<iframe>` on any HTML page source code:
+
+`<iframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/"></iframe>`
+- You can add style to the `<iframe>` to suit any need.
+- Meridian utilizes [CMAPI](http://cmapi.org) to recieve and send information while it is embedded.
+
+##Access Meridian:
+https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/
+
+## Download Meridian and host locally:
+### Requirements
 
 The project uses Grunt for task management. Use of Grunt is optional, but highly recommended.
 
@@ -40,7 +55,7 @@ For other parts of the project, make sure:
   - You might need to restart the browser after importing the certificate.
 
 
-## Setup
+### Setup
 
 You have two options for getting up an running, with or without the Grunt support.
 
@@ -104,6 +119,8 @@ To view the documentation page, go to [https://localhost:3000/docs/meridian](htt
 Introduction to Meridian can be found [here](http://ozone-development.github.io/meridian/).
 
 Much of the Design is based on [Aura](http://aurajs.com/). 
+
+Meridian utilizes [CMAPI](http://cmapi.org) to recieve and send information while it is embedded.
 
 
 ## Copyrights
