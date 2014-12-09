@@ -9,7 +9,6 @@ define([
 ], function (publisher, datagridContextMenu) {
     //TODO add sort
     //TODO add server support  // libs/SlickGrid-master/slick.remotemodel.js
-    //TODO add context menu  // http://mleibman.github.io/SlickGrid/examples/example7-events.html
     //TODO add close button
     //TODO make styling more like old one
     //TODO      column widths
@@ -22,7 +21,6 @@ define([
     //TODO mark hide
     //TODO add search
     //TODO Pager was changed: decide what to do about it (move it, rename it, use defaults...)
-    http://mleibman.github.io/SlickGrid/examples/example7-events.html
 
     var context,
         grid,
@@ -30,8 +28,6 @@ define([
         pager,
         $datagridContainer,
         datagridVisible = false,
-        MOUSE_CLICK_LEFT = 1,
-        MOUSE_CLICK_RIGHT = 3,
         GRID_CONTAINER_HEIGHT = 328,
         HIDDEN_CSS = 'hiddenFeature',
         HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN',
@@ -113,7 +109,6 @@ define([
                 });
             });
 
-
             exposed.open();
         },
         toggleGrid: function() {
@@ -130,7 +125,7 @@ define([
         open: function() {
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 $datagridContainer.removeClass('hidden');
-                $datagridContainer.height(328);
+                $datagridContainer.height(GRID_CONTAINER_HEIGHT);
 
                 datagridVisible = true;
             } else {
@@ -183,6 +178,10 @@ define([
         addData: function(params) { //TODO Find way to ignore aoi, then add new data when actual data
             exposed.reload();
         },
+        /**
+         * On hide feature, update specific feature
+         * @param params
+         */
         hideFeatures: function(params){
 
         },
@@ -232,6 +231,11 @@ define([
         }
     };
 
+    /**
+     * Create grid headers from column information.
+     * Outputs in the same order as input
+     * @returns {Array}
+     */
     function getHeaders(){
         var columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
             columnHeaders = [];            //Set up headers. They should already be in the correct order.
@@ -247,12 +251,18 @@ define([
         return columnHeaders;
     }
 
+    /**
+     * Take in an array of features for a layer, and make grid data objects for them.
+     * @param layerId Id of the layer
+     * @param features Array of features in the layer
+     * @param headers Header/column information to get keys from
+     * @returns {Array}
+     */
     function compileData(layerId, features, headers){
         var compiledData = [],
             layerState = context.sandbox.stateManager.layers[layerId],
             isLayerVisible,
-            layerHiddenFeatures,
-            layerIdentifiedFeatures;
+            layerHiddenFeatures;
 
         if(!layerState){
             return [];
@@ -286,6 +296,17 @@ define([
         return compiledData;
     }
 
+    /**
+     * Replacement for the default Formatter.
+     * Is called to style each cell.
+     * This is needed to allow HTML in cells.
+     * @param row Row index (not necessarily on screen index)
+     * @param cell Column index
+     * @param value Text value
+     * @param columnDef Column metadata
+     * @param dataContext Full data item
+     * @returns {*}
+     */
     function gridFormatter(row, cell, value, columnDef, dataContext){
         if(value === null || value === undefined){
             return '';
@@ -294,7 +315,13 @@ define([
         }
     }
 
-    //Is run on each cell, deciding if it should be selecable
+    /**
+     * Replacement for dataView.getItemMetadata
+     * Is run on each cell to decide options
+     * Used to make hidden cells not selectable any styled
+     * @param row Row index (not necessarily on screen index)
+     * @returns {*}
+     */
     function getItemMetadata(row){
         var item = dataView.getItem(row);
 
