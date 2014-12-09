@@ -18,6 +18,18 @@ define([
     //TODO Could use previous header
     //TODO Pager was changed: decide what to do about it (move it, rename it, use defaults...)
 
+    /**
+     * Style Issues:
+     * Header text color --> bold black
+     * Header background color --> white or similar?
+     * Header background gradient --> remove
+     * Header smaller?
+     * Highlight color
+     * Footer button colors
+     * Footer auto show sizes
+     * Footer remove 'all' option?
+     */
+
     var context,
         grid,
         dataView,
@@ -38,7 +50,7 @@ define([
             autoEdit: false,
             editable:false,
             syncColumnCellResize: true,
-            headerRowHeight:25,
+            headerRowHeight:20,
             defaultFormatter: gridFormatter,
             multiSelect: false //TODO remove this for multiselect.
         };
