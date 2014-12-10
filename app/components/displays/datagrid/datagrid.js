@@ -8,8 +8,6 @@ define([
     'slickpager'
 ], function (publisher, datagridContextMenu) {
     //TODO add server support  // libs/SlickGrid-master/slick.remotemodel.js
-    //TODO Pager was changed: decide what to do about it (move it, rename it, use defaults...)
-    //TODO On page change, un-highlight row
 
     /**
      * Style Issues:
@@ -34,7 +32,7 @@ define([
         MIN_COLUMN_WIDTH = 150,
         HIDDEN_CSS = 'hiddenFeature',
         HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN',
-        DEFAULT_PAGE_SIZE = 5,
+        DEFAULT_PAGE_SIZE = 10,
         ENTER_KEY = 13,
 
         DEFAULT_GRID_OPTIONS = {
