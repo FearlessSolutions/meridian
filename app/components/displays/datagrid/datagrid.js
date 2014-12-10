@@ -8,8 +8,6 @@ define([
     'slickpager'
 ], function (publisher, datagridContextMenu) {
     //TODO add server support  // libs/SlickGrid-master/slick.remotemodel.js
-    //TODO make styling more like old one
-    //TODO      column widths
     //TODO Pager was changed: decide what to do about it (move it, rename it, use defaults...)
     //TODO On page change, un-highlight row
 
@@ -32,7 +30,6 @@ define([
         $datagridContainer,
         $testArea,
         datagridVisible = false,
-        selectedRows,
         GRID_CONTAINER_HEIGHT = 328,
         MIN_COLUMN_WIDTH = 150,
         HIDDEN_CSS = 'hiddenFeature',
@@ -55,7 +52,6 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            selectedRows = [];
             dataView = new Slick.Data.DataView();
             dataView.getItemMetadata = getItemMetadata;
             dataView.setFilter(searchFilter);
@@ -80,9 +76,26 @@ define([
                 grid.render();
             });
 
+            //When rows change (new data/paging) update grid selected rows
             dataView.onRowsChanged.subscribe(function (e, params) {
-                grid.invalidateRows(params.rows);
+                var rows = params.rows,
+                    selectedIdsByLayer = context.sandbox.stateManager.getAllIdentifiedFeatures(),
+                    newSelectedRows = [];
+
+                grid.invalidateRows(rows);
                 grid.render();
+
+                context.sandbox.utils.each(selectedIdsByLayer, function(layerId, selectedFeatures){
+                    context.sandbox.utils.each(selectedFeatures, function(index, selectedFeature){
+                        var rowIndex = dataView.getRowById(selectedFeature.featureId);
+                        if(rowIndex != undefined){ //If the row is not showing, this will be undefined
+                            newSelectedRows.push(rowIndex);
+                        }
+                    });
+                });
+
+                grid.setSelectedRows(newSelectedRows);
+
             });
 
             //If the user clicks a link, don't select the row. This happens before other onClicks, so stops the rest.
