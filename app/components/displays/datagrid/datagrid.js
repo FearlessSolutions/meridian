@@ -34,6 +34,7 @@ define([
         MIN_COLUMN_WIDTH = 150,
         HIDDEN_CSS = 'hiddenFeature',
         HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN',
+        DEFAULT_PAGE_SIZE = 5,
         ENTER_KEY = 13,
 
         DEFAULT_GRID_OPTIONS = {
@@ -69,7 +70,8 @@ define([
 
             grid = new Slick.Grid('#grid', dataView, [], DEFAULT_GRID_OPTIONS);
             grid.setSelectionModel(new Slick.RowSelectionModel());
-            pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
+            pager = new Slick.Controls.Pager(dataView, grid, $('#pager'));
+            dataView.setPagingOptions({pageSize: DEFAULT_PAGE_SIZE});
 
             dataView.onRowCountChanged.subscribe(function (e, params) {
                 grid.updateRowCount();
@@ -86,8 +88,8 @@ define([
                 grid.render();
 
                 context.sandbox.utils.each(selectedIdsByLayer, function(layerId, selectedFeatures){
-                    context.sandbox.utils.each(selectedFeatures, function(index, selectedFeature){
-                        var rowIndex = dataView.getRowById(selectedFeature.featureId);
+                    context.sandbox.utils.each(selectedFeatures, function(index, selectedFeatureId){
+                        var rowIndex = dataView.getRowById(selectedFeatureId);
                         if(rowIndex != undefined){ //If the row is not showing, this will be undefined
                             newSelectedRows.push(rowIndex);
                         }
