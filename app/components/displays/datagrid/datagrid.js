@@ -10,13 +10,8 @@ define([
     //TODO add server support  // libs/SlickGrid-master/slick.remotemodel.js
     //TODO make styling more like old one
     //TODO      column widths
-    //TODO      coloring? (I like the default)
-    //TODO Pager: larger pager
-    //TODO Pager: Auto show page size options
-    //TODO Pager: ??? 'go to' page option
-    //TODO Pager: COULD USE PREVIOUS PAGER
-    //TODO Could use previous header
     //TODO Pager was changed: decide what to do about it (move it, rename it, use defaults...)
+    //TODO On page change, un-highlight row
 
     /**
      * Style Issues:
@@ -35,9 +30,11 @@ define([
         dataView,
         pager,
         $datagridContainer,
+        $testArea,
         datagridVisible = false,
         selectedRows,
         GRID_CONTAINER_HEIGHT = 328,
+        MIN_COLUMN_WIDTH = 150,
         HIDDEN_CSS = 'hiddenFeature',
         HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN',
         ENTER_KEY = 13,
@@ -68,6 +65,7 @@ define([
 
             datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
+            $testArea = context.$('#test-area');
 
             context.$('.close').on('click', function(){
                 publisher.closeDatagrid();
@@ -312,6 +310,7 @@ define([
     /**
      * Create grid headers from column information.
      * Outputs in the same order as input
+     * Sets each header width to the text length, or a minimum if that is too small.
      * @returns {Array}
      */
     function getHeaders(){
@@ -319,14 +318,21 @@ define([
             columnHeaders = [];            //Set up headers. They should already be in the correct order.
 
         context.sandbox.utils.each(columnHeadersMetadata, function (columnHeaderIndex, columnHeaderMetadata) {
+            var width;
+
+            $testArea.html('<span>' + columnHeaderMetadata.displayName + '</span>'); //This is the only way to find text length. Is styled  the same as header
+            width = $testArea.find('span').width() + 30;
+
             columnHeaders.push({
                 id: columnHeaderMetadata.property + columnHeaderMetadata.displayName,
                 name: columnHeaderMetadata.displayName,
                 field: columnHeaderMetadata.property,
+                width: width > MIN_COLUMN_WIDTH ? width : MIN_COLUMN_WIDTH,
                 sortable: true
             });
         });
 
+        $testArea.empty();
         return columnHeaders;
     }
 

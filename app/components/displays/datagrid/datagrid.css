@@ -75,3 +75,9 @@ div[data-aura-component='displays/datagrid'] #menu {
 div[data-aura-component='displays/datagrid'] .slick-pager span.ui-state-highlight.ui-corner-all.ui-icon-container.ui-state-hover {
     background: #f0f0f0;
 }
+div[data-aura-component='displays/datagrid'] #test-area{
+    width: 100%;
+    height: 0;
+    font-weight: bold;
+    /*font-s*/
+}
