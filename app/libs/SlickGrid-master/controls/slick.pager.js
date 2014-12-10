@@ -67,7 +67,7 @@
       $status = $("<span class='slick-pager-status' />").appendTo($container);
 
       $settings
-          .append("<span class='slick-pager-settings-expanded' style='display:none'>Show: <a data=0>All</a><a data='-1'>Auto</a><a data=5>5</a><a data=10>10</a><a data=25>25</a><a data=50>50</a><a data=100>100</a></span>");
+          .append("<span class='slick-pager-settings-expanded' style=''>Show: <a data=0>All</a><a data='-1'>Auto</a><a data=5>5</a><a data=10>10</a><a data=25>25</a><a data=50>50</a><a data=100>100</a></span>");
 
       $settings.find("a[data]").click(function (e) {
         var pagesize = $(e.target).attr("data");
@@ -81,7 +81,7 @@
         }
       });
 
-      var icon_prefix = "<span class='ui-state-default ui-corner-all ui-icon-container'><span class='ui-icon ";
+      var icon_prefix = "<span class='ui-state-blue ui-corner-all ui-icon-container'><span class='ui-icon ";
       var icon_suffix = "' /></span>";
 
       $(icon_prefix + "ui-icon-lightbulb" + icon_suffix)
@@ -108,7 +108,7 @@
 
       $container.find(".ui-icon-container")
           .hover(function () {
-            $(this).toggleClass("ui-state-hover");
+            $(this).toggleClass("ui-state-blue-hover");
           });
 
       $container.children().wrapAll("<div class='slick-pager' />");

@@ -72,3 +72,6 @@ div[data-aura-component='displays/datagrid'] #menu {
     z-index: 99999;
 }
 
+div[data-aura-component='displays/datagrid'] .slick-pager span.ui-state-highlight.ui-corner-all.ui-icon-container.ui-state-hover {
+    background: #f0f0f0;
+}

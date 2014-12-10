@@ -158,8 +158,6 @@ define([
                     context.$('#grid-search-btn').click();
                 }
             });
-
-            exposed.open();
         },
         toggleGrid: function() {
             if($datagridContainer.hasClass('hidden')) {
