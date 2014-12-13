@@ -18,11 +18,11 @@ define([
          * @param params
          */
         openGoogleMaps: function(params){
-            var url = 'https://www.google.com/maps/@{{lat}},{{lon}},{{zoom}}z'
+            var url = 'https://www.google.com/maps/@{{lat}},{{lon}},{{zoom}}z';
             url = url.replace('{{lat}}', params.lat)
                 .replace('{{lon}}', params.lon)
                 .replace('{{zoom}}', params.zoom || 13);
-            window.open(url)
+            window.open(url);
         }
     };
 
