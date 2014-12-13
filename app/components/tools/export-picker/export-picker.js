@@ -18,7 +18,7 @@ define([
 
             context = thisContext;
             $modal = context.$('#export-picker-modal');
-            $picker = $modal.find('select#export-options');
+            $picker = $modal.find('#options');
             $exportButton = context.$('button[type="submit"]');
             $closeButton = context.$('button[type="cancel"]');
 
@@ -37,7 +37,18 @@ define([
             });
 
             $exportButton.on('click', function(event){
+                
                 var channel = $picker.val();
+                channelList = context.$("input[name=exportOption]:checked").map(
+                    function () {return this.value;}).get().join(",");
+                
+                var exportChannelList = channelList.split(",");
+                context.sandbox.utils.each(exportChannelList, function(idx, channel){
+                    alert(channel);
+                    publisher.export({
+                        channel: channel
+                    });
+                });
 
                 //If there is nothing to export, print message and stop
                 if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0){
@@ -55,17 +66,22 @@ define([
 
                 publisher.close();
             });
-
+ 
 
              $closeButton.on('click', function(event) {
                 event.preventDefault();
                 publisher.close();
             });
-
            
         },
         open: function() {
             publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            
+            //check if selected option should be greyed out
+            if((context.sandbox.stateManager.getAllIdentifiedFeatures()).length <= 1){
+                context.$('#exportSelected').attr("disabled", true)
+                    .addClass('disable').prop('checked', true);
+            }
             $modal.modal('show');
         },
         close: function() {

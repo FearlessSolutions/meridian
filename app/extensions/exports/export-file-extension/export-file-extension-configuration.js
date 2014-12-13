@@ -10,17 +10,21 @@ define([
 //        },
         exportOptions:[
             {
-                text: 'To CSV File',
+                text: 'CSV File',
                 channel: 'export.file.csv'
-            }//,
-//            {
-//                text: 'To KML File',
-//                channel: 'export.file.kml'
-//            },
-//            {
-//                text: 'To geoJSON File',
-//                channel: 'export.file.geojson'
-//            }
+            },
+            {
+                text: 'KML File',
+                channel: 'export.file.kml'
+            },
+            {
+                text: 'geoJSON File',
+                channel: 'export.file.geojson'
+            },
+            {
+                text: 'Google Maps',
+                channel: 'export.file.googlemaps'
+            }
         ]
 
     };

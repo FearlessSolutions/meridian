@@ -119,7 +119,9 @@ define([], function(){
                     getAllIdentifiedFeatures: function(params) {
                         var identifiedFeatures = [];
                         app.sandbox.utils.each(stateManager.layers, function(layerId, layerState){
-                            identifiedFeatures.concat(layerState.identifiedFeatures);
+                            if(layerState.identifiedFeatures.length > 0){
+                                identifiedFeatures.push(layerState.identifiedFeatures);    
+                            }
                         });
                         return identifiedFeatures;
                     },

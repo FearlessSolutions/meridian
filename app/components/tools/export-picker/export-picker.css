@@ -24,5 +24,15 @@ div[data-aura-component='tools/export-picker'] {
 }
 
 div[data-aura-component='tools/export-picker'] .modal-body {
-    padding: 20px;
+    padding-top: 10px;
+    padding-left: 45px;
+    padding-bottom: 10px;
+}
+
+div[data-aura-component='tools/export-picker'] #options {
+    border-right: 1px solid #f7f7f7;
+}
+
+div[data-aura-component='tools/export-picker'] #scope {
+    padding-left: 25px;
 }
