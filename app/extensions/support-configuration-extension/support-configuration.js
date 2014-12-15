@@ -1,7 +1,17 @@
 define([
 
 ], function() {
-
+    /**
+     * @namespace Sandbox.supportConfiguration
+     * @memberof Sandbox
+     *
+     * @property {Array}  components               - Each object contains the information needed for the support component (bootstro) to work.
+     * @property {String} components.componentName - Id of the HTML element used to find the component in the HTML.
+     * @property {String} components.placement     - Location relative to the component that bootstro will use to show its display.
+     * @property {String} components.width         - Width of the bootstro display.
+     * @property {String} components.title         - Title of the bootstro display.
+     * @property {String} components.content       - Information/content that the user will see in the bootstro display.
+     */
     var supportConfiguration = {
 
         //For each component, please specify:
