@@ -135,14 +135,11 @@ define([
             });
 
             $locatorInput.on('paste', function(event){
-                var pasteText;
-                if(event.originalEvent.clipboardData && event.originalEvent.clipboardData.getData){
-                    pasteText= event.originalEvent.clipboardData.getData('text/plain');
-                    $locatorInput.typeahead('lookup', pasteText); //Manual lookup
-                    $locatorInput.val(pasteText); //Manual lookup
-                }
-
-                return false; //Prevent other handlers
+                //timeout allows time for val() to get populated. Once populated,
+                //typeahead can work as expected. 
+                setTimeout(function () {
+                    $locatorInput.typeahead('lookup');//Manual typeahead look up.
+                }, 10);
             });
         },
         goToLocation: function() {

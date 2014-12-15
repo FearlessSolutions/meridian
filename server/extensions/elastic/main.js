@@ -22,7 +22,8 @@ exports.init = function(context){
         client: client,
         stream: stream,
         purge: purge,
-        metadata: metadata
+        metadata: metadata,
+        refresh: client.refresh
     };
 
     // Init sub-modules as necessary
@@ -50,14 +51,15 @@ exports.init = function(context){
         });
     });
 
-    app.get('/feature/:id', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+    app.get('/feature/:id', auth.verifyUser, function(req, res){
         var userName = res.get('Parsed-User');
-        var sessionId = res.get('Parsed-SessionId');
         query.getByFeatureId(userName, null, req.params.id, function(err, response){
             if (err){
                 res.status(500);
                 res.send(err);
             } else {
+                res.header('Content-Type', 'application/json');
+                res.header('Content-Disposition', 'attachment; filename=results.geojson');
                 res.status(200);
                 res.send(response._source);
             }
@@ -164,14 +166,20 @@ exports.init = function(context){
         download.pipeCSVToResponseForQuery(res.get('Parsed-User'), req.query.ids.split(","), res);
     });
 
-    app.delete('/clear', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
+    app.get('/clear', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
        purge.deleteRecordsForUserSessionId(res.get('Parsed-User'), res.get('Parsed-SessionId'), function(err, results){
            res.status(err ? 500 : 200);
            res.send(err ? err : results);
        });
     });
 
-    app.delete('/clear/:queryId/:sessionId', auth.verifyUser, function(req, res){
+
+    /**
+     * Delete the query metadata and features.
+     * NOTE: This is a GET because DELETE expects an immediate return.
+     *      We want to confirm the delete, so that isn't an option.
+     */
+    app.get('/clear/:queryId/:sessionId', auth.verifyUser, function(req, res){
         purge.deleteMetadataByQueryId(
             req.params.queryId, 
             function(err, results){

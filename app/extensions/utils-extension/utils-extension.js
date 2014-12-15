@@ -366,6 +366,23 @@ define([
                     };
                 },
                 /**
+                 * Return the extension of a file.
+                 * This assumes that the last '.' shows the extension.
+                 * @param file
+                 * @returns {*}
+                 */
+                getFileExtension: function(file){
+                    var filenameParts;
+
+                    if(!file){
+                        return;
+                    }
+
+                    filenameParts = file.name.split('.');
+
+                    return filenameParts[filenameParts.length - 1];
+                },
+                /**
                  * Return the height of the element provided. 
                  * Window height is given when no element is provided.
                  * @param  {String} [el] - Name of element used to search as a jQuery

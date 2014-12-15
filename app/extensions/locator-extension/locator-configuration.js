@@ -19,7 +19,7 @@ define([
      * @memberof Sandbox.locator
      */
     var locatorConfiguration = {
-        "url" : "https://localhost:3000/gaz",
+        "url" : "/gaz",
         "dataType": "json",
         "timeout": 7000,
         "noResultsMsg": "No results/suggestions found.",
