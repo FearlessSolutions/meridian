@@ -15,10 +15,7 @@ define([
         initialize: function(app) {
 
             var CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
-            /**
-             * @namespace Sandbox.utils
-             * @memberof Sandbox
-             */
+
             var utils = {
                 /**
                  * Add a CSS payload.
@@ -434,7 +431,10 @@ define([
                     return _.size(obj);
                 }
             };
-
+            /**
+             * @namespace Sandbox.utils
+             * @memberof Sandbox
+             */
             app.sandbox.utils = utils;
 
             // Map Aura's $find over to $ for less verbose access to Scoped jQuery (scoped to the individual component)

@@ -27,6 +27,7 @@ define([
 
             app.sandbox.utils.addCSS(mockInfoWinCSS, 'mock-extension-style');
 
+            //used by multiple files, defined in app.js
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
@@ -75,12 +76,13 @@ define([
                         return html;
                     },
                     /**
-                     * NOT IMPLEMENTED. Developers can modify this function to execute any post-rendering
-                     * action desired after the info window is loaded.
+                     * Developers can modify this function to execute any post-rendering
+                     * action desired after the info window is loaded. Here a dropdown is being added with
+                     * all the export features available to the layer.
                      * @function
                      * @instance
-                     * @param  {Object} feature   - Info needed.
-                     * @param  {Object} overlayId - Info needed.
+                     * @param  {Object} feature   -
+                     * @param  {Object} overlayId -
                      * @memberof Sandbox.dataServices.mock.infoWinTemplate
                      */
                     postRenderingAction: function(feature, layerId) {

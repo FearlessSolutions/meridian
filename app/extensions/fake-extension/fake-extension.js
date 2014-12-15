@@ -23,13 +23,17 @@ define([
         initialize: function(app) {
 
             context = app;
-
             app.sandbox.utils.addCSS(fakeInfoWinCSS, 'fake-extension-style');
 
+            //used by multiple files, defined in app.js
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
-            
+            /**
+             * Sets up fake as a 'dataService'.
+             * @namespace Sandbox.dataServices.fake
+             * @memberof Sandbox.dataServices
+             */
             app.sandbox.dataServices.fake = {
                 /**
                  * Encapsulates information window functions and properties.
@@ -63,8 +67,9 @@ define([
                         });
                     },
                     /**
-                     * NOT IMPLEMENTED. Developers can modify function to execute any post rendering
-                     * action desired after the info window is loaded.
+                     * Developers can modify function to execute any post-rendering
+                     * action desired after the info window is loaded. Here a dropdown is being added with
+                     * all the export features available to the layer.
                      * @function
                      * @instance
                      * @param  {Object} feature   -
@@ -109,11 +114,5 @@ define([
             };
         }
     };
-
-/**
-     * Sets up fake as a 'dataService'.
-     * @namespace Sandbox.dataServices.fake
-     * @memberof Sandbox.dataServices
-     */
     return exposed;
 });

@@ -2,19 +2,7 @@ define([
     'text!./cmapi-info-win.hbs',
     'text!./cmapi-info-win.css',
     "handlebars"
-], function(cmapiHBS, cmapiCSS) {   
-    /**
-     * CMAPI: Common Map API. Pub/sub messaging for geospacial mashups.
-     * @namespace Sandbox.cmapi
-     * @memberof Sandbox
-     * @property {String} DATASOURCE_NAME - Default value is 'cmapi'
-     * @property {String} defaultLayerId - Default value is 'cmapi'
-     */
-    /**
-     * Sets up CMAPI as a 'dataService'
-     * @namespace Sandbox.dataServices.cmapi
-     * @memberof Sandbox.dataServices
-     */
+], function(cmapiHBS, cmapiCSS) {
     /**
      * Sets up the CMAPI channels to listen for messages from the parent.
      * Also includes some utility functions to help parse geoJSON.
@@ -35,9 +23,15 @@ define([
         "initialize": function(app) {
             app.sandbox.utils.addCSS(cmapiCSS, 'cmapi-extension-style');
 
-            //Set up parent channels
+            /**
+            * CMAPI: Common Map API. Pub/sub messaging for geospacial mashups.
+            * @namespace Sandbox.cmapi
+            * @memberof Sandbox
+            * @property {String} DATASOURCE_NAME - Default value is 'cmapi'
+            * @property {String} defaultLayerId - Default value is 'cmapi'
+            * @property {String} getMaxExtent - Exposes the {@link module:CMAPI-extension#getMaxExtent getMaxExtent} function.
+             */
             if(!app.sandbox.cmapi) {
-               
                 app.sandbox.cmapi = {};
             }
 
@@ -46,11 +40,15 @@ define([
             app.sandbox.cmapi.DATASOURCE_NAME = 'cmapi';
             app.sandbox.cmapi.defaultLayerId = 'cmapi';
 
-            //Set up CMAPI as a 'dataService'
+            //used by multiple files, defined in app.js
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
-
+           /**
+            * Sets up CMAPI as a 'dataService'
+            * @namespace Sandbox.dataServices.cmapi
+            * @memberof Sandbox.dataServices
+            */
             app.sandbox.dataServices.cmapi = {
                 /**
                  * Encapsulates information window functions and properties.
@@ -108,8 +106,8 @@ define([
      * @param {Number} maxExtent.minLon - 180 when maxExtent is null.
      * @param {Number} maxExtent.maxLat - -90 when maxExtent is null.
      * @param {Number} maxExtent.maxLon - -180 when maxExtent is null.
-     * @returns {Object} maxExtent with added values in maxExtent.center.lat & maxExtent.center.lon
-     * @memberof Sandbox.cmapi
+     * @returns maxExtent with added values in maxExtent.center.lat & maxExtent.center.lon
+     * @memberof module:CMAPI-extension
      */
     function getMaxExtent (currentCoords, maxExtent) {
         var lat,
