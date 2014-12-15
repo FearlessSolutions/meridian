@@ -1,15 +1,6 @@
 define([
 ], function() {
     /**
-     * @namespace Sandbox.snapshot
-     * @memberof Sandbox
-     */
-    /**
-     * Exposes the thumbnail returned by {@link module:snapshot-extension#generateThumnailURL generateThumnailURL}.
-     * @namespace Sandbox.snapshot.thumbnailURL
-     * @memberof Sandbox.snapshot
-     */
-    /**
      * @exports snapshot-extension
      */
     var exposed = {
@@ -19,11 +10,21 @@ define([
          * @function
          * @instance
          * @param  {Object} app Instance of the Meridian application.
+         * @memberof module:snapshot-extension
          */
         initialize: function(app) {
+            /**
+             * @namespace Sandbox.snapshot
+             * @memberof Sandbox
+             */
             if (!app.sandbox.snapshot) {
                 app.sandbox.snapshot = {};
             }
+            /**
+             * Exposes the thumbnail returned by {@link module:snapshot-extension#generateThumnailURL generateThumnailURL}.
+             * @namespace Sandbox.snapshot.thumbnailURL
+             * @memberof Sandbox.snapshot
+             */
             app.sandbox.snapshot.thumbnailURL = exposed.generateThumnailURL;
         },
         /**
