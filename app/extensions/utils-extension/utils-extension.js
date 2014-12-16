@@ -365,8 +365,10 @@ define([
                 /**
                  * Return the extension of a file.
                  * This assumes that the last '.' shows the extension.
-                 * @param file
-                 * @returns {*}
+                 * @param {File} [file] - The file
+                 * @function
+                 * @instance
+                 * @memberof Sandbox.utils
                  */
                 getFileExtension: function(file){
                     var filenameParts;

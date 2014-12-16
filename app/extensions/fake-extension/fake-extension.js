@@ -25,10 +25,11 @@ define([
             context = app;
             app.sandbox.utils.addCSS(fakeInfoWinCSS, 'fake-extension-style');
 
-            //used by multiple files, defined in app.js
+            //used in other extensions. Defined for jsdocs in app/app.js
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
+            
             /**
              * Sets up fake as a 'dataService'.
              * @namespace Sandbox.dataServices.fake
@@ -67,6 +68,7 @@ define([
                         });
                     },
                     /**
+                     * Post-rendering action executed after the info window is loaded.
                      * Developers can modify function to execute any post-rendering
                      * action desired after the info window is loaded. Here a dropdown is being added with
                      * all the export features available to the layer.

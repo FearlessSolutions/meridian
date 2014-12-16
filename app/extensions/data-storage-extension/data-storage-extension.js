@@ -83,7 +83,6 @@ define([
                 }]
             };
             /**
-             * .
              * @namespace Sandbox.dataStorage
              * @memberof Sandbox
              */
@@ -244,7 +243,7 @@ define([
 			};
 
             
-              // This function CAN NOT BE ACCESSED directly. Insert property into sortedPropertiesArray
+              // Insert property into sortedPropertiesArray
               // This uses a version of binary insert based on weight.
               // When a new property is inserted, and there is another property with the same weight,
               // the new property is added after all matching weights.
