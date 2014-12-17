@@ -31,25 +31,40 @@
       <div class="row">
         <section class="col-md-10 container">
 
-          <h2 id="embedd">Embedd Meridian</h2>
-            <p>To embedd Meridian, please include the following <code>iframe</code> tag on any 
+          <h2 id="startedQuickly">Getting Started Quickly</h2>
+            <p>You will need a valid certificate to be imported into the browser before being able to access Meridian. Download the certificate by clicking here: <a href="https://github.com/ozone-development/meridian/blob/develop/user.p12?raw=true">user.p12</a></p>
+              <ul>
+                <li>Password: ‘password’</li>
+                <li>Chrome Instructions: Settings>Show Advanced Settings>(HTTPS/SSL)Manage certificates>Import</li>
+                <li>FireFox Instructions: Options>Advanced>Certificates>View Certificates>Import</li>
+                <li>You might need to restart the browser after importing the certificate.</li>
+              </ul>
+
+          <h4 class="page-header" id="accessMeridian">Access Meridian</h3>
+            <p>Quickly access Meridian by clicking this link: <a href="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/">Meridian</a>.</p>
+            
+
+          <h4 class="page-header" id="embedMeridian">Embed Meridian</h3>
+            <p>To embed Meridian, please include the following <code>iframe</code> tag on any 
             HTML page source code:</p>
             <p><code>&ltiframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/"&gt&lt/iframe&gt</code></p>
 
-          <h3 id="requirements">Requirements</h3>
+          <br>
+          <h2 id="requirements">Requirements</h3>
+            <p>To host the database locally (which will be populated with mock data), you will need to have Node.js installed, have it in the project path, and have the ElasticSearch we provide running. If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the <a href="./#withGrunt">Grunt Support Setup instructions</a>.</p>
             <p> Instructions can also be found on our <a href="//github.com/ozone-development/meridian">Github</a> page.</p>
 
-          <h4 class="page-header" id="meridian">Meridian</h4>
+          <h4 class="page-header">Meridian</h4>
             <p> Code base can be cloned from <a href="//github.com/ozone-development/meridian"> Github</a> or downloaded as a <a href="//github.com/ozone-development/meridian/archive/master.zip"> zip file</a>.</p>
               <ul>
                 <li><a href="//git-scm.com/book/en/Git-Basics-Getting-a-Git-Repository#Cloning-an-Existing-Repository"> How to clone an existing repository using Git</a>.</li>
               </ul>
             <p>  
           
-          <h4 class="page-header" id="grunt">Grunt</h4>
+          <h4 class="page-header">Grunt</h4>
             <p>The project uses Grunt for task management. Use of Grunt is optional, but highly recommended.</p>
 
-          <h4 class="page-header" id="node">Node JS</h4>
+          <h4 class="page-header">Node JS</h4>
             <p>To install grunt, make sure the Node Packaged Module is installed by installing <a href="http://nodejs.org"> Node.js</a>.</p>
             <p>To use the command-line version of Grunt you will need to install the global <a href="http://gruntjs.com/getting-started"> Grunt CLI </a> module.
               <ul>
@@ -57,27 +72,16 @@
               </ul>
             </p>
 
-          <h4 class="page-header" id="elastic"> Ellastic Search </h4>
-            <p> The application utilizes mock data To host the database locally (which will be populated with mock data), you will need to install ElasticSearch.
-            Download ElasticSearch in the <a href="http://www.elasticsearch.org/overview/elkdownloads/">ElasticSearch Downloads Page</a>.</p>
-
-            <p>To use and install ElasticSearch, make sure:
+          <h4 class="page-header">JSDOM</h4>
+            <p>The project also uses <a href="https://www.npmjs.org/package/jsdom">JSDOM</a>. Unfortunately, JSDOM relies on a node package called Contextify that is difficult to get working on Windows. To install JSDOM you will need:</p>
               <ul>
-                <li>The <code>JAVA_HOME</code> variable is defined.</li>
-                <li>Import the given user.p12 certificate into your browser:</li>
-                  <code>
-                    Mac OS: Make sure to import the certificate in the login section of Keychain Access and not in the System section.
-                  </code>
-                <ul>
-                  <li>Chrome: Settings>Show Advanced Settings>(HTTPS/SSL)Manage certificates>Import</li>
-                  <li>FireFox: Options>Advanced>Certificates>View Certificates>Import</li>
-                  <li>Cert password: <code>password</code></li>
-                  <li>You might need to restart the browser after importing the certificate.</li>
-                </ul>
+                <li><a href="https://www.python.org/download/releases/2.7/">Python 2.7</a> installed and found in the path.</li>
+                <li><a href="http://nodejs.org/">Node.js</a> installed and found in the path.</li>
+                <li>At least <a href="http://www.microsoft.com/en-us/download/details.aspx?id=8279"> .NET 4.5</a> installed.</li>
+                <li><a href="http://www.microsoft.com/en-us/download/details.aspx?id=8279">Windows SDK 7.1</a>installed.</li>
+                <li><a href="http://www.microsoft.com/en-us/download/details.aspx?id=4422">Service Pack 1 Compiler Update</a> installed.</li>
+                <li>Add a System Variable called <code>WindowsSDKDir</code> with the installation location of the Windows SDK. It will most likely be <code>C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin</code> or <code>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1\Bin</code>.</li>
               </ul>
-            </p>
-
-            <p>If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the <a href="#withGrunt">Grunt Setup</a> instructions.</p>
 
 
           <h2 class="page-header" id="setup">Setup</h2>
@@ -88,16 +92,17 @@
                 <li>Clone the repo: <code>git clone https://github.com/ozone-development/meridian.git</code>.</li>
                 <li>Change into the project directory: <code>cd meridian</code>.</li>
                 <li>Run <code>npm install</code> to make sure everything is up to date.</li>
-                <li>Install and start Elastic Search: (Instructions also found on their <a href="http://www.elasticsearch.org/overview/elkdownloads/">ElasticSearch Downloads Page</a>)</li>
                   <ul>
-                    <li>Download and unzip the latest Elasticsearch distribution.</li>
-                    <li>Change into the ElasticSearch directory (wherever it was extracted)</li>
+                    <li><strong>For windows users:</strong> Make sure to use the <code>Windows SDK 7.1 Command Prompt</code> as Administrator and set the command prompt environment to x86 by running <code>setenv /x86</code>. The command prompt can be found in the Start Menu after the SDK has been installed.</li>
+                  </ul>
+                <li>Start Elastic Search:</li>
+                  <ul>
                     <li>Run <code>bin/elasticsearch</code> on Unix, or <code>bin/elasticsearch.bat</code> on Windows.</li>
                     <li>Run <code>curl -X GET http://localhost:9200</code> or visit <code>http://localhost:9200</code> to make sure elasticsearch is running.</li>
                   </ul>
-                <li>Start the application:</li>
+                <li>Start the App Server:</li>
                   <ul>
-                    <li>Run: <code>node app.js</code> from the root of the Meridian folder.</li>
+                    <li>To start the local server, run: <code>node app.js</code>.</li>
                     <li>Open a web browser and visit <a href="http://localhost:3000">http://localhost:3000</a> to see Meridian in action.</li>
                   </ul>
               </ul>
@@ -109,23 +114,18 @@
               <li>Change into the project directory: <code>cd meridian</code>.</li>
               <li>Run <code>npm install</code> to make sure everything is up to date.</li>
                 <ul>
+                  <li><strong>For windows users:</strong> Make sure to use the <code>Windows SDK 7.1 Command Prompt</code> as Administrator and set the command prompt environment to x86 by running <code>setenv /x86</code>. The command prompt can be found in the Start Menu after the SDK has been installed.</li>
                   <li>At this point, you will be able to run the Grunt tasks.</li>
                   <em>Some Node Modules have been checked into the repo (not a normal best practice), The node_modules directory will be removed from the project at a later point, when the team is comfortable with the process. In the future, developers will be responsible for running <code>npm install</code> to get the dependencies.</em>
                 </ul>
                 
-              <li>Install Elastic Search: (Instructions also found on their <a href="http://www.elasticsearch.org/overview/elkdownloads/">ElasticSearch Downloads Page</a>)</li>
+              <li>Make sure ElasticSearch starts okay, even though you will be using grunt to start it for you:</li>
                   <ul>
-                    <li>Download and unzip the latest Elasticsearch distribution.</li>
-                    <li>Unpack the contents of the ElasticSearch download into <code>meridian/data</code>. When done, the following path should be valid, <code>meridian/data/bin/elasticseacrch</code>.</li>
-                    <li>Make sure ElasticSearch starts okay, even though you will be using grunt to start it for you:</li>
-                      <ul>
-                        <li>Change into the <code>meridian/data</code> directory, if you are not already there.</li>
-                        <li>Run <code>bin/elasticsearch</code> on Unix, or <code>bin/elasticsearch.bat</code> on Windows.</li>
-                        <li>Run <code>curl -X GET http://localhost:9200</code> or visit <code>http://localhost:9200</code> to make sure elasticsearch is running.</li>
-                        <li>Stop the process after confirming ElasticSearch starts.</li>
-                      </ul>
+                    <li>Change into the <code>meridian/data</code> directory, if you are not already there.</li>
+                    <li>Run <code>bin/elasticsearch</code> on Unix, or <code>bin/elasticsearch.bat</code> on Windows.</li>
+                    <li>Run <code>curl -X GET http://localhost:9200</code> or visit <code>http://localhost:9200</code> to make sure elasticsearch is running.</li>
                   </ul>
-              <li>Start the application:</li>
+              <li>Start the App Server:</li>
                 <ul>
                   <li>To start the local server run: <code>grunt server</code>.</li>
                   <li>This will open the main page <a href="http://localhost:3000">http://localhost:3000</a> in your default browser.</li>
@@ -133,32 +133,31 @@
                 <br><p><strong>NOTE:</strong> If when starting elastic search, you recieve warnings regarding multicasting you most likely have been added to an already exsisting elastic search cluster and may recieve unintended outcomes from the application. You can disable multicasting by navigating to the directory you extracted elastic search to and then navigating to the config/elasticsearch.yml file. In there, uncomment the line <code>discovery.zen.ping.multicast.enabled: false</code> and save the file. You can now restart elastic search.</p>
             </ul>
 
-          <h4 class="page-header" id="resourses">Resourses</h4>
+          <h4 class="page-header" id="resourses">Resourses within the running App</h4>
             <ul>
               <li>The application page <a href="http://localhost:3000">http://localhost:3000</a>.</li>
               <li>To view the documentation page, go to <a href="http://localhost:3000/docs/meridian">http://localhost:3000/docs/meridian</a>.</li>
+              <li>Meridian utilizes <a href="http://cmapi.org">CMAPI</a> to receive and send information while it is embedded.</li>
             </ul>
         </section><!-- md-10 container -->
 
         <section class="col-md-2">
           <nav class="hidden-print hidden-xs hidden-sm" id="sideNav">
             <ul class="nav affix">
-              <li><a href="#requirements">Embedd Meridian</a></li>
-              <li><a href="#requirements">Requirements</a>
+              <li><a href="#startedQuickly">Getting Started Quickly</a>
                 <ul class="nav">
-                  <li><a href="#meridian">Meridian</a></li>
-                  <li><a href="#grunt">Grunt</a></li>
-                  <li><a href="#node">Node JS</a></li>
-                  <li><a href="#elastic">Elastic Search</a></li>
+                  <li><a href="#accessMeridian">Access Meridian</a></li>
+                  <li><a href="#embedMeridian">Embed Meridian</a></li>
                 </ul>
               </li>
+              <li><a href="#requirements">Requirements</a></li>
               <li><a href="#setup">Setup</a>
                 <ul class="nav">
                   <li><a href="#withoutGrunt">Without Grunt Support</a></li>
                   <li><a href="#withGrunt">With Grunt Support</a></li>
-                  <li><a href="#resourses">Resourses</a></li>
                 </ul>
               </li>
+              <li><a href="#resourses">Resourses</a></li>
             </ul>
           </nav> <!-- sideNav -->
         </section><!-- md-2 -->
@@ -171,6 +170,7 @@
       <div class="container">
         <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian/archive/master.zip"><i class="glyphicon glyphicon-cloud-download"></i> Download Meridian</a>
         <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian"><i class="icon-github3"></i> View on Github</a>
+        <a class="btn btn-primary btn-xs" href="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/" target="_blank"><i class="icon-rocket2"></i> Launch Meridian</a>
       </div>
         
       <div class="container new-section small">
