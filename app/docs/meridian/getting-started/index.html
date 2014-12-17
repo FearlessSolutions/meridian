@@ -31,7 +31,7 @@
       <div class="row">
         <section class="col-md-10 container">
 
-          <h2 id="startedQuickly">Getting Started Quickly</h2>
+          <h2 id="startedQuickly" class="page-header">Getting Started Quickly</h2>
             <p>You will need a valid certificate to be imported into the browser before being able to access Meridian. Download the certificate by clicking here: <a href="https://github.com/ozone-development/meridian/blob/develop/user.p12?raw=true">user.p12</a></p>
               <ul>
                 <li>Password: ‘password’</li>
@@ -50,7 +50,7 @@
             <p><code>&ltiframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/"&gt&lt/iframe&gt</code></p>
 
           <br>
-          <h2 id="requirements">Requirements</h3>
+          <h2 id="requirements" class="page-header">Local Meridian Setup</h3>
             <p>To host the database locally (which will be populated with mock data), you will need to have Node.js installed, have it in the project path, and have the ElasticSearch we provide running. If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the <a href="./#withGrunt">Grunt Support Setup instructions</a>.</p>
             <p> Instructions can also be found on our <a href="//github.com/ozone-development/meridian">Github</a> page.</p>
 
@@ -84,10 +84,9 @@
               </ul>
 
 
-          <h2 class="page-header" id="setup">Setup</h2>
-            <p>You have two options for getting up an running, with or without the Grunt support.</p>
+          
 
-          <h4 class="page-header" id="withoutGrunt">Option 1 - Without Grunt Support</h4>
+          <h2 class="page-header" id="withoutGrunt">Option 1 - Without Grunt Support</h2>
              <ul>
                 <li>Clone the repo: <code>git clone https://github.com/ozone-development/meridian.git</code>.</li>
                 <li>Change into the project directory: <code>cd meridian</code>.</li>
@@ -107,7 +106,7 @@
                   </ul>
               </ul>
 
-          <h4 class="page-header" id="withGrunt">Option 2 - With Grunt Support</h4>
+          <h2 class="page-header" id="withGrunt">Option 2 - With Grunt Support</h2>
             <ul>
               <li>Get Grunt's global CLI module. Run <code>npm install -g grunt-cli</code>.</li>
               <li>Clone the repo: <code>git clone https://github.com/ozone-development/meridian.git</code>.</li>
@@ -150,12 +149,9 @@
                   <li><a href="#embedMeridian">Embed Meridian</a></li>
                 </ul>
               </li>
-              <li><a href="#requirements">Requirements</a></li>
-              <li><a href="#setup">Setup</a>
-                <ul class="nav">
-                  <li><a href="#withoutGrunt">Without Grunt Support</a></li>
-                  <li><a href="#withGrunt">With Grunt Support</a></li>
-                </ul>
+              <li><a href="#requirements">Local Meridian Setup</a></li>
+              <li><a href="#withoutGrunt">Without Grunt Support</a></li>
+              <li><a href="#withGrunt">With Grunt Support</a></li>
               </li>
               <li><a href="#resourses">Resourses</a></li>
             </ul>
