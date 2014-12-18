@@ -1,42 +1,61 @@
 define([
-    'text!./fake-info-win.hbs',
-    'text!./fake-info-win.css',
-    './fake-configuration',
+    'text!./mock-info-win.hbs',
+    'text!./mock-info-win.css',
+    'text!./mock-map-url.hbs',
+    './mock-configuration',
     'jquery',
     'bootstrap',
     'handlebars'
-], function(fakeHbs, fakeInfoWinCSS, fakeConfig, $) {
-
-    var context;
+], function(infoWinHBS, infoWinCSS, mapUrlHBS, config, $) {
+    var context,
+        mapUrlTemplate;
 
     var exposed = {
         initialize: function(app) {
-
             context = app;
+            mapUrlTemplate = Handlebars.compile(mapUrlHBS);
 
-            app.sandbox.utils.addCSS(fakeInfoWinCSS, 'fake-extension-style');
+            app.sandbox.utils.addCSS(infoWinCSS, 'mock-extension-style');
+
+            //Add datasource information to the sandbox
+            if(!app.sandbox.datasources){
+                app.sandbox.datasources = [];
+            }
+
+            datasource = {
+                DATASOURCE_NAME: config.DATASOURCE_NAME,
+                DISPLAY_NAME: config.DISPLAY_NAME
+            };
+            app.sandbox.datasources.push(datasource);
 
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
-            app.sandbox.dataServices.fake = {
+            app.sandbox.dataServices.mock = {
+                DATASOURCE_NAME: config.DATASOURCE_NAME,
+                DISPLAY_NAME: config.DISPLAY_NAME,
                 infoWinTemplate: {
                     buildInfoWinTemplate: function(attributes, fullFeature) {
-                        var fakeTemplate = Handlebars.compile(fakeHbs);
+                        var mockTemplate = Handlebars.compile(infoWinHBS);
+                        var html;
 
-                        return fakeTemplate({
+                        //Add the url
+                        attributes.mapUrl = processMapUrl(attributes);
+
+                        html = mockTemplate({
                             thumbnail: app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
                             classification: attributes.classification,
                             name: attributes.name,
                             attributes: attributes,
-                            namespace: 'fake-extension',
-                            exports: fakeConfig.exports
+                            namespace: config.namespace,
+                            exports: config.exports
                         });
+
+                        return html;
                     },
                     postRenderingAction: function(feature, layerId) {
-                        $('.fake-extension .infoDiv .exportFeature .btn').on('click', function(){
-                            // .text() = Human Readable, .val() = channel name
-                            var channelName = $('.fake-extension .infoDiv .exportFeature select').find(':selected').val();
+                        $('.' + config.namespace + ' .infoDiv .exportFeature .btn').on('click', function(){
+                            var channelName = $('.' + config.namespace + ' .infoDiv .exportFeature select').find(':selected').val();
                             switch(channelName){
                                 case "export.download.geojson":
                                     context.sandbox.emit(channelName, {featureId: feature.featureId});
@@ -54,16 +73,18 @@ define([
                     }
                 },
                 //See data-storage-extension for key variable descriptions
-                keys: [
-                    {
-                        property: 'valid',
-                        displayName: 'Valid',
-                        weight: 75
-                    }
-                ]
+                keys: config.keys,
+                processMapUrl: processMapUrl
             };
         }
     };
+
+    function processMapUrl(attributes){
+        return mapUrlTemplate({
+            lat: attributes.lat,
+            lon: attributes.lon
+        });
+    }
 
     return exposed;
 });

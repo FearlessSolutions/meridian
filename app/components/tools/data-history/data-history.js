@@ -157,7 +157,7 @@ define([
                     tempDataEntry = {
                         datasetId: dataEntry.queryId,
                         dataSessionId: dataEntry.sessionId,
-                        dataSource: dataEntry.dataSource,
+                        dataSource: context.sandbox.dataServices[dataEntry.dataSource].DISPLAY_NAME,
                         dataName: dataEntry.queryName,
                         dataDate: dataDate.fromNow(),
                         rawDate: dataEntry.createdOn,
