@@ -9,17 +9,17 @@ div[data-aura-component='tools/upload-data'] .modal-backdrop {
     display: none;
 }
 
-div[data-aura-component='tools/query'] .modal-dialog {
+div[data-aura-component='upload-data'] .modal-dialog {
     margin: 15% auto;
     width: 490px;
 }
 
-div[data-aura-component='tools/query'] .modal-backdrop.in {
+div[data-aura-component='upload-data'] .modal-backdrop.in {
     opacity: 0.7;
     filter: alpha(opacity=70);
 }
 
-div[data-aura-component='tools/query'] .modal-dialog {
+div[data-aura-component='upload-data'] .modal-dialog {
     margin: 40% auto;
     width: 490px;
 }
