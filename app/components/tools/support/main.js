@@ -1,6 +1,7 @@
 define([
     'text!./support.css',
     'text!./support.hbs',
+    'text!./about.hbs',
     './support',
     './support-publisher',
     './support-subscriber',
@@ -8,6 +9,7 @@ define([
 ], function (
     supportToolCSS, 
     supportToolHBS, 
+    aboutHBS,
     supportTool, 
     supportPublisher, 
     supportSubscriber
@@ -17,7 +19,14 @@ define([
             this.sandbox.utils.addCSS(supportToolCSS, 'tools-support-component-style');
 
             var supportToolTemplate = Handlebars.compile(supportToolHBS);
-            var html = supportToolTemplate();
+            var supportHTML = supportToolTemplate();
+            
+            var aboutTemplate = Handlebars.compile(aboutHBS);
+            var aboutHTML = aboutTemplate({
+                "version": this.sandbox.systemConfiguration.version
+            });
+            var html = supportHTML + aboutHTML
+
             this.html(html);
 
             supportPublisher.init(this);
