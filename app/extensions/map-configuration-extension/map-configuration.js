@@ -18,32 +18,32 @@ define([
       {
         "basemap" : "landscape",
         "type" : "osm",
-        "url" : "http://a.tile3.opencyclemap.org/landscape/${z}/${x}/${y}.png",
+        "url" : "http://a.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png",
         "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/topographic.png",
         "label" : "OSM Landscape"
-      },
-      {
-        "basemap" : "grey",
-        "type" : "osm",
-        "url" : "http://korona.geog.uni-heidelberg.de:8008/tms_rg.ashx?x=${x}&y=${y}&z=${z}",
-        "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/grey.png",
-        "label" : "OSM Roads Grey"
-      },
-      {
-        "basemap" : "basic",
-        "type" : "osm",
-        "url" : "http://korona.geog.uni-heidelberg.de:8001/tms_r.ashx?x=${x}&y=${y}&z=${z}",
-        "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/basic.png",
-        "label" : "OSM Roads"
-      },
-      {
-        "basemap" : "imagery",
-        "type" : "wmts",
-        "url" : "http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/WMTS",
-        "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/satellite.png",
-        "label" : "USGS Imagery",
-        "wrapDateLine": true
-      }
+      }//,
+//      {
+//        "basemap" : "grey",
+//        "type" : "osm",
+//        "url" : "http://korona.geog.uni-heidelberg.de:8008/tms_rg.ashx?x={x}&y={y}&z={z}",
+//        "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/grey.png",
+//        "label" : "OSM Roads Grey"
+//      },
+//      {
+//        "basemap" : "basic",
+//        "type" : "osm",
+//        "url" : "http://korona.geog.uni-heidelberg.de:8001/tms_r.ashx?x={x}&y={y}&z={z}",
+//        "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/basic.png",
+//        "label" : "OSM Roads"
+//      },
+//      {
+//        "basemap" : "imagery",
+//        "type" : "wmts",
+//        "url" : "http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/WMTS",
+//        "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/satellite.png",
+//        "label" : "USGS Imagery",
+//        "wrapDateLine": true
+//      }
     ],
     "markerIcons" : {
       "default" : {

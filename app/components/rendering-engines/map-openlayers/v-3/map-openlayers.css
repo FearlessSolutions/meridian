@@ -1,0 +1,22 @@
+/* 
+	HTML and Body height must be set for web map api's to render. 
+	If you have this in your main.css, then you may not need it here.
+*/
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+div[data-aura-component='rendering-engines/map-openlayers/v-3'] {
+	width: 100%;
+    height: 100%;
+}
+div[data-aura-component='rendering-engines/map-openlayers/v-3'] #map {
+    width: 100%;
+    height: 100%;
+}
+div[data-aura-component='rendering-engines/map-openlayers/v-3'] .olImageLoadError {
+    background-color: #A9A9A9;
+}
+
