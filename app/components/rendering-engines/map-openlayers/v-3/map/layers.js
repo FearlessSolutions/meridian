@@ -29,54 +29,54 @@ define([
 
             //Create geolocator layer options
             geolocatorParams = {
-                "map": params.map,
-                "layerId": "static_geolocator",
-                "static": true,
-                "styleMap": {
-                    "externalGraphic": "${icon}",
-                    "graphicHeight": "${height}",
-                    "graphicWidth":  "${width}",
-                    "graphicYOffset": context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
+                map: params.map,
+                layerId: 'static_geolocator',
+                static: true,
+                styleMap: {
+                    externalGraphic: '${icon}',
+                    graphicHeight: '${height}',
+                    graphicWidth:  '${width}',
+                    graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
                 }
             };
             geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
             addGeoLocatorListeners({
-                "map": params.map,
-                "layer": geolocatorLayer
+                map: params.map,
+                layer: geolocatorLayer
             });
 
             //Create draw layer options
             drawParams = {
-                "map": params.map,
-                "layerId": "static_draw",
-                "static": true,
-                "styleMap": {
-                    "default": {
-                        "fillOpacity": 0.05,
-                        "strokeOpacity": 1
+                map: params.map,
+                layerId: 'static_draw',
+                static: true,
+                styleMap: {
+                    default: {
+                        fillOpacity: 0.05,
+                        strokeOpacity: 1
                     }
                 }
             };
             drawLayer = exposed.createVectorLayer(drawParams);
             addDrawListeners({
-                "map": params.map,
-                "layer": drawLayer
+                map: params.map,
+                layer: drawLayer
             });
 
             //Create heatmap layer options
             heatmapParams = {
-                "map": params.map,
-                "layerId": "static_heatmap",
-                "renderers": ['Heatmap'],
-                "static": true,
-                "styleMap": {
-                    "default": new ol.Style({
-                        "pointRadius": 10,
+                map: params.map,
+                layerId: 'static_heatmap',
+                renderers: ['Heatmap'],
+                static: true,
+                styleMap: {
+                    default: new ol.Style({
+                        pointRadius: 10,
                         // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer.
                         // The weight is calcluated by the context.weight function below.
-                        "weight": "${weight}"
+                        weight: '${weight}'
                     }, {
-                        "context": {
+                        context: {
                             weight: function() {
                                 var visibleDataRecordCount = 0;
                                 // Build the visibleDataRecordCount by adding all records from datasets that are visible
@@ -98,8 +98,8 @@ define([
 
             params.map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]);
             mapBase.addLayerToSelector({
-                "map": params.map,
-                "layer": geolocatorLayer
+                map: params.map,
+                layer: geolocatorLayer
             });
 
         },
@@ -119,8 +119,8 @@ define([
                 layers;
 
             options = {
-                "layerId": params.layerId, // set as layerId, is not present its null
-                "styleMap": null  // set as null for default of not providing a stylemap
+                layerId: params.layerId, // set as layerId, is not present its null
+                styleMap: null  // set as null for default of not providing a stylemap
             };
 
             context.sandbox.utils.extend(options, params);
@@ -150,9 +150,9 @@ define([
 
             // Default state manager settings for a new layer
             context.sandbox.stateManager.layers[params.layerId] = {
-                "visible": true,
-                "hiddenFeatures": [],
-                "identifiedFeatures": []
+                visible: true,
+                hiddenFeatures: [],
+                identifiedFeatures: []
             };
 
             return newVectorLayer;
@@ -180,17 +180,17 @@ define([
          */
         createWMTSLayer: function(params) {
             var baseLayer = new ol.Layer.WMTS({
-                "name": params.name,
-                "url": params.url,
-                "style": params.style,
-                "matrixSet": params.matrixSet || context.sandbox.mapConfiguration.projection,
-                "matrixIds": params.matrixIds || null,
-                "layer": params.layer || null,
-                "requestEncoding": params.requestEncoding || 'KVP',
-                "format": params.format || 'image/jpeg',
-                "resolutions": params.resolutions || null,
-                "wrapDateLine": ("wrapDateLine" in params) ? params.wrapDateLine : true,
-                "tileSize": new ol.Size(
+                name: params.name,
+                url: params.url,
+                style: params.style,
+                matrixSet: params.matrixSet || context.sandbox.mapConfiguration.projection,
+                matrixIds: params.matrixIds || null,
+                layer: params.layer || null,
+                requestEncoding: params.requestEncoding || 'KVP',
+                format: params.format || 'image/jpeg',
+                resolutions: params.resolutions || null,
+                wrapDateLine: ('wrapDateLine' in params) ? params.wrapDateLine : true,
+                tileSize: new ol.Size(
                     params.tileWidth || 256,
                     params.tileHeight || 256
                 )
@@ -293,25 +293,25 @@ define([
                 identifiedFeatures; 
 
             identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
-                "layerId": params.layerId
+                layerId: params.layerId
             });
 
             if(identifiedFeatures.length) {
                 mapBase.clearMapSelection({
-                    "map": params.map
+                    map: params.map
                 });
                 mapBase.clearMapPopups({
-                    "map": params.map
+                    map: params.map
                 });
             }
 
             if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
                 context.sandbox.stateManager.layers[params.layerId].visible = false;
                 mapClustering.update({
-                    "map": params.map
+                    map: params.map
                 });
                 mapHeatmap.update({
-                    "map": params.map
+                    map: params.map
                 });
             } else {
                 currentLayer = params.map.getLayersBy('layerId', params.layerId)[0];
@@ -326,10 +326,10 @@ define([
             if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
                 context.sandbox.stateManager.layers[params.layerId].visible = true;
                 mapClustering.update({
-                    "map": params.map
+                    map: params.map
                 });
                 mapHeatmap.update({
-                    "map": params.map
+                    map: params.map
                 });
             } else {
                 currentLayer = params.map.getLayersBy('layerId', params.layerId)[0];
@@ -346,13 +346,13 @@ define([
             var selector = params.map.getControlsByClass('ol.Control.SelectFeature')[0];
             selector.unselectAll();
             mapClustering.update({
-                "map": params.map
+                map: params.map
             });
             mapClustering.visualModeChanged({
-                "mode": params.mode
+                mode: params.mode
             });
             mapHeatmap.update({
-                "map": params.map
+                map: params.map
             });
         },
         /**
@@ -367,7 +367,7 @@ define([
             context.sandbox.stateManager.layers = {};
             mapClustering.clear();
             mapHeatmap.clear({
-                "map": params.map
+                map: params.map
             });
         },
         addEventListenersToLayer: function(params) {
@@ -375,8 +375,8 @@ define([
                 params.layer.events.on(params.eventListeners);
             } else {
                 addDefaultListeners({
-                    "map": params.map,
-                    "layer": params.layer
+                    map: params.map,
+                    layer: params.layer
                 });
             }
         },
@@ -392,28 +392,28 @@ define([
                 var baseLayer;
 
                 switch (context.sandbox.mapConfiguration.basemaps[basemap].type) {
-                    case "osm":
+                    case 'osm':
                         baseLayer = exposed.createOSMLayer({
-                            "map": params.map,
-                            "label": context.sandbox.mapConfiguration.basemaps[basemap].label,
-                            "url": context.sandbox.mapConfiguration.basemaps[basemap].url
+                            map: params.map,
+                            label: context.sandbox.mapConfiguration.basemaps[basemap].label,
+                            url: context.sandbox.mapConfiguration.basemaps[basemap].url
                         });
                         break;
-                    case "wmts":
+                    case 'wmts':
                         baseLayer = exposed.createWMTSLayer({
-                            "map": params.map,
-                            "name": context.sandbox.mapConfiguration.basemaps[basemap].name,
-                            "url": context.sandbox.mapConfiguration.basemaps[basemap].url,
-                            "style": context.sandbox.mapConfiguration.basemaps[basemap].style,
-                            "matrixSet": context.sandbox.mapConfiguration.basemaps[basemap].matrixSet || context.sandbox.mapConfiguration.projection,
-                            "matrixIds": context.sandbox.mapConfiguration.basemaps[basemap].matrixIds || null,
-                            "layer": context.sandbox.mapConfiguration.basemaps[basemap].layer || null,
-                            "requestEncoding": context.sandbox.mapConfiguration.basemaps[basemap].requestEncoding || 'KVP',
-                            "format": context.sandbox.mapConfiguration.basemaps[basemap].format || 'image/jpeg',
-                            "resolutions": context.sandbox.mapConfiguration.basemaps[basemap].resolutions || null,
-                            "wrapDateLine": ("wrapDateLine" in context.sandbox.mapConfiguration.basemaps[basemap]) ? context.sandbox.mapConfiguration.basemaps[basemap].wrapDateLine : true,
-                            "tileWidth": context.sandbox.mapConfiguration.basemaps[basemap].tileWidth || context.sandbox.mapConfiguration.defaultTileWidth,
-                            "tileHeight": context.sandbox.mapConfiguration.basemaps[basemap].tileHeight || context.sandbox.mapConfiguration.defaultTileHeight
+                            map: params.map,
+                            name: context.sandbox.mapConfiguration.basemaps[basemap].name,
+                            url: context.sandbox.mapConfiguration.basemaps[basemap].url,
+                            style: context.sandbox.mapConfiguration.basemaps[basemap].style,
+                            matrixSet: context.sandbox.mapConfiguration.basemaps[basemap].matrixSet || context.sandbox.mapConfiguration.projection,
+                            matrixIds: context.sandbox.mapConfiguration.basemaps[basemap].matrixIds || null,
+                            layer: context.sandbox.mapConfiguration.basemaps[basemap].layer || null,
+                            requestEncoding: context.sandbox.mapConfiguration.basemaps[basemap].requestEncoding || 'KVP',
+                            format: context.sandbox.mapConfiguration.basemaps[basemap].format || 'image/jpeg',
+                            resolutions: context.sandbox.mapConfiguration.basemaps[basemap].resolutions || null,
+                            wrapDateLine: ('wrapDateLine' in context.sandbox.mapConfiguration.basemaps[basemap]) ? context.sandbox.mapConfiguration.basemaps[basemap].wrapDateLine : true,
+                            tileWidth: context.sandbox.mapConfiguration.basemaps[basemap].tileWidth || context.sandbox.mapConfiguration.defaultTileWidth,
+                            tileHeight: context.sandbox.mapConfiguration.basemaps[basemap].tileHeight || context.sandbox.mapConfiguration.defaultTileHeight
                         });
                         break;
                     default:
@@ -446,7 +446,7 @@ define([
                 popup,
                 selectController;
 
-            layerVisibility = context.sandbox.stateManager.getLayerStateById({"layerId": params.layerId}).visible;
+            layerVisibility = context.sandbox.stateManager.getLayerStateById({layerId: params.layerId}).visible;
             featureVisibilty = (context.sandbox.stateManager.layers[params.layerId].hiddenFeatures.indexOf(params.featureId) > -1) ? false : true;
             if(layerVisibility && featureVisibilty) {
                 layer = params.map.getLayersBy('layerId', params.layerId)[0];
@@ -474,20 +474,20 @@ define([
                     currentDataService = record.attributes.dataService;
 
                     context.sandbox.dataStorage.getFeatureById(
-                        {"featureId": record.featureId},
+                        {featureId: record.featureId},
                         function(fullFeature) {
                             var infoWinTemplateRef = context.sandbox.dataServices[currentDataService].infoWinTemplate,
                                 headerHTML = '<span>' + clusterFeatureIndex + ' of ' + clusterFeatureCount + '</span>',
                                 formattedAttributes = {},
                                 bounds,
                                 popup,
-                                anchor= {"size": new ol.Size(0, 0), "offset": new ol.Pixel(0, 0)};
+                                anchor= {size: new ol.Size(0, 0), offset: new ol.Pixel(0, 0)};
 
                             context.sandbox.utils.each(fullFeature.properties, 
                                 function(key, value) {
-                                    if((context.sandbox.utils.type(value) === "string" ||
-                                        context.sandbox.utils.type(value) === "number" ||
-                                        context.sandbox.utils.type(value) === "boolean")) {
+                                    if((context.sandbox.utils.type(value) === 'string' ||
+                                        context.sandbox.utils.type(value) === 'number' ||
+                                        context.sandbox.utils.type(value) === 'boolean')) {
                                         formattedAttributes[key] = value;
                                     }
                             });
@@ -502,20 +502,20 @@ define([
                                 true,
                                 function() {
                                     mapBase.clearMapSelection({
-                                        "map": params.map
+                                        map: params.map
                                     });
                                     mapBase.clearMapPopups({
-                                        "map": params.map
+                                        map: params.map
                                     });
                                 }
                             );
                             popup.layerId = params.layerId;
 
                             mapBase.clearMapSelection({
-                                "map": params.map
+                                map: params.map
                             });
                             mapBase.clearMapPopups({
-                                "map": params.map
+                                map: params.map
                             });
 
                             bounds = feature.geometry.getBounds();
@@ -530,8 +530,8 @@ define([
                             );
 
                             context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
-                                "layerId": layer.layerId,
-                                "featureIds": [
+                                layerId: layer.layerId,
+                                featureIds: [
                                     record.featureId
                                 ]
                             });
@@ -558,10 +558,10 @@ define([
         params.layer.events.on({
             beforefeatureselected: function(evt) {
                 mapBase.clearMapSelection({
-                    "map": params.map
+                    map: params.map
                 });
                 mapBase.clearMapPopups({
-                    "map": params.map
+                    map: params.map
                 });
             },
             featureselected: function(evt) {
@@ -580,14 +580,14 @@ define([
                     '</div>';
 
                 mapBase.identifyFeature({
-                    "map": params.map,
-                    "feature": evt.feature,
-                    "content": htmlTemplate
+                    map: params.map,
+                    feature: evt.feature,
+                    content: htmlTemplate
                 });
             },
             featureunselected: function(evt) {
                 mapBase.clearMapPopups({
-                    "map": params.map
+                    map: params.map
                 });
             }    
         });
@@ -608,10 +608,10 @@ define([
                     boundingBox = feature.geometry.bounds.transform(params.map.projection, params.map.projectionWGS84).toBBOX();
                     splitBoundingBox = boundingBox.split(',');
                     coords = {
-                        "minLon": splitBoundingBox[0], 
-                        "minLat": splitBoundingBox[1],
-                        "maxLon": splitBoundingBox[2],
-                        "maxLat": splitBoundingBox[3]
+                        minLon: splitBoundingBox[0],
+                        minLat: splitBoundingBox[1],
+                        maxLon: splitBoundingBox[2],
+                        maxLat: splitBoundingBox[3]
                     };
 
                     publisher.stopDrawing(coords);
@@ -644,19 +644,19 @@ define([
                 if(!feature.cluster) {
 
                     context.sandbox.dataStorage.getFeatureById({
-                        "featureId": feature.featureId}, 
+                        featureId: feature.featureId},
                         function(fullFeature) {
                             infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
                             context.sandbox.utils.each(fullFeature.properties,
                                 function(k, v) {
-                                    if((context.sandbox.utils.type(v) === "string" ||
-                                        context.sandbox.utils.type(v) === "number" ||
-                                        context.sandbox.utils.type(v) === "boolean")) {
+                                    if((context.sandbox.utils.type(v) === 'string' ||
+                                        context.sandbox.utils.type(v) === 'number' ||
+                                        context.sandbox.utils.type(v) === 'boolean')) {
                                         formattedAttributes[k] = v;
                                     }
                             });
 
-                            anchor= {"size": new ol.Size(0, 0), "offset": new ol.Pixel(0, -(feature.attributes.height/2))};
+                            anchor= {size: new ol.Size(0, 0), offset: new ol.Pixel(0, -(feature.attributes.height/2))};
                             popup = new ol.Popup.FramedCloud('popup',
                                 ol.LonLat.fromString(feature.geometry.getCentroid().toShortString()),
                                 null,
@@ -668,10 +668,10 @@ define([
                                 true,
                                 function() {
                                     mapBase.clearMapSelection({
-                                        "map": params.map
+                                        map: params.map
                                     });
                                     mapBase.clearMapPopups({
-                                        "map": params.map
+                                        map: params.map
                                     });
                                 }
                             );
@@ -680,8 +680,8 @@ define([
                             infoWinTemplateRef.postRenderingAction(fullFeature, feature.layer.layerId);
 
                             context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
-                                "layerId": feature.layer.layerId,
-                                "featureIds": [
+                                layerId: feature.layer.layerId,
+                                featureIds: [
                                     feature.featureId
                                 ]
                             });
