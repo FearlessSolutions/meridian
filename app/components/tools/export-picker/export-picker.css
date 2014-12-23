@@ -16,7 +16,7 @@ div[data-aura-component='tools/export-picker'] .modal-backdrop.in {
 
 div[data-aura-component='tools/export-picker'] .modal-dialog {
     margin: 5% auto;
-    width: 400px;
+    width: 450px;
 }
 
 div[data-aura-component='tools/export-picker'] {
