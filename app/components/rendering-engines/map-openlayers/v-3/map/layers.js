@@ -8,7 +8,6 @@ define([
 ], function(publisher, mapBase, mapClustering, mapHeatmap) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
-
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
@@ -27,80 +26,80 @@ define([
                 heatmapParams,
                 heatmapLayer;
 
-            //Create geolocator layer options
-            geolocatorParams = {
-                map: params.map,
-                layerId: 'static_geolocator',
-                static: true,
-                styleMap: {
-                    externalGraphic: '${icon}',
-                    graphicHeight: '${height}',
-                    graphicWidth:  '${width}',
-                    graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
-                }
-            };
-            geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
-            addGeoLocatorListeners({
-                map: params.map,
-                layer: geolocatorLayer
-            });
+            //Create geolocator layer options //TODO
+//            geolocatorParams = {
+//                map: params.map,
+//                layerId: 'static_geolocator',
+//                static: true,
+//                styleMap: {
+//                    externalGraphic: '${icon}',
+//                    graphicHeight: '${height}',
+//                    graphicWidth:  '${width}',
+//                    graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
+//                }
+//            };
+//            geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
+//            addGeoLocatorListeners({
+//                map: params.map,
+//                layer: geolocatorLayer
+//            });
 
-            //Create draw layer options
-            drawParams = {
-                map: params.map,
-                layerId: 'static_draw',
-                static: true,
-                styleMap: {
-                    default: {
-                        fillOpacity: 0.05,
-                        strokeOpacity: 1
-                    }
-                }
-            };
-            drawLayer = exposed.createVectorLayer(drawParams);
-            addDrawListeners({
-                map: params.map,
-                layer: drawLayer
-            });
+            //Create draw layer options //TODO
+//            drawParams = {
+//                map: params.map,
+//                layerId: 'static_draw',
+//                static: true,
+//                styleMap: {
+//                    default: {
+//                        fillOpacity: 0.05,
+//                        strokeOpacity: 1
+//                    }
+//                }
+//            };
+//            drawLayer = exposed.createVectorLayer(drawParams);
+//            addDrawListeners({
+//                map: params.map,
+//                layer: drawLayer
+//            });
 
-            //Create heatmap layer options
-            heatmapParams = {
-                map: params.map,
-                layerId: 'static_heatmap',
-                renderers: ['Heatmap'],
-                static: true,
-                styleMap: {
-                    default: new ol.Style({
-                        pointRadius: 10,
-                        // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer.
-                        // The weight is calcluated by the context.weight function below.
-                        weight: '${weight}'
-                    }, {
-                        context: {
-                            weight: function() {
-                                var visibleDataRecordCount = 0;
-                                // Build the visibleDataRecordCount by adding all records from datasets that are visible
-                                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value) {
-                                    if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible) {
-                                        visibleDataRecordCount += value.length;
-                                    }
-                                });
-                                // Set initial weight value to 0.1,
-                                // once there are more than 10k records it will decrease by 0.01 per 1k records, 
-                                // stopping at a lowest weight of 0.01 at 100k records (it will not go lower, even if more than 100k records)
-                                return Math.max(Math.min(1000 / visibleDataRecordCount, 0.1), 0.01);
-                            }
-                        }
-                    })
-                }
-            };
-            heatmapLayer = exposed.createVectorLayer(heatmapParams);
+            //Create heatmap layer options //TODO
+//            heatmapParams = {
+//                map: params.map,
+//                layerId: 'static_heatmap',
+//                renderers: ['Heatmap'],
+//                static: true,
+//                styleMap: {
+//                    default: new ol.Style({
+//                        pointRadius: 10,
+//                        // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer.
+//                        // The weight is calcluated by the context.weight function below.
+//                        weight: '${weight}'
+//                    }, {
+//                        context: {
+//                            weight: function() {
+//                                var visibleDataRecordCount = 0;
+//                                // Build the visibleDataRecordCount by adding all records from datasets that are visible
+//                                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value) {
+//                                    if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible) {
+//                                        visibleDataRecordCount += value.length;
+//                                    }
+//                                });
+//                                // Set initial weight value to 0.1,
+//                                // once there are more than 10k records it will decrease by 0.01 per 1k records,
+//                                // stopping at a lowest weight of 0.01 at 100k records (it will not go lower, even if more than 100k records)
+//                                return Math.max(Math.min(1000 / visibleDataRecordCount, 0.1), 0.01);
+//                            }
+//                        }
+//                    })
+//                }
+//            };
+//            heatmapLayer = exposed.createVectorLayer(heatmapParams);
 
-            params.map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]);
-            mapBase.addLayerToSelector({
-                map: params.map,
-                layer: geolocatorLayer
-            });
+//            params.map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]); //TODO
+//            mapBase.addLayerToSelector({ //TODO
+//                map: params.map,
+//                layer: geolocatorLayer
+//            });
 
         },
         /**
@@ -163,39 +162,41 @@ define([
          * @returns {ol.layer.Tile}
          */
         createOSMLayer: function(params) {
-//            var baseLayer = new ol.Layer.OSM(params.label,params.url);
             var baseLayer = new ol.layer.Tile({
                 name: params.label,
                 source: new ol.source.OSM({
                     url: params.url
                 })
             });
-            params.map.addLayer(baseLayer);
+
             return baseLayer;
         },
         /**
          * Create baselayer of WMTS format
          * @param params
-         * @returns {ol.Layer.WMTS}
+         * @returns {ol.layer.Tile}
          */
         createWMTSLayer: function(params) {
-            var baseLayer = new ol.Layer.WMTS({
-                name: params.name,
-                url: params.url,
-                style: params.style,
-                matrixSet: params.matrixSet || context.sandbox.mapConfiguration.projection,
-                matrixIds: params.matrixIds || null,
-                layer: params.layer || null,
-                requestEncoding: params.requestEncoding || 'KVP',
-                format: params.format || 'image/jpeg',
-                resolutions: params.resolutions || null,
-                wrapDateLine: ('wrapDateLine' in params) ? params.wrapDateLine : true,
-                tileSize: new ol.Size(
-                    params.tileWidth || 256,
-                    params.tileHeight || 256
-                )
+            var baseLayer = new ol.layer.Tile({
+                opacity: 0.3,
+//            extent: projectionExtent,
+                source: new ol.source.WMTS({
+                    url: params.url,
+                    matrixSet: params.matrixSet,
+                    format: params.format,
+                    projection: ol.proj.get(params.projection),
+                    tileGrid: new ol.tilegrid.WMTS({
+                        origin: params.origin,
+                        resolutions: params.resolutions,
+                        matrixIds: params.matrixIds//,
+//                        tileSize: new ol.Size(
+//                                params.tileWidth || 256,
+//                                params.tileHeight || 256
+//                        )
+                    }),
+                    style: params.style
+                })
             });
-            params.map.addLayer(baseLayer);
             return baseLayer;
         },
         setLayerIndex: function(params) {
@@ -389,46 +390,50 @@ define([
             var basemapLayers = {};
 
             context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(basemap) {
-                var baseLayer;
+                var baselayerParams = context.sandbox.mapConfiguration.basemaps[basemap],
+                    baseLayer;
 
-                switch (context.sandbox.mapConfiguration.basemaps[basemap].type) {
+                switch (baselayerParams.type) {
                     case 'osm':
                         baseLayer = exposed.createOSMLayer({
                             map: params.map,
-                            label: context.sandbox.mapConfiguration.basemaps[basemap].label,
-                            url: context.sandbox.mapConfiguration.basemaps[basemap].url
+                            label: baselayerParams.label,
+                            url: baselayerParams.url
                         });
                         break;
                     case 'wmts':
                         baseLayer = exposed.createWMTSLayer({
                             map: params.map,
-                            name: context.sandbox.mapConfiguration.basemaps[basemap].name,
-                            url: context.sandbox.mapConfiguration.basemaps[basemap].url,
-                            style: context.sandbox.mapConfiguration.basemaps[basemap].style,
-                            matrixSet: context.sandbox.mapConfiguration.basemaps[basemap].matrixSet || context.sandbox.mapConfiguration.projection,
-                            matrixIds: context.sandbox.mapConfiguration.basemaps[basemap].matrixIds || null,
-                            layer: context.sandbox.mapConfiguration.basemaps[basemap].layer || null,
-                            requestEncoding: context.sandbox.mapConfiguration.basemaps[basemap].requestEncoding || 'KVP',
-                            format: context.sandbox.mapConfiguration.basemaps[basemap].format || 'image/jpeg',
-                            resolutions: context.sandbox.mapConfiguration.basemaps[basemap].resolutions || null,
-                            wrapDateLine: ('wrapDateLine' in context.sandbox.mapConfiguration.basemaps[basemap]) ? context.sandbox.mapConfiguration.basemaps[basemap].wrapDateLine : true,
-                            tileWidth: context.sandbox.mapConfiguration.basemaps[basemap].tileWidth || context.sandbox.mapConfiguration.defaultTileWidth,
-                            tileHeight: context.sandbox.mapConfiguration.basemaps[basemap].tileHeight || context.sandbox.mapConfiguration.defaultTileHeight
+                            name: baselayerParams.name,
+                            url: baselayerParams.url,
+                            style: baselayerParams.style,
+                            matrixSet: baselayerParams.matrixSet || context.sandbox.mapConfiguration.projection,
+                            matrixIds: baselayerParams.matrixIds || null,
+                            layer: baselayerParams.layer || null,
+                            origin: baselayerParams.origin || [0,0],
+                            requestEncoding: baselayerParams.requestEncoding || 'KVP',
+                            projection: baselayerParams.projection || context.sandbox.mapConfiguration.projection,
+                            format: baselayerParams.format || 'image/jpeg',
+                            style: baselayerParams.style || 'default',
+                            resolutions: baselayerParams.resolutions || null,
+                            wrapDateLine: ('wrapDateLine' in baselayerParams) ? baselayerParams.wrapDateLine : true,
+                            tileWidth: baselayerParams.tileWidth || context.sandbox.mapConfiguration.defaultTileWidth,
+                            tileHeight: baselayerParams.tileHeight || context.sandbox.mapConfiguration.defaultTileHeight
                         });
                         break;
                     default:
-                        context.sandbox.logger.error('Did not load basemap. No support for basemap type:', context.sandbox.mapConfiguration.basemaps[basemap].type);
+                        context.sandbox.logger.error('Did not load basemap. No support for basemap type:', baselayerParams.type);
                         break;
                 }
                 if(baseLayer) {
-                    basemapLayers[context.sandbox.mapConfiguration.basemaps[basemap].basemap] = baseLayer;
+                    basemapLayers[baselayerParams.basemap] = baseLayer;
                 }
             });
 
             return basemapLayers;
         },
         setBasemap: function(params) {
-            params.map.getLayers().setAt(1, params.basemapLayer); //Apparently, the '1' place is the basemap.
+            params.map.getLayers().setAt(0, params.basemapLayer); //Make the basemap the bottom layer.
         },
         /**
          * Add popup to feature, even if it is in a cluster
