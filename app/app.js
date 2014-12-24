@@ -1,4 +1,5 @@
 require.config({
+    waitSeconds: 30,
     paths: {
         aura: 'bower_components/aura/lib',
         handlebars: 'bower_components/handlebars/handlebars',
@@ -93,6 +94,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
         $('#left-side-menu').css('display','table').animate({
             left: "0px"
           }, 500);
+        $('#loading').remove();
     });
 
 

@@ -1,6 +1,21 @@
 [ ![Codeship Status for ozone-development/meridian](https://codeship.com/projects/479f9b90-5167-0132-a553-7262abc25231/status)](https://codeship.com/projects/48335)
 
-## Requirements
+# Meridian
+Event-driven, framework-agnostic, extensible architecture for mapping applications. Meridian wraps code into reusable and decoupled components and/or extensions that can easily communicate with each other. 
+
+## Embed Meridian:
+
+Just include the following `<iframe>` on any HTML page source code:
+
+`<iframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/"></iframe>`
+- You can add style to the `<iframe>` to suit any need.
+- Meridian utilizes [CMAPI](http://cmapi.org) to recieve and send information while it is embedded.
+
+##Access Meridian:
+https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/
+
+## Download Meridian and host locally:
+### Requirements
 
 The project uses Grunt for task management. Use of Grunt is optional, but highly recommended.
 
@@ -40,7 +55,7 @@ For other parts of the project, make sure:
   - You might need to restart the browser after importing the certificate.
 
 
-## Setup
+### Setup
 
 You have two options for getting up an running, with or without the Grunt support.
 
@@ -105,6 +120,8 @@ Introduction to Meridian can be found [here](http://ozone-development.github.io/
 
 Much of the Design is based on [Aura](http://aurajs.com/). 
 
+Meridian utilizes [CMAPI](http://cmapi.org) to recieve and send information while it is embedded.
+
 
 ## Copyrights
 > Software (c) 2014 [The Boeing Company](http://www.boeing.com/ "Boeing")
@@ -114,21 +131,5 @@ Much of the Design is based on [Aura](http://aurajs.com/).
 The AML Center (under OZONE) is released to the public as Open Source Software, because it's the Right Thing To Do. Also, it was required by [Section 924 of the 2012 National Defense Authorization Act](http://www.gpo.gov/fdsys/pkg/PLAW-112publ81/pdf/PLAW-112publ81.pdf "NDAA FY12").
 
 Released under the [Apache License, Version 2](http://www.apache.org/licenses/LICENSE-2.0.html "Apache License v2").
-
-
-## Community
- 
-### OWF GOSS Board
-OWF started as a project at a single US Government agency, but developed into a collaborative project spanning multiple federal agencies.  Overall project direction is managed by "The OWF Government Open Source Software Board"; i.e. what features should the core team work on next, what patches should get accepted, etc.  Gov't agencies wishing to be represented on the board should check http://owfgoss.org for more details.  Membership on the board is currently limited to Government agencies that are using OWF and have demonstrated willingness to invest their own energy and resources into developing it as a shared resource of the community.  At this time, the board is not considering membership for entities that are not US Government Agencies, but we would be willing to discuss proposals.
- 
-### Contributions
-
-#### Non-Government
-Contributions to the baseline project from outside the US Federal Government should be submitted as a pull request to the core project on GitHub.  Before patches will be accepted by the core project, contributors have a signed [Contributor License Agreement](https://www.ozoneplatform.org/ContributorLicenseAgreement1-3OZONE.docx) on file with the core team.  If you or your company wish your copyright in your contribution to be annotated in the project documentation (such as this README), then your pull request should include that annotation.
- 
-#### Government
-Contributions from government agencies do not need to have a CLA on file, but do require verification that the government has unlimited rights to the contribution.  An email to goss-support@owfgoss.org is sufficient, stating that the contribution was developed by an employee of the United States Government in the course of his or her duties. Alternatively, if the contribution was developed by a contractor, the email should provide the name of the Contractor, Contract number, and an assertion that the contract included the standard "Unlimited rights" clause specified by [DFARS 252.227.7014](http://www.acq.osd.mil/dpap/dars/dfars/html/current/252227.htm#252.227-7014) "Rights in noncommercial computer software and noncommercial computer software documentation".
- 
-Government agencies are encouraged to submit contributions as pull requests on GitHub.
 
 More information about contributions can be found in our [Contributing documentation](./contributing.md#contributing).

@@ -13,7 +13,6 @@ define([
         $modal,
         $file,
         $dummyFile,
-        $classification,
         $submit,
         RESTORE_PAGE_SIZE = 500;
 
@@ -23,7 +22,6 @@ define([
             $modal = context.$('#upload-data-modal');
             $file = context.$('#file');
             $dummyFile = context.$('#dummy-file');
-            $classification = context.$('#classification');
             $submit = context.$('#upload-submit');
 
             $submit.attr('disabled', true); //Start with submit disabled until a file is added
@@ -81,15 +79,16 @@ define([
                     $submit.attr('disabled', true);
                 }
             });
-
+            
             //Handle submit
             $submit.on('click', function(){
+                
                 //Get the file from the input
                 var file = $file[0].files[0],
                     filetype,
-                    classification,
                     queryId,
                     queryName,
+                    shouldZoom = false,
                     newAJAX;
 
                 //TODO handle multiple files?
@@ -97,8 +96,10 @@ define([
                     queryId = context.sandbox.utils.UUID();
                     queryName = file.name; //Use the file name as the query name
                     filetype = context.sandbox.utils.getFileExtension(file);
-                    classification = $classification.val();
-
+                    if (context.$('#zoomOnUpload').is(":checked")) {
+                        shouldZoom = true; 
+                    }
+                    
                     //Create a new collection for the data
                     context.sandbox.dataStorage.datasets[queryId] = new Backbone.Collection();
                     context.sandbox.dataStorage.datasets[queryId].dataService = DATASOURCE_NAME;
@@ -122,8 +123,7 @@ define([
                         queryId: queryId,
                         queryName: queryName,
                         file: file,
-                        filetype: filetype,
-                        classification: classification
+                        filetype: filetype
                     }, function(data){ //Success callback
                             publisher.publishMessage({
                                 messageType: 'success',
@@ -134,7 +134,8 @@ define([
                             getPage({
                                 queryId: queryId,
                                 queryName: queryName,
-                                sessionId: context.sandbox.sessionId
+                                sessionId: context.sandbox.sessionId,
+                                shouldZoom: shouldZoom
                             }, 0);
                         }, function(status, jqXHR){ //Error callback
                             markQueryError(queryId, queryName, status);
@@ -256,6 +257,9 @@ define([
                 markQueryError(queryId, queryName, err);
             } else if (!results || results.length === 0) {
                 markQueryFinished(queryId, queryName);
+                if(params.shouldZoom){
+                    publisher.publishZoomToLayer({layerId: queryId});
+                }
             } else {
                 processDataPage(results, {
                     queryId: queryId,
@@ -350,7 +354,7 @@ define([
             messageText: queryName + ' Upload Complete'
         });
 
-        publisher.publishFinished({"layerId": queryId});
+        publisher.publishFinished({layerId: queryId});
     }
 
     function markQueryError(queryId, queryName, error){
