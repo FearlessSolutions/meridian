@@ -22,8 +22,7 @@ define([
             $exportButton = context.$('button[type="submit"]');
             $closeButton = context.$('button[type="cancel"]');
 
-            //Fill out the options
-            context.sandbox.export.options.forEach(function(option){
+            context.sandbox.exportOps.forEach(function(option){
                 var optionHTML = optionTemplate(option);
                 $picker.append(optionHTML);
             });
@@ -38,18 +37,11 @@ define([
 
             $exportButton.on('click', function(event){
                 
-                var channel = $picker.val();
-                channelList = context.$("input[name=exportOption]:checked").map(
+                var exports = $picker.val();
+                var selectedExports = context.$("input[name=exportOption]:checked").map(
                     function () {return this.value;}).get().join(",");
-                
-                var exportChannelList = channelList.split(",");
-                context.sandbox.utils.each(exportChannelList, function(idx, channel){
-                    alert(channel);
-                    publisher.export({
-                        channel: channel
-                    });
-                });
-
+                var selectedExportsList = selectedExports.split(",");
+              
                 //If there is nothing to export, print message and stop
                 if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0){
                     publisher.publishMessage({
@@ -58,11 +50,18 @@ define([
                         messageText: 'No data to export.'
                     });
                     return;
+                }else{
+                    context.sandbox.utils.each(selectedExportsList, function(idx, destination){
+                        context.sandbox.exports.sendFeaturesTo(destination,  function(status){
+                            publisher.publishMessage({
+                                messageType: status.messageType,
+                                messageTitle: 'Export',
+                                messageText: status.messageText,
+                            });
+                            return;
+                        });
+                    });
                 }
-
-                publisher.export({
-                    channel: channel
-                });
 
                 publisher.close();
             });

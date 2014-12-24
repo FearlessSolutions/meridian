@@ -3,11 +3,6 @@ define([
 ], function() {
 
     var configuration = {
-//        urls: {
-//            csv: 'csv url',
-//            kml: 'kml url',
-//            geojson: 'geojson url'
-//        },
         exportOptions:[
             {
                 text: 'CSV File',

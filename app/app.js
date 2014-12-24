@@ -85,6 +85,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/mock-extension/mock-extension')
     .use('extensions/fake-extension/fake-extension')
     .use('extensions/exports/export-file-extension/export-file-extension')
+    .use('extensions/export/export-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
     .use('extensions/upload-data-extension/upload-data-extension')
     .start({ "components": "body" })
