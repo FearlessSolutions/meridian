@@ -35,13 +35,12 @@ define([
                 publisher.close();
             });
 
-            $exportButton.on('click', function(event){
-                
-                var exports = $picker.val();
+            $exportButton.on('click', function(){
+
                 var selectedExports = context.$("input[name=exportOption]:checked").map(
                     function () {return this.value;}).get().join(",");
                 var selectedExportsList = selectedExports.split(",");
-              
+
                 //If there is nothing to export, print message and stop
                 if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0){
                     publisher.publishMessage({
@@ -50,24 +49,32 @@ define([
                         messageText: 'No data to export.'
                     });
                     return;
-                }else{
+                //If there is no export option selected, print message and stop.
+                }else if(selectedExportsList[0] === ""){
+                    publisher.publishMessage({
+                        messageType: 'warning',
+                        messageTitle: 'Export',
+                        messageText: 'No export option selected.'
+                    });
+                    return;
+                }
+                else{
                     context.sandbox.utils.each(selectedExportsList, function(idx, destination){
                         context.sandbox.exports.sendFeaturesTo(destination,  function(status){
                             publisher.publishMessage({
                                 messageType: status.messageType,
                                 messageTitle: 'Export',
-                                messageText: status.messageText,
+                                messageText: status.messageText
                             });
                             return;
                         });
                     });
                 }
-
                 publisher.close();
             });
  
 
-             $closeButton.on('click', function(event) {
+            $closeButton.on('click', function(event) {
                 event.preventDefault();
                 publisher.close();
             });
