@@ -68,9 +68,9 @@ define([
                 basemap: context.sandbox.mapConfiguration.defaultBaseMap
             });
 
-//            mapLayers.createStaticLayers({
-//                map: map
-//            });
+            mapLayers.createStaticLayers({
+                map: map
+            });
             
 //            context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
             

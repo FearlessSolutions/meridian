@@ -16,9 +16,7 @@ define([
          * Create layers that are not accessible to the user, and that don't go away
          * @param params
          */
-            //TODO
         createStaticLayers: function(params) {
-            return;
             var geolocatorParams,
                 geolocatorLayer,
                 drawParams,
@@ -26,20 +24,20 @@ define([
                 heatmapParams,
                 heatmapLayer;
 
-            //Create geolocator layer options //TODO
-//            geolocatorParams = {
-//                map: params.map,
-//                layerId: 'static_geolocator',
-//                static: true,
-//                styleMap: {
-//                    externalGraphic: '${icon}',
-//                    graphicHeight: '${height}',
-//                    graphicWidth:  '${width}',
-//                    graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
-//                }
-//            };
-//            geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
-//            addGeoLocatorListeners({
+            //Create geolocator layer options
+            geolocatorParams = {
+                map: params.map,
+                layerId: 'static_geolocator',
+                static: true,
+                styleMap: {
+                    externalGraphic: '${icon}',
+                    graphicHeight: '${height}',
+                    graphicWidth:  '${width}',
+                    graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
+                }
+            };
+            geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
+//            addGeoLocatorListeners({ //TODO
 //                map: params.map,
 //                layer: geolocatorLayer
 //            });
@@ -117,42 +115,51 @@ define([
                 selector,
                 layers;
 
-            options = {
-                layerId: params.layerId, // set as layerId, is not present its null
-                styleMap: null  // set as null for default of not providing a stylemap
-            };
+            newVectorLayer = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    features: []
+                }),
+                style: function(feature, resolution){
+                    
+                }
+            });
 
-            context.sandbox.utils.extend(options, params);
-//            if(params.styleMap) { //TODO
-//                options.styleMap = new ol.StyleMap(params.styleMap);
+//            options = {
+//                layerId: params.layerId, // set as layerId, is not present its null
+//                styleMap: null  // set as null for default of not providing a stylemap
+//            };
+//
+//            context.sandbox.utils.extend(options, params);
+////            if(params.styleMap) { //TODO
+////                options.styleMap = new ol.StyleMap(params.styleMap);
+////            }
+//
+//            delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
+//
+//            newVectorLayer = new ol.Layer.Vector(
+//                params.layerId,
+//                options
+//            );
+//
+//            if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
+//                newVectorLayer.setVisibility(false);
 //            }
-
-            delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
-
-            newVectorLayer = new ol.Layer.Vector(
-                params.layerId,
-                options
-            );
-
-            if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
-                newVectorLayer.setVisibility(false);
-            }
-
-            params.map.addLayers([newVectorLayer]);
-
-            if(params.selectable) {
-                selector = params.map.getControlsByClass('ol.Control.SelectFeature')[0];
-                layers = selector.layers;
-                layers.push(newVectorLayer);
-                selector.setLayer(layers);
-            }
-
-            // Default state manager settings for a new layer
-            context.sandbox.stateManager.layers[params.layerId] = {
-                visible: true,
-                hiddenFeatures: [],
-                identifiedFeatures: []
-            };
+//
+//            params.map.addLayers([newVectorLayer]);
+//
+//            if(params.selectable) {
+//                selector = params.map.getControlsByClass('ol.Control.SelectFeature')[0];
+//                layers = selector.layers;
+//                layers.push(newVectorLayer);
+//                selector.setLayer(layers);
+//            }
+//
+//            // Default state manager settings for a new layer
+//            context.sandbox.stateManager.layers[params.layerId] = {
+//                visible: true,
+//                hiddenFeatures: [],
+//                identifiedFeatures: []
+//            };
 
             return newVectorLayer;
         },
@@ -179,7 +186,7 @@ define([
         createWMTSLayer: function(params) {
             var baseLayer = new ol.layer.Tile({
                 opacity: 0.3,
-//            extent: projectionExtent,
+//              extent: projectionExtent,
                 source: new ol.source.WMTS({
                     url: params.url,
                     matrixSet: params.matrixSet,
