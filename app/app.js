@@ -116,6 +116,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
         $('#left-side-menu').css('display','table').animate({
             left: "0px"
           }, 500);
+        $('#loading').remove();
     });
 
 
