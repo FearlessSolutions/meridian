@@ -7,8 +7,10 @@ define([
         init: function(thisContext) {
             context = thisContext;
 
-            context.sandbox.on('support.close', support.close);
-            context.sandbox.on('support.open', support.open);
+            context.sandbox.on('support.close', support.closeSupport);
+            context.sandbox.on('support.open', support.openSupport);
+            context.sandbox.on('about.close', support.closeAbout);
+            context.sandbox.on('about.open', support.openAbout);
             context.sandbox.on('data.clear.all', support.clear);
         }
     };	

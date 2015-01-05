@@ -1,24 +1,28 @@
 define([
     './support-publisher',
     'bootstro',
-    'bootstrap',
+    'bootstrap'
 ], function (publisher, bootstro) {
 
     var context,
         contentLoaded = false,
-        MENU_DESIGNATION = 'support-dialog',
-        $modal,
-        $modalBody,
-        $closeButton;
+        SUPPORT_DESIGNATION = 'support-dialog',
+        ABOUT_DESIGNATION = 'about-dialog',
+        $supportModal,
+        $aboutModal,
+        $supportModalBody,
+        $supportCloseButton;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
 
-            $modal = context.$('#support-modal');
-            $modalBody = context.$('#support-modal .modal-body');
-            $closeButton = context.$('#support-modal.modal button.close');
+            $supportModal = context.$('#support-modal');
+            $supportModalBody = context.$('#support-modal .modal-body');
+            $supportCloseButton = context.$('#support-modal.modal button.close');
             $supportButton = context.$('#support');
+            $aboutModal = context.$('#about-modal');
+            $aboutCloseButton = context.$('#about-modal.modal button.close');
 
             context.$('#tour').on('click', function(event) {
                 publisher.closeSupport();
@@ -45,7 +49,19 @@ define([
                 bootstro.start('.bootstro');
             });
 
-            $modal.modal({
+            context.$('#about').on('click', function(event) {
+                publisher.closeSupport();
+                publisher.openAbout();
+
+            });
+
+            context.$('#ok').on('click', function(event) {
+                publisher.closeAbout();
+                publisher.openSupport();
+
+            });
+
+            $supportModal.modal({
                 "backdrop": true,
                 "keyboard": true,
                 "show": false
@@ -53,22 +69,42 @@ define([
                 publisher.closeSupport();
              });
 
-             $closeButton.on('click', function(event) {
+             $aboutModal.modal({
+                "backdrop": true,
+                "keyboard": true,
+                "show": false
+             }).on('hidden.bs.modal', function() {
+                publisher.closeAbout();
+             });
+
+            $supportCloseButton.on('click', function(event) {
                 event.preventDefault();
                 publisher.closeSupport();
+            });
+            $aboutCloseButton.on('click', function(event) {
+                event.preventDefault();
+                publisher.closeAbout();
             }); 
 
            
         },
-        open: function() {
-            publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
-            $modal.modal('show');
+        openSupport: function() {
+            publisher.publishOpening({"componentOpening": SUPPORT_DESIGNATION});
+            $supportModal.modal('show');
         },
-        close: function() {
-            $modal.modal('hide');
+        closeSupport: function() {
+            $supportModal.modal('hide');
+        },
+        openAbout: function() {
+            publisher.publishOpening({"componentOpening": ABOUT_DESIGNATION});
+            $aboutModal.modal('show');
+        },
+        closeAbout: function() {
+            $aboutModal.modal('hide');
         },
         clear: function() {
-            $modal.modal('hide');
+            $supportModal.modal('hide');
+            $aboutModal.modal('hide');
         }
     };
 
