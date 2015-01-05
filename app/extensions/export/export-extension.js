@@ -11,7 +11,7 @@ define([
 
             app.sandbox.exports = {
                 sendFeaturesTo: function(dest, callback){
-                    console.log("I am exporting all features to " + dest);
+                    
                     if(dest === "export.file.csv"){
                         exportToCSV(dest, callback);
                     }else if(dest === "export.file.kml"){

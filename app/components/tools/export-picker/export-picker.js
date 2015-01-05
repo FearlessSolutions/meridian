@@ -33,6 +33,7 @@ define([
                 show: false
             }).on('hidden.bs.modal', function() {
                 publisher.close();
+                $('input:checkbox').removeAttr('checked');
             });
 
             $exportButton.on('click', function(){
@@ -71,11 +72,13 @@ define([
                     });
                 }
                 publisher.close();
+                $('input:checkbox').removeAttr('checked');
             });
  
 
             $closeButton.on('click', function(event) {
                 event.preventDefault();
+                context.$('input:checkbox').removeAttr('checked');
                 publisher.close();
             });
            
