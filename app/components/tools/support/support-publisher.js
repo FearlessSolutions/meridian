@@ -12,8 +12,14 @@ define([
         closeSupport: function() {
             context.sandbox.emit('support.close');
         },
+        closeAbout: function() {
+            context.sandbox.emit('about.close');
+        },
         openSupport: function() {
             context.sandbox.emit('support.open');
+        },
+        openAbout: function() {
+            context.sandbox.emit('about.open');
         }
     };
 

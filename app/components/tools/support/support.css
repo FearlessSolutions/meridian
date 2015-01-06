@@ -33,3 +33,34 @@ div[data-aura-component='tools/support'] #support-modal .modal-body .support-act
     text-align:center;
     margin-top: 20px;
 }
+
+/****** About Meridian  *******/
+/*Makes consecutive <p> elements to be closer together.*/
+div[data-aura-component='tools/support'] #about-modal p {
+  margin-bottom: 0px;
+}
+/*Adjust the size of the <img> with the logo class*/
+div[data-aura-component='tools/support'] #about-modal .logo {
+  width: 200px;
+  height: 140px;
+}
+/*Centers all text and makes all padding around the component smaller, all for a better look and feel.*/
+div[data-aura-component='tools/support'] #about-modal .modal-body{
+  padding: 10px;
+  text-align: center;
+  max-height: 280px;
+}
+/*Make the ok button slighly larger for a better look and feel.*/
+div[data-aura-component='tools/support'] #about-modal #ok {
+  padding: 6px 20px;
+}
+div[data-aura-component='tools/support'] #about-modal .modal-dialog {
+    margin: 5% auto;
+    width: 405px;
+}
+div[data-aura-component='tools/support'] #about-modal .modal-body .support-actions {
+    margin-left: auto;
+    margin-right: auto;
+    text-align:center;
+    margin-top: 20px;
+}

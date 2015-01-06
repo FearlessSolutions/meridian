@@ -1,4 +1,5 @@
 require.config({
+    waitSeconds: 30,
     paths: {
         aura: 'bower_components/aura/lib',
         handlebars: 'bower_components/handlebars/handlebars',
@@ -65,7 +66,8 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
         "debug": true,
         "appName": "Meridian",
         "sources": {"default": "components"},
-        "mediator": {"maxListeners": 50}
+        "mediator": {"maxListeners": 50},
+        "version": "0.5.2"
     })
     .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')
@@ -84,6 +86,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/locator-extension/locator-formatData-extension')
     .use('extensions/mock-extension/mock-extension')
     .use('extensions/fake-extension/fake-extension')
+    .use('extensions/export/export-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
     .use('extensions/upload-data-extension/upload-data-extension')
     .start({ "components": "body" })
@@ -91,6 +94,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
         $('#left-side-menu').css('display','table').animate({
             left: "0px"
           }, 500);
+        $('#loading').remove();
     });
 
 

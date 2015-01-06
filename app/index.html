@@ -15,6 +15,9 @@
     <script data-main="app" src="./bower_components/requirejs/require.js"></script>
 </head>
 <body>
+    <div id="loading">
+        <div id="loadingTxt"> ... Loading Meridian </div>
+    </div>
     <div id="mapContainer">
         <div data-aura-component="displays/splash-screen"></div>
         <div data-aura-component="displays/notification-modal"></div>
@@ -29,6 +32,7 @@
         <div data-aura-component="tools/data-history"></div>
         <div data-aura-component="tools/upload-data"></div>
         <div data-aura-component="tools/support"></div>
+        <div data-aura-component="tools/export-picker"></div>
         <div data-aura-component="controls/user-settings"></div>
         <div id="header-left-container">
             <div data-aura-component="tools/locator"></div>
@@ -46,8 +50,8 @@
                 <div data-aura-component="controls/clear-toggle"></div>
                 <!-- <div data-aura-component="controls/playback"></div> -->
                 <div data-aura-component="controls/data-history-toggle"></div>
-                <!-- <div data-aura-component="controls/download"></div> --> <!-- TODO make this work again -->
                 <div data-aura-component="controls/upload-data-toggle"></div>
+                 <div data-aura-component="controls/export-picker-toggle"></div>
                 <div data-aura-component="controls/basemap-gallery-toggle"></div>
                 <div data-aura-component="controls/timeline-toggle"></div>
                 <!-- <div data-aura-component="controls/internal-pubsub-tester-toggle"></div> -->
@@ -77,7 +81,5 @@
         </div>
     </div>
     <div data-aura-component="displays/datagrid"></div>
-    <div data-aura-component="exports/download-geojson"></div>
-    <div data-aura-component="exports/google-maps"></div>
   </body>
 </html>
