@@ -32,5 +32,6 @@ exports.init = function(app){
     use('components/mock');
     use('components/fake');
     use('components/file-upload');
+    use('components/file-download');
 
 };

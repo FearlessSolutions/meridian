@@ -21,6 +21,7 @@
   "dependencies": {
       "connect": "2.14.5",
       "elasticsearch": "2.1.4",
+      "event-stream": "3.2.1",
       "express": "4.1.0",
       "node-uuid": "1.4.1",
       "underscore": "1.6.0",

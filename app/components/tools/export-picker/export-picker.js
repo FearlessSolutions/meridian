@@ -39,8 +39,15 @@ define([
             $exportButton.on('click', function(){
 
                 var selectedExports = context.$("input[name=exportOption]:checked").map(
-                    function () {return this.value;}).get().join(",");
+                    function () {
+                        return this.value;
+                    }).get().join(",");
                 var selectedExportsList = selectedExports.split(",");
+
+                var selectedExports2 = context.$("input[name=exportOption]:checked").map(
+                    function () {
+                        return this.value;
+                    }).get();
 
                 //If there is nothing to export, print message and stop
                 if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0){
