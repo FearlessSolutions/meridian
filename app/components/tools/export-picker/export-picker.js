@@ -1,16 +1,20 @@
 define([
     './export-picker-publisher',
     'text!./export-picker-option.hbs',
+    'text!./export-picker-layers.hbs',
     'bootstrap',
     'handlebars'
-], function (publisher, optionHBS) {
+], function (publisher, optionHBS, layersHBS) {
 
     var context,
-        MENU_DESIGNATION = 'export-picker-modal',
+        POINT_DESIGNATION = 'export-picker-singlePoint-modal',
+        LAYER_DESIGNATION = 'export-picker-layer-modal',
         $modal,
         $picker,
         $closeButton,
-        $exportButton;
+        $exportButton,
+        currentDataSet,
+        currentDataArray;
 
     var exposed = {
         init: function(thisContext) {
@@ -19,6 +23,7 @@ define([
             context = thisContext;
             $modal = context.$('#export-picker-modal');
             $picker = $modal.find('#options');
+            $layerList = $modal.find('#exportLayers');
             $exportButton = context.$('button[type="submit"]');
             $closeButton = context.$('button[type="cancel"]');
 
@@ -42,16 +47,7 @@ define([
                     function () {return this.value;}).get().join(",");
                 var selectedExportsList = selectedExports.split(",");
 
-                //If there is nothing to export, print message and stop
-                if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0){
-                    publisher.publishMessage({
-                        messageType: 'warning',
-                        messageTitle: 'Export',
-                        messageText: 'No data to export.'
-                    });
-                    return;
-                //If there is no export option selected, print message and stop.
-                }else if(selectedExportsList[0] === ""){
+               if(selectedExportsList[0] === ""){
                     publisher.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Export',
@@ -83,14 +79,34 @@ define([
             });
            
         },
-        open: function() {
-            publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
-            
-            //check if selected option should be greyed out
-            if((context.sandbox.stateManager.getAllIdentifiedFeatures()).length <= 1){
-                context.$('#exportSelected').attr("disabled", true)
-                    .addClass('disable').prop('checked', true);
+        open: function(params) {
+            console.log("dataSets",context.sandbox.dataStorage.datasets);
+            context.sandbox.util.each(context.sandbox.dataStorage.datasets, function(layerId, layerFeature){
+                console.log("id: ", layerId);
+                console.log("feature: ", layerFeature);
+            });
+            if(params && params.featureId){
+                //params can have featureId or overlayId.
+                
+                console.log("Single point opening.");
+                publisher.publishOpening({"componentOpening": POINT_DESIGNATION});
+        
+            }else if(params && params.layerId){
+                //message came from timeline containign params.overlayId
+                console.log("Layer list OVERLAY opening.");
+                console.log("layerId: ", params.layerId)
+                publisher.publishOpening({"componentOpening": LAYER_DESIGNATION});
+
             }
+            else{
+                //its not a featureId or an overlayId. Open the layer view modal.
+                console.log("Layer list ALL opening.");
+                publisher.publishOpening({"componentOpening": LAYER_DESIGNATION});
+        
+
+            }
+
+
             $modal.modal('show');
         },
         close: function() {
@@ -98,6 +114,38 @@ define([
         },
         clear: function() {
             $modal.modal('hide');
+        },
+        updateExportLayerList: function(){
+            var newAJAX = context.sandbox.utils.ajax({
+                type: 'GET',
+                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + dataObject.datasetId,
+                xhrFields: {
+                    withCredentials: true
+                }
+            })
+            .done(function(data) {
+                currentDataSet = {};
+                currentDataArray = [];
+
+                var now = moment(), //This needs to be done now to prevent race condition later
+                    dataDate = moment.unix(data.createdOn),
+                    expireDate = moment.unix(data.expireOn),
+                    isExpired = expireDate.isBefore(now),
+                    disableRestore = isExpired, //Use this as default
+                    tempData,
+                    rawDataObjectString,
+                    dataHistoryDetailView,
+                    dataStatus = isExpired ? 'Expired' : 'N/A';
+
+                tempData = {
+                    datasetId: data.queryId,
+                    dataSessionId: data.sessionId,
+                    dataSource: data.dataSource || 'N/A',
+                    dataName: data.queryName || 'N/A',
+                    dataRecordCount: data.numRecords || 'N/A',
+                    rawDataObject: data.rawQuery || 'N/A'
+                };
+            });
         }
     };
 

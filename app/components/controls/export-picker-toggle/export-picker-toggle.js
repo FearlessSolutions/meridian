@@ -25,12 +25,21 @@ define([
                 if($button.hasClass('active')) {
                     publisher.closeModal();
                 } else {
-                    publisher.openModal();
+                    exposed.setActive();
                 }
             });
         },
         setActive: function() {
-            $button.addClass('active');
+            if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
+                $button.addClass('active');
+                publisher.openModal();
+            } else {
+                publisher.publishMessage({
+                    "messageType": 'warning',
+                    "messageTitle": 'Export',
+                    "messageText": 'No data to export.'
+                });
+            }
         },
         removeActive: function() {
             $button.removeClass('active');
