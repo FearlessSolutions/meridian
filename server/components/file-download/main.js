@@ -16,8 +16,8 @@ exports.init = function(context){
 
     fileDownload.init(context);
 
-    app.head('/results.csv', auth.verifyUser, function(req, res){
-        var idArray = req.query.ids.split(',');
+    app.head('/results.*', auth.verifyUser, function(req, res){
+        var queryIds = req.query.ids.split(',');
         query.getCountByQuery(
             null,
             config.index.data,
@@ -25,7 +25,7 @@ exports.init = function(context){
             {
                 query:{
                     terms:{
-                        queryId:idArray
+                        queryId: queryIds
                     }
                 }
             },
@@ -42,88 +42,73 @@ exports.init = function(context){
 
     });
 
-
-    app.head('/results.csv', auth.verifyUser, function(req, res){
-        var idArray = req.query.ids.split(",");
-        query.getCountByQuery(null, config.index.data, null, {query:{"terms":{"queryId":idArray}}}, function(err, results){
-            if (err){
-                res.status(500);
-                res.send(err);
-            } else {
-                res.status(results.count === 0 ? 204 : 200); // 204 = No Content
-                res.send();
-            }
-        });
-
-    });
-
-    app.get('/results.csv', auth.verifyUser, function(req, res){
-        fileDownload.pipeCSVToResponseForQuery(res.get('Parsed-User'), req.query.ids.split(","), res);
-    });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    app.get('/results5.csv', auth.verifyUser, function(req, res){
+    app.get('/results.csv', auth.verifyUser, function(req, res) {
         var userName = res.get('Parsed-User'),
-            sessionId = req.query.sessionId; //It is done this way to allow file opening in a new window.
-        console.log("toCSV", userName, sessionId);
+            queryIds = req.query.ids.split(",");
 
         // Response prep
         res.header('Content-Type', 'text/csv');
         res.header('Content-Disposition', 'attachment; filename=results.csv');
-        res.write('\ufeff');
-        query.streamQuery(userName, {query:{"match":{"sessionId":sessionId}}}, 100, function(err, results) {
-//            console.log(results);
 
-            console.log("stuff");
+        fileDownload.pipeCSVToResponseForQuery(userName, queryIds, res);
+    });
 
-            if(results.hits.hits.length === 0){
-                console.log("ending");
-                res.end();
-            }else{
-                try {
-//                    transform.toCSV(resultsToGeoJSON(results), res);
-                    console.log("*************STREAMING")
-//                    transform.toCSV(resultsToGeoJSON(results), process.stdout);
-//                    transform.toCSV(resultsToGeoJSON(results), res);
-//                    res.write("There is something here");
-                }catch(err){
-                    res.end();
+    app.get('/results.geojson', auth.verifyUser, function(req, res) {
+        var userName = res.get('Parsed-User'),
+            queryIds = req.query.ids.split(','),
+            mutex = 0,
+            done = false,
+            started = false,
+            incrementMutex;
+
+        /**
+         * Used for mutex
+         */
+        incrementMutex = function(){
+            mutex++;
+        };
+
+        // Response prep
+        res.header('Content-Type', 'application/json');
+        res.header('Content-Disposition', 'attachment; filename=results.geojson');
+
+        fileDownload.pipeGeoJSONResponse(
+            userName,
+            queryIds,
+            function(err, resultChunk) {
+                // If there was an error, end immediately with err
+                if(err) {
+                    res.status(500);
+                    res.send(err);
+
+                    return;
+                } else if(resultChunk){
+                    resultChunk = JSON.stringify(resultChunk.features);
+                    if(!started){
+                        started = true;
+                        res.write('{"type": "FeatureCollection","features": [');
+                        res.write(resultChunk.replace(/^\[/, '').replace(/\]$/, ''));//Remove []s
+                    } else{
+                        res.write(',');
+                        res.write(resultChunk.replace(/^\[/, '').replace(/\]$/, ''));//Remove []s
+                    }
+
+
+                } else {
+                    done = true;
                 }
-            }
-        });
 
-
-//            download.pipeCSVToResponseForQuery(res.get('Parsed-User'), req.query.ids.split(','), res);
+                //If done and this was the last thread, end res, otherwise, decrement mutex
+                if(done && mutex === 1){
+                    if(started){
+                        res.write(']}'); //Close the file, but only if there is already something there
+                    }
+                    res.end();
+                } else{
+                    mutex--;
+                }
+            },
+            incrementMutex
+        );
     });
 };
-
-/**
- * Turns database results into normal geoJSON
- * @param results
- */
-function resultsToGeoJSON(results){
-    var collection = {
-        type: "FeatureCollection",
-        features: []
-    };
-
-    results.hits.hits.forEach(function(feature){
-//        console.log(feature._source);
-        collection.features.push(feature._source);
-    });
-
-    return collection;
-}

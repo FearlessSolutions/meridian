@@ -21,10 +21,6 @@ define([
                         });
                     }else if(dest === "export.file.geojson"){
                         exportToGeoJSON(dest, callback);
-                        callback({
-                            messageType: 'error',
-                            messageText: 'geoJSON export not available'
-                        });
                     }else if(dest === "export.url.googlemaps"){
                         callback({
                             messageType: 'error',
@@ -49,7 +45,7 @@ define([
 
         context.sandbox.utils.ajax({
             type: 'HEAD' ,
-            url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.csv' + suffix,
+            url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.*' + suffix,
             cache: false
         })
             .done(function(responseText, status, jqXHR) {
@@ -84,7 +80,34 @@ define([
             currentDatasetIds.push(datasetId);
         });
         suffix = '?ids=' + currentDatasetIds.join();
-        window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + suffix);
+
+        context.sandbox.utils.ajax({
+            type: 'HEAD' ,
+            url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.*' + suffix, //TODO change this
+            cache: false
+        })
+            .done(function(responseText, status, jqXHR) {
+                if (jqXHR.status === 204){
+                    callback({
+                        messageType: 'warning',
+                        messageText: 'No data'
+                    });
+                } else {
+                    callback({
+                        messageType: 'info',
+                        messageText: 'geoJSON download started'
+                    });
+
+                    window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() +
+                        '/results.geojson' + suffix);
+                }
+            })
+            .error(function(e) {
+                callback({
+                    messageType: 'error',
+                    messageText: 'Connection to server failed.'
+                });
+            });
     }
     
     function exportToGoogleMaps(params, callback){

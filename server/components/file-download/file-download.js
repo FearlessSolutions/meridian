@@ -1,16 +1,61 @@
 var _ = require('underscore'),
     metadataManager,
-    query;
+    query,
+    transform;
 
 exports.init = function(context){
     query = context.sandbox.elastic.query;
     metadataManager = context.sandbox.elastic.metadata;
+    transform = context.sandbox.transform;
 };
+
+exports.pipeGeoJSONResponse = function(userName, queryIds, callback, incrementMutex){
+    query.streamQuery(userName, {query:{terms:{queryId:queryIds}}}, 100, function(queryErr, results) {
+
+        //Tell parent that a new thread has been started
+        incrementMutex();
+
+        //Do what is needed for callback
+        if(queryErr){
+            callback(queryErr, null);
+        } else if(results.hits.hits.length === 0){
+            callback(null, null);
+        }else{
+            try {
+                transform.toGeoJSON(resultsToGeoJSON(results), callback);
+            }catch(ogrErr){
+                callback(ogrErr, null);
+            }
+        }
+    });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Query metadata by user
 // Remove anything that doesn't match the query id
 // Query for all records that match any of the query ids
-exports.pipeCSVToResponseForQuery = function(userName, queryIdArray, res)
+exports.pipeCSVToResponseForQuery = function(userName, queryIdArray, res){
     // Query metadata
     metadataManager.getMetadataByUserId(userName, function(err, meta) {
         var needToCreateLAT = false; //If there is a need to create the keys, for when they are not already included
@@ -20,10 +65,6 @@ exports.pipeCSVToResponseForQuery = function(userName, queryIdArray, res)
             res.send("Error - couldn't fetch metadata for " + userName);
             return;
         }
-
-        // Response prep
-        res.header('Content-Type', 'text/csv');
-        res.header('Content-Disposition', 'attachment; filename=results.csv');
 
         // Handle keyToIndex map
         var keyToIndexMap = {};
@@ -129,4 +170,22 @@ function _writeArray(buffer, row){
     out.push("\r\n");
     buffer += out.join('');
     return buffer;
+}
+
+
+/**
+ * Turns database results into normal geoJSON
+ * @param results
+ */
+function resultsToGeoJSON(results){
+    var collection = {
+        type: "FeatureCollection",
+        features: []
+    };
+
+    results.hits.hits.forEach(function(feature){
+        collection.features.push(feature._source);
+    });
+
+    return collection;
 }
