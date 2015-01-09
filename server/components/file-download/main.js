@@ -1,8 +1,16 @@
 var uuid = require('node-uuid'),
     Stream = require('stream'),
     EventStream = require('event-stream'),
-    fileDownload = require('./file-download');
-//var _ = require('underscore');
+    fileDownload = require('./file-download'),
+    xmlreader = require('xmlreader'),
+    _ = require('underscore'),
+    KML_HEADER,
+    KML_FOOTER,
+    KML_SCHEMA_HEADER;
+
+KML_HEADER = '<?xml version="1.0" encoding="utf-8" ?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><Folder><name>OGRGeoJSON</name>';
+KML_SCHEMA_HEADER = '</Folder><Schema name="OGRGeoJSON" id="OGRGeoJSON">';
+KML_FOOTER = '</Schema></Document></kml>';
 
 /**
  * @param app
@@ -71,6 +79,7 @@ exports.init = function(context){
         // Response prep
         res.header('Content-Type', 'application/json');
         res.header('Content-Disposition', 'attachment; filename=results.geojson');
+        res.write('{"type": "FeatureCollection","features": [');
 
         fileDownload.pipeGeoJSONResponse(
             userName,
@@ -83,29 +92,136 @@ exports.init = function(context){
 
                     return;
                 } else if(resultChunk){
-                    resultChunk = JSON.stringify(resultChunk.features);
-                    if(!started){
-                        started = true;
-                        res.write('{"type": "FeatureCollection","features": [');
-                        res.write(resultChunk.replace(/^\[/, '').replace(/\]$/, ''));//Remove []s
-                    } else{
-                        res.write(',');
-                        res.write(resultChunk.replace(/^\[/, '').replace(/\]$/, ''));//Remove []s
-                    }
 
+                    //There is a chunk to write. Add ',' if not the first one.
+                    resultChunk = JSON.stringify(resultChunk.features);
+                    if(started){
+                        res.write(',');
+                    } else{
+                        started = true;
+                    }
+                    res.write(resultChunk.replace(/^\[/, '').replace(/\]$/, ''));//Remove []s
 
                 } else {
                     done = true;
                 }
 
                 //If done and this was the last thread, end res, otherwise, decrement mutex
-                if(done && mutex === 1){
-                    if(started){
-                        res.write(']}'); //Close the file, but only if there is already something there
-                    }
+                mutex--;
+                if(done && mutex === 0){
+                    res.write(']}'); //Close the file
                     res.end();
-                } else{
+                }
+            },
+            incrementMutex
+        );
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    app.get('/results.kml', auth.verifyUser, function(req, res) {
+        var userName = res.get('Parsed-User'),
+            queryIds = req.query.ids.split(','),
+            mutex = 0,
+            done = false,
+            started = false,
+            incrementMutex,
+            closeKML,
+            schemaFields = {};
+
+        /**
+         * Used for mutex
+         */
+        incrementMutex = function(){
+            mutex++;
+        };
+
+
+        closeKML = function(){
+            res.write(KML_SCHEMA_HEADER);
+
+            _.each(schemaFields, function(fieldNode, fieldName) {
+
+//                console.log(fieldNode);
+//                console.log(fieldNode.text());
+                res.write(fieldNode.text());
+            });
+
+            res.write(KML_FOOTER);
+            res.end();
+        };
+
+        // Response prep
+        res.header('Content-Type', 'application/vnd.google-earth.kml+xml');
+        res.header('Content-Disposition', 'attachment; filename=results.kml');
+
+        fileDownload.pipeKMLResponse(
+            userName,
+            queryIds,
+            function(err, resultChunk) {
+                // If there was an error, end immediately with err
+                if(err) {
+                    res.status(500);
+                    res.send(err);
+
+                    return;
+                } else if(resultChunk){
+                    if(!started){
+                        started = true;
+                        res.write(KML_HEADER);
+                    }
+
+                    xmlreader.read(resultChunk.toString(), function(xmlErr, xmlRes){
+                        console.log("xmlErr", xmlErr);
+                        console.log("xmlres", xmlRes.kml.text());
+
+                        //Iterate over the fields for the chunk, adding new ones to schemaFields
+                        xmlRes.kml.Document.Schema.SimpleField.each(function(fieldIndex, field){
+                            var name = field.attributes().name;
+                            if(!schemaFields[name]){
+                                schemaFields[name] = field.parent();
+                            }
+//                            console.log(field.attributes());
+                        });
+
+                        //Add each point to the document
+                        xmlRes.kml.Document.Folder.Placemark.each(function(placemarkIndex, placemark){
+                            res.write(placemark.text());
+                        });
+
+                        mutex--;
+                        if(done && mutex === 0){
+                            closeKML();
+                        }
+                    });
+
+                } else {
+                    done = true;
                     mutex--;
+
+                    if(mutex === 0){ //If all processing is done, end now
+                        closeKML();
+                    }
                 }
             },
             incrementMutex

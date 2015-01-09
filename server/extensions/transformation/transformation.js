@@ -32,10 +32,10 @@ exports.toCSV = function(streamIn, streamOut) {
     });
 };
 
-exports.toKML = function(streamIn, streamOut) {
+exports.toKML = function(dataIn, callback) {
     exports.execute({
-        streamIn: streamIn,
-        streamOut: streamOut,
+        dataIn: dataIn,
+        callback: callback,
         format: 'KML',
         skipFailures: true
     });

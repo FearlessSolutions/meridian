@@ -37,6 +37,31 @@ exports.pipeGeoJSONResponse = function(userName, queryIds, callback, incrementMu
 
 
 
+exports.pipeKMLResponse = function(userName, queryIds, callback, incrementMutex){
+    query.streamQuery(userName, {query:{terms:{queryId:queryIds}}}, 100, function(queryErr, results) {
+
+        //Tell parent that a new thread has been started
+        incrementMutex();
+
+        //Do what is needed for callback
+        if(queryErr){
+            callback(queryErr, null);
+        } else if(results.hits.hits.length === 0){
+            callback(null, null);
+        }else{
+            try {
+                transform.toKML(resultsToGeoJSON(results), callback);
+            }catch(ogrErr){
+                callback(ogrErr, null);
+            }
+        }
+    });
+};
+
+
+
+
+
 
 
 
