@@ -1,6 +1,21 @@
 [ ![Codeship Status for ozone-development/meridian](https://codeship.com/projects/479f9b90-5167-0132-a553-7262abc25231/status)](https://codeship.com/projects/48335)
 
-## Requirements
+# Meridian
+Event-driven, framework-agnostic, extensible architecture for mapping applications. Meridian wraps code into reusable and decoupled components and/or extensions that can easily communicate with each other. 
+
+## Embed Meridian:
+
+Just include the following `<iframe>` on any HTML page source code:
+
+`<iframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/"></iframe>`
+- You can add style to the `<iframe>` to suit any need.
+- Meridian utilizes [CMAPI](http://cmapi.org) to recieve and send information while it is embedded.
+
+##Access Meridian:
+https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/
+
+## Download Meridian and host locally:
+### Requirements
 
 The project uses Grunt for task management. Use of Grunt is optional, but highly recommended.
 
@@ -10,9 +25,9 @@ The project uses Grunt for task management. Use of Grunt is optional, but highly
 
  - Run `npm install -g grunt-cli` if needed
 
-To host the database locally (which will be populated with mock data), you will need to have [Node.js](http://nodejs.org/) installed and found in the path, and the ElasticSearch we provide running. If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the Grunt Support Setup instructions.
+To host the database locally (which will be populated with mock data), you will need to have [Node.js](http://nodejs.org/) installed and found in the path, and [ElasticSearch] (http://www.elasticsearch.org/overview/elkdownloads/) exported into the `data` folder, making sure the path: `data/bin/` is valid. If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the Grunt Support Setup instructions.
 
-The project also uses [JSDOM](https://www.npmjs.org/package/jsdom). Unfortunately, JSDOM relies on a node package called Contextify that is difficult to get working in Windows. To install JSDOM you will need:
+The project also uses [JSDOM](https://www.npmjs.org/package/jsdom). Unfortunately, JSDOM relies on a node package called Contextify that is difficult to get working in WINDOWS. To install JSDOM you will need:
 
 - [Python 2.7](https://www.python.org/download/releases/2.7/)  installed and found in the path.
 
@@ -40,11 +55,13 @@ For other parts of the project, make sure:
   - You might need to restart the browser after importing the certificate.
 
 
-## Setup
+### Setup
 
 You have two options for getting up an running, with or without the Grunt support.
 
 **Option 1 -** Without Grunt support:
+
+1. Make sure to read the above requirements to make sure everything needed is installed.
 
 1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
 
@@ -55,16 +72,20 @@ You have two options for getting up an running, with or without the Grunt suppor
   - **For windows users:** Make sure to use the `Windows SDK 7.1 Command Prompt` as Administrator and set the command prompt environment to x86 by running `setenv /x86`. The command prompt can be found in the Start Menu after the SDK has been installed.
 
 1. Start ElasticSearch:
-	1. Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
+	1. Run `data/bin/elasticsearch` on Unix, or `data/bin/elasticsearch.bat` on Windows.
 	1. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
 
 1. Start the App Server:
     1. To start the local server run: `node app.js`
     1. Now open your browser and visit ([https://localhost:3000](https://localhost:3000)) to see Meridian in action.
 
+NOTE: If when starting elastic search you recieve warnings regarding multicasting you most likely have been added to an already exsisting elastic search cluster and may recieve unintended outcomes from the application.  You can disable multicasting by navigating to the directory you extracted elastic search to and then navigating to the config/elasticsearch.yml file. In there uncomment the line `discovery.zen.ping.multicast.enabled: false` and save the file. You can now restart elastic search.
+
 **Option 2 -** With Grunt Support:
 
 1. Get Grunt's global CLI module. Run `npm install -g grunt-cli`.
+
+1. Make sure to read the above requirements to make sure everything needed is installed.
 
 1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
 
@@ -83,8 +104,9 @@ developers will be responsible for running `npm install` to get the dependencies
 
 1. Make sure ElasticSearch starts okay, even though you will be using grunt to start it for you:
  1. Change into the `meridian` directory, if you are not already there.
- 1. Run `bin/elasticsearch` on Unix, or `bin/elasticsearch.bat` on Windows.
+ 1. Run `data/bin/elasticsearch` on Unix, or `data/bin/elasticsearch.bat` on Windows.
  1. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
+ 1. Stop ElasticSearch since grunt will be starting it for you.
 
 1. Start the App Server:
     1. To start the local server run: `grunt server`
@@ -104,6 +126,8 @@ To view the documentation page, go to [https://localhost:3000/docs/meridian](htt
 Introduction to Meridian can be found [here](http://ozone-development.github.io/meridian/).
 
 Much of the Design is based on [Aura](http://aurajs.com/). 
+
+Meridian utilizes [CMAPI](http://cmapi.org) to recieve and send information while it is embedded.
 
 
 ## Copyrights

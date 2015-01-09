@@ -66,7 +66,8 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
         "debug": true,
         "appName": "Meridian",
         "sources": {"default": "components"},
-        "mediator": {"maxListeners": 50}
+        "mediator": {"maxListeners": 50},
+        "version": "0.5.2"
     })
     .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')
@@ -85,6 +86,7 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/locator-extension/locator-formatData-extension')
     .use('extensions/data-services/mock-extension/mock-extension')
     .use('extensions/data-services/fake-extension/fake-extension')
+    .use('extensions/export/export-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
     .use('extensions/upload-data-extension/upload-data-extension')
     .start({ "components": "body" })

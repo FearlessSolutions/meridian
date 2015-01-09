@@ -55,20 +55,8 @@ define([
                     },
                     postRenderingAction: function(feature, layerId) {
                         $('.' + config.namespace + ' .infoDiv .exportFeature .btn').on('click', function(){
-                            var channelName = $('.' + config.namespace + ' .infoDiv .exportFeature select').find(':selected').val();
-                            switch(channelName){
-                                case "export.download.geojson":
-                                    context.sandbox.emit(channelName, {featureId: feature.featureId});
-                                    break;
-                                case "export.google.maps":
-                                    context.sandbox.dataStorage.getFeatureById({featureId: feature.featureId}, function(feature){
-                                        context.sandbox.emit(channelName, {lat: feature.geometry.coordinates[1],
-                                            lon: feature.geometry.coordinates[0]});
-                                    });
-                                    break;
-                                default:
-                                    console.log("ERROR: Unknown channel -- " + channelName);
-                            }
+                            //emiting message to open export picker.
+                            context.sandbox.emit("export.picker.open", {featureId: feature.featureId});
                         });
                     }
                 },
