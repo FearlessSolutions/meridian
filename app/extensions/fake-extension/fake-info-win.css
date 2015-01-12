@@ -1,5 +1,6 @@
 .fake-extension.info-win-dialog{
 	font-size: .8em;
+    overflow: hidden;
 }
 
 .fake-extension.info-win-dialog .infoDiv{

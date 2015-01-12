@@ -1,5 +1,6 @@
 .mock-extension.info-win-dialog{
 	font-size: .8em;
+    overflow: hidden;
 }
 
 .mock-extension.info-win-dialog .infoDiv{
