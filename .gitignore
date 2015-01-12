@@ -1,2 +1,6 @@
 #Grunt related libraries
 node_modules
+
+#IDE specific files
+.idea
+
