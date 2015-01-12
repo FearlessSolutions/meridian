@@ -16,7 +16,7 @@ div[data-aura-component='tools/export-picker'] .modal-backdrop.in {
 
 div[data-aura-component='tools/export-picker'] .modal-dialog {
     margin: 5% auto;
-    width: 300px;
+    width: 500px;
 }
 
 div[data-aura-component='tools/export-picker'] {
@@ -24,15 +24,42 @@ div[data-aura-component='tools/export-picker'] {
 }
 
 div[data-aura-component='tools/export-picker'] .modal-body {
-    padding-top: 10px;
+    /*padding-top: 10px;
     padding-left: 45px;
-    padding-bottom: 10px;
+    padding-bottom: 10px;*/
+    max-height: 280px;
+    padding: 20px 10px;
 }
 
-/*div[data-aura-component='tools/export-picker'] #options {
+div[data-aura-component='tools/export-picker'] .modal-footer {
+  padding: 10px;
+}
+
+div[data-aura-component='tools/export-picker'] #options {
     border-right: 1px solid #f7f7f7;
-}*/
+}
+
+div[data-aura-component='tools/export-picker'] #options,
+div[data-aura-component='tools/export-picker'] #layers{
+  overflow: auto;
+  max-height: 200px;
+}
 
 div[data-aura-component='tools/export-picker'] #scope {
     padding-left: 25px;
+}
+
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body table {
+  margin-bottom: 2px;
+}
+
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body table th,
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body table td {
+  border-top: none;
+  border-bottom: 1px solid #dddddd;
+}
+
+/*spacing between the checkbox options*/
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body .data-checkbox {
+    padding: 2px;
 }
