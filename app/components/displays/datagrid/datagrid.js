@@ -329,18 +329,21 @@ define([
     function getHeaders(){
         var columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
             columnHeaders = [];            //Set up headers. They should already be in the correct order.
-
+            
+            var defaultColumnWidth = ($(window).width())/columnHeadersMetadata.length;
+            
         context.sandbox.utils.each(columnHeadersMetadata, function (columnHeaderIndex, columnHeaderMetadata) {
             var width;
 
             $testArea.html('<span>' + columnHeaderMetadata.displayName + '</span>'); //This is the only way to find text length. Is styled  the same as header
             width = $testArea.find('span').width() + 30;
 
+            //console.log(width);
             columnHeaders.push({
                 id: columnHeaderMetadata.property + columnHeaderMetadata.displayName,
                 name: columnHeaderMetadata.displayName,
                 field: columnHeaderMetadata.property,
-                width: width > MIN_COLUMN_WIDTH ? width : MIN_COLUMN_WIDTH,
+                width: defaultColumnWidth,
                 sortable: true
             });
         });
