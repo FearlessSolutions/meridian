@@ -16,13 +16,13 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="..">Meridian</a>
+        <a class="navbar-brand" href="../index.html">Meridian</a>
       </div>
       <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href=".">Getting Started</a></li>
-          <li><a href="../contribute">Contribute</a></li>
-          <li><a href="../examples">Examples</a></li>
+          <li class="active"><a href="./index.html">Getting Started</a></li>
+          <li><a href="../contribute/index.html">Contribute</a></li>
+          <li><a href="../examples/index.html">Examples</a></li>
         </ul>
       </div>
     </nav>
@@ -41,7 +41,7 @@
               </ul>
 
           <h4 class="page-header" id="accessMeridian">Access Meridian</h3>
-            <p>Quickly access Meridian by clicking this link: <a href="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/">Meridian</a>.</p>
+            <p>Quickly access Meridian by clicking this link: <a href="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/index.html">Meridian</a>.</p>
             
 
           <h4 class="page-header" id="embedMeridian">Embed Meridian</h3>
@@ -49,11 +49,11 @@
             HTML page source code:</p>
             <p><code>&ltiframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/"&gt&lt/iframe&gt</code></p>
             <p>The embeded application would look something like this: (this is an example of the basic mode.</p>
-            <iframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/basic/" style="height:400px; width:100%"></iframe>
+            <iframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/basic/index.html" style="height:400px; width:100%"></iframe>
 
           <br>
           <h2 id="requirements" class="page-header">Local Meridian Setup</h3>
-            <p>To host the database locally (which will be populated with mock data), you will need to have Node.js installed, have it in the project path, and have the ElasticSearch we provide running. If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the <a href="./#withGrunt">Grunt Support Setup instructions</a>.</p>
+            <p>To host the database locally (which will be populated with mock data), you will need to have Node.js installed, have it in the project path, and have the ElasticSearch we provide running. If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the <a href="./index.html#withGrunt">Grunt Support Setup instructions</a>.</p>
             <p> Instructions can also be found on our <a href="//github.com/ozone-development/meridian">Github</a> page.</p>
 
           <h4 class="page-header">Meridian</h4>
@@ -134,10 +134,10 @@
                 <br><p><strong>NOTE:</strong> If when starting elastic search, you recieve warnings regarding multicasting you most likely have been added to an already exsisting elastic search cluster and may recieve unintended outcomes from the application. You can disable multicasting by navigating to the directory you extracted elastic search to and then navigating to the config/elasticsearch.yml file. In there, uncomment the line <code>discovery.zen.ping.multicast.enabled: false</code> and save the file. You can now restart elastic search.</p>
             </ul>
 
-          <h4 class="page-header" id="resourses">Resourses within the running App</h4>
+          <h4 class="page-header" id="resources">Resources within the running App</h4>
             <ul>
               <li>The application page <a href="http://localhost:3000">http://localhost:3000</a>.</li>
-              <li>To view the documentation page, go to <a href="http://localhost:3000/docs/meridian">http://localhost:3000/docs/meridian</a>.</li>
+              <li>To view the documentation page, go to <a href="http://localhost:3000/docs/meridian/index.html">http://localhost:3000/docs/meridian/index.html</a>.</li>
               <li>Meridian utilizes <a href="http://cmapi.org">CMAPI</a> to receive and send information while it is embedded.</li>
             </ul>
         </section><!-- md-10 container -->
@@ -155,7 +155,7 @@
               <li><a href="#withoutGrunt">Without Grunt Support</a></li>
               <li><a href="#withGrunt">With Grunt Support</a></li>
               </li>
-              <li><a href="#resourses">Resourses</a></li>
+              <li><a href="#resources">Resources</a></li>
             </ul>
           </nav> <!-- sideNav -->
         </section><!-- md-2 -->
@@ -168,7 +168,7 @@
       <div class="container">
         <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian/archive/master.zip"><i class="glyphicon glyphicon-cloud-download"></i> Download Meridian</a>
         <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian"><i class="icon-github3"></i> View on Github</a>
-        <a class="btn btn-primary btn-xs" href="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/" target="_blank"><i class="icon-rocket2"></i> Launch Meridian</a>
+        <a class="btn btn-primary btn-xs" href="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/index.html" target="_blank"><i class="icon-rocket2"></i> Launch Meridian</a>
       </div>
         
       <div class="container new-section small">
