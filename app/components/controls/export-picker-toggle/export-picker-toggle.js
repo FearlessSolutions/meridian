@@ -30,15 +30,23 @@ define([
             });
         },
         setActive: function() {
-            if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
-                $button.addClass('active');
-                publisher.openModal();
-            } else {
+            if(context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 publisher.publishMessage({
                     "messageType": 'warning',
                     "messageTitle": 'Export',
                     "messageText": 'No data to export.'
                 });
+                //make sure export is defined and that options is not empty
+            } else if(!context.sandbox.export || !context.sandbox.export.options ||
+                context.sandbox.utils.isEmptyObject(context.sandbox.export.options)) {
+                publisher.publishMessage({
+                    "messageType": 'warning',
+                    "messageTitle": 'Export',
+                    "messageText": 'No export options available in the application.'
+                });
+            } else {
+                $button.addClass('active');
+                publisher.openModal();
             }
         },
         removeActive: function() {
