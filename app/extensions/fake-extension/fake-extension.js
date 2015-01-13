@@ -40,6 +40,9 @@ define([
                         });
                     }
                 },
+                validateForExport: function(){
+
+                },
                 //See data-storage-extension for key variable descriptions
                 keys: [
                     {
