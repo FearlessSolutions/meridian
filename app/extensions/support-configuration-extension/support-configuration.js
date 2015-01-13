@@ -32,7 +32,7 @@ define([
                 "placement" : "bottom",
                 "width" : "250px",
                 "title": "Individual Feature Toggle",
-                "content" : "Change data being plotted on the map to appear as a individual features."
+                "content" : "Change data being plotted on the map to appear as individual points."
             },
             {
                 "componentName" : "heatmap-toggle-btn",
