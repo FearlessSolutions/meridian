@@ -20,13 +20,13 @@ define([
             $maxLat = context.$('.query-form #query-location-maxLat');
 
             $modal.modal({
-                "backdrop": "static",
-                "keyboard": false,
-                "show": false
+                backdrop: 'static',
+                keyboard: false,
+                show: false
             });
 
             // $modal.on('shown.bs.dialog', function(){
-            //     publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            //     publisher.publishOpening({componentOpening: MENU_DESIGNATION});
             // });
             
             context.$('.query-form button[type="submit"]').on('click', function(event) {
@@ -41,14 +41,14 @@ define([
                     errorFree = true;
 
                 var queryObject = {
-                        "name": name,
-                        "dataSourceId": dataSource,
-                        "justification": justification,
-                        "minLat": minLat,
-                        "minLon": minLon, 
-                        "maxLat": maxLat, 
-                        "maxLon": maxLon, 
-                        "pageSize": 300
+                        name: name,
+                        dataSourceId: dataSource,
+                        justification: justification,
+                        minLat: minLat,
+                        minLon: minLon,
+                        maxLat: maxLat,
+                        maxLon: maxLon,
+                        pageSize: 300
                 };   
 
 
@@ -103,9 +103,9 @@ define([
                     exposed.clearQueryForm();
                 } else {
                     publisher.publishMessage({
-                        "messageType": "error",
-                        "messageTitle": "Query Tool",
-                        "messageText": "Invalid query parameters."
+                        messageType: 'error',
+                        messageTitle: 'Query Tool',
+                        messageText: 'Invalid query parameters.'
                     });
                 }  
 

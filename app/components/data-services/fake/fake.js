@@ -103,8 +103,13 @@ define([
                     initiateQuery(queryName);
 
                     getPage = function(params, start, pageSize){
-                        context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.queryId, params.sessionId, start, pageSize, function(err, results){
+                        var newAJAX = context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.queryId, params.sessionId, start, pageSize, function(err, results){
                             if(err) {
+                                //If the error was because we aborted, ignore
+                                if(err.statusText === 'abort') {
+                                    return;
+                                }
+                                
                                 handleError({queryId: params.queryId});
                             } else if (!results || results.length === 0) {
                                 completeQuery(queryName, params.queryId);
@@ -112,6 +117,11 @@ define([
                                 processDataPage(results, {queryId: params.queryId, name: queryName});
                                 getPage(params, start + RESTORE_PAGE_SIZE, RESTORE_PAGE_SIZE);
                             }
+                        });
+
+                        context.sandbox.ajax.addActiveAJAX({
+                            newAJAX: newAJAX,
+                            layerId: params.queryId
                         });
                     };
 

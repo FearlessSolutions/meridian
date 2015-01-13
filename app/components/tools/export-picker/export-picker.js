@@ -22,10 +22,12 @@ define([
             $exportButton = context.$('button[type="submit"]');
             $closeButton = context.$('button[type="cancel"]');
 
+            /* 
             context.sandbox.exportOps.forEach(function(option){
                 var optionHTML = optionTemplate(option);
                 $picker.append(optionHTML);
             });
+            */
 
             $modal.modal({
                 backdrop: true,

@@ -35,7 +35,6 @@ define([
             $supportButton.removeClass('active');
         },
         clear: function() {
-            $supportButton.removeClass('active');
         }
     };
 
