@@ -6,7 +6,7 @@ define([
     'jquery',
     'bootstrap',
     'handlebars'
-], function(mockHbs, mockInfoWinCSS, mapUrlHBS, mockConfig, $) {
+], function(infoWinHBS, infoWinCSS, mapUrlHBS, config, $) {
     var context,
         mapUrlTemplate;
 
@@ -15,15 +15,28 @@ define([
             context = app;
             mapUrlTemplate = Handlebars.compile(mapUrlHBS);
 
-            app.sandbox.utils.addCSS(mockInfoWinCSS, 'mock-extension-style');
+            app.sandbox.utils.addCSS(infoWinCSS, 'mock-extension-style');
+
+            //Add datasource information to the sandbox
+            if(!app.sandbox.datasources){
+                app.sandbox.datasources = [];
+            }
+
+            datasource = {
+                DATASOURCE_NAME: config.DATASOURCE_NAME,
+                DISPLAY_NAME: config.DISPLAY_NAME
+            };
+            app.sandbox.datasources.push(datasource);
 
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
             app.sandbox.dataServices.mock = {
+                DATASOURCE_NAME: config.DATASOURCE_NAME,
+                DISPLAY_NAME: config.DISPLAY_NAME,
                 infoWinTemplate: {
                     buildInfoWinTemplate: function(attributes, fullFeature) {
-                        var mockTemplate = Handlebars.compile(mockHbs);
+                        var mockTemplate = Handlebars.compile(infoWinHBS);
                         var html;
 
                         //Add the url
@@ -34,32 +47,21 @@ define([
                             classification: attributes.classification,
                             name: attributes.name,
                             attributes: attributes,
-                            namespace: 'mock-extension',
-                            exports: mockConfig.exports
+                            namespace: config.namespace,
+                            exports: config.exports
                         });
 
                         return html;
                     },
                     postRenderingAction: function(feature, layerId) {
-                        $('.mock-extension .infoDiv .exportFeature .btn').on('click', function(){
+                        $('.' + config.namespace + ' .infoDiv .exportFeature .btn').on('click', function(){
                             //emiting message to open export picker.
                             context.sandbox.emit("export.picker.open", {featureId: feature.featureId});
                         });
                     }
                 },
                 //See data-storage-extension for key variable descriptions
-                keys: [
-                    {
-                        property: 'percent',
-                        displayName: '%',
-                        weight: 76
-                    },
-                    {
-                        property: 'color',
-                        displayName: 'Color',
-                        weight: 69
-                    }
-                ],
+                keys: config.keys,
                 processMapUrl: processMapUrl
             };
         }

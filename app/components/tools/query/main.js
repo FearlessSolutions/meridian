@@ -12,7 +12,7 @@ define([
             this.sandbox.utils.addCSS(queryToolCSS, 'tools-query-component-style');
 
             var queryToolTemplate = Handlebars.compile(queryToolHBS);
-            var html = queryToolTemplate();
+            var html = queryToolTemplate({datasources: this.sandbox.datasources});
             this.html(html);
 
             queryToolPublisher.init(this);
