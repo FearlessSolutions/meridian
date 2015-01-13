@@ -1,6 +1,4 @@
 var uuid = require('node-uuid'),
-    Stream = require('stream'),
-    EventStream = require('event-stream'),
     fileDownload = require('./file-download'),
     jsxml,
 
@@ -33,7 +31,6 @@ exports.init = function(context){
         app = context.app,
         auth = context.sandbox.auth,
         config = context.sandbox.config.getConfig(),
-        transform = context.sandbox.transform;
         jsxml = context.sandbox.jsxml;
 
     jsxml.XML.prettyPrinting = true;
