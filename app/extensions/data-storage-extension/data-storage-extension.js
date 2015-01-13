@@ -63,7 +63,7 @@ define([
                     });
                 },
                 getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
-                    $.ajax({
+                    return $.ajax({
                         type: "GET",
                         url: app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/query/" + queryId + "/session/" + sessionId +
                             "?start=" + start + "&size=" + size
