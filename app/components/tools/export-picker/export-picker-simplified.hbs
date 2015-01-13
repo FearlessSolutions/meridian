@@ -1,13 +1,13 @@
-<div class="modal fade" id="export-picker-modal" tabindex="-1" role="dialog" aria-labelledby="export-picker-modal" aria-hidden="true">
+<div class="modal fade" id="export-picker-simplified-modal" tabindex="-1" role="dialog" aria-labelledby="export-picker-modal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header dialog-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <p class="modal-title">Export</p>
+                <p class="modal-title">Export selected point</p>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-12">
                         <table class="table">
                             <tr>
                                 <th class="export-option-title data-name">Export Options:</th>
@@ -17,26 +17,11 @@
                             <table id="options" class="table"></table>
                         </div>
                     </div>
-                    <div class="col-md-8 divider">
-                        <table class="table">
-                            <tr>
-                                <th class="data-checkbox">
-                                    <input type="checkbox" value="checkAll">
-                                </th>
-                                <th class="data-name">Layer Name</th>
-                                <th class="data-source">Source</th>
-                                <th class="data-records">Records</th>
-                            </tr>
-                        </table>
-                        <div class="list-container">
-                            <table id="layers" class="table"></table>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
+                    <div class="col-sm-12">
                         <button type="submit" class="btn btn-primary pull-right">Export</button>
                         <button type="cancel" class="btn btn-default-secondary  pull-right">Cancel</button>
                         <p class="info-text pull-right"><span class="glyphicon glyphicon-info-sign"></span> Additional info here</p>

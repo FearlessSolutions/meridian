@@ -1,22 +1,11 @@
-div[data-aura-component='tools/export-picker'] body.dialog-open .modal-backdrop {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1030;
-  background-color: #000000;
-  display: none;
-}
-
-div[data-aura-component='tools/export-picker'] .modal-backdrop.in {
-    opacity: 0.7;
-    filter: alpha(opacity=70);
-}
-
-div[data-aura-component='tools/export-picker'] .modal-dialog {
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-dialog {
     margin: 5% auto;
-    width: 500px;
+    width: 700px;
+}
+
+div[data-aura-component='tools/export-picker'] #export-picker-simplified-modal .modal-dialog {
+    margin: 5% auto;
+    width: 335px;
 }
 
 div[data-aura-component='tools/export-picker'] {
@@ -24,42 +13,84 @@ div[data-aura-component='tools/export-picker'] {
 }
 
 div[data-aura-component='tools/export-picker'] .modal-body {
-    /*padding-top: 10px;
-    padding-left: 45px;
-    padding-bottom: 10px;*/
+    padding: 10px 10px 0 10px;
     max-height: 280px;
-    padding: 20px 10px;
+}
+
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body .divider {
+    border-left: 1px solid #f7f7f7;
 }
 
 div[data-aura-component='tools/export-picker'] .modal-footer {
-  padding: 10px;
+    padding: 10px;
+    border-top: none;
 }
 
-div[data-aura-component='tools/export-picker'] #options {
-    border-right: 1px solid #f7f7f7;
+div[data-aura-component='tools/export-picker'] .list-container{
+    overflow: auto;
+    max-height: 195px;
 }
 
-div[data-aura-component='tools/export-picker'] #options,
-div[data-aura-component='tools/export-picker'] #layers{
-  overflow: auto;
-  max-height: 200px;
+div[data-aura-component='tools/export-picker'] .modal-body table {
+    margin-bottom: 0;
 }
 
-div[data-aura-component='tools/export-picker'] #scope {
-    padding-left: 25px;
+/*Extra padding to match checkbox width.*/
+div[data-aura-component='tools/export-picker'] #export-picker-modal .export-option-title {
+    padding-bottom: 10px;
 }
 
-div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body table {
-  margin-bottom: 2px;
+div[data-aura-component='tools/export-picker']  .modal-body table th,
+div[data-aura-component='tools/export-picker']  .modal-body table td {
+    border-top: none;
+    border-bottom: none;
 }
 
-div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body table th,
-div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body table td {
-  border-top: none;
-  border-bottom: 1px solid #dddddd;
+div[data-aura-component='tools/export-picker'] .modal-body table tr {
+    border-bottom: 1px solid #dddddd;
 }
 
-/*spacing between the checkbox options*/
-div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body .data-checkbox {
-    padding: 2px;
+/*centralize text*/
+div[data-aura-component='tools/export-picker'] .info-text {
+    margin-bottom: 0;
+    margin-top: 7px;
+    opacity: 0.5;
+}
+
+/*overwrite negative margin of default row class*/
+div[data-aura-component='tools/export-picker'] .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+div[data-aura-component='tools/export-picker'] .modal-body table .data-name {
+    width: 160px;
+    text-align: left;
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div[data-aura-component='tools/export-picker'] .modal-body table .data-checkbox {
+    width: 30px;
+    text-align: left;
+    max-width: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body table .data-source {
+    width: 110px;
+    text-align: left;
+    max-width: 110px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body table .data-records {
+    width: 100px;
+    text-align: right;
 }
