@@ -1,3 +1,19 @@
 <div id="datagridContainer" class="hidden">
-    <button type="button" class="close" data-dismiss="dialog" aria-hidden="true">&times;</button>
+    <button type="button" class="datagridCloseBtn close" data-dismiss="dialog" aria-hidden="true">&times;</button>
+    <div id="header">
+        <div class="searchField input-group">
+            <input id="grid-search-text" type="text" class="form-control" data-placement="bottom" title="Search on field text">
+            <span class="input-group-btn">
+                <button id="grid-search-btn" class="btn btn-primary" type="button">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+    <div id="grid"></div>
+    <div id="pager"></div>
 </div>
+
+<ul id="menu" class="dropdown-menu datagrid-context-menu" role="menu" ></ul>
+<div id="test-area" class="ui-widget"></div>
+

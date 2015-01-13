@@ -6,13 +6,13 @@ define([
 	'text!./datagrid.css',
     'handlebars',
     'jqueryCssWatch'
-], function (datagridTool, datagridSubscriber, datagridPublisher, datagridHBS, datagridCSS) {
+], function (component, subscriber, publisher, componentHBS, componentCSS) {
 
     return {
         initialize: function() {
-            this.sandbox.utils.addCSS(datagridCSS, 'display-datagrid-component-style');
+            this.sandbox.utils.addCSS(componentCSS, 'display-datagrid-component-style');
 
-            var datagridTemplate = Handlebars.compile(datagridHBS);
+            var datagridTemplate = Handlebars.compile(componentHBS);
             var html = datagridTemplate();
 
             this.html(html);
@@ -22,9 +22,9 @@ define([
                 props: 'height'
             });
 
-            datagridPublisher.init(this);
-            datagridTool.init(this);
-            datagridSubscriber.init(this);
+            publisher.init(this);
+            component.init(this);
+            subscriber.init(this);
         }
     };
                 
