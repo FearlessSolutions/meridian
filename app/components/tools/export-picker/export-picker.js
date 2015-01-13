@@ -114,7 +114,7 @@ define([
 
         
             }else if(params && params.layerId){
-                //message came from timeline containign params.overlayId
+                //message came from timeline containing params.overlayId
                 console.log("Layer list OVERLAY opening.");
                 console.log("layerId: ", params.layerId)
                 publisher.publishOpening({"componentOpening": LAYER_DESIGNATION});
@@ -137,14 +137,14 @@ define([
         close: function() {
             $modal.modal('hide');
             $simpleModal.modal('hide');
-            console.log("Close BEING CALLED");
         },
         clear: function() {
             $modal.modal('hide');
             $simpleModal.modal('hide');
         },
         updateExportLayerList: function(){
-
+            //clear old list of layers available.
+            $layerList.html("");
             //it is assumed that dataStorage.datasets will always have at least one layer
             //since the component does not open without one.
             context.sandbox.util.each(context.sandbox.dataStorage.datasets, function(layerId, layerFeature){
@@ -173,7 +173,6 @@ define([
 
                     console.log("Result: ", tempData);
                     var layerRowEntry = exposed.generateLayerRow(tempData);
-                    //TODO:remember to clear before appending.
                     $layerList.append(layerRowEntry);
                 });
 
