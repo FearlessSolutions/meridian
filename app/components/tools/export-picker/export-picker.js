@@ -38,9 +38,11 @@ define([
 
             //no need to check if exports or options is available. Export toggle handles that logic.
             context.sandbox.export.options.forEach(function(option){
-                var optionHTML = optionTemplate(option);
-                $picker.append(optionHTML);
-                $simplePicker.append(optionHTML);
+                if(option.state == 'active'){
+                    var optionHTML = optionTemplate(option);
+                    $picker.append(optionHTML);
+                    $simplePicker.append(optionHTML);
+                }
             });
 
             $modal.modal({
@@ -88,13 +90,11 @@ define([
                     });
                 }
                 publisher.close();
-                $('input[name=exportOption]:checkbox').removeAttr('checked');
             });
  
 
             $closeButton.on('click', function(event) {
                 event.preventDefault();
-                context.$('input[name=exportOption]:checkbox').removeAttr('checked');
                 publisher.close();
             });
 
@@ -133,9 +133,14 @@ define([
                 console.log("layerId: ", params.layerId)
                 publisher.publishOpening({"componentOpening": LAYER_DESIGNATION});
                 exposed.updateExportLayerList();
-                //state is persisting even though element is set to true.
-                //Forcing the element to show as selected when modal is opened.
-                $selectAll.prop('checked', true);
+
+                //context.$('#layers input:checkbox').removeAttr('checked');
+                var a = context.$('input[value='+params.layerId+']');
+                //$('input[value=5EAA2F2F-B002-4884-9479-234911A6F746]')
+                console.log("a: " , a);
+                console.log("b: ", $selectAll);
+                a.prop('checked', true);
+
                 $modal.modal('show');
 
             }
@@ -157,6 +162,7 @@ define([
         close: function() {
             $modal.modal('hide');
             $simpleModal.modal('hide');
+            $('input[name=exportOption]:checkbox').removeAttr('checked');
         },
         clear: function() {
             $modal.modal('hide');
@@ -179,34 +185,22 @@ define([
                     }
                 })
                 .done(function(data) {
-                    currentDataSet = {};
-                    currentDataArray = [];
 
                     tempData = {
-                        datasetId: data.queryId,
-                        dataSessionId: data.sessionId,
-                        dataSource: data.dataSource || 'N/A',
-                        dataName: data.queryName || 'N/A',
-                        dataRecordCount: data.numRecords || 'N/A',
-                        rawDataObject: data.rawQuery || 'N/A'
+                        "layerId": data.queryId,
+                        "dataSource": data.dataSource || 'N/A',
+                        "layerName": data.queryName || 'N/A',
+                        "layerRecordCount": data.numRecords || 'N/A',
                     };
 
-                    console.log("Result: ", tempData);
-                    var layerRowEntry = exposed.generateLayerRow(tempData);
-                    $layerList.append(layerRowEntry);
+                    //console.log("Result: ", tempData);
+                    $layerList.append(layerRowTemplate(tempData));
                 });
 
 
             });//end of the util.each
             
-        },
-        generateLayerRow: function(layerEntry){
-            return layerRowTemplate ({
-                "layerId": layerEntry.datasetId,
-                "layerName": layerEntry.dataName,
-                "dataSource": layerEntry.dataSource,
-                "layerRecordCount": layerEntry.dataRecordCount
-            });
+            
         }
     };
 

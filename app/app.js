@@ -71,7 +71,6 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     })
     .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')
-    .use('extensions/exports/geojson-extension/geojson-extension')
     .use('extensions/ajax-handler-extension/ajax-handler-extension')
     .use('extensions/session-extension/session-extension')
     .use('extensions/external-pubsub-extension/external-pubsub-extension')
@@ -89,6 +88,10 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/fake-extension/fake-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
     .use('extensions/upload-data-extension/upload-data-extension')
+    .use('extensions/exports/geojson-extension/geojson-extension')
+    .use('extensions/exports/csv-extension/csv-extension')
+    .use('extensions/exports/kml-extension/kml-extension')
+    .use('extensions/exports/googlemaps-extension/googlemaps-extension')
     .start({ "components": "body" })
     .then(function(){
         $('#left-side-menu').css('display','table').animate({
