@@ -34,6 +34,7 @@ define([
             $layerList = $modal.find('#layers');
             $exportButton = context.$('button[type="submit"]');
             $closeButton = context.$('button[type="cancel"]');
+            $selectAll = context.$('input:checkbox[value=checkAll]');
 
             //no need to check if exports or options is available. Export toggle handles that logic.
             context.sandbox.export.options.forEach(function(option){
@@ -48,7 +49,7 @@ define([
                 show: false
             }).on('hidden.bs.modal', function() {
                 publisher.close();
-                $('input:checkbox').removeAttr('checked');
+                $('input[name=exportOption]:checkbox').removeAttr('checked');
             });
 
             $simpleModal.modal({
@@ -57,7 +58,7 @@ define([
                 show: false
             }).on('hidden.bs.modal', function() {
                 publisher.close();
-                $('input:checkbox').removeAttr('checked');
+                $('input[name=exportOption]:checkbox').removeAttr('checked');
             });
 
             $exportButton.on('click', function(){
@@ -87,15 +88,28 @@ define([
                     });
                 }
                 publisher.close();
-                $('input:checkbox').removeAttr('checked');
+                $('input[name=exportOption]:checkbox').removeAttr('checked');
             });
  
 
             $closeButton.on('click', function(event) {
                 event.preventDefault();
-                context.$('input:checkbox').removeAttr('checked');
+                context.$('input[name=exportOption]:checkbox').removeAttr('checked');
                 publisher.close();
             });
+
+            //select all logic. WILL NOT WORK consistently WITH .attr
+            $selectAll.on('click', function(event) {
+                if($selectAll.is(':checked')){
+                    context.$('#layers input:checkbox').prop('checked', true);
+                }
+                else{
+                    context.$('#layers input:checkbox').prop('checked', false);
+                }
+            });
+
+            //hide info text found on the left side of the close and export buttons.
+            context.$('.info-text').hide();
            
         },
         open: function(params) {
@@ -119,6 +133,9 @@ define([
                 console.log("layerId: ", params.layerId)
                 publisher.publishOpening({"componentOpening": LAYER_DESIGNATION});
                 exposed.updateExportLayerList();
+                //state is persisting even though element is set to true.
+                //Forcing the element to show as selected when modal is opened.
+                $selectAll.prop('checked', true);
                 $modal.modal('show');
 
             }
@@ -127,6 +144,9 @@ define([
                 console.log("Layer list ALL opening.");
                 publisher.publishOpening({"componentOpening": LAYER_DESIGNATION});
                 exposed.updateExportLayerList();
+                //state is persisting even though element is set to true.
+                //Forcing the element to show as selected when modal is opened.
+                $selectAll.prop('checked', true);
                 $modal.modal('show');
 
             }
