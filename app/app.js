@@ -90,8 +90,8 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
         "appName": "Meridian",
         "sources": {"default": "components"},
         "mediator": {"maxListeners": 50},
-        "version": "0.5.2",
-        "releaseDate": "01/08/2015"
+        "version": "0.5.4",
+        "releaseDate": "01/13/2015"
     })
     .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')
