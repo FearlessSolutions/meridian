@@ -2,6 +2,7 @@ define([
     './export-picker-publisher',
     'text!./export-picker-option.hbs',
     'text!./export-picker-layers.hbs',
+    'text!./export-picker-simplified.hbs',
     'bootstrap',
     'handlebars'
 ], function (publisher, optionHBS, layersHBS) {
@@ -11,8 +12,11 @@ define([
         LAYER_DESIGNATION = 'export-picker-layer-modal',
         $modal,
         $picker,
+        $simpleModal,
+        $simplePicker,
         $closeButton,
         $exportButton,
+        $layerList,
         currentDataSet,
         currentDataArray,
         layerRowTemplate;
@@ -24,17 +28,30 @@ define([
 
             context = thisContext;
             $modal = context.$('#export-picker-modal');
+            $simpleModal = context.$('#export-picker-simplified-modal');
             $picker = $modal.find('#options');
+            $simplePicker = $simpleModal.find('#options');
             $layerList = $modal.find('#layers');
             $exportButton = context.$('button[type="submit"]');
             $closeButton = context.$('button[type="cancel"]');
 
-            context.sandbox.exportOps.forEach(function(option){
+            //no need to check if exports or options is available. Export toggle handles that logic.
+            context.sandbox.export.options.forEach(function(option){
                 var optionHTML = optionTemplate(option);
                 $picker.append(optionHTML);
+                $simplePicker.append(optionHTML);
             });
 
             $modal.modal({
+                backdrop: true,
+                keyboard: true,
+                show: false
+            }).on('hidden.bs.modal', function() {
+                publisher.close();
+                $('input:checkbox').removeAttr('checked');
+            });
+
+            $simpleModal.modal({
                 backdrop: true,
                 keyboard: true,
                 show: false
@@ -92,9 +109,9 @@ define([
                 
                 console.log("Single point opening.");
                 publisher.publishOpening({"componentOpening": POINT_DESIGNATION});
+                $simpleModal.modal('show');
 
-                //hide layer side and resize modal to smaller version.
-                $layerList.hide();
+
         
             }else if(params && params.layerId){
                 //message came from timeline containign params.overlayId
@@ -102,6 +119,7 @@ define([
                 console.log("layerId: ", params.layerId)
                 publisher.publishOpening({"componentOpening": LAYER_DESIGNATION});
                 exposed.updateExportLayerList();
+                $modal.modal('show');
 
             }
             else{
@@ -109,18 +127,21 @@ define([
                 console.log("Layer list ALL opening.");
                 publisher.publishOpening({"componentOpening": LAYER_DESIGNATION});
                 exposed.updateExportLayerList();
-        
+                $modal.modal('show');
 
             }
 
 
-            $modal.modal('show');
+
         },
         close: function() {
             $modal.modal('hide');
+            $simpleModal.modal('hide');
+            console.log("Close BEING CALLED");
         },
         clear: function() {
             $modal.modal('hide');
+            $simpleModal.modal('hide');
         },
         updateExportLayerList: function(){
 
@@ -141,16 +162,6 @@ define([
                     currentDataSet = {};
                     currentDataArray = [];
 
-                    var now = moment(), //This needs to be done now to prevent race condition later
-                        dataDate = moment.unix(data.createdOn),
-                        expireDate = moment.unix(data.expireOn),
-                        isExpired = expireDate.isBefore(now),
-                        disableRestore = isExpired, //Use this as default
-                        tempData,
-                        rawDataObjectString,
-                        dataHistoryDetailView,
-                        dataStatus = isExpired ? 'Expired' : 'N/A';
-
                     tempData = {
                         datasetId: data.queryId,
                         dataSessionId: data.sessionId,
@@ -162,6 +173,7 @@ define([
 
                     console.log("Result: ", tempData);
                     var layerRowEntry = exposed.generateLayerRow(tempData);
+                    //TODO:remember to clear before appending.
                     $layerList.append(layerRowEntry);
                 });
 
@@ -171,8 +183,10 @@ define([
         },
         generateLayerRow: function(layerEntry){
             return layerRowTemplate ({
-                id: layerEntry.datasetId,
-                label: layerEntry.dataName
+                "layerId": layerEntry.datasetId,
+                "layerName": layerEntry.dataName,
+                "dataSource": layerEntry.dataSource,
+                "layerRecordCount": layerEntry.dataRecordCount
             });
         }
     };
