@@ -2,15 +2,28 @@ var uuid = require('node-uuid'),
     Stream = require('stream'),
     EventStream = require('event-stream'),
     fileDownload = require('./file-download'),
-    xmlreader = require('xmlreader'),
+    jsxml,
+
     _ = require('underscore'),
     KML_HEADER,
     KML_FOOTER,
     KML_SCHEMA_HEADER;
 
-KML_HEADER = '<?xml version="1.0" encoding="utf-8" ?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><Folder><name>OGRGeoJSON</name>';
-KML_SCHEMA_HEADER = '</Folder><Schema name="OGRGeoJSON" id="OGRGeoJSON">';
-KML_FOOTER = '</Schema></Document></kml>';
+KML_HEADER =
+    '<?xml version="1.0" encoding="utf-8" ?>' +
+    '\n<kml xmlns="http://www.opengis.net/kml/2.2">' +
+    '\n  <Document>' +
+    '\n    <Folder>' +
+    '\n      <name>OGRGeoJSON</name>';
+
+KML_SCHEMA_HEADER =
+    '\n    </Folder>' +
+    '\n    <Schema name="OGRGeoJSON" id="OGRGeoJSON">';
+
+KML_FOOTER =
+    '\n    </Schema>' +
+    '\n  </Document>' +
+    '\n</kml>';
 
 /**
  * @param app
@@ -21,6 +34,9 @@ exports.init = function(context){
         auth = context.sandbox.auth,
         config = context.sandbox.config.getConfig(),
         transform = context.sandbox.transform;
+        jsxml = context.sandbox.jsxml;
+
+    jsxml.XML.prettyPrinting = true;
 
     fileDownload.init(context);
 
@@ -119,26 +135,6 @@ exports.init = function(context){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     app.get('/results.kml', auth.verifyUser, function(req, res) {
         var userName = res.get('Parsed-User'),
             queryIds = req.query.ids.split(','),
@@ -156,15 +152,12 @@ exports.init = function(context){
             mutex++;
         };
 
-
         closeKML = function(){
             res.write(KML_SCHEMA_HEADER);
 
             _.each(schemaFields, function(fieldNode, fieldName) {
-
-//                console.log(fieldNode);
-//                console.log(fieldNode.text());
-                res.write(fieldNode.text());
+                res.write('\n');
+                res.write(fieldNode.toXMLString(6));
             });
 
             res.write(KML_FOOTER);
@@ -179,6 +172,8 @@ exports.init = function(context){
             userName,
             queryIds,
             function(err, resultChunk) {
+                var xmlDoc;
+
                 // If there was an error, end immediately with err
                 if(err) {
                     res.status(500);
@@ -191,30 +186,24 @@ exports.init = function(context){
                         res.write(KML_HEADER);
                     }
 
-                    xmlreader.read(resultChunk.toString(), function(xmlErr, xmlRes){
-                        console.log("xmlErr", xmlErr);
-                        console.log("xmlres", xmlRes.kml.text());
+                    xmlDoc = new jsxml.XML(resultChunk.toString());
 
-                        //Iterate over the fields for the chunk, adding new ones to schemaFields
-                        xmlRes.kml.Document.Schema.SimpleField.each(function(fieldIndex, field){
-                            var name = field.attributes().name;
-                            if(!schemaFields[name]){
-                                schemaFields[name] = field.parent();
-                            }
-//                            console.log(field.attributes());
-                        });
+                    // Write all the points to the document
+                    res.write('\n');
+                    res.write(xmlDoc.descendants('Placemark').toXMLString(6));
 
-                        //Add each point to the document
-                        xmlRes.kml.Document.Folder.Placemark.each(function(placemarkIndex, placemark){
-                            res.write(placemark.text());
-                        });
+                    xmlDoc.descendants('SimpleField').each(function(simpleField){
+                        var fieldName = simpleField.attribute('name');
 
-                        mutex--;
-                        if(done && mutex === 0){
-                            closeKML();
+                        if(!schemaFields[fieldName]){
+                            schemaFields[fieldName] = simpleField;
                         }
                     });
 
+                    mutex--; //TODO remove
+                    if(done && mutex === 0){
+                        closeKML();
+                    }
                 } else {
                     done = true;
                     mutex--;
