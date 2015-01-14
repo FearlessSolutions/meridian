@@ -17,8 +17,7 @@ define([
         $closeButton,
         $exportButton,
         $layerList,
-        currentDataSet,
-        currentDataArray,
+        currentLayerNameMap = {},
         layerRowTemplate;
 
     var exposed = {
@@ -51,7 +50,7 @@ define([
                 show: false
             }).on('hidden.bs.modal', function() {
                 publisher.close();
-                $('input[name=exportOption]:checkbox').removeAttr('checked');
+                $('input[name=exportOption]:checkbox').removeProp('checked');
             });
 
             $simpleModal.modal({
@@ -60,34 +59,47 @@ define([
                 show: false
             }).on('hidden.bs.modal', function() {
                 publisher.close();
-                $('input[name=exportOption]:checkbox').removeAttr('checked');
+                $('input[name=exportOption]:checkbox').removeProp('checked');
             });
 
             $exportButton.on('click', function(){
 
-                var selectedExports = context.$("input[name=exportOption]:checked").map(
+                var selectedOptions = context.$("input[name=exportOption]:checked").map(
                     function () {return this.value;}).get().join(",");
-                var selectedExportsList = selectedExports.split(",");
+                var selectedOptionsList = selectedOptions.split(",");
 
-               if(selectedExportsList[0] === ""){
+                 var selectedLayers = context.$('#layers input[type="checkbox"]:checked').map(
+                     function () {return this.value;}).get().join(",");
+                 var selectedLayerList = selectedLayers.split(",");
+
+
+
+               if(selectedOptionsList[0] === ""){
                     publisher.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Export',
                         messageText: 'No export option selected.'
                     });
                     return;
+                }else if (selectedLayerList[0] === ""){
+                    publisher.publishMessage({
+                        messageType: 'warning',
+                        messageTitle: 'Export',
+                        messageText: 'No layer to export selected.'
+                    });
+                    return;
                 }
                 else{
-                    context.sandbox.utils.each(selectedExportsList, function(idx, destination){
-                        context.sandbox.exports.sendFeaturesTo(destination,  function(status){
-                            publisher.publishMessage({
-                                messageType: status.messageType,
-                                messageTitle: 'Export',
-                                messageText: status.messageText
-                            });
-                            return;
-                        });
+                    //console.log(selectedExportsList);
+                    //["export.file.csv", "export.file.kml"]
+                    context.sandbox.util.each(selectedOptionsList, function(index, selectedOption){
+                        var listToExport = exposed.validateFeatures(selectedLayerList,selectedOption);
+                        if(listToExport.length > 0){
+                            exposed.sendToExport(listToExport, selectedOption);
+                        }
                     });
+                    
+                    
                 }
                 publisher.close();
             });
@@ -101,10 +113,11 @@ define([
             //select all logic. WILL NOT WORK consistently WITH .attr
             $selectAll.on('click', function(event) {
                 if($selectAll.is(':checked')){
-                    context.$('#layers input:checkbox').prop('checked', true);
+                    context.$('#layers input[type="checkbox"]').prop('checked', true);
                 }
                 else{
-                    context.$('#layers input:checkbox').prop('checked', false);
+                    //don't change this to removeProp. 
+                    context.$('#layers input[type="checkbox"]').prop('checked', false);
                 }
             });
 
@@ -113,15 +126,15 @@ define([
            
         },
         open: function(params) {
-            console.log("dataSets",context.sandbox.dataStorage.datasets);
-            context.sandbox.util.each(context.sandbox.dataStorage.datasets, function(layerId, layerFeature){
-                console.log("id: ", layerId);
-                console.log("feature: ", layerFeature);
-            });
+            // console.log("dataSets",context.sandbox.dataStorage.datasets);
+            // context.sandbox.util.each(context.sandbox.dataStorage.datasets, function(layerId, layerFeature){
+            //     console.log("id: ", layerId);
+            //     console.log("feature: ", layerFeature);
+            // });
             if(params && params.featureId){
                 //params can have featureId or overlayId.
                 
-                console.log("Single point opening.");
+                //console.log("Single point opening.");
                 publisher.publishOpening({"componentOpening": POINT_DESIGNATION});
                 $simpleModal.modal('show');
 
@@ -129,53 +142,42 @@ define([
         
             }else if(params && params.layerId){
                 //message came from timeline containing params.overlayId
-                console.log("Layer list OVERLAY opening.");
-                console.log("layerId: ", params.layerId)
+                //console.log("Layer list OVERLAY opening.");
+               // console.log("layerId: ", params.layerId)
                 publisher.publishOpening({"componentOpening": LAYER_DESIGNATION});
-                exposed.updateExportLayerList();
-
-                //context.$('#layers input:checkbox').removeAttr('checked');
-                var a = context.$('input[value='+params.layerId+']');
-                //$('input[value=5EAA2F2F-B002-4884-9479-234911A6F746]')
-                console.log("a: " , a);
-                console.log("b: ", $selectAll);
-                a.prop('checked', true);
-
+                exposed.updateExportLayerList(false, params.layerId);
+                $selectAll.removeProp('checked');
                 $modal.modal('show');
 
             }
             else{
                 //its not a featureId or an overlayId. Open the layer view modal.
-                console.log("Layer list ALL opening.");
+                //console.log("Layer list ALL opening.");
                 publisher.publishOpening({"componentOpening": LAYER_DESIGNATION});
-                exposed.updateExportLayerList();
-                //state is persisting even though element is set to true.
+                exposed.updateExportLayerList(true, "");
+                //state is persisting even though element is set to checked.
                 //Forcing the element to show as selected when modal is opened.
                 $selectAll.prop('checked', true);
                 $modal.modal('show');
-
             }
-
-
-
         },
         close: function() {
             $modal.modal('hide');
             $simpleModal.modal('hide');
-            $('input[name=exportOption]:checkbox').removeAttr('checked');
+            $('input[name=exportOption]:checkbox').removeProp('checked');
         },
         clear: function() {
             $modal.modal('hide');
             $simpleModal.modal('hide');
         },
-        updateExportLayerList: function(){
+        updateExportLayerList: function(selectedLayerFlag, selectedLayer){
             //clear old list of layers available.
             $layerList.html("");
             //it is assumed that dataStorage.datasets will always have at least one layer
             //since the component does not open without one.
             context.sandbox.util.each(context.sandbox.dataStorage.datasets, function(layerId, layerFeature){
-                console.log("id: ", layerId); //id String
-                console.log("feature: ", layerFeature); //actual object.
+                // console.log("id: ", layerId); //id String
+                // console.log("feature: ", layerFeature); //actual object.
 
                 var newAJAX = context.sandbox.utils.ajax({
                     type: 'GET',
@@ -185,22 +187,62 @@ define([
                     }
                 })
                 .done(function(data) {
-
-                    tempData = {
-                        "layerId": data.queryId,
-                        "dataSource": data.dataSource || 'N/A',
-                        "layerName": data.queryName || 'N/A',
-                        "layerRecordCount": data.numRecords || 'N/A',
-                    };
-
+                    //controlls which row is checked. 
+                    //checkboxes
+                    if(selectedLayer == data.queryId || selectedLayerFlag == true){
+                        tempData = {
+                            "layerId": data.queryId,
+                            "dataSource": data.dataSource || 'N/A',
+                            "layerName": data.queryName || 'N/A',
+                            "layerRecordCount": data.numRecords || 'N/A',
+                            "startChecked": "checked"
+                        };
+                    } else {
+                        tempData = {
+                            "layerId": data.queryId,
+                            "dataSource": data.dataSource || 'N/A',
+                            "layerName": data.queryName || 'N/A',
+                            "layerRecordCount": data.numRecords || 'N/A',
+                        };
+                    }
                     //console.log("Result: ", tempData);
+                    currentLayerNameMap[data.queryId] = data.queryName; 
                     $layerList.append(layerRowTemplate(tempData));
                 });
 
 
             });//end of the util.each
-            
-            
+        },
+        validateFeatures: function(selectedLayerList, selectedOption){
+            var listToExport = [];
+            context.sandbox.util.each(selectedLayerList, function(index, selectedLayerId){
+                var dataSet = context.sandbox.dataStorage.datasets[selectedLayerId];
+                //validate each dataSet. error callback if the dataSet can be sent to the selectedOption
+                context.sandbox.dataServices[dataSet.dataService].validateForExport(selectedOption, function(status){
+                    if(status.result == true){
+                        listToExport.push(dataSet);
+                    }
+                    else{
+                        var errorMessage = "Layer " + currentLayerNameMap[selectedLayerId] + 
+                                " cannot be exported to: " + selectedOption
+                        publisher.publishMessage({
+                            messageType: 'error',
+                            messageTitle: 'Export',
+                            messageText: errorMessage
+                        });
+                    }
+                });
+            });
+            return listToExport;
+        },
+        //listToExport is an arrray of objects. Those objects are dataSets (layer Backbone collection)
+        sendToExport: function(content, selectedOption){
+            //remember to send list like an object so we cna re-use this function with single points.
+            //{layer: content} or {point: content}
+            console.log("Completed. Sending to " + selectedOption + "", content);
+
+            //selectedOption will tell you which sandbox export to use
+            //the sandbox export function (csv,kml) handles if its an layer or a single point.
         }
     };
 
