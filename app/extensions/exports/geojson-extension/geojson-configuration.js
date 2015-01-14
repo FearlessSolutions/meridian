@@ -4,8 +4,7 @@ define([
     return {
         description: 'Export to geoJSON File',
         label: 'geoJSON File',
-        channel: 'export.file.geojson',
+        channel: 'export.download.geojson',
         state: 'active'
     };
-
 });

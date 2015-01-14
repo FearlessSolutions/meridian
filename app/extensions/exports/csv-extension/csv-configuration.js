@@ -4,8 +4,7 @@ define([
     return {
         description: 'Export to CSV File',
         label: 'CSV File',
-        channel: 'export.file.csv',
+        channel: 'export.download.csv',
         state: 'active'
     };
-
 });

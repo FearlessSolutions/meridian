@@ -22,11 +22,5 @@ define([
             };
         }
 	};
-
 	return exposed;
-
-
-
-
-
 });

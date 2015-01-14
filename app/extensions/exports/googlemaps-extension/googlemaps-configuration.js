@@ -7,5 +7,4 @@ define([
         channel: 'export.url.googlemaps',
         state: 'disabled'
     };
-
 });
