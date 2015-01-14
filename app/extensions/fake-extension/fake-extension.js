@@ -40,17 +40,28 @@ define([
                         });
                     }
                 },
-                validateForExport: function(){
+                validateForExport: function(option, callback){
+                    if(app.sandbox.dataServices.fake.exports[option]){
+                        console.log("it was found");
+                        callback({
+                            "result": true
+                        });
+                    }
+                    else{
+                        console.log('it was not found.');
+                        callback({
+                            "result": false
+                        });
+                    }
 
                 },
                 //See data-storage-extension for key variable descriptions
-                keys: [
-                    {
-                        property: 'valid',
-                        displayName: 'Valid',
-                        weight: 75
-                    }
-                ]
+                keys: fakeConfig.keys,
+                exports: fakeConfig.exports,
+                DATASOURCE_NAME: fakeConfig.DATASOURCE_NAME,
+                DISPLAY_NAME: fakeConfig.DISPLAY_NAME,
+                namespace: fakeConfig.namespace
+
             };
         }
     };

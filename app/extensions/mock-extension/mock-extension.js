@@ -47,20 +47,28 @@ define([
                         });
                     }
                 },
-                //See data-storage-extension for key variable descriptions
-                keys: [
-                    {
-                        property: 'percent',
-                        displayName: '%',
-                        weight: 76
-                    },
-                    {
-                        property: 'color',
-                        displayName: 'Color',
-                        weight: 69
+                validateForExport: function(option, callback){
+                    if(app.sandbox.dataServices.mock.exports[option]){
+                        console.log("it was found");
+                        callback({
+                            "result": true
+                        })
                     }
-                ],
-                processMapUrl: processMapUrl
+                    else{
+                        console.log('it was not found.');
+                        callback({
+                            "result": false
+                        });
+                    }
+
+                },
+                //See data-storage-extension for key variable descriptions
+                keys: mockConfig.keys,
+                processMapUrl: processMapUrl,
+                exports: mockConfig.exports,
+                DATASOURCE_NAME: mockConfig.DATASOURCE_NAME,
+                DISPLAY_NAME: mockConfig.DISPLAY_NAME,
+                namespace: mockConfig.namespace
             };
         }
     };
