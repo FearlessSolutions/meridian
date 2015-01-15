@@ -5,6 +5,11 @@ define([
         description: 'Export to CSV File',
         label: 'CSV File',
         channel: 'export.download.csv',
-        state: 'active'
+        types: [
+            'POINT',
+            'LAYER',
+            'ALL'
+        ],
+        id: 'csv'
     };
 });

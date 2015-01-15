@@ -1,6 +1,6 @@
 define([
 './kml-configuration'
-], function(kmlConfig) {
+], function(configuration) {
 
     var context;
 	var exposed = {
@@ -8,18 +8,20 @@ define([
             context = app;
 
             if(!app.sandbox.export){
-                app.sandbox.export = {};
+                app.sandbox.export = {
+                    export: {},
+                    options: [],
+                    validate: {}
+                };
             }
 
-            if (!app.sandbox.export.options) {
-                app.sandbox.export.options = [];
-            }
+            app.sandbox.export.options.push(configuration);
 
-            app.sandbox.export.options.push(kmlConfig);
-
-            app.sandbox.export.kml = function (data) {
+            app.sandbox.export.export[configuration.id] = function (data) {
 
             };
+
+            app.d
         }
 	};
 	return exposed;

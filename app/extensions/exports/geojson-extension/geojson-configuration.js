@@ -5,6 +5,11 @@ define([
         description: 'Export to geoJSON File',
         label: 'geoJSON File',
         channel: 'export.download.geojson',
-        state: 'active'
+        types: [
+            'POINT',
+            'LAYER',
+            'ALL'
+        ],
+        id: 'geojson'
     };
 });

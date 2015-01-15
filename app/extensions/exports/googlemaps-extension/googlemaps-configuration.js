@@ -5,6 +5,9 @@ define([
         description: 'Export to Google Maps',
         label: 'Google Maps',
         channel: 'export.url.googlemaps',
-        state: 'disabled'
+        types: [
+            'POINT'
+        ],
+        id: 'googlemaps'
     };
 });

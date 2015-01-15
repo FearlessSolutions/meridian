@@ -6,6 +6,11 @@
         description: 'Export to KML File',
         label: 'KML File',
         channel: 'export.download.kml',
-        state: 'active'
+        types: [
+            'POINT',
+            'LAYER',
+            'ALL'
+        ],
+        id: 'kml'
     };
 });

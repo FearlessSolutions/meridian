@@ -157,15 +157,18 @@ define([
                     tempDataEntry = {
                         datasetId: dataEntry.queryId,
                         dataSessionId: dataEntry.sessionId,
-                        dataSource: dataEntry.dataSource,
+                        dataSource: context.sandbox.dataServices[dataEntry.dataSource].DISPLAY_NAME,
                         dataName: dataEntry.queryName,
                         dataDate: dataDate.fromNow(),
                         rawDate: dataEntry.createdOn,
                         disableRestore: disableRestore,
                         dataRecordCount: dataEntry.numRecords
                     };
-                    currentDataArray.push(tempDataEntry);
-                    currentDataSet[dataEntry.queryId] = dataEntry;
+                    
+                    if(tempDataEntry.dataSource !== ""){
+                        currentDataArray.push(tempDataEntry);
+                        currentDataSet[dataEntry.queryId] = dataEntry;    
+                    }
                 });
 
                 currentDataArray.sort(dynamicSort('-rawDate'));

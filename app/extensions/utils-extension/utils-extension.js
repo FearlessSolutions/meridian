@@ -188,6 +188,31 @@ define([
                 },
                 size: function(obj){
                     return _.size(obj);
+                },
+                /**
+                 * Parses a query string into an object containing
+                 * the kay-value pairs in it.
+                 * @param url
+                 * @returns {{}}
+                 */
+                parseQueryString: function(url){
+                    var qs,
+                        results = {},
+                        tmp;
+
+                    qs = url ? url.split('?')[1] : null;
+                    if(qs) {
+                        qs.split('&').forEach(function(pair) {
+                            tmp = pair.split('=');
+                            if(tmp[0].indexOf(',') > -1) {
+                                results[tmp[0].trim()] = tmp[1].trim().split(',');
+                            } else {
+                                results[tmp[0].trim()] = tmp[1].trim();
+                            }
+                        });
+                    }
+
+                    return results;
                 }
             };
 

@@ -1,6 +1,6 @@
 define([
-'./csv-configuration'
-], function(csvConfig) {
+    './csv-configuration'
+], function(configuration) {
 
     var context;
 	var exposed = {
@@ -8,16 +8,16 @@ define([
             context = app;
 
             if(!app.sandbox.export){
-                app.sandbox.export = {};
+                app.sandbox.export = {
+                    export: {},
+                    options: [],
+                    validate: {}
+                };
             }
 
-            if (!app.sandbox.export.options) {
-                app.sandbox.export.options = [];
-            }
+            app.sandbox.export.options.push(configuration);
 
-            app.sandbox.export.options.push(csvConfig);
-
-            app.sandbox.export.csv = function (data) {
+            app.sandbox.export.export[configuration.id] = function (data) {
                 var currentDatasetIds = [],
                 suffix;
 
@@ -54,15 +54,13 @@ define([
                     });
                 });//end of error
             };//end of export.csv
+
+            app.sandbox.export.verify[configuration.id] = function(params){
+
+            }
+
         }//end of initialize
 	};//exposed
 
 	return exposed;
-
-
-
-
-function exportToCSV(params, callback){
-        
-    }
 });
