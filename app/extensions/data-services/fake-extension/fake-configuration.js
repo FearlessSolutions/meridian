@@ -11,7 +11,12 @@ define([
         ],
         DATASOURCE_NAME: 'fake',
         DISPLAY_NAME: 'Fake',
-        namespace: 'fake-extension'
+        namespace: 'fake-extension',
+        exports: [
+            'geojson',
+            'csv',
+            'kml'
+        ]
     };
 
     return config;

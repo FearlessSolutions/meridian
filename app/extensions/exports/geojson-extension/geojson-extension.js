@@ -1,5 +1,5 @@
 define([
-'./geojson-configuration'
+    './geojson-configuration'
 ], function(configuration) {
 
     var context;
@@ -8,29 +8,34 @@ define([
             context = app;
 
             if(!app.sandbox.export){
-                app.sandbox.export = {
-                    export: {},
-                    options: [],
-                    validate: {}
-                };
+                throw 'Requires export-utils extension to be loaded.'
             }
 
-            app.sandbox.export.options.push(configuration);
+            app.sandbox.export.utils.addExport({
+                id: configuration.id,
+                option: configuration,
+                export: exportFunction,
+                verify: verify
+            });
 
-            app.sandbox.export.export[configuration.id] = function (data) {
-                var currentDatasetIds = [],
-                suffix;
-
-                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(datasetId, dataset) {
-                    currentDatasetIds.push(datasetId);
-                });
-        
-                suffix = '?ids=' + currentDatasetIds.join();
-                window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + suffix);
-
-            };//end of export.geoJson
         }//end of initialize
 	};//exposed
+
+    function exportFunction(params){
+        var currentDatasetIds = [],
+            suffix;
+
+        context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(datasetId, dataset) {
+            currentDatasetIds.push(datasetId);
+        });
+
+        suffix = '?ids=' + currentDatasetIds.join();
+        window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + suffix);
+    }
+
+    function verify(params){
+
+    }
 
 	return exposed;
 });

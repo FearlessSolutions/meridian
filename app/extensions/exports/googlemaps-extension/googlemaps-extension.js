@@ -8,20 +8,25 @@ define([
             context = app;
 
             if(!app.sandbox.export){
-                app.sandbox.export = {
-                    export: {},
-                    options: [],
-                    validate: {}
-                };
+                throw 'Requires export-utils extension to be loaded.'
             }
 
-            app.sandbox.export.options.push(configuration);
-
-            app.sandbox.export.export[configuration.id] = function (data) {
-
-            };
+            app.sandbox.export.utils.addExport({
+                id: configuration.id,
+                option: configuration,
+                export: exportFunction,
+                verify: verify
+            });
         }
 	};
+
+    function exportFunction(params){
+
+    }
+
+    function verify(params){
+
+    }
 
 	return exposed;
 });

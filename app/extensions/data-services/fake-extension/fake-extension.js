@@ -60,6 +60,12 @@ define([
                 //See data-storage-extension for key variable descriptions
                 keys: config.keys
             };
+
+            //Add the datasource to the export options
+            app.sandbox.export.utils.addDatasource({
+                id: config.DATASOURCE_NAME,
+                exports: config.exports
+            });
         }
     };
 
