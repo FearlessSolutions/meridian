@@ -79,11 +79,11 @@ define([
                     }
                 },
                 //See data-storage-extension for key variable descriptions
-                keys: mockConfig.keys,
+                keys: config.keys,
                 processMapUrl: processMapUrl,
                 DATASOURCE_NAME: DATASOURCE_NAME,
-                DISPLAY_NAME: mockConfig.DISPLAY_NAME,
-                namespace: mockConfig.namespace
+                DISPLAY_NAME: config.DISPLAY_NAME,
+                namespace: config.namespace
             };
 
             //Add the datasource to the export options

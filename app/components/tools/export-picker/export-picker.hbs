@@ -7,16 +7,6 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-4">
-                        <table class="table">
-                            <tr>
-                                <th class="export-option-title data-name">Export Options:</th>
-                            </tr>
-                        </table>
-                        <div class="list-container">
-                            <table id="options" class="table"></table>
-                        </div>
-                    </div>
                     <div class="col-md-8 divider">
                         <table class="table">
                             <tr>
@@ -32,7 +22,39 @@
                             <table id="layers" class="table"></table>
                         </div>
                     </div>
+
+                    <div class="col-md-4">
+                        <table class="table">
+                            <tr>
+                                <th class="export-option-title data-name">Export Options:</th>
+                            </tr>
+                        </table>
+                        <div class="list-container">
+                            <table id="options" class="table">
+                                {{#each exports}}
+                                    <tr>
+                                        <td class="data-checkbox">
+                                            <input type="checkbox" name="exportOption" value="{{this.channel}}">
+                                        </td>
+                                        <td class="data-name">{{this.label}}</td>
+                                    </tr>
+                                {{/each}}
+                            </table>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-12 fill-row">
+                        <div id="extra-export-fields" class="tab-content">
+                            {{#each exports}}
+                                <div class="tab-pane" id="{{this.id}}">{{this.template}}</div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
             <div class="modal-footer">
                 <div class="form-group">

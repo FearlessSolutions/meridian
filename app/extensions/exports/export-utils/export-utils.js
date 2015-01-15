@@ -25,7 +25,7 @@ define([
 
             params.exports.forEach(function(exportId){
                 if(exportId in context.sandbox.export.options){
-                    context.export.options[exportId].datasources.push(datasourceId);
+                    context.sandbox.export.options[exportId].datasources.push(datasourceId);
                 }
             });
         },

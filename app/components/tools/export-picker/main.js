@@ -18,15 +18,20 @@ define([
 
     return {
         initialize: function() {
+            var template = Handlebars.compile(componentHBS),
+                html,
+                tabs;
+
             this.sandbox.utils.addCSS(componentCSS, COMPONENT_NAME + '-style');
 
-            var template = Handlebars.compile(componentHBS);
-            var html = template();
-            //this.html(html);
-
-            template = Handlebars.compile(simpleComponentHBS);
-            html = html + template();
+            html = template({
+                exports: this.sandbox.export.options
+            });
             this.html(html);
+
+
+//            template = Handlebars.compile(simpleComponentHBS);
+//            html = html + template();
 
             publisher.init(this);
             component.init(this);
