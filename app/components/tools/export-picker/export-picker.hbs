@@ -7,21 +7,13 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-7">
                         <table class="table">
-                            <tr>
-                                <th class="export-option-title data-name">Export Options:</th>
-                            </tr>
-                        </table>
-                        <div class="list-container">
-                            <table id="options" class="table"></table>
-                        </div>
-                    </div>
-                    <div class="col-md-8 divider">
-                        <table class="table">
-                            <tr>
+                            <tr class="something">
                                 <th class="data-checkbox">
-                                    <input type="checkbox" value="checkAll" checked>
+                                    <div class="checkall">
+                                        <input type="checkbox" value="checkAll" checked>
+                                    </div>
                                 </th>
                                 <th class="data-name">Layer Name</th>
                                 <th class="data-source">Source</th>
@@ -32,6 +24,18 @@
                             <table id="layers" class="table"></table>
                         </div>
                     </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4">
+                        <table class="table">
+                            <tr>
+                                <th class="export-option-title data-name">Export Options:</th>
+                            </tr>
+                        </table>
+                        <div class="list-container">
+                            <table id="options" class="table"></table>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
             <div class="modal-footer">

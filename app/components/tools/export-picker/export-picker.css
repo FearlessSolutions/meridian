@@ -17,8 +17,11 @@ div[data-aura-component='tools/export-picker'] .modal-body {
     max-height: 280px;
 }
 
-div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body .divider {
-    border-left: 1px solid #f7f7f7;
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body .exportOptions {
+    background-color: #f7f7f7;
+    border-radius:4px;
+    box-shadow:0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+    border:1px solid #CCC;
 }
 
 div[data-aura-component='tools/export-picker'] .modal-footer {
@@ -44,10 +47,14 @@ div[data-aura-component='tools/export-picker']  .modal-body table th,
 div[data-aura-component='tools/export-picker']  .modal-body table td {
     border-top: none;
     border-bottom: none;
-}
+    }
+    div[data-aura-component='tools/export-picker'] .modal-body table tr.something  { 
+        border-bottom:1px solid #E5E5E5;
+    }
+div[data-aura-component='tools/export-picker'] .exportOptions table tr { border-bottom:0px solid #eee; }
 
 div[data-aura-component='tools/export-picker'] .modal-body table tr {
-    border-bottom: 1px solid #dddddd;
+    border-bottom: 1px solid #fff;
 }
 
 /*centralize text*/
@@ -70,12 +77,13 @@ div[data-aura-component='tools/export-picker'] .modal-body table .data-name {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-left:5px; padding-right: 5px;
 }
 
 div[data-aura-component='tools/export-picker'] .modal-body table .data-checkbox {
-    width: 30px;
-    text-align: left;
-    max-width: 30px;
+    width: 50px;
+    text-align: center;
+    max-width: 50px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
