@@ -1,5 +1,6 @@
 define([
-], function() {
+    'text!./geojson-export.hbs',
+], function(template) {
     
     return {
         description: 'Export to geoJSON File',
@@ -10,6 +11,13 @@ define([
             'LAYER',
             'ALL'
         ],
-        id: 'geojson'
+        id: 'geojson',
+        template: template,
+        templateFields: [
+            'checkbox1',
+            'checkbox2',
+            'checkbox3',
+            'checkbox4'
+        ]
     };
 });

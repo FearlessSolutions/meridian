@@ -63,7 +63,7 @@ define([
 
             //Add the datasource to the export options
             app.sandbox.export.utils.addDatasource({
-                id: config.DATASOURCE_NAME,
+                id: DATASOURCE_NAME,
                 exports: config.exports
             });
         }

@@ -1,5 +1,6 @@
 define([
-], function() {
+    'text!./csv-export.hbs',
+], function(template) {
 
     return {
         description: 'Export to CSV File',
@@ -10,6 +11,10 @@ define([
             'LAYER',
             'ALL'
         ],
-        id: 'csv'
+        id: 'csv',
+        template: template,
+        templateFields: [
+            'csv-export-text'
+        ]
     };
 });

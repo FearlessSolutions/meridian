@@ -8,12 +8,16 @@ define([
     'handlebars'
 ], function(infoWinHBS, infoWinCSS, mapUrlHBS, config, $) {
     var context,
+        DATASOURCE_NAME,
         mapUrlTemplate;
 
     var exposed = {
         initialize: function(app) {
+            var datasource;
+
             context = app;
             mapUrlTemplate = Handlebars.compile(mapUrlHBS);
+            DATASOURCE_NAME = config.DATASOURCE_NAME;
 
             app.sandbox.utils.addCSS(infoWinCSS, 'mock-extension-style');
 
@@ -23,7 +27,7 @@ define([
             }
 
             datasource = {
-                DATASOURCE_NAME: config.DATASOURCE_NAME,
+                DATASOURCE_NAME: DATASOURCE_NAME,
                 DISPLAY_NAME: config.DISPLAY_NAME
             };
             app.sandbox.datasources.push(datasource);
@@ -32,7 +36,7 @@ define([
                 app.sandbox.dataServices = {};
             }
             app.sandbox.dataServices.mock = {
-                DATASOURCE_NAME: config.DATASOURCE_NAME,
+                DATASOURCE_NAME: DATASOURCE_NAME,
                 DISPLAY_NAME: config.DISPLAY_NAME,
                 infoWinTemplate: {
                     buildInfoWinTemplate: function(attributes, fullFeature) {
@@ -77,14 +81,14 @@ define([
                 //See data-storage-extension for key variable descriptions
                 keys: mockConfig.keys,
                 processMapUrl: processMapUrl,
-                DATASOURCE_NAME: mockConfig.DATASOURCE_NAME,
+                DATASOURCE_NAME: DATASOURCE_NAME,
                 DISPLAY_NAME: mockConfig.DISPLAY_NAME,
                 namespace: mockConfig.namespace
             };
 
             //Add the datasource to the export options
             app.sandbox.export.utils.addDatasource({
-                id: config.DATASOURCE_NAME,
+                id: DATASOURCE_NAME,
                 exports: config.exports
             });
         }
