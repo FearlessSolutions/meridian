@@ -99,6 +99,7 @@ define([
                 publisher.close();
             });
 
+            //TODO
 //
 //            //select all logic. WILL NOT WORK consistently WITH .attr
 //            $selectAll.on('click', function(event) {
@@ -141,8 +142,10 @@ define([
                 publisher.publishOpening({
                     componentOpening: LAYER_DESIGNATION
                 });
-                exposed.updateExportLayerList(false, params.layerId);
+                exposed.updateExportLayerList();
                 $selectAll.removeProp('checked');
+                
+
                 $modal.modal('show');
 
             }
@@ -152,7 +155,7 @@ define([
                 publisher.publishOpening({
                     componentOpening: LAYER_DESIGNATION
                 });
-                exposed.updateExportLayerList(true, '');
+                exposed.updateExportLayerList();
                 //state is persisting even though element is set to checked.
                 //Forcing the element to show as selected when modal is opened.
                 $selectAll.prop('checked', true);
@@ -168,20 +171,19 @@ define([
             $modal.modal('hide');
             $simpleModal.modal('hide');
         },
-        updateExportLayerList: function(selectedLayerFlag, selectedLayer){
+        updateExportLayerList: function(){
             //Clear old list of layers available.
             $layerList.empty();
 
             //It is assumed that dataStorage.datasets will always have at least one layer
             //since the component does not open without one.
             context.sandbox.util.each(context.sandbox.dataStorage.datasets, function(layerId, layerInfo){
-                currentLayerNameMap[layerId] = layerInfo.layerName; //TODO
+                currentLayerNameMap[layerId] = layerInfo.layerName;
                 $layerList.append(layerRowTemplate({
                     layerId: layerId,
-                    dataSource: layerInfo.dataService || 'N/A', //TODO
-                    layerName: layerInfo.layerName || 'N/A', //TODO
-                    featureCount: layerInfo.length || 'N/A', //TODO
-                    startChecked: selectedLayerFlag || selectedLayer === layerId
+                    dataSource: layerInfo.dataService,
+                    layerName: layerInfo.layerName,
+                    featureCount: layerInfo.length
                 }));
             });//end of the util.each
         },
