@@ -27,11 +27,11 @@ define([
             html = template({
                 exports: this.sandbox.export.options
             });
+
+            html += Handlebars.compile(simpleComponentHBS)({
+                exports: this.sandbox.export.options
+            });
             this.html(html);
-
-
-//            template = Handlebars.compile(simpleComponentHBS);
-//            html = html + template();
 
             publisher.init(this);
             component.init(this);

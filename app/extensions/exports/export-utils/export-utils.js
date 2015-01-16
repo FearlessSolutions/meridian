@@ -65,6 +65,7 @@ define([
 
             return found;
         }
+
     };//exposed
 
     return exposed;

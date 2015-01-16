@@ -8,17 +8,31 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="table">
-                            <tr>
-                                <th class="export-option-title data-name">Export Options:</th>
-                            </tr>
-                        </table>
-                        <div class="list-container">
-                            <table id="options" class="table"></table>
+                        <label class="" >Export Options</label>
+                        <div class="list-container export-options">
+                            {{#each exports}}
+                            <div id="point-export-{{this.id}}" class="radio">
+                                <label>
+                                    <input type="radio" name="exportOption" value="{{this.id}}">
+                                    {{this.label}}
+                                </label>
+                            </div>
+                            {{/each}}
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-12 fill-row">
+                    <div class="tab-content point-extra-export-fields">
+                        {{#each exports}}
+                            <div id="point-tab-{{this.id}}" class="tab-pane">{{this.template}}</div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+
             <div class="modal-footer">
                 <div class="form-group">
                     <div class="col-sm-12">

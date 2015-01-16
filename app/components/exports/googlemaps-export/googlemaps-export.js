@@ -18,22 +18,13 @@ define([
                     callback: function(callbackParams){
                         publisher.publishMessage({
                             messageType: callbackParams.messageType,
-                            messageTitle: 'CSV export',
+                            messageTitle: 'Google Maps export',
                             messageText: callbackParams.messageText
                         });
                     }
                 });
             } else if(params.layerIds){
-                context.sandbox.export.export[EXPORT_ID]({
-                    layerIds: params.layerIds,
-                    callback: function(callbackParams){
-                        publisher.publishMessage({
-                            messageType: callbackParams.messageType,
-                            messageTitle: 'CSV export',
-                            messageText: callbackParams.messageText
-                        });
-                    }
-                });
+                // Does not support
             } else {
                 //error?
             }

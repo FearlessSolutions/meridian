@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-8 divider">
+                    <div id="layer-options" class="col-md-8 divider">
                         <table class="table">
                             <tr>
                                 <th class="">
@@ -25,9 +25,9 @@
 
                     <div class="col-md-4">
                         <label class="" >Export Options</label>
-                        <div id="export-options" class="list-container">
+                        <div class="list-container export-options">
                             {{#each exports}}
-                                <div id="export-{{this.id}}" class="radio">
+                                <div id="layer-export-{{this.id}}" class="radio">
                                     <label>
                                         <input type="radio" name="exportOption" value="{{this.id}}">
                                         {{this.label}}
@@ -40,9 +40,9 @@
 
                 <div class="row">
                     <div class="col-md-12 fill-row">
-                        <div id="extra-export-fields" class="tab-content">
+                        <div class="tab-content extra-export-fields">
                             {{#each exports}}
-                                <div class="tab-pane" id="{{this.id}}">{{this.template}}</div>
+                                <div id="layer-tab-{{this.id}}" class="tab-pane">{{this.template}}</div>
                             {{/each}}
                         </div>
                     </div>

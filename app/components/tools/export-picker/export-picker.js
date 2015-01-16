@@ -16,8 +16,7 @@ define([
         $closeButton,
         $exportButton,
         $layerList,
-        currentLayerNameMap = {},
-        layerRowTemplate,
+        selectedFeature,
         $selectAll,
         layerRowTemplate;
 
@@ -53,7 +52,9 @@ define([
 
             $exportButton.on('click', function(){
                 var selectedLayers = getSelectedLayers(),
-                    selectedExportOption = getSelectedExportOption();
+                    selectedExportOption = getSelectedExportOption(),
+                    featureId,
+                    layerId;
 
                 if(!selectedExportOption || selectedExportOption === ''){
                     publisher.publishMessage({
@@ -61,14 +62,22 @@ define([
                         messageTitle: 'Export',
                         messageText: 'No export option selected.'
                     });
-                    return;
-                }else if (!selectedLayers || selectedLayers === ''){
+                } else if(selectedFeature){ //Is set on open
+                    featureId = selectedFeature.featureId;
+                    layerId = selectedFeature.layerId;
+
+                    publisher.close(); //This resets selected feature
+                    publisher.export({
+                        channel: context.sandbox.export.options[selectedExportOption].channel,
+                        featureId: featureId,
+                        layerId: layerId
+                    });
+                } else if (!selectedLayers.length){
                     publisher.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Export',
                         messageText: 'No layer to export selected.'
                     });
-                    return;
                 } else{
                     publisher.close();
                     publisher.export({
@@ -83,7 +92,6 @@ define([
                 publisher.close();
             });
 
-            //TODO
             //select all logic. WILL NOT WORK consistently WITH .attr
             $selectAll.on('change', function(event) {
                 if($selectAll.is(':checked')){
@@ -93,7 +101,7 @@ define([
                     //don't change this to removeProp.
                     context.$('#layers input:checkbox').prop('checked', false);
                 }
-                exposed.validateLayers();
+                validateLayers();
             });
 
             //hide info text found on the left side of the close and export buttons.
@@ -101,34 +109,37 @@ define([
            
         },
         open: function(params) {
-            // console.log("dataSets",context.sandbox.dataStorage.datasets);
-            // context.sandbox.util.each(context.sandbox.dataStorage.datasets, function(layerId, layerFeature){
-            //     console.log("id: ", layerId);
-            //     console.log("feature: ", layerFeature);
-            // });
-            if(params && params.featureId){
-                //params can have featureId or overlayId.
+            if(params && params.featureId && params.layerId){ //It is a point
+                selectedFeature = {
+                    featureId: params.featureId,
+                    layerId: params.layerId
+                };
+
                 publisher.publishOpening({
                     componentOpening: POINT_DESIGNATION
                 });
 
+                validateFeature({
+                    featureId: params.featureId,
+                    layerId: params.layerId
+                });
+
                 $simpleModal.modal('show');
-        
-            }else if(params && params.layerId){
+            }else if(params && params.layerId){ //It is a specific layer
                 //message came from timeline containing params.overlayId
                 publisher.publishOpening({
                     componentOpening: LAYER_DESIGNATION
                 });
                 exposed.updateExportLayerList();
                 $selectAll.removeProp('checked');
-                
+                $selectAll.change(); //Run event
+
+                context.$('.data-checkbox input[value=' + params.layerId +']').prop('checked', true);
+                validateLayers();
 
                 $modal.modal('show');
-
-            }
-            else{
+            } else{ //It is all layers
                 //its not a featureId or an overlayId. Open the layer view modal.
-                //console.log("Layer list ALL opening.");
                 publisher.publishOpening({
                     componentOpening: LAYER_DESIGNATION
                 });
@@ -136,14 +147,16 @@ define([
                 //state is persisting even though element is set to checked.
                 //Forcing the element to show as selected when modal is opened.
                 $selectAll.prop('checked', true);
-                $selectAll.change();
+                $selectAll.change(); //Run event
+
                 $modal.modal('show');
             }
         },
         close: function() {
-//            $modal.modal('hide');
-//            $simpleModal.modal('hide');
-//            $('input[name=exportOption]:checkbox').removeProp('checked');
+            $modal.modal('hide');
+            $simpleModal.modal('hide');
+            context.$('.export-options input').prop('checked', false); //Uncheck all options from both modals
+            selectedFeature = null;
         },
         clear: function() {
             $modal.modal('hide');
@@ -156,7 +169,6 @@ define([
             //It is assumed that dataStorage.datasets will always have at least one layer
             //since the component does not open without one.
             context.sandbox.util.each(context.sandbox.dataStorage.datasets, function(layerId, layerInfo){
-                currentLayerNameMap[layerId] = layerInfo.layerName;
                 $layerList.append(layerRowTemplate({
                     layerId: layerId,
                     dataSource: layerInfo.dataService,
@@ -169,75 +181,65 @@ define([
 
             context.$('.data-checkbox input:checkbox').on('change',function(){
                 $selectAll.prop('checked', false);
-                exposed.validateLayers();
+                validateLayers();
             });
 
-        },
-        validateFeatures: function(type){
-//            var listToExport = [];
-//            context.sandbox.util.each(selectedLayerList, function(index, selectedLayerId){
-//                var dataSet = context.sandbox.dataStorage.datasets[selectedLayerId];
-//                //validate each dataSet. error callback if the dataSet can be sent to the selectedOption
-//                context.sandbox.dataServices[dataSet.dataService].validateForExport(selectedOption, function(status){
-//                    if(status.result == true){
-//                        listToExport.push(dataSet);
-//                    }
-//                    else{
-//                        var errorMessage = "Layer " + currentLayerNameMap[selectedLayerId] +
-//                                " cannot be exported to: " + selectedOption
-//                        publisher.publishMessage({
-//                            messageType: 'error',
-//                            messageTitle: 'Export',
-//                            messageText: errorMessage
-//                        });
-//                    }
-//                });
-//            });
-//            return listToExport;
-        },
-        validateLayers: function(){
-            var selectedLayers = getSelectedLayers();
-
-            context.sandbox.utils.each(context.sandbox.export.validate, function(exportId, validateFunction){
-                var setExportOption = function(valid){
-                    if(valid){
-                        enableExportOption(exportId);
-                    }else{
-                        disableExportOption(exportId);
-                    }
-                };
-
-                validateFunction({
-                    layerIds: selectedLayers,
-                    callback: setExportOption
-                });
-            });
-        },
-        //listToExport is an arrray of objects. Those objects are dataSets (layer Backbone collection)
-        sendToExport: function(content, selectedOption){
-            //remember to send list like an object so we cna re-use this function with single points.
-            //{layer: content} or {point: content}
-            console.log("Completed. Sending to " + selectedOption + "", content);
-
-            //selectedOption will tell you which sandbox export to use
-            //the sandbox export function (csv,kml) handles if its an layer or a single point.
         }
     };
 
-    function disableExportOption(exportId){
-        var exportRadioDiv = context.$('#export-'+ exportId);
+    function validateFeature(params){
+        var featureId = params.featureId,
+            layerId = params.layerId;
+
+        context.sandbox.utils.each(context.sandbox.export.validate, function(exportId, validateFunction){
+            var setExportOption = function(valid){
+                if(valid){
+                    enableExportOption(exportId, 'point');
+                }else{
+                    disableExportOption(exportId, 'point');
+                }
+            };
+
+            validateFunction({
+                featureId: featureId,
+                layerId: layerId,
+                callback: setExportOption
+            });
+        });
+    }
+
+    function validateLayers(){
+        var selectedLayers = getSelectedLayers();
+
+        context.sandbox.utils.each(context.sandbox.export.validate, function(exportId, validateFunction){
+            var setExportOption = function(valid){
+                if(valid){
+                    enableExportOption(exportId, 'layer');
+                }else{
+                    disableExportOption(exportId, 'layer');
+                }
+            };
+
+            validateFunction({
+                layerIds: selectedLayers,
+                callback: setExportOption
+            });
+        });
+    }
+
+    function disableExportOption(exportId, type){
+        var exportRadioDiv = context.$('#' + type+'-export-'+ exportId);
         exportRadioDiv.hide();//.addClass('disabled');
         exportRadioDiv.find(':radio').prop('disabled', true);
 
     }
-    function enableExportOption(exportId){
-        var exportRadioDiv = context.$('#export-'+ exportId),
+    function enableExportOption(exportId, type){
+        var exportRadioDiv = context.$('#' + type + '-export-'+ exportId),
             exportRadio = exportRadioDiv.find(':radio');
 
         exportRadioDiv.show();//.addClass('disabled');
         exportRadio.prop('disabled', false);
         exportRadio.prop('checked', false);
-
     }
 
     function getSelectedLayers(){
@@ -247,7 +249,7 @@ define([
     }
 
     function getSelectedExportOption(){
-        return context.$('#export-options input:checked').val();
+        return context.$('.export-options input:checked').val();
     }
 
     return exposed;

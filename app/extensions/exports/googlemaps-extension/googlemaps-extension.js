@@ -21,24 +21,39 @@ define([
 	};
 
     function exportFunction(params){
+        context.sandbox.dataStorage.getFeatureById({
+            featureId: params.featureId
+        },
+        function(data){
+            var lon = data.geometry.coordinates[1],
+                lat = data.geometry.coordinates[0];
+            window.open('https://www.google.com/maps/place/' + lat + ',' + lon, '_blank')
 
+        });
     }
 
+    //The ajax call isn't required, but it's a good example.
     function validate(params){
-        var valid = false;
+        if(params.featureId && params.layerId){
+            context.sandbox.dataStorage.getFeatureById({
+                    featureId: params.featureId
+                },
+                function(data){
+                    var valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
+                        configuration.id,
+                        [data.queryId] //Turn it into an array
+                    );
 
-        if(params.featureId){
-            valid = false;
+                    valid = valid && data.geometry.type === 'Point';
+                    params.callback(valid);
+                });
+
         } else if(params.layerIds){
-            valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
-                configuration.id,
-                params.layerIds
-            );
+            params.callback(false);  //Google Maps doesn't do layers
         } else{
-            valid = false;
+            params.callback(false);
         }
 
-        params.callback(valid);
     }
 
 	return exposed;
