@@ -21,14 +21,8 @@ define([
         }//end of initialize
 	};//exposed
 
-    function exportFunction(data){
-        var currentDatasetIds = [],
-            suffix;
-
-        context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(datasetId, dataset) {
-            currentDatasetIds.push(datasetId);
-        });
-        suffix = '?ids=' + currentDatasetIds.join();
+    function exportFunction(params){
+        var  suffix = '?ids=' + params.layerIds.join();
 
         context.sandbox.utils.ajax({
             type: 'HEAD' ,
@@ -37,12 +31,12 @@ define([
         })
             .done(function(responseText, status, jqXHR) {
                 if (jqXHR.status === 204){
-                    callback({
+                    params.callback({
                         messageType: 'warning',
                         messageText: 'No data'
                     });
                 } else {
-                    callback({
+                    params.callback({
                         messageType: 'info',
                         messageText: 'CSV download started'
                     });
@@ -52,7 +46,7 @@ define([
                 }
             })
             .error(function(e) {
-                callback({
+                params.callback({
                     messageType: 'error',
                     messageText: 'Connection to server failed.'
                 });

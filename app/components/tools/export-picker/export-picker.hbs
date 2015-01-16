@@ -25,11 +25,11 @@
 
                     <div class="col-md-4">
                         <label class="" >Export Options</label>
-                        <div class="list-container">
+                        <div id="export-options" class="list-container">
                             {{#each exports}}
                                 <div id="export-{{this.id}}" class="radio">
                                     <label>
-                                        <input type="radio" name="exportOption" value="{{this.channel}}">
+                                        <input type="radio" name="exportOption" value="{{this.id}}">
                                         {{this.label}}
                                     </label>
                                 </div>

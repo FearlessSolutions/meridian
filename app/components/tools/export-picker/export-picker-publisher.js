@@ -19,7 +19,7 @@ define([
             context.sandbox.emit('export.picker.open');
         },
         export: function(params){
-            context.sandbox.emit(params.channel);
+            context.sandbox.emit(params.channel, params);
         }
     };
 

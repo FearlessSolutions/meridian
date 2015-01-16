@@ -20,8 +20,8 @@ define([
         namespace: 'mock-extension',
         exports: [
             'geojson',
-//            'csv',
-            'kml',
+            'csv',
+//            'kml',
             'googlemaps'
         ]
     };

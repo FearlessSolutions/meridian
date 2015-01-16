@@ -50,49 +50,33 @@ define([
             }).on('hidden.bs.modal', function() {
                 publisher.close();
             });
-//
-//            $exportButton.on('click', function(){
-//
-//                var selectedOptions = context.$("input[name=exportOption]:checked").map(
-//                    function () {return this.value;}).get().join(",");
-//                var selectedOptionsList = selectedOptions.split(",");
-//
-//                 var selectedLayers = context.$('#layers input[type="checkbox"]:checked').map(
-//                     function () {return this.value;}).get().join(",");
-//                 var selectedLayerList = selectedLayers.split(",");
-//
-//
-//
-//               if(selectedOptionsList[0] === ""){
-//                    publisher.publishMessage({
-//                        messageType: 'warning',
-//                        messageTitle: 'Export',
-//                        messageText: 'No export option selected.'
-//                    });
-//                    return;
-//                }else if (selectedLayerList[0] === ""){
-//                    publisher.publishMessage({
-//                        messageType: 'warning',
-//                        messageTitle: 'Export',
-//                        messageText: 'No layer to export selected.'
-//                    });
-//                    return;
-//                }
-//                else{
-//                    //console.log(selectedExportsList);
-//                    //["export.file.csv", "export.file.kml"]
-//                    context.sandbox.util.each(selectedOptionsList, function(index, selectedOption){
-//                        var listToExport = exposed.validateFeatures(selectedLayerList,selectedOption);
-//                        if(listToExport.length > 0){
-//                            exposed.sendToExport(listToExport, selectedOption);
-//                        }
-//                    });
-//
-//
-//                }
-//                publisher.close();
-//            });
- 
+
+            $exportButton.on('click', function(){
+                var selectedLayers = getSelectedLayers(),
+                    selectedExportOption = getSelectedExportOption();
+
+                if(!selectedExportOption || selectedExportOption === ''){
+                    publisher.publishMessage({
+                        messageType: 'warning',
+                        messageTitle: 'Export',
+                        messageText: 'No export option selected.'
+                    });
+                    return;
+                }else if (!selectedLayers || selectedLayers === ''){
+                    publisher.publishMessage({
+                        messageType: 'warning',
+                        messageTitle: 'Export',
+                        messageText: 'No layer to export selected.'
+                    });
+                    return;
+                } else{
+                    publisher.close();
+                    publisher.export({
+                        channel: context.sandbox.export.options[selectedExportOption].channel,
+                        layerIds: selectedLayers
+                    });
+                }
+            });
 
             $closeButton.on('click', function(event) {
                 event.preventDefault();
@@ -124,8 +108,6 @@ define([
             // });
             if(params && params.featureId){
                 //params can have featureId or overlayId.
-                
-                //console.log("Single point opening.");
                 publisher.publishOpening({
                     componentOpening: POINT_DESIGNATION
                 });
@@ -214,21 +196,12 @@ define([
 //            return listToExport;
         },
         validateLayers: function(){
-            var selectedLayers = context.$(".data-checkbox input:checked").map(function () {
-                                                                                                return this.value;
-                                                                                            }).get();
-//                selectedExport = context.$('.export-radio input:radio:checked').val();
-
+            var selectedLayers = getSelectedLayers();
 
             context.sandbox.utils.each(context.sandbox.export.validate, function(exportId, validateFunction){
                 var setExportOption = function(valid){
-                    var exportRadio = context.$('.export-radio input[value="'+ exportId +'"]'),
-                        exportRadioTr = exportRadio.parent().parent();
-
-                    //TODO unselect radio?
                     if(valid){
-                        exportRadio.attr('disabled', false);
-//                        exportRadioTr.show();
+                        enableExportOption(exportId);
                     }else{
                         disableExportOption(exportId);
                     }
@@ -253,9 +226,28 @@ define([
 
     function disableExportOption(exportId){
         var exportRadioDiv = context.$('#export-'+ exportId);
-        exportRadioDiv.addClass('disabled');
+        exportRadioDiv.hide();//.addClass('disabled');
         exportRadioDiv.find(':radio').prop('disabled', true);
 
+    }
+    function enableExportOption(exportId){
+        var exportRadioDiv = context.$('#export-'+ exportId),
+            exportRadio = exportRadioDiv.find(':radio');
+
+        exportRadioDiv.show();//.addClass('disabled');
+        exportRadio.prop('disabled', false);
+        exportRadio.prop('checked', false);
+
+    }
+
+    function getSelectedLayers(){
+        return context.$('.data-checkbox input:checked').map(function () {
+            return this.value;
+        }).get();
+    }
+
+    function getSelectedExportOption(){
+        return context.$('#export-options input:checked').val();
     }
 
     return exposed;
