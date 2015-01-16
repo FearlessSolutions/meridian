@@ -10,7 +10,7 @@
                     <div class="col-md-8 divider">
                         <table class="table">
                             <tr>
-                                <th class="data-checkbox">
+                                <th class="">
                                     <input type="checkbox" value="checkAll" checked>
                                 </th>
                                 <th class="data-name">Layer Name</th>
@@ -24,22 +24,16 @@
                     </div>
 
                     <div class="col-md-4">
-                        <table class="table">
-                            <tr>
-                                <th class="export-option-title data-name">Export Options:</th>
-                            </tr>
-                        </table>
+                        <label class="" >Export Options</label>
                         <div class="list-container">
-                            <table id="options" class="table">
-                                {{#each exports}}
-                                    <tr>
-                                        <td class="data-checkbox">
-                                            <input type="radio" name="exportOption" value="{{this.channel}}">
-                                        </td>
-                                        <td class="data-name">{{this.label}}</td>
-                                    </tr>
-                                {{/each}}
-                            </table>
+                            {{#each exports}}
+                                <div id="export-{{this.id}}" class="radio">
+                                    <label>
+                                        <input type="radio" name="exportOption" value="{{this.channel}}">
+                                        {{this.label}}
+                                    </label>
+                                </div>
+                            {{/each}}
                         </div>
                     </div>
                 </div>

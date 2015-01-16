@@ -42,7 +42,7 @@ define([
                 context.sandbox.export.options[id].datasources = [];
             }
             context.sandbox.export.export[id] = params.export;
-            context.sandbox.export.validate[id] = params.export;
+            context.sandbox.export.validate[id] = params.validate;
         }
     };//exposed
 

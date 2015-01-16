@@ -100,18 +100,17 @@ define([
             });
 
             //TODO
-//
-//            //select all logic. WILL NOT WORK consistently WITH .attr
-//            $selectAll.on('click', function(event) {
-//                if($selectAll.is(':checked')){
-//                    context.$('#layers input[type="checkbox"]').prop('checked', true);
-//                }
-//                else{
-//                    //don't change this to removeProp.
-//                    context.$('#layers input[type="checkbox"]').prop('checked', false);
-//                }
-//            });
-//
+            //select all logic. WILL NOT WORK consistently WITH .attr
+            $selectAll.on('change', function(event) {
+                if($selectAll.is(':checked')){
+                    context.$('#layers input:checkbox').prop('checked', true);
+                }
+                else{
+                    //don't change this to removeProp.
+                    context.$('#layers input:checkbox').prop('checked', false);
+                }
+                exposed.validateLayers();
+            });
 
             //hide info text found on the left side of the close and export buttons.
             context.$('.info-text').hide();
@@ -132,13 +131,9 @@ define([
                 });
 
                 $simpleModal.modal('show');
-
-
         
             }else if(params && params.layerId){
                 //message came from timeline containing params.overlayId
-                //console.log("Layer list OVERLAY opening.");
-               // console.log("layerId: ", params.layerId)
                 publisher.publishOpening({
                     componentOpening: LAYER_DESIGNATION
                 });
@@ -159,6 +154,7 @@ define([
                 //state is persisting even though element is set to checked.
                 //Forcing the element to show as selected when modal is opened.
                 $selectAll.prop('checked', true);
+                $selectAll.change();
                 $modal.modal('show');
             }
         },
@@ -186,8 +182,14 @@ define([
                     featureCount: layerInfo.length
                 }));
             });//end of the util.each
+
+            context.$('.data-checkbox input:checkbox').on('change',function(){
+                $selectAll.prop('checked', false);
+                exposed.validateLayers();
+            });
+
         },
-        validateFeatures: function(selectedLayerList, selectedOption){
+        validateFeatures: function(type){
 //            var listToExport = [];
 //            context.sandbox.util.each(selectedLayerList, function(index, selectedLayerId){
 //                var dataSet = context.sandbox.dataStorage.datasets[selectedLayerId];
@@ -209,6 +211,33 @@ define([
 //            });
 //            return listToExport;
         },
+        validateLayers: function(){
+            var selectedLayers = context.$(".data-checkbox input:checked").map(function () {
+                                                                                                return this.value;
+                                                                                            }).get();
+//                selectedExport = context.$('.export-radio input:radio:checked').val();
+
+
+            context.sandbox.utils.each(context.sandbox.export.validate, function(exportId, validateFunction){
+                var setExportOption = function(valid){
+                    var exportRadio = context.$('.export-radio input[value="'+ exportId +'"]'),
+                        exportRadioTr = exportRadio.parent().parent();
+
+                    //TODO unselect radio?
+                    if(valid){
+                        exportRadio.attr('disabled', false);
+//                        exportRadioTr.show();
+                    }else{
+                        disableExportOption(exportId);
+                    }
+                };
+
+                validateFunction({
+                    layerIds: selectedLayers,
+                    callback: setExportOption
+                });
+            });
+        },
         //listToExport is an arrray of objects. Those objects are dataSets (layer Backbone collection)
         sendToExport: function(content, selectedOption){
             //remember to send list like an object so we cna re-use this function with single points.
@@ -219,6 +248,13 @@ define([
             //the sandbox export function (csv,kml) handles if its an layer or a single point.
         }
     };
+
+    function disableExportOption(exportId){
+        var exportRadioDiv = context.$('#export-'+ exportId);
+        exportRadioDiv.addClass('disabled');
+        exportRadioDiv.find(':radio').prop('disabled', true);
+
+    }
 
     return exposed;
 

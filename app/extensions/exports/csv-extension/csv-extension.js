@@ -15,7 +15,7 @@ define([
                 id: configuration.id,
                 option: configuration,
                 export: exportFunction,
-                verify: verify
+                validate: validate
             });
 
         }//end of initialize
@@ -59,8 +59,29 @@ define([
             });//end of error
     }
 
-    function verify(params){
+    function validate(params){
+        var valid = true;
 
+        if(params.featureId){
+            valid = false
+        } else if(params.layerIds){
+            context.sandbox.utils.each(params.layerIds, function(index, layerId){
+                var layerInfo = context.sandbox.dataStorage.datasets[layerId];
+
+                //Check allocated datasources for this export
+                if(context.sandbox.export.options[configuration.id].datasources.indexOf(layerInfo.dataService) === -1){
+                    valid = false;
+
+                    return false; //Stop the loop
+                }
+            });
+
+        } else {
+            //error?
+            valid = false;
+        }
+
+        params.callback(valid);
     }
 
 	return exposed;

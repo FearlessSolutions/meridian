@@ -46,9 +46,9 @@ div[data-aura-component='tools/export-picker']  .modal-body table td {
     border-bottom: none;
 }
 
-div[data-aura-component='tools/export-picker'] .modal-body table tr {
-    border-bottom: 1px solid #dddddd;
-}
+/*div[data-aura-component='tools/export-picker'] .modal-body table tr {*/
+    /*border-bottom: 1px solid #dddddd;*/
+/*}*/
 
 /*centralize text*/
 div[data-aura-component='tools/export-picker'] .info-text {

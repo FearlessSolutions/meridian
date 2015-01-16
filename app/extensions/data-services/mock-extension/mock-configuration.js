@@ -20,7 +20,7 @@ define([
         namespace: 'mock-extension',
         exports: [
             'geojson',
-            'csv',
+//            'csv',
             'kml',
             'googlemaps'
         ]
