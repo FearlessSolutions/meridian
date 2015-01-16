@@ -22,27 +22,29 @@ define([
 	};//exposed
 
     function exportFunction(params){
-        var currentDatasetIds = [],
-            suffix;
-
-        context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(datasetId, dataset) {
-            currentDatasetIds.push(datasetId);
-        });
-
-        suffix = '?ids=' + currentDatasetIds.join();
-        window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + suffix);
+        if(params.featureId){
+            window.open(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + params.featureId, '_blank');
+        } else if(params.layerIds){
+            //Do nothing for now.
+        }
     }
 
     function validate(params){
         var valid = false;
 
         if(params.featureId){
-            valid = false;
-        } else if(params.layerIds){
             valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
                 configuration.id,
-                params.layerIds
+                [params.layerId] //Turn it into an array
             );
+        } else if(params.layerIds){
+
+            //TODO don't support right now
+            valid = false;
+//            valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
+//                configuration.id,
+//                params.layerIds
+//            );
         } else{
             valid = false;
         }
