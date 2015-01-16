@@ -34,6 +34,13 @@ define([
 
     //The ajax call isn't required, but it's a good example.
     function validate(params){
+        //TODO remove this after testing
+        params.callback(true);
+        return;
+
+
+
+
         if(params.featureId && params.layerId){
             context.sandbox.dataStorage.getFeatureById({
                     featureId: params.featureId

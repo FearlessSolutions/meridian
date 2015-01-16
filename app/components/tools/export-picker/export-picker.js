@@ -87,6 +87,34 @@ define([
                 }
             });
 
+
+
+
+
+            $modal.find('input:radio[name=exportOption]').on('change', function(elll){
+                var $this = context.$(this),
+                    exportId = $this.val();
+
+                $modal.find('.tab-pane').removeClass('active'); //Turn off any old ones
+                $modal.find('#layer-tab-' + exportId).addClass('active');
+
+                console.debug(this);
+            });
+
+            $simpleModal.find('input:radio[name=exportOption]').on('change', function(elll){
+                var $this = context.$(this),
+                    exportId = $this.val();
+
+                $simpleModal.find('.tab-pane').removeClass('active'); //Turn off any old ones
+                $simpleModal.find('#point-tab-' + exportId).addClass('active');
+
+
+                console.debug(this);
+            });
+
+
+
+
             $closeButton.on('click', function(event) {
                 event.preventDefault();
                 publisher.close();
@@ -109,6 +137,8 @@ define([
            
         },
         open: function(params) {
+            context.$('.tab-pane').removeClass('active'); //Turn off old panes //TODO check on this
+
             if(params && params.featureId && params.layerId){ //It is a point
                 selectedFeature = {
                     featureId: params.featureId,
