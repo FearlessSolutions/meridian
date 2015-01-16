@@ -183,6 +183,8 @@ define([
                 }));
             });//end of the util.each
 
+            var box = context.$('.data-checkbox input:checkbox');
+
             context.$('.data-checkbox input:checkbox').on('change',function(){
                 $selectAll.prop('checked', false);
                 exposed.validateLayers();

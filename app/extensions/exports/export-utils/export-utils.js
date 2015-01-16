@@ -43,6 +43,23 @@ define([
             }
             context.sandbox.export.export[id] = params.export;
             context.sandbox.export.validate[id] = params.validate;
+        },
+
+        validateExportForLayerByDatasource: function(exportId, layerIds){
+            var found = false;
+
+            context.sandbox.utils.each(layerIds, function(index, layerId){
+                var layerInfo = context.sandbox.dataStorage.datasets[layerId];
+
+                //Check allocated datasources for this export
+                if(context.sandbox.export.options[exportId].datasources.indexOf(layerInfo.dataService) !== -1){
+                    found = true;
+
+                    return false; //Stop the loop
+                }
+            });
+
+            return(found);
         }
     };//exposed
 

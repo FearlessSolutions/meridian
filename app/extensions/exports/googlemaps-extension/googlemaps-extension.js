@@ -25,22 +25,16 @@ define([
     }
 
     function validate(params){
-        var valid = true;
+        var valid = false;
 
         if(params.featureId){
-            valid = false
+            valid = false;
         } else if(params.layerIds){
-            context.sandbox.utils.each(params.layerIds, function(index, layerId){
-                //Check allocated datasources for this export
-                if(context.sandbox.export.options[configuration.id].datasources.indexOf(layerId) === -1){
-                    valid = false;
-
-                    return false; //Stop the loop
-                }
-            });
-
-        } else {
-            //error?
+            valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
+                configuration.id,
+                params.layerIds
+            );
+        } else{
             valid = false;
         }
 
