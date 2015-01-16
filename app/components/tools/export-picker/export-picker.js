@@ -97,8 +97,6 @@ define([
 
                 $modal.find('.tab-pane').removeClass('active'); //Turn off any old ones
                 $modal.find('#layer-tab-' + exportId).addClass('active');
-
-                console.debug(this);
             });
 
             $simpleModal.find('input:radio[name=exportOption]').on('change', function(elll){
@@ -107,9 +105,6 @@ define([
 
                 $simpleModal.find('.tab-pane').removeClass('active'); //Turn off any old ones
                 $simpleModal.find('#point-tab-' + exportId).addClass('active');
-
-
-                console.debug(this);
             });
 
 

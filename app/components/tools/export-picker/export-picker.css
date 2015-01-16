@@ -94,3 +94,12 @@ div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body 
     width: 100px;
     text-align: right;
 }
+
+
+div[data-aura-component='tools/export-picker'] .export-header {
+    padding: 8px;
+}
+
+div[data-aura-component='tools/export-picker'] .export-options .radio{
+    padding: 8px;
+}
