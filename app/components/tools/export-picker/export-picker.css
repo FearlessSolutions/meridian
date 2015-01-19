@@ -22,7 +22,7 @@ div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body 
     border-radius:4px;
     box-shadow:0px 1px 1px rgba(0, 0, 0, 0.075) inset;
     border:1px solid #CCC;
-    margin-left:25px;
+    margin-left:40px;
 }
 
 div[data-aura-component='tools/export-picker'] .modal-footer {
