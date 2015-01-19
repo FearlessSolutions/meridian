@@ -18,10 +18,11 @@ div[data-aura-component='tools/export-picker'] .modal-body {
 }
 
 div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body .exportOptions {
-    background-color: #f7f7f7;
+    background-color: #eee;
     border-radius:4px;
     box-shadow:0px 1px 1px rgba(0, 0, 0, 0.075) inset;
     border:1px solid #CCC;
+    margin-left:25px;
 }
 
 div[data-aura-component='tools/export-picker'] .modal-footer {
@@ -51,11 +52,12 @@ div[data-aura-component='tools/export-picker']  .modal-body table td {
     div[data-aura-component='tools/export-picker'] .modal-body table tr.something  { 
         border-bottom:1px solid #E5E5E5;
     }
-div[data-aura-component='tools/export-picker'] .exportOptions table tr { border-bottom:0px solid #eee; }
+
 
 div[data-aura-component='tools/export-picker'] .modal-body table tr {
     border-bottom: 1px solid #fff;
-}
+    }
+    div[data-aura-component='tools/export-picker'] .exportOptions table tr { border-bottom:0px solid #eee; }
 
 /*centralize text*/
 div[data-aura-component='tools/export-picker'] .info-text {
