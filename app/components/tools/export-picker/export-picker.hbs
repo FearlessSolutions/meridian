@@ -17,7 +17,7 @@
                             <div class="col-md-2">Records</div>
                         </div>
 
-                        <div id="layer-options" class="row">
+                        <div id="layer-options" class="row list-container">
                             <!-- This gets filled in manually -->
                         </div>
                     </div>
@@ -32,6 +32,14 @@
                                         {{this.label}}
                                     </label>
                                 </div>
+                            {{/each}}
+                            {{#each exports}}
+                            <div id="layer-export-{{this.id}}" class="radio">
+                                <label>
+                                    <input type="radio" name="exportOption" value="{{this.id}}">
+                                    {{this.label}}
+                                </label>
+                            </div>
                             {{/each}}
                         </div>
                     </div>

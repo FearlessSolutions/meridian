@@ -32,6 +32,9 @@ define([
     function validate(params){
         var valid = false;
 
+        params.callback(true); //TODO remove
+        return;
+
         if(params.featureId){
             valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
                 configuration.id,
