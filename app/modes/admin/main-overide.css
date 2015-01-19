@@ -1,0 +1,18 @@
+/**
+/**
+ * Add any css modifications here.
+ */
+
+.navbar-admin { 
+	background-color:#ccc; 
+	border:none; 
+	border-radius:0px;
+}
+
+h4 {
+	margin-left:20px;margin-top:0px;margin-bottom:0px;
+}
+
+.panel, .container-results { 
+	margin:20px; 
+}

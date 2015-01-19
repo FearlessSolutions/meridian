@@ -3,49 +3,25 @@
 <head>
     <meta charset="utf-8">
     <title>Meridian Admin</title>
-    <link rel="stylesheet" href=".././libs/bootstrap-3.2.0/css/bootstrap.css">
-    <link rel="stylesheet" href=".././libs/toastr-2.0.1/toastr.css">
-    <link rel="stylesheet" href=".././libs/bootstrap-dialog/bootstrap-dialog.css">
-    <link rel="stylesheet" href=".././libs/dynamic-bootstrap-table/dynamic-bootstrap-table.css">
-    <link rel="stylesheet" href=".././libs/bootstrap-multiselect-0.9.4/bootstrap-multiselect.css">
-    <link rel="stylesheet" href=".././libs/select2-3.4.8/select2.css">
-
-    <link rel="stylesheet" href=".././libs/SlickGrid-master/slick.grid.css">
-    <link rel="stylesheet" href=".././libs/SlickGrid-master/css/smoothness/jquery-ui-1.8.16.custom.css">
-    <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href=".././styles/main.css">
-    <!-- endbuild -->
-
-    <style type="text/css">
-        .navbar-admin { background-color:#ccc; border:none; border-radius:0px;}
-        h4 {
-            margin-left:20px;margin-top:0px;margin-bottom:0px;
-        }
-        .panel, .container-results { margin:20px; }
-        /*#myGrid { height:400px; width:100%; border:1px solid grey; border-radius:4px;}
-            .slick-header-column {
-                box-sizing:content-box;
-            }
-*/
-    </style>
-    
+    <link rel="stylesheet" href="/../../libs/bootstrap-3.2.0/css/bootstrap.css">
+    <link rel="stylesheet" href="./main-overide.css">
+    <script data-main="../../app" src="/../../bower_components/requirejs/require.js"></script>
 </head>
 <body>
-    
     <div id="admin-container">
         <nav class="navbar navbar-admin" role="navigation">
-            <div class="container" style="margin-left:0px; width:100%">
+            <div class="container" style="margin-left:0px; width:100%"> <!-- remove inline styling -->
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#" style="color:#444"><img src=".././docs/meridian/images/logos/meridthumb.png" alt=""> ADMIN DASHBOARD</a>
+                    <a class="navbar-brand" href="#" style="color:#444"><img src="../../docs/meridian/images/logos/meridthumb.png" alt=""> ADMIN DASHBOARD</a> <!-- remove inline styling -->
                 </div>
-                <button type="submit" class="btn btn-primary navbar-right" style="margin:10px">Exit</button>
-                <p class="navbar-text navbar-right" style="margin-right:10px">Signed in as <a href="#" class="navbar-link">John Snow</a></p>
+                <button type="submit" class="btn btn-primary navbar-right" style="margin:10px">Exit</button> <!-- remove inline styling -->
+                <p class="navbar-text navbar-right" style="margin-right:10px">Signed in as <a href="#" class="navbar-link">John Snow</a></p> <!-- remove inline styling -->
             </div>
         </nav>
         
         <div class="panel panel-default">
             <div class="panel-body">
-                <h4 class="page-header" style="margin:1px">Enter Search Criteria </h4>   
+                <h4 class="page-header" style="margin:1px">Enter Search Criteria </h4>  <!-- remove inline styling -->
                 <form class="navbar-form navbar-left" role="search">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="User ID">
@@ -62,12 +38,10 @@
              <div id="myGrid"></div>
         </div>
     </div>
+    <div data-aura-component="displays/datagrid"></div>
 </body>
 </html>
-<script src="../bower_components/requirejs/require.js"></script>
-<script src='../bower_components/jquery/dist/jquery.js' type="text/javascript"></script>
 
-<script src='../libs/SlickGrid-master/lib/jquery.event.drag-2.2.js' type="text/javascript"></script>
 <script src='../libs/SlickGrid-master/slick.core.js' type="text/javascript"></script>
 <script src='../libs/SlickGrid-master/slick.grid.js' type="text/javascript"></script>
 <script>
