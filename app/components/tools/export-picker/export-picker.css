@@ -35,6 +35,10 @@ div[data-aura-component='tools/export-picker'] #layer-options-header {
     border-bottom:1px solid #E5E5E5;
 }
 
+div[data-aura-component='tools/export-picker'] #layer-options-container .layer-option {
+    padding: 8px;
+}
+
 
 
 
@@ -66,34 +70,35 @@ div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body 
     margin-left:25px;
 }
 
+div[data-aura-component='tools/export-picker'] .export-header {
+    padding: 8px;
+    margin-bottom: 0;
+}
+
+div[data-aura-component='tools/export-picker'] .export-options .radio{
+    padding: 8px;
+    margin: 0;
+}
+
+
+
+
+
+
+
+
 div[data-aura-component='tools/export-picker'] .modal-footer {
     padding: 10px;
     border-top: none;
 }
 
+/*TODO moveto export or remove?*/
 div[data-aura-component='tools/export-picker'] .list-container{
     overflow: auto;
     max-height: 195px;
 }
 
-div[data-aura-component='tools/export-picker'] .modal-body table {
-    margin-bottom: 0;
-}
 
-/*Extra padding to match checkbox width.*/
-div[data-aura-component='tools/export-picker'] #export-picker-modal .export-option-title {
-    padding-bottom: 10px;
-}
-
-div[data-aura-component='tools/export-picker']  .modal-body table th,
-div[data-aura-component='tools/export-picker']  .modal-body table td {
-    border-top: none;
-    border-bottom: none;
-}
-
-/*div[data-aura-component='tools/export-picker'] .modal-body table tr {*/
-    /*border-bottom: 1px solid #dddddd;*/
-/*}*/
 
 /*centralize text*/
 div[data-aura-component='tools/export-picker'] .info-text {
@@ -101,6 +106,9 @@ div[data-aura-component='tools/export-picker'] .info-text {
     margin-top: 7px;
     opacity: 0.5;
 }
+
+
+
 
 /*overwrite negative margin of default row class*/
 div[data-aura-component='tools/export-picker'] .row {
@@ -141,10 +149,3 @@ div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body 
 }
 
 
-div[data-aura-component='tools/export-picker'] .export-header {
-    padding: 8px;
-}
-
-div[data-aura-component='tools/export-picker'] .export-options .radio{
-    padding: 8px;
-}

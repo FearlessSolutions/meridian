@@ -56,6 +56,9 @@ define([
     function validate(params){
         var valid = false;
 
+        params.callback(true);//TODO remove
+        return;
+
         if(params.featureId){
             valid = false;
         } else if(params.layerIds){
