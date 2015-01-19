@@ -18,18 +18,18 @@ define([
         $layerList,
         selectedFeature,
         $selectAll,
-        layerRowTemplate;
+        layerListTemplate;
 
     var exposed = {
         init: function(thisContext) {
-            layerRowTemplate = Handlebars.compile(layersHBS);
+            layerListTemplate = Handlebars.compile(layersHBS);
 
             context = thisContext;
             $modal = context.$('#export-picker-modal');
             $simpleModal = context.$('#export-picker-simplified-modal');
             $picker = $modal.find('#options');
             $simplePicker = $simpleModal.find('#options');
-            $layerList = $modal.find('#layers');
+            $layerList = $modal.find('#layer-options');
             $exportButton = context.$('button[type="submit"]');
             $closeButton = context.$('button[type="cancel"]');
             $selectAll = context.$('input:checkbox[value=checkAll]');
@@ -188,22 +188,23 @@ define([
             $simpleModal.modal('hide');
         },
         updateExportLayerList: function(){
-            //Clear old list of layers available.
-            $layerList.empty();
+            var layerList = [];
 
             //It is assumed that dataStorage.datasets will always have at least one layer
             //since the component does not open without one.
             context.sandbox.util.each(context.sandbox.dataStorage.datasets, function(layerId, layerInfo){
-                $layerList.append(layerRowTemplate({
+                layerList.push({
                     layerId: layerId,
-                    dataSource: layerInfo.dataService,
                     layerName: layerInfo.layerName,
-                    featureCount: layerInfo.length
-                }));
+                    dataSource: layerInfo.dataService,
+                    count: layerInfo.length
+                });
             });//end of the util.each
+            $layerList.html(layerListTemplate({
+                layers: layerList
+            }));
 
-            var box = context.$('.data-checkbox input:checkbox');
-
+            //Apply update logic to layer checkboxs
             context.$('.data-checkbox input:checkbox').on('change',function(){
                 $selectAll.prop('checked', false);
                 validateLayers();

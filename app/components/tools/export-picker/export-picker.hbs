@@ -7,23 +7,22 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div id="layer-options" class="col-md-8 divider">
-                        <table class="table">
-                            <tr>
-                                <th class="">
-                                    <input type="checkbox" value="checkAll" checked>
-                                </th>
-                                <th class="data-name">Layer Name</th>
-                                <th class="data-source">Source</th>
-                                <th class="data-records">Records</th>
-                            </tr>
-                        </table>
-                        <div class="list-container">
-                            <table id="layers" class="table"></table>
+                    <div id="layer-options-container" class="col-md-8 divider">
+                        <div id="layer-options-header" class="row">
+                            <div class="col-md-1">
+                                <input type="checkbox" value="checkAll" checked>
+                            </div>
+                            <div class="col-md-5">Layer Name</div>
+                            <div class="col-md-4">Source</div>
+                            <div class="col-md-2">Records</div>
+                        </div>
+
+                        <div id="layer-options" class="row">
+                            <!-- This gets filled in manually -->
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-4 export-container">
                         <label class="export-header" >Export Options</label>
                         <div class="list-container export-options">
                             {{#each exports}}

@@ -17,8 +17,53 @@ div[data-aura-component='tools/export-picker'] .modal-body {
     max-height: 280px;
 }
 
+
 div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body .divider {
     border-left: 1px solid #f7f7f7;
+}
+
+
+/**
+ * Layers
+ */
+
+/*The border might need to go to the parent*/
+div[data-aura-component='tools/export-picker'] #layer-options-header {
+    font-weight: bold;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom:1px solid #E5E5E5;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Exports
+ */
+
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-body .exportOptions {
+    background-color: #eee;
+    border-radius:4px;
+    box-shadow:0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+    border:1px solid #CCC;
+    margin-left:25px;
 }
 
 div[data-aura-component='tools/export-picker'] .modal-footer {

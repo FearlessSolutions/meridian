@@ -1,8 +1,12 @@
-<tr>
-    <td class="data-checkbox">
-        <input type="checkbox" value="{{layerId}}" {{startChecked}}>
-    </td>
-    <td class="data-name">{{{layerName}}}</td>
-    <td class="data-source">{{{dataSource}}}</td>
-    <td class="data-records">{{{featureCount}}}</td>
-</tr>
+<div class="col-md-12">
+    {{#each layers}}
+        <div class="layer-option row">
+            <div class="col-md-1 data-checkbox">
+                <input type="checkbox" value="{{this.layerId}}">
+            </div>
+            <div class="col-md-5 data-name">{{this.layerName}}</div>
+            <div class="col-md-4 data-source">{{this.dataSource}}</div>
+            <div class="col-md-2 data-count">{{this.count}}</div>
+        </div>
+    {{/each}}
+</div>
