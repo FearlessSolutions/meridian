@@ -19,34 +19,33 @@
     <style type="text/css">
         .navbar-admin { background-color:#ccc; border:none; border-radius:0px;}
         h4 {
-            /*margin-left:20px;margin-top:0px;margin-bottom:0px;*/
+            margin-left:20px;margin-top:0px;margin-bottom:0px;
         }
         .panel, .container-results { margin:20px; }
-        #myGrid { height:400px; width:100%; border:1px solid red; border-radius:4px;}
+        /*#myGrid { height:400px; width:100%; border:1px solid grey; border-radius:4px;}
             .slick-header-column {
                 box-sizing:content-box;
             }
-
+*/
     </style>
     
 </head>
 <body>
     
-   
     <div id="admin-container">
         <nav class="navbar navbar-admin" role="navigation">
             <div class="container" style="margin-left:0px; width:100%">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#" style="color:#444"><img src=".././docs/meridian/images/logos/meridthumb.png" alt=""> ADMIN DASHBOARD</a>
                 </div>
-               <p class="navbar-text navbar-right"><a href="#" class="navbar-link">Exit</a></p>
-               <p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link">John Snow</a></p>
+                <button type="submit" class="btn btn-primary navbar-right" style="margin:10px">Exit</button>
+                <p class="navbar-text navbar-right" style="margin-right:10px">Signed in as <a href="#" class="navbar-link">John Snow</a></p>
             </div>
         </nav>
         
         <div class="panel panel-default">
             <div class="panel-body">
-                <h4 class="page-header">Enter Search Criteria </h4>   
+                <h4 class="page-header" style="margin:1px">Enter Search Criteria </h4>   
                 <form class="navbar-form navbar-left" role="search">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="User ID">
