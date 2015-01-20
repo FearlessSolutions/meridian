@@ -10,74 +10,61 @@
 <body>
     <div id="admin-container">
         <nav class="navbar navbar-admin" role="navigation">
-            <div class="container" style="margin-left:0px; width:100%"> <!-- remove inline styling -->
+            <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#" style="color:#444"><img src="../../docs/meridian/images/logos/meridthumb.png" alt=""> ADMIN DASHBOARD</a> <!-- remove inline styling -->
+                    <a class="navbar-brand" href="#"><img src="../../docs/meridian/images/logos/meridthumb.png" alt="Admin Dashboard">ADMIN DASHBOARD</a>
                 </div>
-                <button type="submit" class="btn btn-primary navbar-right" style="margin:10px">Exit</button> <!-- remove inline styling -->
-                <p class="navbar-text navbar-right" style="margin-right:10px">Signed in as <a href="#" class="navbar-link">John Snow</a></p> <!-- remove inline styling -->
+                <button type="submit" class="btn btn-primary navbar-right">Exit</button>
+                <p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link">John Snow</a></p>
             </div>
-        </nav>
+        </nav>        
         
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <h4 class="page-header" style="margin:1px">Enter Search Criteria </h4>  <!-- remove inline styling -->
-                <form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="User ID">
-                        <input type="text" class="form-control" placeholder="Datasource">
-                        <input type="text" class="form-control" placeholder="Query Date">
-                        <input type="text" class="form-control" placeholder="Expiration Date">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
+        <div data-aura-component="tools/search">
+
+        <div id="admingridContainer" class="container-results">
+             <div id="admingrid"></div>
         </div>
 
-        <div id="results" class="container-results">
-             <div id="myGrid"></div>
-        </div>
+        <!--<div data-aura-component="displays/datagrid"></div>-->
     </div>
-    <div data-aura-component="displays/datagrid"></div>
+    
 </body>
 </html>
 
-<script src='../libs/SlickGrid-master/slick.core.js' type="text/javascript"></script>
-<script src='../libs/SlickGrid-master/slick.grid.js' type="text/javascript"></script>
 <script>
     
-    var grid;
-    var columns = [
-        {id: "userId", name: "User ID", field: "userId"},
-        {id: "dataSource", name: "Data Source", field: "dataSource"},    
-        {id: "start", name: "Query Date", field: "start"},
-        {id: "finish", name: "Expiration Date", field: "finish"}
-    ];
-    var options = {
-        enableCellNavigation: true,
-        enableColumnReorder: false,
-        defaultColumnWidth: 150,
-        fullWidthRows: true
+//     var grid;
+//     var columns = [
+//         {id: "userId", name: "User ID", field: "userId"},
+//         {id: "dataSource", name: "Data Source", field: "dataSource"},    
+//         {id: "start", name: "Query Date", field: "start"},
+//         {id: "finish", name: "Expiration Date", field: "finish"}
+//     ];
+//     var options = {
+//         enableCellNavigation: true,
+//         enableColumnReorder: false,
+//         defaultColumnWidth: 150,
+//         fullWidthRows: true
 
 
-    };
-    $('.btn-primary').on('click', function() {
+//     };
+//     $('.btn-primary').on('click', function() {
 
-        alert('test');
-    });
+//         alert('test');
+//     });
 
 
-    $(document).ready(function() {
-        var data = [];
-        for (var i = 0; i < 500; i++) {
-            data[i] = {
-                userId: "User ID " + i,
-                dataSource: "mockDB" + i,
-                start: "01/01/2009",
-                finish: "01/05/2009"
-            };
-        }
-        grid = new Slick.Grid("#myGrid", data, columns, options);
-        $('#myGrid').height($(window).height() - 300 );
-    });
+//     $(document).ready(function() {
+//         var data = [];
+//         for (var i = 0; i < 500; i++) {
+//             data[i] = {
+//                 userId: "User ID " + i,
+//                 dataSource: "mockDB" + i,
+//                 start: "01/01/2009",
+//                 finish: "01/05/2009"
+//             };
+//         }
+//         grid = new Slick.Grid("#grid", data, columns, options);
+//         $('#grid').height($(window).height() - 300 );
+//     });
 </script>
