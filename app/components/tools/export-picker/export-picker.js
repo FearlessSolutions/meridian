@@ -18,17 +18,22 @@ define([
         $layerList,
         selectedFeature,
         $selectAll,
-        layerListTemplate;
+        layerListTemplate,
+        $layerContainer,
+        $exportContainer,
+        $extraContainer,
+        displayModes;
 
     var exposed = {
         init: function(thisContext) {
+
             layerListTemplate = Handlebars.compile(layersHBS);
 
             context = thisContext;
             $modal = context.$('#export-picker-modal');
             $simpleModal = context.$('#export-picker-simplified-modal');
             $picker = $modal.find('#options');
-            $simplePicker = $simpleModal.find('#options');
+//            $simplePicker = $simpleModal.find('#options');
             $layerList = $modal.find('#layer-options');
             $exportButton = context.$('button[type="submit"]');
             $closeButton = context.$('button[type="cancel"]');
@@ -42,13 +47,42 @@ define([
                 publisher.close();
             });
 
-            $simpleModal.modal({
-                backdrop: true,
-                keyboard: true,
-                show: false
-            }).on('hidden.bs.modal', function() {
-                publisher.close();
-            });
+//            $simpleModal.modal({
+//                backdrop: true,
+//                keyboard: true,
+//                show: false
+//            }).on('hidden.bs.modal', function() {
+//                publisher.close();
+//            });
+
+            $layerContainer = context.$('#layer-options-container'); //TODO Move or remove
+            $exportContainer = context.$('#export-container');
+            $extraContainer = context.$('extra-export-fields');
+
+            displayModes = { //TODO move up
+                'layer,export,extra': {
+                    layer: 4,
+                    export: 4,
+                    extra: 4
+                },
+                'layer,export': {
+                    layer: 6,
+                    export: 6,
+                    extra: 0
+                },
+                'export,extra': {
+                    layer: 0,
+                    export: 6,
+                    extra: 6
+                },
+                'export': {
+                    layer: 0,
+                    export: 6,
+                    extra: 0
+                }
+            };
+
+
 
             $exportButton.on('click', function(){
                 var selectedLayers = getSelectedLayers(),
@@ -99,13 +133,13 @@ define([
                 $modal.find('#layer-tab-' + exportId).addClass('active');
             });
 
-            $simpleModal.find('input:radio[name=exportOption]').on('change', function(elll){
-                var $this = context.$(this),
-                    exportId = $this.val();
-
-                $simpleModal.find('.tab-pane').removeClass('active'); //Turn off any old ones
-                $simpleModal.find('#point-tab-' + exportId).addClass('active');
-            });
+//            $simpleModal.find('input:radio[name=exportOption]').on('change', function(elll){
+//                var $this = context.$(this),
+//                    exportId = $this.val();
+//
+//                $simpleModal.find('.tab-pane').removeClass('active'); //Turn off any old ones
+//                $simpleModal.find('#point-tab-' + exportId).addClass('active');
+//            });
 
 
 
@@ -122,7 +156,7 @@ define([
                 }
                 else{
                     //don't change this to removeProp.
-                    context.$('#layers input:checkbox').prop('checked', false);
+                    context.$('#layer-options input:checkbox').prop('checked', false);
                 }
                 validateLayers();
             });
@@ -135,21 +169,21 @@ define([
             context.$('.tab-pane').removeClass('active'); //Turn off old panes //TODO check on this
 
             if(params && params.featureId && params.layerId){ //It is a point
-                selectedFeature = {
-                    featureId: params.featureId,
-                    layerId: params.layerId
-                };
-
-                publisher.publishOpening({
-                    componentOpening: POINT_DESIGNATION
-                });
-
-                validateFeature({
-                    featureId: params.featureId,
-                    layerId: params.layerId
-                });
-
-                $simpleModal.modal('show');
+//                selectedFeature = {
+//                    featureId: params.featureId,
+//                    layerId: params.layerId
+//                };
+//
+//                publisher.publishOpening({
+//                    componentOpening: POINT_DESIGNATION
+//                });
+//
+//                validateFeature({
+//                    featureId: params.featureId,
+//                    layerId: params.layerId
+//                });
+//
+//                $simpleModal.modal('show');
             }else if(params && params.layerId){ //It is a specific layer
                 //message came from timeline containing params.overlayId
                 publisher.publishOpening({
@@ -162,6 +196,8 @@ define([
                 context.$('.data-checkbox input[value=' + params.layerId +']').prop('checked', true);
                 validateLayers();
 
+
+                changeDisplayMode('layer,export');
                 $modal.modal('show');
             } else{ //It is all layers
                 //its not a featureId or an overlayId. Open the layer view modal.
@@ -174,6 +210,7 @@ define([
                 $selectAll.prop('checked', true);
                 $selectAll.change(); //Run event
 
+                changeDisplayMode('layer,export,extra');
                 $modal.modal('show');
             }
         },
@@ -276,6 +313,21 @@ define([
 
     function getSelectedExportOption(){
         return context.$('.export-options input:checked').val();
+    }
+
+    function changeDisplayMode(views){
+        return;
+        var mode = displayModes[views],
+            removeCols;
+
+        //Remove all bootstrap cols, leaving other classes
+        removeCols = function(index, css){
+            return (css.match (/(^|\s)col-\S+/g) || []).join(' ');
+        };
+
+        $layerContainer.removeClass(removeCols).addClass('col-md-' + mode.layer);
+        $exportContainer.removeClass(removeCols).addClass('col-md-' + mode.export);
+        $extraContainer.removeClass(removeCols).addClass('col-md-' + mode.extra);
     }
 
     return exposed;

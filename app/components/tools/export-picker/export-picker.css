@@ -5,7 +5,7 @@ div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-dialo
 
 div[data-aura-component='tools/export-picker'] #export-picker-simplified-modal .modal-dialog {
     margin: 5% auto;
-    width: 335px;
+    width: 700px;
 }
 
 div[data-aura-component='tools/export-picker'] {
@@ -13,14 +13,14 @@ div[data-aura-component='tools/export-picker'] {
 }
 
 div[data-aura-component='tools/export-picker'] .modal-body {
-    padding: 10px 10px 0 10px;
+    /*padding: 10px 10px 0 0;*/
     max-height: 280px;
 }
 
 /*overwrite negative margin of default row class*/
 div[data-aura-component='tools/export-picker'] .row {
-    margin-left: 0;
-    margin-right: 0;
+    /*margin-left: 0;*/
+    /*margin-right: 0;*/
 }
 
 /*TODO moveto export or remove?*/
@@ -44,8 +44,18 @@ div[data-aura-component='tools/export-picker'] #layer-options {
     overflow: auto;
 }
 
+div[data-aura-component='tools/export-picker'] #layer-options-container  input[type="checkbox"]{
+    float: left;
+    margin-top: 2px;
+}
+
+div[data-aura-component='tools/export-picker'] #layer-options-container  .text-by-checkbox{
+    margin-left: 25px;
+}
+
+
 div[data-aura-component='tools/export-picker'] #layer-options-container .layer-option {
-    padding: 8px;
+    padding: 8px 8px 8px 0;
     white-space: nowrap;
     overflow: auto;
     text-overflow: ellipsis;
@@ -55,18 +65,18 @@ div[data-aura-component='tools/export-picker'] #layer-options-container .layer-o
 /**
  * Exports
  */
-div[data-aura-component='tools/export-picker'] .export-options-container {
-    margin: 0;
-}
+/*div[data-aura-component='tools/export-picker'] #export-container {*/
+    /*margin: 0;*/
+/*}*/
 
-div[data-aura-component='tools/export-picker'] .export-container {
+div[data-aura-component='tools/export-picker'] #export-container {
     background-color: #eee;
     border-radius:4px;
     box-shadow:0px 1px 1px rgba(0, 0, 0, 0.075) inset;
     border:1px solid #CCC;
 }
 
-div[data-aura-component='tools/export-picker'] .export-header {
+div[data-aura-component='tools/export-picker'] #export-header {
     padding: 8px;
     margin: 0;
 }

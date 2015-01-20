@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-4">
                         <label class="" >Export Options</label>
                         <div class="list-container export-options">
                             {{#each exports}}
@@ -20,18 +20,20 @@
                             {{/each}}
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-12 fill-row">
-                    <div class="tab-content point-extra-export-fields">
-                        {{#each exports}}
+                    <div class="col-md-8 fill-row">
+                        <div class="tab-content point-extra-export-fields">
+                            {{#each exports}}
                             <div id="point-tab-{{this.id}}" class="tab-pane">{{{this.template}}}</div>
-                        {{/each}}
+                            {{/each}}
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!--<div class="row">-->
+                <!---->
+            <!--</div>-->
 
             <div class="modal-footer">
                 <div class="form-group">
