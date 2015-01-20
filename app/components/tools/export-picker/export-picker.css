@@ -33,15 +33,9 @@ div[data-aura-component='tools/export-picker'] .list-container{
 /**
  * Layers
  */
-div[data-aura-component='tools/export-picker'] #layer-options-header {
-    font-weight: bold;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    border-bottom:1px solid #E5E5E5;
-}
-div[data-aura-component='tools/export-picker'] #layer-options {
-    max-height: 200px;
-    overflow: auto;
+
+div[data-aura-component='tools/export-picker'] #layer-options-container {
+    border-right: 1px solid #E5E5E5;
 }
 
 div[data-aura-component='tools/export-picker'] #layer-options-container  input[type="checkbox"]{
@@ -53,13 +47,24 @@ div[data-aura-component='tools/export-picker'] #layer-options-container  .text-b
     margin-left: 25px;
 }
 
-
 div[data-aura-component='tools/export-picker'] #layer-options-container .layer-option {
     padding: 8px 8px 8px 0;
     white-space: nowrap;
     overflow: auto;
     text-overflow: ellipsis;
 }
+div[data-aura-component='tools/export-picker'] #layer-options-header {
+    font-weight: bold;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom:1px solid #E5E5E5;
+}
+div[data-aura-component='tools/export-picker'] #layer-options {
+    max-height: 200px;
+    overflow: auto;
+}
+
+
 
 
 /**
@@ -70,10 +75,12 @@ div[data-aura-component='tools/export-picker'] #layer-options-container .layer-o
 /*}*/
 
 div[data-aura-component='tools/export-picker'] #export-container {
-    background-color: #eee;
-    border-radius:4px;
-    box-shadow:0px 1px 1px rgba(0, 0, 0, 0.075) inset;
-    border:1px solid #CCC;
+    border-right: 1px solid #E5E5E5;
+
+    background-color: #FCFCFC;
+    /*border-radius:4px;*/
+    /*box-shadow:0px 1px 1px rgba(0, 0, 0, 0.075) inset;*/
+    /*border:1px solid #CCC;*/
 }
 
 div[data-aura-component='tools/export-picker'] #export-header {
