@@ -76,28 +76,34 @@ div[data-aura-component='tools/export-picker'] #layer-options {
 
 div[data-aura-component='tools/export-picker'] #export-container {
     border-right: 1px solid #E5E5E5;
+    border-left: 1px solid #E5E5E5;
 
     background-color: #FCFCFC;
-    /*border-radius:4px;*/
-    /*box-shadow:0px 1px 1px rgba(0, 0, 0, 0.075) inset;*/
-    /*border:1px solid #CCC;*/
 }
 
 div[data-aura-component='tools/export-picker'] #export-header {
     padding: 8px;
     margin: 0;
+    border-bottom:1px solid #E5E5E5;
 }
 
-div[data-aura-component='tools/export-picker'] .export-options .radio{
+div[data-aura-component='tools/export-picker'] #export-options .radio{
     padding: 8px;
     margin: 0;
 }
 
+div[data-aura-component='tools/export-picker'] #export-options li.active{
+    /*background-color: fuchsia;*/
+}
 
 
 
-
-
+/**
+ * Extra options
+ */
+div[data-aura-component='tools/export-picker'] #extra-export-fields .tab-pane{
+    /*background-color: fuchsia;*/
+}
 
 
 div[data-aura-component='tools/export-picker'] .modal-footer {

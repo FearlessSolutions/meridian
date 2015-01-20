@@ -12,7 +12,6 @@ define([
         $modal,
         $picker,
         $simpleModal,
-        $simplePicker,
         $closeButton,
         $exportButton,
         $layerList,
@@ -33,7 +32,6 @@ define([
             $modal = context.$('#export-picker-modal');
             $simpleModal = context.$('#export-picker-simplified-modal');
             $picker = $modal.find('#options');
-//            $simplePicker = $simpleModal.find('#options');
             $layerList = $modal.find('#layer-options');
             $exportButton = context.$('button[type="submit"]');
             $closeButton = context.$('button[type="cancel"]');
@@ -57,28 +55,28 @@ define([
 
             $layerContainer = context.$('#layer-options-container'); //TODO Move or remove
             $exportContainer = context.$('#export-container');
-            $extraContainer = context.$('extra-export-fields');
+            $extraContainer = context.$('#extra-export-fields');
 
             displayModes = { //TODO move up
                 'layer,export,extra': {
-                    layer: 4,
-                    export: 4,
-                    extra: 4
+                    layer: 'col-md-4',
+                    export: 'col-md-4',
+                    extra: 'col-md-4'
                 },
                 'layer,export': {
-                    layer: 6,
-                    export: 6,
-                    extra: 0
+                    layer: 'col-md-6',
+                    export: 'col-md-6',
+                    extra: 'hidden'
                 },
                 'export,extra': {
-                    layer: 0,
-                    export: 6,
-                    extra: 6
+                    layer: 'hidden',
+                    export: 'col-md-6',
+                    extra: 'col-md-6'
                 },
                 'export': {
-                    layer: 0,
-                    export: 6,
-                    extra: 0
+                    layer: 'hidden',
+                    export: 'col-md-6',
+                    extra: 'hidden'
                 }
             };
 
@@ -125,12 +123,14 @@ define([
 
 
 
-            $modal.find('input:radio[name=exportOption]').on('change', function(elll){
+            $exportContainer.find('input:radio[name=exportOption]').on('change', function(){
                 var $this = context.$(this),
                     exportId = $this.val();
+                $exportContainer.find('.radio').removeClass('selected');
+                $this.parent().parent().addClass('selected');
 
-                $modal.find('.tab-pane').removeClass('active'); //Turn off any old ones
-                $modal.find('#layer-tab-' + exportId).addClass('active');
+                $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
+                $extraContainer.find('#tab-' + exportId).addClass('active');
             });
 
 //            $simpleModal.find('input:radio[name=exportOption]').on('change', function(elll){
@@ -166,7 +166,7 @@ define([
            
         },
         open: function(params) {
-            context.$('.tab-pane').removeClass('active'); //Turn off old panes //TODO check on this
+            $extraContainer.find('.tab-pane').removeClass('active'); //Turn off old panes
 
             if(params && params.featureId && params.layerId){ //It is a point
 //                selectedFeature = {
@@ -193,7 +193,7 @@ define([
                 $selectAll.removeProp('checked');
                 $selectAll.change(); //Run event
 
-                context.$('.data-checkbox input[value=' + params.layerId +']').prop('checked', true);
+                $layerContainer.find('.data-checkbox input[value=' + params.layerId +']').prop('checked', true);
                 validateLayers();
 
 
@@ -219,6 +219,7 @@ define([
             $simpleModal.modal('hide');
             context.$('.export-options input').prop('checked', false); //Uncheck all options from both modals
             selectedFeature = null;
+            //TODO unselect export option parent
         },
         clear: function() {
             $modal.modal('hide');
@@ -246,7 +247,6 @@ define([
                 $selectAll.prop('checked', false);
                 validateLayers();
             });
-
         }
     };
 
@@ -257,9 +257,9 @@ define([
         context.sandbox.utils.each(context.sandbox.export.validate, function(exportId, validateFunction){
             var setExportOption = function(valid){
                 if(valid){
-                    enableExportOption(exportId, 'point');
+                    enableExportOption(exportId);
                 }else{
-                    disableExportOption(exportId, 'point');
+                    disableExportOption(exportId);
                 }
             };
 
@@ -277,9 +277,9 @@ define([
         context.sandbox.utils.each(context.sandbox.export.validate, function(exportId, validateFunction){
             var setExportOption = function(valid){
                 if(valid){
-                    enableExportOption(exportId, 'layer');
+                    enableExportOption(exportId);
                 }else{
-                    disableExportOption(exportId, 'layer');
+                    disableExportOption(exportId);
                 }
             };
 
@@ -290,14 +290,14 @@ define([
         });
     }
 
-    function disableExportOption(exportId, type){
-        var exportRadioDiv = context.$('#' + type+'-export-'+ exportId);
+    function disableExportOption(exportId){
+        var exportRadioDiv = $extraContainer.find('#export-'+ exportId);
         exportRadioDiv.hide();//.addClass('disabled');
         exportRadioDiv.find(':radio').prop('disabled', true);
 
     }
     function enableExportOption(exportId, type){
-        var exportRadioDiv = context.$('#' + type + '-export-'+ exportId),
+        var exportRadioDiv = $extraContainer.find('#export-'+ exportId),
             exportRadio = exportRadioDiv.find(':radio');
 
         exportRadioDiv.show();//.addClass('disabled');
@@ -306,17 +306,17 @@ define([
     }
 
     function getSelectedLayers(){
-        return context.$('.data-checkbox input:checked').map(function () {
+        return $layerContainer.find('.data-checkbox input:checked').map(function () {
             return this.value;
         }).get();
     }
 
     function getSelectedExportOption(){
-        return context.$('.export-options input:checked').val();
+        return $exportContainer.find('.export-options input:checked').val();
     }
 
     function changeDisplayMode(views){
-        return;
+        return; //TODO remove
         var mode = displayModes[views],
             removeCols;
 

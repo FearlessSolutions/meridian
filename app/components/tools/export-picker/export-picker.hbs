@@ -10,9 +10,9 @@
 
 
 
-                    <div id="layer-options-container" class="col-md-6 divider">
+                    <div id="layer-options-container" class="col-md-5 divider">
                         <div id="layer-options-header" class="row">
-                            <div class="col-md-7">
+                            <div class="col-md-5">
                                 <input type="checkbox" value="checkAll" checked>
                                 <div class="text-by-checkbox">Layer Name</div>
                             </div>
@@ -25,45 +25,34 @@
                     </div>
 
 
-                    <div id="export-container" class="col-md-4">
+                    <div id="export-container" class="col-md-7">
                         <label id="export-header" >Export Options</label>
-                        <div class="list-container export-options">
-                            {{#each exports}}
-                                <div id="layer-export-{{this.id}}" class="radio">
-                                    <label>
+                        <div id="export-options" class="list-container tabbable tabs-left">
+                            <ul class="nav nav-tabs">
+                                {{#each exports}}
+                                    <li><a href="#tab-{{this.id}}" data-toggle="tab">
                                         <input type="radio" name="exportOption" value="{{this.id}}">
                                         {{this.label}}
-                                    </label>
-                                </div>
-                            {{/each}}
+                                    </a></li>
+                                {{/each}}
+                            </ul>
+                            <div id="extra-export-fields" class="tab-content">
+                                {{#each exports}}
+                                    <div id="tab-{{this.id}}" class="tab-pane">
+                                        {{{this.template}}}
+                                    </div>
+                                {{/each}}
+                            </div>
                         </div>
                     </div>
 
 
-                    <!--<div id="extra-export-fields" class="col-md-4">-->
-                        <!--<div class="tab-content extra-export-fields">-->
-                            <!--{{#each exports}}-->
-                            <!--<div id="layer-tab-{{this.id}}" class="tab-pane">{{{this.template}}}</div>-->
-                            <!--{{/each}}-->
-                        <!--</div>-->
-                    <!--</div>-->
 
 
 
                 </div>
 
 
-
-
-                <!--<div class="row">-->
-                    <!--<div class="col-md-12 fill-row">-->
-                        <!--<div class="tab-content extra-export-fields">-->
-                            <!--{{#each exports}}-->
-                                <!--<div id="layer-tab-{{this.id}}" class="tab-pane">{{{this.template}}}</div>-->
-                            <!--{{/each}}-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
             </div>
             <div class="modal-footer">
                 <div class="form-group">
