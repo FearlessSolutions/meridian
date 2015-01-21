@@ -13,36 +13,41 @@ define([
 ], function (publisher, layersHBS) {
 
     var context,
-        $modal,
-        $simpleModal,
-        $closeButton,
-        $exportButton,
-        $layerList,
         selectedFeature,
-        $selectAll,
         layerListTemplate,
+        $modal,
+        $layerList,
+        $selectAll,
         $layerContainer,
         $exportContainer,
         $extraContainer,
         $layerTab,
-        $extraTab;
+        $layerTabBox,
+        $extraTab,
+        $extraTabBox;
 
     var exposed = {
         init: function(thisContext) {
-            layerListTemplate = Handlebars.compile(layersHBS);
             context = thisContext;
+            selectedFeature = null;
+            layerListTemplate = Handlebars.compile(layersHBS);
+
             $modal = context.$('#export-picker-modal');
+
+            //Layer objects
+            $layerTab = $modal.find('#layer-tab-col');
+            $layerTabBox = $layerTab.find('#layer-tab');
             $layerContainer = $modal.find('#layer-container'); //TODO Move or remove
-            $exportContainer = $modal.find('#export-container');
-            $extraContainer = $modal.find('#extra-export-container');
             $layerList = $layerContainer.find('#layer-options');
             $selectAll = $layerContainer.find('input:checkbox[value=checkAll]');
 
-            $layerTab = $modal.find('#layer-tab-col');
-            $extraTab = $modal.find('#extra-export-tab-col');
+            //Export objects
+            $exportContainer = $modal.find('#export-container');
 
-            $exportButton = $modal.find('button[type="submit"]');
-            $closeButton = $modal.find('button[type="cancel"]');
+            //Extra options objects
+            $extraTab = $modal.find('#extra-export-tab-col');
+            $extraTabBox = $extraTab.find('#extra-export-tab');
+            $extraContainer = $modal.find('#extra-export-container');
 
             $modal.modal({
                 backdrop: true,
@@ -52,7 +57,8 @@ define([
                 publisher.close();
             });
 
-            $exportButton.on('click', function(){
+            //Export button
+            $modal.find('.modal-footer button[type="submit"]').on('click', function(){ //TODO get values, verify
                 var selectedLayers = getSelectedLayers(),
                     selectedExportOption = getSelectedExportOption(),
                     featureId,
@@ -89,25 +95,12 @@ define([
                 }
             });
 
-            $exportContainer.find('input:radio[name=exportOption]').on('change', function(){
-                var $this = context.$(this),
-                    exportId = $this.val(),
-                    $exportTab = $extraContainer.find('#tab-' + exportId);
-                $exportContainer.find('.radio').removeClass('selected');
-                $this.parent().parent().addClass('selected');
-
-
-                if($exportTab.length){
-                    toOptionsMode($exportTab);
-                } else {
-                    toLayerMode();
-                }
-            });
-
-            $closeButton.on('click', function(event) {
+            //Close button
+            $modal.find('.modal-footer button[type="cancel"]').on('click', function(event) {
                 event.preventDefault();
                 publisher.close();
             });
+
 
             //select all logic. WILL NOT WORK consistently WITH .attr
             $selectAll.on('change', function(event) {
@@ -121,15 +114,34 @@ define([
                 validateLayers();
             });
 
+            //Export radio buttons. These don't get removed, so can do up here.
+            $exportContainer.find('input:radio[name=exportOption]').on('change', function(){
+                var $this = context.$(this),
+                    exportId = $this.val(),
+                    enabledExtraOptions;
+
+                $exportContainer.find('.radio').removeClass('selected');
+                $this.parent().parent().addClass('selected'); //TODO does 'selected' do anything anymore?
+                enabledExtraOptions = enableExtraOptions(exportId);
+
+                if(selectedFeature === null){ //In expanded mode
+                    if (enabledExtraOptions) { //Decide if layers should be shown
+                        disableLayers(false);
+                    }else {
+                        enableLayers();
+                    }
+                }
+            });
+
             //hide info text found on the left side of the close and export buttons.
-            context.$('.info-text').hide();
+            context.$('.info-text').hide(); //TODO info text anymore?
            
         },
         open: function(params) {
-            $extraContainer.find('.tab-pane').removeClass('active'); //Turn off old panes
+            clean();
 
             if(params && params.featureId && params.layerId){ //It is a point
-//                selectedFeature = {
+//                selectedFeature = { //TODO single feature mode
 //                    featureId: params.featureId,
 //                    layerId: params.layerId
 //                };
@@ -143,23 +155,20 @@ define([
 //                    layerId: params.layerId
 //                });
 //
-//                $simpleModal.modal('show');
+//                show(false);
             }else if(params && params.layerId){ //It is a specific layer
                 //message came from timeline containing params.overlayId
                 publisher.publishOpening({
                     componentOpening: '' //LAYER_DESIGNATION //TODO what to do with this?
                 });
                 exposed.updateExportLayerList();
-                $selectAll.removeProp('checked');
-                $selectAll.change(); //Run event
+                $selectAll.change(); //Run none selected event
 
-                $layerContainer.find('.data-checkbox input[value=' + params.layerId +']').prop('checked', true);
+                $layerContainer.find('.layer-option input[value=' + params.layerId +']').prop('checked', true);
                 validateLayers();
-                toLayerMode(true);
 
-                $modal.modal('show');
+                show(true);
             } else{ //It is all layers
-                //its not a featureId or an overlayId. Open the layer view modal.
                 publisher.publishOpening({
                     componentOpening: '' //LAYER_DESIGNATION //TODO what to do with this?
                 });
@@ -169,20 +178,16 @@ define([
                 $selectAll.prop('checked', true);
                 $selectAll.change(); //Run event
 
-                toLayerMode();
-                $modal.modal('show');
+                show(true);
             }
         },
         close: function() {
             $modal.modal('hide');
-            $simpleModal.modal('hide');
-            context.$('.export-options input').prop('checked', false); //Uncheck all options from both modals
             selectedFeature = null;
-            //TODO unselect export option parent
+            clean();
         },
         clear: function() {
-            $modal.modal('hide');
-            $simpleModal.modal('hide');
+            exposed.close();
         },
         updateExportLayerList: function(){
             var layerList = [];
@@ -208,6 +213,17 @@ define([
             });
         }
     };
+
+    function show(expandedView){
+        if(expandedView){
+            enableLayers();
+        } else {
+            //TODO
+            disableLayers(true)
+        }
+
+        $modal.modal('show');
+    }
 
     function validateFeature(params){
         var featureId = params.featureId,
@@ -274,30 +290,64 @@ define([
         return $exportContainer.find('.export-options input:checked').val();
     }
 
-    function toLayerMode(disableOptions){
-        $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
-        $extraContainer.addClass('hidden');
-        $layerContainer.removeClass('hidden');
-        if(disableOptions){
-            $extraTab.addClass('disabled');
-        }
+    function clean(){
+        $selectAll.removeProp('checked');
+        $layerContainer.find('.layer-option input').prop('checked', false);
+
+
+        $exportContainer.find('.radio').removeClass('selected');
+        //TODO remove parent.parent selected?
+        disableExtraOptions(true);
+
     }
 
-    function toOptionsMode($tab, disableLayers){
-        $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
-        $layerContainer.addClass('hidden');
-        $extraContainer.removeClass('hidden');
-        $tab.addClass('active');
-
-        if(disableLayers){
-            $layerTab.addClass('disable');
+    function enableLayers(){
+        $layerTabBox.removeClass('disabled');
+        $layerContainer.show();
+    }
+    function disableLayers(disableTab){
+        if(disableTab){
+            $layerTabBox.addClass('disabled');
         }
+        $layerContainer.hide();
+    }
+
+    function enableExtraOptions(exportId){
+        var $exportPane = $extraContainer.find('#tab-' + exportId);
+
+        $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
+        $extraTabBox.text(exportId + ' Options');
+
+        if($exportPane.length) { //Check if there is a pane for the export id
+            $exportPane.addClass('active');
+            $extraTabBox.removeClass('disabled');
+            $extraContainer.show();
+
+            return true;
+        }else{
+            disableExtraOptions(false); //Don't remove the text, but disable the tab
+
+            return false;
+        }
+    }
+    function disableExtraOptions(clearText){ //TODO figure out how to determine if I should open layers
+        $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
+
+        if(clearText){
+            $extraTabBox.text('Extra Options (none)');
+        }
+        $extraTabBox.addClass('disabled');
+        $extraContainer.hide();
+    }
+    function hideExtraOptions(){
+        $extraContainer.hide();
     }
 
     function toFeatureMode(){
         $layerContainer.addClass('hidden');
         //TODO something about tab?
     }
+    
     return exposed;
 
 });
