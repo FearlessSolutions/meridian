@@ -60,6 +60,10 @@ div[data-aura-component='tools/export-picker'] .vertical-tab {
     -moz-transform: rotate(-90deg);
 }
 
+div[data-aura-component='tools/export-picker'] .vertical-tab.disabled {
+    cursor: not-allowed;
+    background-color: #CCC;
+}
 
 /**
  * Layers

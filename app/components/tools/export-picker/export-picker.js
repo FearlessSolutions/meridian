@@ -101,6 +101,15 @@ define([
                 publisher.close();
             });
 
+            //Hide/show functionality for tabs
+            $layerTabBox.on('click', function(){
+                hideExtraOptions();
+                showLayers();
+            });
+            $extraTabBox.on('click', function(){
+                hideLayers();
+                showExtraOptions();
+            });
 
             //select all logic. WILL NOT WORK consistently WITH .attr
             $selectAll.on('change', function(event) {
@@ -124,7 +133,7 @@ define([
                 $this.parent().parent().addClass('selected'); //TODO does 'selected' do anything anymore?
                 enabledExtraOptions = enableExtraOptions(exportId);
 
-                if(selectedFeature === null){ //In expanded mode
+                if(isInExpandedMode()){ //In expanded mode
                     if (enabledExtraOptions) { //Decide if layers should be shown
                         disableLayers(false);
                     }else {
@@ -167,7 +176,7 @@ define([
                 $layerContainer.find('.layer-option input[value=' + params.layerId +']').prop('checked', true);
                 validateLayers();
 
-                show(true);
+                show();
             } else{ //It is all layers
                 publisher.publishOpening({
                     componentOpening: '' //LAYER_DESIGNATION //TODO what to do with this?
@@ -178,7 +187,7 @@ define([
                 $selectAll.prop('checked', true);
                 $selectAll.change(); //Run event
 
-                show(true);
+                show();
             }
         },
         close: function() {
@@ -214,8 +223,8 @@ define([
         }
     };
 
-    function show(expandedView){
-        if(expandedView){
+    function show(){
+        if(isInExpandedMode()){
             enableLayers();
         } else {
             //TODO
@@ -298,17 +307,26 @@ define([
         $exportContainer.find('.radio').removeClass('selected');
         //TODO remove parent.parent selected?
         disableExtraOptions(true);
+    }
 
+    function isInExpandedMode(){
+        return selectedFeature === null
     }
 
     function enableLayers(){
         $layerTabBox.removeClass('disabled');
-        $layerContainer.show();
+        showLayers();
     }
     function disableLayers(disableTab){
         if(disableTab){
             $layerTabBox.addClass('disabled');
         }
+        hideLayers();
+    }
+    function showLayers(){
+        $layerContainer.show();
+    }
+    function hideLayers(){
         $layerContainer.hide();
     }
 
@@ -321,7 +339,7 @@ define([
         if($exportPane.length) { //Check if there is a pane for the export id
             $exportPane.addClass('active');
             $extraTabBox.removeClass('disabled');
-            $extraContainer.show();
+            showExtraOptions();
 
             return true;
         }else{
@@ -337,7 +355,10 @@ define([
             $extraTabBox.text('Extra Options (none)');
         }
         $extraTabBox.addClass('disabled');
-        $extraContainer.hide();
+        hideExtraOptions();
+    }
+    function showExtraOptions(){
+        $extraContainer.show();
     }
     function hideExtraOptions(){
         $extraContainer.hide();
@@ -347,7 +368,7 @@ define([
         $layerContainer.addClass('hidden');
         //TODO something about tab?
     }
-    
+
     return exposed;
 
 });
