@@ -150,21 +150,21 @@ define([
             clean();
 
             if(params && params.featureId && params.layerId){ //It is a point
-//                selectedFeature = { //TODO single feature mode
-//                    featureId: params.featureId,
-//                    layerId: params.layerId
-//                };
-//
-//                publisher.publishOpening({
-//                    componentOpening: POINT_DESIGNATION
-//                });
-//
-//                validateFeature({
-//                    featureId: params.featureId,
-//                    layerId: params.layerId
-//                });
-//
-//                show(false);
+                selectedFeature = {
+                    featureId: params.featureId,
+                    layerId: params.layerId
+                };
+
+                publisher.publishOpening({
+                    componentOpening: '' //POINT_DESIGNATION //TODO what to do with this?
+                });
+
+                validateFeature({
+                    featureId: params.featureId,
+                    layerId: params.layerId
+                });
+
+                show();
             }else if(params && params.layerId){ //It is a specific layer
                 //message came from timeline containing params.overlayId
                 publisher.publishOpening({
@@ -224,10 +224,11 @@ define([
     };
 
     function show(){
+        disableExtraOptions(true);
+
         if(isInExpandedMode()){
             enableLayers();
         } else {
-            //TODO
             disableLayers(true)
         }
 
@@ -334,7 +335,7 @@ define([
         var $exportPane = $extraContainer.find('#tab-' + exportId);
 
         $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
-        $extraTabBox.text(exportId + ' Options');
+        $extraTabBox.text(context.sandbox.export.options[exportId].label + ' Options');
 
         if($exportPane.length) { //Check if there is a pane for the export id
             $exportPane.addClass('active');
