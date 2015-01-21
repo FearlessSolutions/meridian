@@ -8,15 +8,18 @@
             <div class="modal-body">
                 <div class="row">
 
+                    <div id="layer-tab-col" class="vertical-tab-col">
+                        <div id="layer-tab" class="vertical-tab">Layers</div>
+                    </div>
 
-
-                    <div id="layer-options-container" class="col-md-5 divider">
+                    <div id="layer-container">
                         <div id="layer-options-header" class="row">
-                            <div class="col-md-5">
-                                <input type="checkbox" value="checkAll" checked>
+                            <input type="checkbox" value="checkAll" class="layer-checkbox" checked>
+
+                            <div class="layer-name">
                                 <div class="text-by-checkbox">Layer Name</div>
                             </div>
-                            <div class="col-md-5">Source</div>
+                            <div class="layer-source">Source</div>
                         </div>
 
                         <div id="layer-options" class="row list-container">
@@ -24,29 +27,38 @@
                         </div>
                     </div>
 
-
-                    <div id="export-container" class="col-md-7">
-                        <label id="export-header" >Export Options</label>
-                        <div id="export-options" class="list-container tabbable tabs-left">
-                            <ul class="nav nav-tabs">
-                                {{#each exports}}
-                                    <li><a href="#tab-{{this.id}}" data-toggle="tab">
+                    <div class="vertical-tab-col">
+                        <div id="export-tab" class="vertical-tab">
+                            Export Options
+                        </div>
+                    </div>
+                    <div id="export-container">
+                        <div class="list-container export-options">
+                            {{#each exports}}
+                                <div id="layer-export-{{this.id}}" class="radio">
+                                    <label>
                                         <input type="radio" name="exportOption" value="{{this.id}}">
                                         {{this.label}}
-                                    </a></li>
-                                {{/each}}
-                            </ul>
-                            <div id="extra-export-fields" class="tab-content">
-                                {{#each exports}}
-                                    <div id="tab-{{this.id}}" class="tab-pane">
-                                        {{{this.template}}}
-                                    </div>
-                                {{/each}}
-                            </div>
+                                    </label>
+                                </div>
+                            {{/each}}
                         </div>
                     </div>
 
-
+                    <div id="extra-export-tab-col" class="vertical-tab-col">
+                        <div id="extra-export-tab" class="vertical-tab">
+                            Additional Options
+                        </div>
+                    </div>
+                    <div id="extra-export-container">
+                        <div class="tab-content extra-export-fields">
+                            {{#each exports}}
+                                {{#if this.template}}
+                                    <div id="tab-{{this.id}}" class="tab-pane">{{{this.template}}}</div>
+                                {{/if}}
+                            {{/each}}
+                        </div>
+                    </div>
 
 
 

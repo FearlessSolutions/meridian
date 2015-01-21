@@ -1,11 +1,10 @@
-<div class="col-md-12">
     {{#each layers}}
         <div class="layer-option row">
-            <div class="col-md-7 data-name">
-                <input type="checkbox" value="{{this.layerId}}">
+            <input type="checkbox" value="{{this.layerId}}" class="layer-checkbox">
+
+            <div class="layer-name">
                 <div class="text-by-checkbox">{{this.layerName}}</div>
             </div>
-            <div class="col-md-5 data-source">{{this.dataSource}}</div>
+            <div class="layer-source">{{this.dataSource}}</div>
         </div>
     {{/each}}
-</div>

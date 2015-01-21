@@ -5,7 +5,7 @@ div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-dialo
 
 div[data-aura-component='tools/export-picker'] #export-picker-simplified-modal .modal-dialog {
     margin: 5% auto;
-    width: 700px;
+    width: 800px;
 }
 
 div[data-aura-component='tools/export-picker'] {
@@ -13,14 +13,14 @@ div[data-aura-component='tools/export-picker'] {
 }
 
 div[data-aura-component='tools/export-picker'] .modal-body {
-    /*padding: 10px 10px 0 0;*/
-    max-height: 280px;
+    padding: 0 0 0 0;
+    height: 280px;
 }
 
 /*overwrite negative margin of default row class*/
 div[data-aura-component='tools/export-picker'] .row {
-    /*margin-left: 0;*/
-    /*margin-right: 0;*/
+    margin-left: 0;
+    margin-right: 0;
 }
 
 /*TODO moveto export or remove?*/
@@ -29,10 +29,46 @@ div[data-aura-component='tools/export-picker'] .list-container{
     max-height: 195px;
 }
 
+div[data-aura-component='tools/export-picker'] .vertical-tab-col {
+    width: 35px;
+    height: 280px;
+    float: left;
+    position: relative;
+    padding-left: 10px;
+}
+
+div[data-aura-component='tools/export-picker'] .vertical-tab {
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    line-height: 31px;
+    color: #FFF;
+    top: 124px;
+    left: -127px;
+    background-color: #428BCA;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    width: 281px;
+    height: 31px;
+    cursor: pointer;
+
+    /* Safari */
+    -webkit-transform: rotate(-90deg);
+
+    /* Firefox */
+    -moz-transform: rotate(-90deg);
+}
+
 
 /**
  * Layers
  */
+div[data-aura-component='tools/export-picker'] #layer-container {
+    float: left;
+    padding-left: 15px;
+    width: 440px;
+}
 
 div[data-aura-component='tools/export-picker'] #layer-options-container {
     border-right: 1px solid #E5E5E5;
@@ -41,7 +77,32 @@ div[data-aura-component='tools/export-picker'] #layer-options-container {
 div[data-aura-component='tools/export-picker'] #layer-options-container  input[type="checkbox"]{
     float: left;
     margin-top: 2px;
+    width: 3px;
 }
+
+
+
+
+div[data-aura-component='tools/export-picker'] #layer-container .layer-checkbox {
+    float: left;
+    width: 18px
+}
+div[data-aura-component='tools/export-picker'] #layer-container .layer-name {
+    float: left;
+    padding-left: 8px;
+    width: 257px;
+}
+
+div[data-aura-component='tools/export-picker'] #layer-container .layer-source {
+    float: left;
+    padding-left: 8px;
+    width: 150px;
+}
+
+
+
+
+
 
 div[data-aura-component='tools/export-picker'] #layer-options-container  .text-by-checkbox{
     margin-left: 25px;
@@ -70,15 +131,11 @@ div[data-aura-component='tools/export-picker'] #layer-options {
 /**
  * Exports
  */
-/*div[data-aura-component='tools/export-picker'] #export-container {*/
-    /*margin: 0;*/
-/*}*/
 
 div[data-aura-component='tools/export-picker'] #export-container {
-    border-right: 1px solid #E5E5E5;
-    border-left: 1px solid #E5E5E5;
-
-    background-color: #FCFCFC;
+    padding-left: 15px;
+    width: 145px;
+    float: left;
 }
 
 div[data-aura-component='tools/export-picker'] #export-header {
@@ -101,14 +158,19 @@ div[data-aura-component='tools/export-picker'] #export-options li.active{
 /**
  * Extra options
  */
+
+div[data-aura-component='tools/export-picker'] #extra-export-container {
+    float: left;
+    padding-left: 15px;
+    width: 440px;
+}
 div[data-aura-component='tools/export-picker'] #extra-export-fields .tab-pane{
     /*background-color: fuchsia;*/
 }
 
-
 div[data-aura-component='tools/export-picker'] .modal-footer {
     padding: 10px;
-    border-top: none;
+    border-top: 1px solid #E5E5E5;
 }
 
 

@@ -1,3 +1,9 @@
+//TODO
+//-add hooks to tabs
+//-find out how to do views
+//-make simple view work
+//-colors
+
 define([
     './export-picker-publisher',
     'text!./export-picker-layers.hbs',
@@ -7,10 +13,7 @@ define([
 ], function (publisher, layersHBS) {
 
     var context,
-        POINT_DESIGNATION = 'export-picker-singlePoint-modal',
-        LAYER_DESIGNATION = 'export-picker-layer-modal',
         $modal,
-        $picker,
         $simpleModal,
         $closeButton,
         $exportButton,
@@ -21,21 +24,25 @@ define([
         $layerContainer,
         $exportContainer,
         $extraContainer,
-        displayModes;
+        $layerTab,
+        $extraTab;
 
     var exposed = {
         init: function(thisContext) {
-
             layerListTemplate = Handlebars.compile(layersHBS);
-
             context = thisContext;
             $modal = context.$('#export-picker-modal');
-            $simpleModal = context.$('#export-picker-simplified-modal');
-            $picker = $modal.find('#options');
-            $layerList = $modal.find('#layer-options');
-            $exportButton = context.$('button[type="submit"]');
-            $closeButton = context.$('button[type="cancel"]');
-            $selectAll = context.$('input:checkbox[value=checkAll]');
+            $layerContainer = $modal.find('#layer-container'); //TODO Move or remove
+            $exportContainer = $modal.find('#export-container');
+            $extraContainer = $modal.find('#extra-export-container');
+            $layerList = $layerContainer.find('#layer-options');
+            $selectAll = $layerContainer.find('input:checkbox[value=checkAll]');
+
+            $layerTab = $modal.find('#layer-tab-col');
+            $extraTab = $modal.find('#extra-export-tab-col');
+
+            $exportButton = $modal.find('button[type="submit"]');
+            $closeButton = $modal.find('button[type="cancel"]');
 
             $modal.modal({
                 backdrop: true,
@@ -44,43 +51,6 @@ define([
             }).on('hidden.bs.modal', function() {
                 publisher.close();
             });
-
-//            $simpleModal.modal({
-//                backdrop: true,
-//                keyboard: true,
-//                show: false
-//            }).on('hidden.bs.modal', function() {
-//                publisher.close();
-//            });
-
-            $layerContainer = context.$('#layer-options-container'); //TODO Move or remove
-            $exportContainer = context.$('#export-container');
-            $extraContainer = context.$('#extra-export-fields');
-
-            displayModes = { //TODO move up
-                'layer,export,extra': {
-                    layer: 'col-md-4',
-                    export: 'col-md-4',
-                    extra: 'col-md-4'
-                },
-                'layer,export': {
-                    layer: 'col-md-6',
-                    export: 'col-md-6',
-                    extra: 'hidden'
-                },
-                'export,extra': {
-                    layer: 'hidden',
-                    export: 'col-md-6',
-                    extra: 'col-md-6'
-                },
-                'export': {
-                    layer: 'hidden',
-                    export: 'col-md-6',
-                    extra: 'hidden'
-                }
-            };
-
-
 
             $exportButton.on('click', function(){
                 var selectedLayers = getSelectedLayers(),
@@ -119,30 +89,20 @@ define([
                 }
             });
 
-
-
-
-
             $exportContainer.find('input:radio[name=exportOption]').on('change', function(){
                 var $this = context.$(this),
-                    exportId = $this.val();
+                    exportId = $this.val(),
+                    $exportTab = $extraContainer.find('#tab-' + exportId);
                 $exportContainer.find('.radio').removeClass('selected');
                 $this.parent().parent().addClass('selected');
 
-                $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
-                $extraContainer.find('#tab-' + exportId).addClass('active');
+
+                if($exportTab.length){
+                    toOptionsMode($exportTab);
+                } else {
+                    toLayerMode();
+                }
             });
-
-//            $simpleModal.find('input:radio[name=exportOption]').on('change', function(elll){
-//                var $this = context.$(this),
-//                    exportId = $this.val();
-//
-//                $simpleModal.find('.tab-pane').removeClass('active'); //Turn off any old ones
-//                $simpleModal.find('#point-tab-' + exportId).addClass('active');
-//            });
-
-
-
 
             $closeButton.on('click', function(event) {
                 event.preventDefault();
@@ -187,7 +147,7 @@ define([
             }else if(params && params.layerId){ //It is a specific layer
                 //message came from timeline containing params.overlayId
                 publisher.publishOpening({
-                    componentOpening: LAYER_DESIGNATION
+                    componentOpening: '' //LAYER_DESIGNATION //TODO what to do with this?
                 });
                 exposed.updateExportLayerList();
                 $selectAll.removeProp('checked');
@@ -195,14 +155,13 @@ define([
 
                 $layerContainer.find('.data-checkbox input[value=' + params.layerId +']').prop('checked', true);
                 validateLayers();
+                toLayerMode(true);
 
-
-                changeDisplayMode('layer,export');
                 $modal.modal('show');
             } else{ //It is all layers
                 //its not a featureId or an overlayId. Open the layer view modal.
                 publisher.publishOpening({
-                    componentOpening: LAYER_DESIGNATION
+                    componentOpening: '' //LAYER_DESIGNATION //TODO what to do with this?
                 });
                 exposed.updateExportLayerList();
                 //state is persisting even though element is set to checked.
@@ -210,7 +169,7 @@ define([
                 $selectAll.prop('checked', true);
                 $selectAll.change(); //Run event
 
-                changeDisplayMode('layer,export,extra');
+                toLayerMode();
                 $modal.modal('show');
             }
         },
@@ -315,21 +274,30 @@ define([
         return $exportContainer.find('.export-options input:checked').val();
     }
 
-    function changeDisplayMode(views){
-        return; //TODO remove
-        var mode = displayModes[views],
-            removeCols;
-
-        //Remove all bootstrap cols, leaving other classes
-        removeCols = function(index, css){
-            return (css.match (/(^|\s)col-\S+/g) || []).join(' ');
-        };
-
-        $layerContainer.removeClass(removeCols).addClass('col-md-' + mode.layer);
-        $exportContainer.removeClass(removeCols).addClass('col-md-' + mode.export);
-        $extraContainer.removeClass(removeCols).addClass('col-md-' + mode.extra);
+    function toLayerMode(disableOptions){
+        $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
+        $extraContainer.addClass('hidden');
+        $layerContainer.removeClass('hidden');
+        if(disableOptions){
+            $extraTab.addClass('disabled');
+        }
     }
 
+    function toOptionsMode($tab, disableLayers){
+        $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
+        $layerContainer.addClass('hidden');
+        $extraContainer.removeClass('hidden');
+        $tab.addClass('active');
+
+        if(disableLayers){
+            $layerTab.addClass('disable');
+        }
+    }
+
+    function toFeatureMode(){
+        $layerContainer.addClass('hidden');
+        //TODO something about tab?
+    }
     return exposed;
 
 });
