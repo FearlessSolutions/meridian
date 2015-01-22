@@ -103,12 +103,16 @@ define([
 
             //Hide/show functionality for tabs
             $layerTabBox.on('click', function(){
-                hideExtraOptions();
-                showLayers();
+                if(!$layerTabBox.hasClass('disabled')){
+                    hideExtraOptions();
+                    showLayers();
+                }
             });
             $extraTabBox.on('click', function(){
-                hideLayers();
-                showExtraOptions();
+                if(!$extraTabBox.hasClass('disabled')) {
+                    hideLayers();
+                    showExtraOptions();
+                }
             });
 
             //select all logic. WILL NOT WORK consistently WITH .attr
