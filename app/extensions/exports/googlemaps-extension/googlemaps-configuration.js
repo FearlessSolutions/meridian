@@ -1,13 +1,11 @@
 define([
-], function() {
+    'text!./googlemaps-export.hbs'
+], function(template) {
     
     return {
         description: 'Export to Google Maps',
         label: 'Google Maps',
-        channel: 'export.url.googlemaps',
-        types: [
-            'POINT'
-        ],
-        id: 'googlemaps'
+        id: 'googlemaps',
+        template: template
     };
 });

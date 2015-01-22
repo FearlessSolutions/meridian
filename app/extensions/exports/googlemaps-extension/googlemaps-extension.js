@@ -21,6 +21,7 @@ define([
 	};
 
     function exportFunction(params){
+        console.log(JSON.stringify(params.options));
         context.sandbox.dataStorage.getFeatureById({
             featureId: params.featureId
         },

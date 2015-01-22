@@ -1,13 +1,6 @@
-//TODO
-//-add hooks to tabs
-//-find out how to do views
-//-make simple view work
-//-colors
-
 define([
     './export-picker-publisher',
     'text!./export-picker-layers.hbs',
-    'text!./export-picker-simplified.hbs',
     'bootstrap',
     'handlebars'
 ], function (publisher, layersHBS) {
@@ -64,7 +57,7 @@ define([
                     extraFields = getExtraFields(selectedExportOption),
                     featureId,
                     layerId,
-                    publishCallback;
+                    publishMessageCallback;
 
                 publishMessageCallback = function(callbackParams){
                     publisher.publishMessage({
@@ -388,7 +381,11 @@ define([
 
         $inputs.each(function(){
             var $this = context.$(this);
-            fieldValueMap[$this.data('field')] = $this.val();
+            if($this.is(':checkbox')){
+                fieldValueMap[$this.data('field')] = $this.is(':checked');
+            } else{
+                fieldValueMap[$this.data('field')] = $this.val();
+            }
         });
 
         return fieldValueMap;

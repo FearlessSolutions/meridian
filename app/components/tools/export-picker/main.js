@@ -1,7 +1,6 @@
 define([
     'text!./export-picker.css',
     'text!./export-picker.hbs',
-    'text!./export-picker-simplified.hbs',
     './export-picker',
     './export-picker-publisher',
     './export-picker-subscriber',
@@ -9,7 +8,6 @@ define([
 ], function (
     componentCSS,
     componentHBS,
-    simpleComponentHBS,
     component,
     publisher,
     subscriber
@@ -18,20 +16,13 @@ define([
 
     return {
         initialize: function() {
-            var template = Handlebars.compile(componentHBS),
-                html,
-                tabs;
+            var template = Handlebars.compile(componentHBS);
 
             this.sandbox.utils.addCSS(componentCSS, COMPONENT_NAME + '-style');
 
-            html = template({
+            this.html(template({
                 exports: this.sandbox.export.options
-            });
-
-            html += Handlebars.compile(simpleComponentHBS)({
-                exports: this.sandbox.export.options
-            });
-            this.html(html);
+            }));
 
             publisher.init(this);
             component.init(this);
