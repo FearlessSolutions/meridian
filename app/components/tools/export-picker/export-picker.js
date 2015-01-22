@@ -61,8 +61,18 @@ define([
             $modal.find('.modal-footer button[type="submit"]').on('click', function(){ //TODO get values, verify
                 var selectedLayers = getSelectedLayers(),
                     selectedExportOption = getSelectedExportOption(),
+                    extraFields = getExtraFields(selectedExportOption),
                     featureId,
-                    layerId;
+                    layerId,
+                    publishCallback;
+
+                publishMessageCallback = function(callbackParams){
+                    publisher.publishMessage({
+                        messageType: callbackParams.messageType,
+                        messageTitle: callbackParams.messageTitle,
+                        messageText: callbackParams.messageText
+                    });
+                };
 
                 if(!selectedExportOption || selectedExportOption === ''){
                     publisher.publishMessage({
@@ -75,10 +85,11 @@ define([
                     layerId = selectedFeature.layerId;
 
                     publisher.close(); //This resets selected feature
-                    publisher.export({
-                        channel: context.sandbox.export.options[selectedExportOption].channel,
+                    context.sandbox.export.export[selectedExportOption]({
                         featureId: featureId,
-                        layerId: layerId
+                        layerId: layerId,
+                        options: extraFields,
+                        callback: publishMessageCallback
                     });
                 } else if (!selectedLayers.length){
                     publisher.publishMessage({
@@ -88,9 +99,10 @@ define([
                     });
                 } else{
                     publisher.close();
-                    publisher.export({
-                        channel: context.sandbox.export.options[selectedExportOption].channel,
-                        layerIds: selectedLayers
+                    context.sandbox.export.export[selectedExportOption]({
+                        layerIds: selectedLayers,
+                        options: extraFields,
+                        callback: publishMessageCallback
                     });
                 }
             });
@@ -369,9 +381,17 @@ define([
         $extraContainer.hide();
     }
 
-    function toFeatureMode(){
-        $layerContainer.addClass('hidden');
-        //TODO something about tab?
+    function getExtraFields(exportId){
+        //Collect all (if any inputs in the export option's pane
+        var $inputs = $extraContainer.find('#tab-' + exportId + ' input'),
+            fieldValueMap = {};
+
+        $inputs.each(function(){
+            var $this = context.$(this);
+            fieldValueMap[$this.data('field')] = $this.val();
+        });
+
+        return fieldValueMap;
     }
 
     return exposed;
