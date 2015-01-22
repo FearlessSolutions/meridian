@@ -1,9 +1,7 @@
-define([
-    //'./query-publisher',
+define([    
     'bootstrap'
-], function (publisher) {
-    var context,
-        MENU_DESIGNATION = 'query-tool';
+], function () {
+    var context;
 
     var exposed = {
         init: function(thisContext) {

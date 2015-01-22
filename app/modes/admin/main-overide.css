@@ -4,8 +4,8 @@
  */
 
 .navbar-admin { 
-	background-color:#ccc;
-	background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.25) 100%); /* W3C */
+	
+	background: linear-gradient(to bottom, rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(32,124,202,1) 51%,rgba(125,185,232,1) 100%); /* W3C */
 	border:none;
 	border-bottom:1px solid #999; 
 	border-radius:0px;
@@ -15,7 +15,9 @@
 		width:100%;
 		}
 		a.navbar-brand {
-			color:#444;
+			color: rgba(0,0,0,0.6);
+			/*color: rgba(255,255,255,.9);*/
+    text-shadow: 1px 1px 3px rgba(255,255,255,0.3);
 			}
 			a.navbar-brand img {
 				margin-right:10px;			}
@@ -24,7 +26,9 @@
 		}
 		.navbar-text.navbar-right:last-child {
 			margin-top:15px;
+			
 		}
+		.navbar-link { color:#fff; }
 
  .page-header {
 	margin:1px;
