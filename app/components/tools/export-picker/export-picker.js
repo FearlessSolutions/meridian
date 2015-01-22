@@ -30,7 +30,7 @@ define([
             //Layer objects
             $layerTab = $modal.find('#layer-tab-col');
             $layerTabBox = $layerTab.find('#layer-tab');
-            $layerContainer = $modal.find('#layer-container'); //TODO Move or remove
+            $layerContainer = $modal.find('#layer-container');
             $layerList = $layerContainer.find('#layer-options');
             $selectAll = $layerContainer.find('input:checkbox[value=checkAll]');
 
@@ -51,7 +51,7 @@ define([
             });
 
             //Export button
-            $modal.find('.modal-footer button[type="submit"]').on('click', function(){ //TODO get values, verify
+            $modal.find('.modal-footer button[type="submit"]').on('click', function(){
                 var selectedLayers = getSelectedLayers(),
                     selectedExportOption = getSelectedExportOption(),
                     extraFields = getExtraFields(selectedExportOption),
@@ -150,10 +150,6 @@ define([
                     }
                 }
             });
-
-            //hide info text found on the left side of the close and export buttons.
-            context.$('.info-text').hide(); //TODO info text anymore?
-           
         },
         open: function(params) {
             clean();
@@ -315,7 +311,6 @@ define([
 
 
         $exportContainer.find('.radio').removeClass('selected');
-        //TODO remove parent.parent selected?
         disableExtraOptions(true);
     }
 
@@ -358,7 +353,7 @@ define([
             return false;
         }
     }
-    function disableExtraOptions(clearText){ //TODO figure out how to determine if I should open layers
+    function disableExtraOptions(clearText){
         $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
 
         if(clearText){
