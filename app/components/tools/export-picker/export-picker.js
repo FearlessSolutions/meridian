@@ -118,11 +118,11 @@ define([
             //select all logic. WILL NOT WORK consistently WITH .attr
             $selectAll.on('change', function(event) {
                 if($selectAll.is(':checked')){
-                    context.$('#layers input:checkbox').prop('checked', true);
+                    $layerList.find('input.layer-checkbox').prop('checked', true);
                 }
                 else{
                     //don't change this to removeProp.
-                    context.$('#layer-options input:checkbox').prop('checked', false);
+                    $layerList.find('input.layer-checkbox').prop('checked', false);
                 }
                 validateLayers();
             });
