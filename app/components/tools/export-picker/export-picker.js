@@ -221,7 +221,7 @@ define([
             }));
 
             //Apply update logic to layer checkboxs
-            context.$('.data-checkbox input:checkbox').on('change',function(){
+            $layerList.find('.layer-checkbox:checkbox').on('change',function(){
                 $selectAll.prop('checked', false);
                 validateLayers();
             });

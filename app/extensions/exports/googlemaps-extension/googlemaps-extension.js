@@ -49,8 +49,8 @@ define([
                     params.callback(valid);
                 });
 
-        } else if(params.layerIds){
-            params.callback(false);  //Google Maps doesn't do layers
+        } else if(params.layerIds && params.layerIds.length){
+            params.callback(true);  //Google Maps doesn't do layers //TODO return to false
         } else{
             params.callback(false);
         }
