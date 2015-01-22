@@ -128,6 +128,9 @@ div[data-aura-component='tools/export-picker'] #layer-options {
     max-height: 200px;
     overflow: auto;
 }
+div[data-aura-component='tools/export-picker'] #layer-options .layer-option{
+    padding-top: 8px;
+}
 
 
 
@@ -148,15 +151,14 @@ div[data-aura-component='tools/export-picker'] #export-header {
     border-bottom:1px solid #E5E5E5;
 }
 
+div[data-aura-component='tools/export-picker'] #export-options {
+    padding-top: 8px;
+}
+
 div[data-aura-component='tools/export-picker'] #export-options .radio{
     padding: 8px;
     margin: 0;
 }
-
-div[data-aura-component='tools/export-picker'] #export-options li.active{
-    /*background-color: fuchsia;*/
-}
-
 
 
 /**

@@ -280,28 +280,28 @@ define([
     }
 
     function disableExportOption(exportId){
-        var exportRadioDiv = $extraContainer.find('#export-'+ exportId);
-        exportRadioDiv.hide();//.addClass('disabled');
+        var exportRadioDiv = $exportContainer.find('#export-'+ exportId);
+        exportRadioDiv.hide();
         exportRadioDiv.find(':radio').prop('disabled', true);
 
     }
     function enableExportOption(exportId, type){
-        var exportRadioDiv = $extraContainer.find('#export-'+ exportId),
+        var exportRadioDiv = $exportContainer.find('#export-'+ exportId),
             exportRadio = exportRadioDiv.find(':radio');
 
-        exportRadioDiv.show();//.addClass('disabled');
+        exportRadioDiv.show();
         exportRadio.prop('disabled', false);
         exportRadio.prop('checked', false);
     }
 
     function getSelectedLayers(){
-        return $layerContainer.find('.data-checkbox input:checked').map(function () {
+        return $layerList.find('input.layer-checkbox:checked').map(function () {
             return this.value;
         }).get();
     }
 
     function getSelectedExportOption(){
-        return $exportContainer.find('.export-options input:checked').val();
+        return $exportContainer.find('#export-options input:checked').val();
     }
 
     function clean(){

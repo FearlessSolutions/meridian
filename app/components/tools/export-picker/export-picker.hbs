@@ -33,9 +33,9 @@
                         </div>
                     </div>
                     <div id="export-container">
-                        <div class="list-container export-options">
+                        <div id="export-options" class="list-container">
                             {{#each exports}}
-                                <div id="layer-export-{{this.id}}" class="radio">
+                                <div id="export-{{this.id}}" class="radio">
                                     <label>
                                         <input type="radio" name="exportOption" value="{{this.id}}">
                                         {{this.label}}
