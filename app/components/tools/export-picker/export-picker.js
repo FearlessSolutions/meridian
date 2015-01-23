@@ -107,18 +107,18 @@ define([
             });
 
             //Hide/show functionality for tabs
-            $layerTabBox.on('click', function(){
-                if(!$layerTabBox.hasClass('disabled')){
-                    hideExtraOptions();
-                    showLayers();
-                }
-            });
-            $extraTabBox.on('click', function(){
-                if(!$extraTabBox.hasClass('disabled')) {
-                    hideLayers();
-                    showExtraOptions();
-                }
-            });
+            // $layerTabBox.on('click', function(){
+            //     if(!$layerTabBox.hasClass('disabled')){
+            //         hideExtraOptions();
+            //         showLayers();
+            //     }
+            // });
+            // $extraTabBox.on('click', function(){
+            //     if(!$extraTabBox.hasClass('disabled')) {
+            //         hideLayers();
+            //         showExtraOptions();
+            //     }
+            // });
 
             //select all logic. WILL NOT WORK consistently WITH .attr
             $selectAll.on('change', function(event) {
@@ -169,7 +169,7 @@ define([
                     layerId: params.layerId
                 });
 
-                show();
+                // show();
             }else if(params && params.layerId){ //It is a specific layer
                 //message came from timeline containing params.overlayId
                 publisher.publishOpening({
@@ -181,7 +181,7 @@ define([
                 $layerContainer.find('.layer-option input[value=' + params.layerId +']').prop('checked', true);
                 validateLayers();
 
-                show();
+                // show();
             } else{ //It is all layers
                 publisher.publishOpening({
                     componentOpening: '' //LAYER_DESIGNATION //TODO what to do with this?
@@ -189,11 +189,12 @@ define([
                 exposed.updateExportLayerList();
                 //state is persisting even though element is set to checked.
                 //Forcing the element to show as selected when modal is opened.
-                $selectAll.prop('checked', true);
-                $selectAll.change(); //Run event
+                // $selectAll.prop('checked', true);
+                // $selectAll.change(); //Run event
 
-                show();
+                // show();
             }
+            $modal.modal('show');
         },
         close: function() {
             $modal.modal('hide');
@@ -224,21 +225,22 @@ define([
             $layerList.find('.layer-checkbox:checkbox').on('change',function(){
                 $selectAll.prop('checked', false);
                 validateLayers();
+                //show the options pane.
             });
         }
     };
 
-    function show(){
-        disableExtraOptions(true);
+    // function show(){
+    //     disableExtraOptions(true);
 
-        if(isInExpandedMode()){
-            enableLayers();
-        } else {
-            disableLayers(true)
-        }
+    //     // if(isInExpandedMode()){
+    //     //     enableLayers();
+    //     // } else {
+    //     //     disableLayers(true)
+    //     // }
 
-        $modal.modal('show');
-    }
+    //     $modal.modal('show');
+    // }
 
     function validateFeature(params){
         var featureId = params.featureId,
@@ -318,22 +320,22 @@ define([
         return selectedFeature === null
     }
 
-    function enableLayers(){
-        $layerTabBox.removeClass('disabled');
-        showLayers();
-    }
-    function disableLayers(disableTab){
-        if(disableTab){
-            $layerTabBox.addClass('disabled');
-        }
-        hideLayers();
-    }
-    function showLayers(){
-        $layerContainer.show();
-    }
-    function hideLayers(){
-        $layerContainer.hide();
-    }
+    // function enableLayers(){
+    //     $layerTabBox.removeClass('disabled');
+    //     showLayers();
+    // }
+    // function disableLayers(disableTab){
+    //     if(disableTab){
+    //         $layerTabBox.addClass('disabled');
+    //     }
+    //     hideLayers();
+    // }
+    // function showLayers(){
+    //     $layerContainer.show();
+    // }
+    // function hideLayers(){
+    //     $layerContainer.hide();
+    // }
 
     function enableExtraOptions(exportId){
         var $exportPane = $extraContainer.find('#tab-' + exportId);

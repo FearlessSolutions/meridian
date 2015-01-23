@@ -1,6 +1,6 @@
 div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-dialog {
     margin: 5% auto;
-    width: 700px;
+    width: 600px;
 }
 
 div[data-aura-component='tools/export-picker'] #export-picker-simplified-modal .modal-dialog {
@@ -29,56 +29,28 @@ div[data-aura-component='tools/export-picker'] .list-container{
     max-height: 195px;
 }
 
-div[data-aura-component='tools/export-picker'] .vertical-tab-col {
-    width: 35px;
-    height: 280px;
-    float: left;
-    position: relative;
-    padding-left: 10px;
-}
-
-div[data-aura-component='tools/export-picker'] .vertical-tab {
-    position: relative;
-    text-align: center;
-    vertical-align: middle;
-    font-weight: bold;
-    line-height: 31px;
-    color: #FFF;
-    top: 124px;
-    left: -127px;
-    background-color: #428BCA;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    width: 281px;
-    height: 31px;
-    cursor: pointer;
-    -webkit-transform: rotate(-90deg); /* Safari */
-    -moz-transform: rotate(-90deg); /* Firefox */
-}
-
-div[data-aura-component='tools/export-picker'] .vertical-tab.disabled {
-    cursor: not-allowed;
-    background-color: #CCC;
-}
-
 /**
  * Layers
  */
 div[data-aura-component='tools/export-picker'] #layer-container {
     float: left;
-    padding-left: 15px;
-    width: 440px;
+    /*padding-left: 15px;*/
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    position: absolute;
+    left: 0;
 }
 
-div[data-aura-component='tools/export-picker'] #layer-options-container {
+/*iv[data-aura-component='tools/export-picker'] #layer-options-container {
     border-right: 1px solid #E5E5E5;
-}
+}*/
 
-div[data-aura-component='tools/export-picker'] #layer-options-container  input[type="checkbox"]{
+/*div[data-aura-component='tools/export-picker'] #layer-options-container  input[type="checkbox"]{
     float: left;
     margin-top: 2px;
     width: 3px;
-}
+}*/
 
 div[data-aura-component='tools/export-picker'] #layer-container .layer-checkbox {
     float: left;
@@ -86,36 +58,50 @@ div[data-aura-component='tools/export-picker'] #layer-container .layer-checkbox 
 }
 div[data-aura-component='tools/export-picker'] #layer-container .layer-name {
     float: left;
-    padding-left: 8px;
-    width: 257px;
+    padding-left: 15px;
+    width: 260px;
+    text-align: left;
+    max-width: 260px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div[data-aura-component='tools/export-picker'] #layer-container .layer-source {
     float: left;
-    padding-left: 8px;
+    padding-left: 15px;
     width: 150px;
-}
-
-div[data-aura-component='tools/export-picker'] #layer-options-container  .text-by-checkbox{
-    margin-left: 25px;
-}
-
-div[data-aura-component='tools/export-picker'] #layer-options-container .layer-option {
-    padding: 8px 8px 8px 0;
+    text-align: left;
+    max-width: 150px;
     white-space: nowrap;
-    overflow: auto;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
+
+div[data-aura-component='tools/export-picker'] #layer-container .record-count {
+    float: left;
+    padding-left: 15px;
+    width: 110px;
+    text-align: left;
+    max-width: 110px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
 div[data-aura-component='tools/export-picker'] #layer-options-header {
     font-weight: bold;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding: 8px 15px 8px 15px;
+    /*padding-top: 8px;*/
+    /*padding-bottom: 8px;*/
     border-bottom:1px solid #E5E5E5;
 }
 div[data-aura-component='tools/export-picker'] #layer-options {
-    max-height: 200px;
+    max-height: 243px;
     overflow: auto;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 div[data-aura-component='tools/export-picker'] #layer-options .layer-option{
     padding-top: 8px;
@@ -126,14 +112,22 @@ div[data-aura-component='tools/export-picker'] #layer-options .layer-option{
  */
 
 div[data-aura-component='tools/export-picker'] #export-container {
-    padding-left: 15px;
+    /*padding-left: 15px;*/
     width: 145px;
     float: left;
+    position:absolute;
+    opacity: 0;
+    visibility: hidden;/*prevent clicks*/
+    background-color: blue;
+    left: 598px;
+    z-index: 100;
 }
 
-div[data-aura-component='tools/export-picker'] #export-header {
-    padding: 8px;
-    margin: 0;
+div[data-aura-component='tools/export-picker'] #export-options-header {
+    font-weight: bold;
+    padding: 8px 15px 8px 15px;
+    /*padding-top: 8px;*/
+    /*padding-bottom: 8px;*/
     border-bottom:1px solid #E5E5E5;
 }
 
