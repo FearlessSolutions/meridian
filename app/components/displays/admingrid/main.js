@@ -1,30 +1,24 @@
-define([
-	'./datagrid',
-    './datagrid-subscriber',
-    './datagrid-publisher',
-	'text!./datagrid.hbs',
-	'text!./datagrid.css',
-    'handlebars',
-    'jqueryCssWatch'
-], function (component, subscriber, publisher, componentHBS, componentCSS) {
+define([	
+    'text!./admin.css',
+    'text!./admingrid.hbs',
+    './admingrid',
+    './admingrid-subscriber',
+    './admingrid-publisher',	
+    'handlebars'
+], function (admingridCSS, admingridCSS, admingrid, admingridPublisher, admingridSubscriber) {
 
     return {
         initialize: function() {
-            this.sandbox.utils.addCSS(componentCSS, 'display-datagrid-component-style');
+            this.sandbox.utils.addCSS(admingridCSS, 'display-admingrid-component-style');
 
-            var datagridTemplate = Handlebars.compile(componentHBS);
-            var html = datagridTemplate();
+            var admingridTemplate = Handlebars.compile(admingridHBS);
+            var html = admingridTemplate();
 
             this.html(html);
 
-            // Add CSS Watching to the height of the data grid to trigger CSSWatch tool (picked up in app.js)
-            this.$('#datagridContainer').csswatch({
-                props: 'height'
-            });
-
-            publisher.init(this);
-            component.init(this);
-            subscriber.init(this);
+            admingrid.init(this);
+            admingridPublisher.init(this);
+            admingridSubscriber.init(this);
         }
     };
                 

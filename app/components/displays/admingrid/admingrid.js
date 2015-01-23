@@ -22,6 +22,7 @@ define([
 
     var exposed = {
         init: function(thisContext) {
+            console.log('dd');
             context = thisContext;
             var data = [],
             for (var i = 0; i < 500; i++) {
@@ -38,7 +39,8 @@ define([
             $('#admingridContainer').remove();
         },        
         open: function() {
-            $('#admin-container').append('<div id="admingridContainer" class="container-results"><div id="admingrid"></div></div>)');
+            console.log('d');
+            
         },        
         clear: function() {
             grid.setItems([]);

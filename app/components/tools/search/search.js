@@ -1,6 +1,7 @@
 define([    
+    './search-publisher',
     'bootstrap'
-], function () {
+], function (publisher) {
     var context;
 
     var exposed = {
@@ -8,9 +9,8 @@ define([
             context = thisContext;
             $toggleSearch = context.$('.btn-primary');
 
-            $toggleSearch.('click', function() {
+            $toggleSearch.on('click', function() {
                     publisher.publisherSearchAdmingridCreate();
-
             });
             
         }

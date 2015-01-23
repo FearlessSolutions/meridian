@@ -7,7 +7,7 @@ define([
             context = thisContext;
         },
         publisherSearchAdmingridCreate: function(params){
-            // channel name should be changed later
+            // channel name should be changed later            
             context.sandbox.emit('search.admingrid.create', params);
         }
     };
