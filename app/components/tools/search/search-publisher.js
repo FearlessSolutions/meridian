@@ -6,9 +6,9 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publisherSearchAdmingridCreate: function(params){
+        publisherSearchAdmingridCreate: function(){
             // channel name should be changed later            
-            context.sandbox.emit('search.admingrid.create', params);
+            context.sandbox.emit('search.admingrid.create');
         }
     };
 

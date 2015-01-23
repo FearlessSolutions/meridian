@@ -1,11 +1,11 @@
 define([	
-    'text!./admin.css',
+    'text!./admingrid.css',
     'text!./admingrid.hbs',
     './admingrid',
     './admingrid-subscriber',
     './admingrid-publisher',	
     'handlebars'
-], function (admingridCSS, admingridCSS, admingrid, admingridPublisher, admingridSubscriber) {
+], function (admingridCSS, admingridHBS, admingrid, admingridPublisher, admingridSubscriber) {
 
     return {
         initialize: function() {

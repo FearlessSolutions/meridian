@@ -9,8 +9,9 @@ define([
             context = thisContext;
             $toggleSearch = context.$('.btn-primary');
 
-            $toggleSearch.on('click', function() {
-                    publisher.publisherSearchAdmingridCreate();
+            $toggleSearch.on('click', function(event) {
+                event.preventDefault();
+                publisher.publisherSearchAdmingridCreate();
             });
             
         }

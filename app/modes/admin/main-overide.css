@@ -34,11 +34,6 @@
 	margin:1px;
 }
 
-.panel, #admingridContainer { 
+.panel { 
 	margin:20px; 
-}
- #admingrid { height:100px; width:100%; border:1px solid red; border-radius:4px;}
-
-.slick-header-column {
-	box-sizing:content-box;
 }

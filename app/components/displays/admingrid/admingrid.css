@@ -1,11 +1,11 @@
-div[data-aura-component='displays/admingrid'] #datagridContainer {
-	width: 100%;
-    height: 0px;
-    bottom: 0;
-    z-index: 1020;
-	background-color: #ffffff;
-    border-top: 1px solid #dddddd;
-    position: relative;
+div[data-aura-component="displays/admingrid"] #admingridContainer {
+	display:none;
+}
+
+div[data-aura-component='displays/admingrid'] #admingridContainer {
+	margin:20px;
+
+
 }
 
 div[data-aura-component='displays/admingrid'] #header {
@@ -18,66 +18,27 @@ div[data-aura-component='displays/admingrid'] #header {
     padding-top: 4px;
 }
 
-div[data-aura-component='displays/admingrid'] .searchField {
-    width: 350px;
-    position: absolute;
-    left: 10px;
-}
-
-div[data-aura-component='displays/admingrid']  .searchField .btn-default-text {
-    background-color: #396A92;
-    border-color: #ccc;
-    color: #fff;
-}
-div[data-aura-component='displays/admingrid']  .searchField .btn-default-text:hover {
-    color: #fff;
-    background-color: #848586;
-}
-
 div[data-aura-component='displays/admingrid'] .close {
     margin: 10px;
 }
 
-div[data-aura-component='displays/admingrid'] #grid {
-    width: 100%;
-    height: 260px;
+div[data-aura-component='displays/datagrid'] #admingrid {
+    height:100px; width:100%; 
+    border:1px solid red; border-radius:4px;
 }
 
-div[data-aura-component='displays/admingrid'] #pager {
-    height: 26px;
-}
-
-div[data-aura-component='displays/admingrid'] .slick-header-column {
+div[data-aura-component='displays/datagrid'] .slick-header-column {
     box-sizing: content-box; /** Keeps column re-sizing the same for headers/rows **/
     background: #f0f0f0;
     color: black;
     height: 18px;
 }
 
-div[data-aura-component='displays/admingrid'] .slick-header-column:hover {
+div[data-aura-component='displays/datagrid'] .slick-header-column:hover {
     cursor: pointer;
     background-color: #E0E0E0;
 }
 
-div[data-aura-component='displays/admingrid'] .slick-cell.selected {
+div[data-aura-component='displays/datagrid'] .slick-cell.selected {
     background-color: #D4F7FF;
-}
-
-div[data-aura-component='displays/admingrid'] .hiddenFeature {
-    color: #cecece;
-}
-
-div[data-aura-component='displays/admingrid'] #menu {
-    position: absolute;
-    z-index: 99999;
-}
-
-div[data-aura-component='displays/admingrid'] .slick-pager span.ui-state-highlight.ui-corner-all.ui-icon-container.ui-state-hover {
-    background: #f0f0f0;
-}
-div[data-aura-component='displays/admingrid'] #test-area{
-    width: 100%;
-    height: 0;
-    font-weight: bold;
-    /*font-s*/
 }

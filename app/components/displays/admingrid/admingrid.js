@@ -2,52 +2,25 @@ define([
     './admingrid-publisher',
     'slickcore',
     'slickgrid',
-    'slickdataview'
+    'slickdataview',
+    'slickRowSelectionModel',
+    'slickpager'
 ], function (publisher) {
 
-    var  context, 
-        grid,
-        columns = [
-            {id: "userId", name: "User ID", field: "userId"},
-            {id: "dataSource", name: "Data Source", field: "dataSource"},    
-            {id: "start", name: "Query Date", field: "start"},
-            {id: "finish", name: "Expiration Date", field: "finish"}
-        ],
-        options = {
-            enableCellNavigation: true,
-            enableColumnReorder: false,
-            defaultColumnWidth: 150,
-            fullWidthRows: true
-        };
-
+    var context;
     var exposed = {
         init: function(thisContext) {
-            console.log('dd');
+            
             context = thisContext;
-            var data = [],
-            for (var i = 0; i < 500; i++) {
-                data[i] = {
-                    userId: "User ID " + i,
-                    dataSource: "mockDB" + i,
-                    start: "01/01/2009",
-                    finish: "01/05/2009"
-                };
-            }
-            grid = new Slick.Grid("#admingrid", data, columns, options);
+            
         },
         destroy: function() {
             $('#admingridContainer').remove();
         },        
         open: function() {
-            console.log('d');
-            
-        },        
-        clear: function() {
-            grid.setItems([]);
-            grid.setColumns([]);
-
-            exposed.close();
-        },
+            renderGrid();
+            $('#admingridContainer').show();            
+        }
         
     };
 
@@ -57,30 +30,39 @@ define([
      * Sets each header width to the text length, or a minimum if that is too small.
      * @returns {Array}
      */
+     function renderGrid() {
+        var dataView = new Slick.Data.DataView();
+        columns = [
+            {id: "column1", name: "User ID", field: "userId"},
+            {id: "column2", name: "Data Source", field: "dataSource"},    
+            {id: "column3", name: "Query Date", field: "start"},
+            {id: "column4", name: "Expiration Date", field: "finish"}
+        ],
+        options = {
+            enableCellNavigation: true,
+            enableColumnReorder: false,
+            defaultColumnWidth: 150,
+            fullWidthRows: true
+        };
+
+        //var data = [];
+        
+            // for (var i = 0; i < 500; i++) {
+            //     data[i] = {
+            //         userId: "User ID " + i,
+            //         dataSource: "mockDB" + i,
+            //         start: "01/01/2009",
+            //         finish: "01/05/2009"
+            //     };
+            // }
+            
+            var grid = new Slick.Grid('#admingrid', data, columns, options);   
+            
+     }
+
+
     function getHeaders(){
-        var columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
-            columnHeaders = [];            //Set up headers. They should already be in the correct order.
-            
-            var defaultColumnWidth = ($(window).width())/columnHeadersMetadata.length;
-            
-        context.sandbox.utils.each(columnHeadersMetadata, function (columnHeaderIndex, columnHeaderMetadata) {
-            var width;
-
-            $testArea.html('<span>' + columnHeaderMetadata.displayName + '</span>'); //This is the only way to find text length. Is styled  the same as header
-            width = $testArea.find('span').width() + 30;
-
-            //console.log(width);
-            columnHeaders.push({
-                id: columnHeaderMetadata.property + columnHeaderMetadata.displayName,
-                name: columnHeaderMetadata.displayName,
-                field: columnHeaderMetadata.property,
-                width: defaultColumnWidth,
-                sortable: true
-            });
-        });
-
-        $testArea.empty();
-        return columnHeaders;
+        
     }
 
     /**
