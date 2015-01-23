@@ -4,317 +4,49 @@ define([
     'slickgrid',
     'slickdataview'
 ], function (publisher) {
-    //TODO add server support  // libs/SlickGrid-master/slick.remotemodel.js
 
-    /**
-     * Style Issues:
-     * Header text color --> bold black
-     * Header background color --> white or similar?
-     * Header background gradient --> remove
-     * Header smaller?
-     * Highlight color
-     * Footer button colors
-     * Footer auto show sizes
-     * Footer remove 'all' option?
-     */
-
-    var context,
+    var  context, 
         grid,
-        dataView,
-        pager,
-        $datagridContainer,
-        $testArea,
-        datagridVisible = false,
-        GRID_CONTAINER_HEIGHT = 328,
-        MIN_COLUMN_WIDTH = 150,
-        HIDDEN_CSS = 'hiddenFeature',
-        HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN',
-        DEFAULT_PAGE_SIZE = 10,
-        ENTER_KEY = 13,
-
-        DEFAULT_GRID_OPTIONS = {
+        columns = [
+            {id: "userId", name: "User ID", field: "userId"},
+            {id: "dataSource", name: "Data Source", field: "dataSource"},    
+            {id: "start", name: "Query Date", field: "start"},
+            {id: "finish", name: "Expiration Date", field: "finish"}
+        ],
+        options = {
             enableCellNavigation: true,
-            enableColumnReorder: true,
+            enableColumnReorder: false,
             defaultColumnWidth: 150,
-            fullWidthRows: true,
-            autoEdit: false,
-            editable:false,
-            syncColumnCellResize: true,
-            headerRowHeight:20,
-            defaultFormatter: gridFormatter,
-            multiSelect: false //TODO remove this for multiselect.
+            fullWidthRows: true
         };
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            dataView = new Slick.Data.DataView();
-            dataView.getItemMetadata = getItemMetadata;
-            dataView.setFilter(searchFilter);
-            dataView.setFilterArgs({
-                searchString: ''
-            });
-
-            datagridContextMenu.init(context);
-            $datagridContainer = context.$('#datagridContainer');
-            $testArea = context.$('#test-area');
-
-            context.$('.close').on('click', function(){
-                publisher.closeDatagrid();
-            });
-
-            grid = new Slick.Grid('#grid', dataView, [], DEFAULT_GRID_OPTIONS);
-            grid.setSelectionModel(new Slick.RowSelectionModel());
-            pager = new Slick.Controls.Pager(dataView, grid, $('#pager'));
-            dataView.setPagingOptions({pageSize: DEFAULT_PAGE_SIZE});
-
-            dataView.onRowCountChanged.subscribe(function (e, params) {
-                grid.updateRowCount();
-                grid.render();
-            });
-
-            //When rows change (new data/paging) update grid selected rows
-            dataView.onRowsChanged.subscribe(function (e, params) {
-                var rows = params.rows,
-                    selectedIdsByLayer = context.sandbox.stateManager.getAllIdentifiedFeatures(),
-                    newSelectedRows = [];
-
-                grid.invalidateRows(rows);
-                grid.render();
-
-                context.sandbox.utils.each(selectedIdsByLayer, function(layerId, selectedFeatures){
-                    context.sandbox.utils.each(selectedFeatures, function(index, selectedFeatureId){
-                        var rowIndex = dataView.getRowById(selectedFeatureId);
-                        if(rowIndex != undefined){ //If the row is not showing, this will be undefined
-                            newSelectedRows.push(rowIndex);
-                        }
-                    });
-                });
-
-                grid.setSelectedRows(newSelectedRows);
-
-            });
-
-            //If the user clicks a link, don't select the row. This happens before other onClicks, so stops the rest.
-            grid.onClick.subscribe(function(e, params){
-                if(e.target.href){ //The target is a link
-                    e.stopImmediatePropagation();
-                }
-            });
-
-            /**
-             * It is in single select mode for now
-             */
-            grid.onSelectedRowsChanged.subscribe(function(e, params) {
-                var gridSelectedRowNumbers = params.rows,
-                    rowData;
-
-                //Enforce single selection
-                if(gridSelectedRowNumbers.length){ //Were some selected, not now
-                    rowData = dataView.getItem(gridSelectedRowNumbers[gridSelectedRowNumbers.length -1 ]); //Use the last one
-
-                    publisher.identifyRecord({
-                        featureId: rowData.featureId,
-                        layerId: rowData.layerId
-                    });
-                }
-            });
-
-
-            grid.onContextMenu.subscribe(function (e) {
-                e.preventDefault();
-                var cell = grid.getCellFromEvent(e),
-                    item = dataView.getItem(cell.row);
-
-                datagridContextMenu.showMenu({
-                    item: item,
-                    event: e
-                });
-            });
-
-            grid.onSort.subscribe(function(e, params){
-                var sortcol = params.sortCol.field,
-                    comparer;
-
-                comparer = function(a, b){
-                    var x = a[sortcol],
-                        y = b[sortcol];
-
-                    return (x == y ? 0 : (x > y ? 1 : -1));
+            var data = [],
+            for (var i = 0; i < 500; i++) {
+                data[i] = {
+                    userId: "User ID " + i,
+                    dataSource: "mockDB" + i,
+                    start: "01/01/2009",
+                    finish: "01/05/2009"
                 };
-
-                // using native sort with comparer
-                // preferred method but can be very slow in IE with huge datasets
-                dataView.sort(comparer, params.sortAsc);
-            });
-
-            context.$('#grid-search-btn').on('click', function(e){
-                var searchString = context.$('#grid-search-text').val();
-                Slick.GlobalEditorLock.cancelCurrentEdit(); //Stop any edits taking place
-
-                dataView.setFilterArgs({
-                    searchString: searchString
-                });
-                dataView.refresh();
-            });
-
-            //If the user hits 'enter' while entering a search, run the search
-            context.$('#grid-search-text').on('keydown', function(e){
-                var key = e.keyCode;
-
-                if(key === ENTER_KEY){
-                    context.$('#grid-search-btn').click();
-                }
-            });
-        },
-        toggleGrid: function() {
-            if($datagridContainer.hasClass('hidden')) {
-                exposed.open();
-            }else {
-                exposed.close();
             }
+            grid = new Slick.Grid("#admingrid", data, columns, options);
         },
-
-        /**
-         * Set up the data, columns, and then open the datagrid
-         */
+        destroy: function() {
+            $('#admingridContainer').remove();
+        },        
         open: function() {
-            if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
-                $datagridContainer.removeClass('hidden');
-                $datagridContainer.height(GRID_CONTAINER_HEIGHT);
-
-                datagridVisible = true;
-            } else {
-                publisher.closeDatagrid();
-                datagridVisible = false;
-            }
-
-            grid.resizeCanvas();
-        },
-        close: function() {
-            $datagridContainer.addClass('hidden');
-            $datagridContainer.height(0);
-
-            datagridVisible = false;
-        },
+            $('#admin-container').append('<div id="admingridContainer" class="container-results"><div id="admingrid"></div></div>)');
+        },        
         clear: function() {
             grid.setItems([]);
             grid.setColumns([]);
 
             exposed.close();
         },
-        reload: function() {
-            var compiledData = [],
-                columnHeaders = getHeaders();
-
-            if(datagridVisible) {
-                exposed.open();
-            }
-
-            //Set up data
-            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(collectionId, collection) {
-                var newCompiledData = compileData(collectionId, collection.models, columnHeaders);
-                compiledData = compiledData.concat(newCompiledData);
-            });
-
-            grid.setColumns(columnHeaders); //Update columns
-            dataView.setItems(compiledData); //Update rows
-        },
-        refresh: function() { //TODO Do we need this?
-            if(datagridVisible) {
-                exposed.reload();
-            }
-        },
-        /**
-         * We assume that any new data is already part of the dataset.
-         * @param params
-         */
-        addData: function(params) { //TODO Find way to ignore aoi, then add new data when actual data
-            exposed.reload();
-        },
-        /**
-         * On hide feature, update specific feature
-         * @param params
-         */
-        hideFeatures: function(params){
-            var layerId = params.layerId,
-                featureIds = params.featureIds;
-
-            if(!layerId || !featureIds){
-                return;
-            }
-
-            dataView.beginUpdate(); //Grouping all the changes together makes it more efficient.
-                context.sandbox.utils.each(featureIds, function(featureIndex, featureId){
-                    var item = dataView.getItemById(featureId);
-                    if(item){
-                        item[HIDDEN_PROPERTY] = true;
-                        dataView.updateItem(featureId, item);
-                    }
-                });
-            dataView.endUpdate();
-        },
-        showFeatures: function(params){
-            var layerId = params.layerId,
-                featureIds = params.featureIds;
-
-            if(!layerId || !featureIds){
-                return;
-            }
-
-            dataView.beginUpdate(); //Grouping all the changes together makes it more efficient.
-            context.sandbox.utils.each(featureIds, function(featureIndex, featureId){
-                var item = dataView.getItemById(featureId);
-                if(item){
-                    item[HIDDEN_PROPERTY] = false;
-                    dataView.updateItem(featureId, item);
-                }
-            });
-            dataView.endUpdate();
-        },
-        hideLayer: function(params){
-            var layerId = params.layerId,
-                layerFeatureCollection = context.sandbox.dataStorage.datasets[layerId];
-
-            if(!layerFeatureCollection){
-                return;
-            }
-
-            dataView.beginUpdate(); //Grouping all the changes together makes it more efficient.
-                context.sandbox.utils.each(layerFeatureCollection.models, function(featureIndex, feature){
-                    var featureId = feature.attributes.featureId,
-                        item = dataView.getItemById(featureId);
-                    if(item){
-                        item[HIDDEN_PROPERTY] = true;
-                        dataView.updateItem(featureId, item);
-                    }
-                });
-            dataView.endUpdate();
-        },
-        showLayer: function(params){
-            var layerId = params.layerId,
-                layerFeatureCollection = context.sandbox.dataStorage.datasets[layerId],
-                layerState = context.sandbox.stateManager.layers[layerId];
-
-            if(!layerFeatureCollection || !layerState){
-                return;
-            }
-
-            dataView.beginUpdate(); //Grouping all the changes together makes it more efficient.
-                context.sandbox.utils.each(layerFeatureCollection.models, function(featureIndex, feature){
-                    var featureId = feature.attributes.featureId,
-                        item = dataView.getItemById(featureId);
-
-                    if(layerState.hiddenFeatures.indexOf(featureId) === -1){ //Not in the hidden feature array
-                        item[HIDDEN_PROPERTY] = false;
-                    }else{
-                        item[HIDDEN_PROPERTY] = true; //The layer isn't hidden, but the feature still is.
-                    }
-
-                    dataView.updateItem(featureId, item);
-                });
-            dataView.endUpdate();
-        }
+        
     };
 
     /**
@@ -435,20 +167,4 @@ define([
 
     return exposed;
 
-
-    function searchFilter(item, params){
-        var searchString = params.searchString,
-            found = false;
-
-        context.sandbox.utils.each(item, function(field, value){
-            if (typeof value !== 'undefined' && value != null
-                && value.toString().toLowerCase().indexOf(searchString) != -1) {
-                found = true;
-                return false; //this breaks the $.each loop
-            }
-        });
-
-
-        return found;
-    }
 });
