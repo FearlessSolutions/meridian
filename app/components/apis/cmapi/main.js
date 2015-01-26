@@ -8,7 +8,8 @@ define([
     './overlay/cmapi-overlay',
     './feature/cmapi-feature',
     './status/cmapi-status',
-    './clear/cmapi-clear'
+    './clear/cmapi-clear',
+    'togeojson',
 ], function(basemap, view, overlay, feature, status, clear) {
     var context,
         processing = {};
@@ -50,7 +51,7 @@ define([
             message;
 
         if(channel && typeof channel === 'string') {
-            category = channel.split('.')[1]; //0 is always "map"
+            category = channel.split('.')[1]; //0 is always "messageap"
             message = e.data.message;
 
             //Check to see if we are the origin (we sent it, so it is already a JSON object)
@@ -58,45 +59,40 @@ define([
                 return;
             }
 
+            console.log(toGeoJSON.kml(message));
+            sendError(channel, message, 'Channel not supported');
             try {
                 if(message !== '') {
                     message = JSON.parse(message);
                     if(!message.origin) {
                         message.origin = context.sandbox.cmapi.defaultLayerId;
                     }
-                    /* //TODO this is for handling kml also; not doing right now
-                    var split = message.split('<');
-                    if(split.length > 1){                    
-                        message = split.shift();
-                        var kml = '';
-
-                        while(split.length > 1){
-                            kml += '<' + split.shift();
-                        }
-
-                        var end = split[0].split('>');
-                        kml += '<' + end[0] + '>';
-                        message += end[1];
-
-                        message = JSON.parse(message);
-
-                        message.feature = kml;
-                        message.format = 'kml';
-                    }else{
-                        message = JSON.parse(message);    
-                    }  
-                
-                    if(!message.origin){
-                        message.origin = 'cmapi';
-                    }*/
                 }            
-            } catch(parseE) {
-                console.debug(parseE);
-            } //This might not be an actual error?
+            }catch(parseJSONError) {
+                console.debug(parseJSONError);
+                sendError(channel, message, 'Failure parsing KML message');
+
+                try{
+                    //parsing KML message
+
+
+                    if(message !== '') {
+                        if(!message.origin) {
+                            message.origin = context.sandbox.cmapi.defaultLayerId;
+                        }
+                    }
+                }catch(parseKMLError){
+                    console.debug(parseKMLError);
+                    sendError(channel, message, 'Failure parsing KML message');
+                }
+            }
 
             if(processing[category]) {
                 processing[category].receive(channel, message);
-            } else {} //Error?
+                //need to think about how to distinguish between core API and extensions
+            } else {
+                sendError(channel, message, 'Failure processing message');
+            } //Error?
         }
     }
 
