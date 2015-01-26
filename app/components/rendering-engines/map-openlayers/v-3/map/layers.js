@@ -7,10 +7,12 @@ define([
 //    './../libs/Heatmap/Heatmap'
 ], function(publisher, mapBase, mapClustering, mapHeatmap) {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context;
+    var context,
+        basemapLayers;
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            basemapLayers = {};
         },
         /**
          * Create layers that are not accessible to the user, and that don't go away
@@ -185,7 +187,7 @@ define([
          */
         createWMTSLayer: function(params) {
             var baseLayer = new ol.layer.Tile({
-                opacity: 0.3,
+                opacity: 1,
 //              extent: projectionExtent,
                 source: new ol.source.WMTS({
                     url: params.url,
@@ -394,8 +396,6 @@ define([
          * @returns {{}}
          */
         loadBasemaps: function(params) {
-            var basemapLayers = {};
-
             context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(basemap) {
                 var baselayerParams = context.sandbox.mapConfiguration.basemaps[basemap],
                     baseLayer;
@@ -433,6 +433,7 @@ define([
                         break;
                 }
                 if(baseLayer) {
+                    params.map.addLayer(baseLayer);
                     basemapLayers[baselayerParams.basemap] = baseLayer;
                 }
             });
@@ -440,7 +441,15 @@ define([
             return basemapLayers;
         },
         setBasemap: function(params) {
-            params.map.getLayers().setAt(0, params.basemapLayer); //Make the basemap the bottom layer.
+            context.sandbox.utils.each(basemapLayers, function(layerName, baseLayer){
+                if(layerName === params.basemap){
+                    baseLayer.setVisible(true);
+                } else{
+                    baseLayer.setVisible(false);
+                }
+                console.debug(baseLayer);
+            });
+//            params.map.getLayers().setAt(0, params.basemapLayer); //Make the basemap the bottom layer.
         },
         /**
          * Add popup to feature, even if it is in a cluster

@@ -22,8 +22,7 @@ define([
     var context;
 
     // Set Full-Scope Variables
-    var map,
-        basemapLayers = {};
+    var map;
 
     var exposed = {
         /**
@@ -51,7 +50,7 @@ define([
         createMap: function(params) {
             map = mapBase.createMap(params);
 
-            basemapLayers = mapLayers.loadBasemaps({
+            mapLayers.loadBasemaps({
                 map: map
             });
 
@@ -141,7 +140,7 @@ define([
         setBasemap: function(params) {
             mapLayers.setBasemap({
                 map: map,
-                basemapLayer: basemapLayers[params.basemap]
+                basemap: params.basemap
             });
         },
         /**

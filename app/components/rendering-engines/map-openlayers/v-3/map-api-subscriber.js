@@ -15,7 +15,7 @@ define([
 //            context.sandbox.on('map.features.hide', mapCore.hideFeatures);
 //            context.sandbox.on('map.features.update', mapCore.updateFeatures);
 //            context.sandbox.on('map.feature.identify', mapCore.identifyRecord);
-//            context.sandbox.on('map.basemap.change', mapCore.setBasemap);
+            context.sandbox.on('map.basemap.change', mapCore.setBasemap);
 //            context.sandbox.on('map.center.set', mapCore.setCenter);
 //            context.sandbox.on('map.draw.clear', mapCore.clearDrawing);
 //            context.sandbox.on('map.draw.start', mapCore.startDrawing);
