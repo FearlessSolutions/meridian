@@ -14,10 +14,7 @@ define([
         $layerContainer,
         $exportContainer,
         $extraContainer,
-        $layerTab,
-        $layerTabBox,
-        $extraTab,
-        $extraTabBox;
+        COMPONENT_DESIGNATION = 'export-picker-modal'
 
     var exposed = {
         init: function(thisContext) {
@@ -28,8 +25,6 @@ define([
             $modal = context.$('#export-picker-modal');
 
             //Layer objects
-            $layerTab = $modal.find('#layer-tab-col');
-            $layerTabBox = $layerTab.find('#layer-tab');
             $layerContainer = $modal.find('#layer-container');
             $layerList = $layerContainer.find('#layer-options');
             $selectAll = $layerContainer.find('input:checkbox[value=checkAll]');
@@ -38,8 +33,6 @@ define([
             $exportContainer = $modal.find('#export-container');
 
             //Extra options objects
-            $extraTab = $modal.find('#extra-export-tab-col');
-            $extraTabBox = $extraTab.find('#extra-export-tab');
             $extraContainer = $modal.find('#extra-export-container');
 
             $modal.modal({
@@ -106,28 +99,17 @@ define([
                 publisher.close();
             });
 
-            //Hide/show functionality for tabs
-            // $layerTabBox.on('click', function(){
-            //     if(!$layerTabBox.hasClass('disabled')){
-            //         hideExtraOptions();
-            //         showLayers();
-            //     }
-            // });
-            // $extraTabBox.on('click', function(){
-            //     if(!$extraTabBox.hasClass('disabled')) {
-            //         hideLayers();
-            //         showExtraOptions();
-            //     }
-            // });
 
             //select all logic. WILL NOT WORK consistently WITH .attr
             $selectAll.on('change', function(event) {
                 if($selectAll.is(':checked')){
                     $layerList.find('input.layer-checkbox').prop('checked', true);
+                    showStepTwo();
                 }
                 else{
                     //don't change this to removeProp.
                     $layerList.find('input.layer-checkbox').prop('checked', false);
+                    showStepOne();
                 }
                 validateLayers();
             });
@@ -139,14 +121,19 @@ define([
                     enabledExtraOptions;
 
                 $exportContainer.find('.radio').removeClass('selected');
-                $this.parent().parent().addClass('selected'); //TODO does 'selected' do anything anymore?
+               // $this.parent().parent().addClass('selected'); //TODO does 'selected' do anything anymore?
                 enabledExtraOptions = enableExtraOptions(exportId);
 
-                if(isInExpandedMode()){ //In expanded mode
-                    if (enabledExtraOptions) { //Decide if layers should be shown
-                        disableLayers(false);
-                    }else {
-                        enableLayers();
+            });
+
+            //Layercontainer click logic.
+            $layerContainer.on('click', function(event){
+                if(event.target.type != "checkbox"){
+                    if($extraContainer.css("opacity") == 1){
+                        showStepTwo();
+                    }
+                    else if($exportContainer.css("opacity") == 1){
+                        showStepOne();
                     }
                 }
             });
@@ -161,7 +148,7 @@ define([
                 };
 
                 publisher.publishOpening({
-                    componentOpening: '' //POINT_DESIGNATION //TODO what to do with this?
+                    componentOpening: COMPONENT_DESIGNATION
                 });
 
                 validateFeature({
@@ -169,30 +156,24 @@ define([
                     layerId: params.layerId
                 });
 
-                // show();
             }else if(params && params.layerId){ //It is a specific layer
                 //message came from timeline containing params.overlayId
                 publisher.publishOpening({
-                    componentOpening: '' //LAYER_DESIGNATION //TODO what to do with this?
+                    componentOpening: COMPONENT_DESIGNATION
                 });
                 exposed.updateExportLayerList();
-                $selectAll.change(); //Run none selected event
+                $selectAll.removeProp('checked');
 
                 $layerContainer.find('.layer-option input[value=' + params.layerId +']').prop('checked', true);
+                showStepTwo();
                 validateLayers();
 
-                // show();
             } else{ //It is all layers
                 publisher.publishOpening({
-                    componentOpening: '' //LAYER_DESIGNATION //TODO what to do with this?
+                    componentOpening: COMPONENT_DESIGNATION
                 });
                 exposed.updateExportLayerList();
-                //state is persisting even though element is set to checked.
-                //Forcing the element to show as selected when modal is opened.
-                // $selectAll.prop('checked', true);
-                // $selectAll.change(); //Run event
-
-                // show();
+                showStepOne();
             }
             $modal.modal('show');
         },
@@ -222,25 +203,33 @@ define([
             }));
 
             //Apply update logic to layer checkboxs
-            $layerList.find('.layer-checkbox:checkbox').on('change',function(){
-                $selectAll.prop('checked', false);
+            $layerList.find('.layer-checkbox:checkbox').on('change',function(event){
+                $selectAll.removeProp('checked');//TODO: not working on chrome??
                 validateLayers();
-                //show the options pane.
+                var selectedOptions = getSelectedLayers();
+                    //if at least one layer is selected, keep the export options tab open
+                    if(selectedOptions.length == 0){
+                        showStepOne();
+                    }else{
+                        showStepTwo();
+                    }
             });
         }
     };
 
-    // function show(){
-    //     disableExtraOptions(true);
+    function showExportOptions(){
+        $exportContainer.css("visibility", "visible");
+        $exportContainer.stop().animate({left: "418px", opacity:1 }, 500, 'swing');
+    }
 
-    //     // if(isInExpandedMode()){
-    //     //     enableLayers();
-    //     // } else {
-    //     //     disableLayers(true)
-    //     // }
 
-    //     $modal.modal('show');
-    // }
+    function hideExportOptions(){
+        //perform the visibility hidden when the animation completes.
+        $exportContainer.stop().animate({left: "598px", opacity:0 }, 500, 'swing', function(){
+            $exportContainer.css("visibility", "hidden");
+        });
+       
+    }
 
     function validateFeature(params){
         var featureId = params.featureId,
@@ -307,68 +296,43 @@ define([
         return $exportContainer.find('#export-options input:checked').val();
     }
 
+    //set modal to initial view clean of all selections.
+    //TODO: clean options from extraContainer
     function clean(){
         $selectAll.removeProp('checked');
         $layerContainer.find('.layer-option input').prop('checked', false);
-
-
         $exportContainer.find('.radio').removeClass('selected');
-        disableExtraOptions(true);
+        showStepOne();
     }
 
-    function isInExpandedMode(){
-        return selectedFeature === null
-    }
-
-    // function enableLayers(){
-    //     $layerTabBox.removeClass('disabled');
-    //     showLayers();
-    // }
-    // function disableLayers(disableTab){
-    //     if(disableTab){
-    //         $layerTabBox.addClass('disabled');
-    //     }
-    //     hideLayers();
-    // }
-    // function showLayers(){
-    //     $layerContainer.show();
-    // }
-    // function hideLayers(){
-    //     $layerContainer.hide();
-    // }
-
+    //verifies if the export option has additional options
     function enableExtraOptions(exportId){
         var $exportPane = $extraContainer.find('#tab-' + exportId);
 
-        $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
-        $extraTabBox.text(context.sandbox.export.options[exportId].label + ' Options');
-
         if($exportPane.length) { //Check if there is a pane for the export id
-            $exportPane.addClass('active');
-            $extraTabBox.removeClass('disabled');
-            showExtraOptions();
-
+            showStepThree();
             return true;
         }else{
-            disableExtraOptions(false); //Don't remove the text, but disable the tab
-
+            showStepTwo(); 
             return false;
         }
     }
-    function disableExtraOptions(clearText){
-        $extraContainer.find('.tab-pane').removeClass('active'); //Turn off any old ones
-
-        if(clearText){
-            $extraTabBox.text('Extra Options (none)');
-        }
-        $extraTabBox.addClass('disabled');
-        hideExtraOptions();
-    }
+    
+    //shows the extra option container and moves the export options further left.
     function showExtraOptions(){
-        $extraContainer.show();
+        //$extraContainer.show();
+        $exportContainer.css("visibility", "visible");
+        $exportContainer.stop().animate({left: "106px", opacity:1 }, 500, 'swing');
+
+        $extraContainer.css("visibility", "visible");
+        $extraContainer.stop().animate({left: "237px", opacity:1 }, 500, 'swing');
     }
+    //hides the extra options pane.
     function hideExtraOptions(){
-        $extraContainer.hide();
+        $extraContainer.stop().animate({left: "598px", opacity:0 }, 500, 'swing', function(){
+            $extraContainer.css("visibility", "hidden");
+        });
+
     }
 
     function getExtraFields(exportId){
@@ -386,6 +350,21 @@ define([
         });
 
         return fieldValueMap;
+    }
+
+    //View that only contains the layer list.
+    function showStepOne(){
+        hideExtraOptions();
+        hideExportOptions();
+    }
+    //View that contains the layers and the export options.
+    function showStepTwo(){
+        hideExtraOptions();
+        showExportOptions();
+    }
+    //View that contains layer list, export options and the additional options.
+    function showStepThree(){
+        showExtraOptions();
     }
 
     return exposed;

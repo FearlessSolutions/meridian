@@ -42,10 +42,13 @@
 
                     
                     <div id="extra-export-container">
+                        <div id="extra-export-options-header" class="row">
+                            <div class="layer-source">Additional Options: </div>
+                        </div>
                         <div class="tab-content extra-export-fields">
                             {{#each exports}}
                                 {{#if this.template}}
-                                    <div id="tab-{{this.id}}" class="tab-pane">{{{this.template}}}</div>
+                                    <div id="tab-{{this.id}}">{{{this.template}}}</div>
                                 {{/if}}
                             {{/each}}
                         </div>
