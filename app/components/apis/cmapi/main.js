@@ -58,8 +58,7 @@ define([
             if(!message || message.widgetName === context.sandbox.systemConfiguration.appName){
                 return;
             }
-
-            console.log(toGeoJSON.kml(message));
+            
             sendError(channel, message, 'Channel not supported');
             try {
                 if(message !== '') {
@@ -70,11 +69,12 @@ define([
                 }            
             }catch(parseJSONError) {
                 console.debug(parseJSONError);
-                sendError(channel, message, 'Failure parsing KML message');
-
+                sendError(channel, message, 'Failure parsing geoJSON message');
                 try{
                     //parsing KML message
-
+                    var domParser=new DOMParser(); //putting KML in DOM for proper parsing by togeojson
+                    kmlDoc=parser.parseFromString(message,"text/xml");
+                    message = toGeoJSON.kml(kmlDoc);
 
                     if(message !== '') {
                         if(!message.origin) {
@@ -89,10 +89,11 @@ define([
 
             if(processing[category]) {
                 processing[category].receive(channel, message);
+
                 //need to think about how to distinguish between core API and extensions
             } else {
-                sendError(channel, message, 'Failure processing message');
-            } //Error?
+                sendError(channel, message, 'Failure processing message - channel does not exsist');
+            }
         }
     }
 
