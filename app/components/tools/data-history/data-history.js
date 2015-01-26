@@ -167,7 +167,12 @@ define([
                         rawDate: dataEntry.createdOn,
                         disableRestore: disableRestore,
                         dataRecordCount: dataEntry.numRecords
-                    });
+                    };
+                    
+                    if(tempDataEntry.dataSource !== ""){
+                        currentDataArray.push(tempDataEntry);
+                        currentDataSet[dataEntry.queryId] = dataEntry;    
+                    }
                 });
 
                 currentDataArray.sort(dynamicSort('-rawDate'));
