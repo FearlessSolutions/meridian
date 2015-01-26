@@ -1,0 +1,10 @@
+div[data-aura-component='tools/search'] .form-control {
+	background-color: rgba(238,238,238,0.5);
+	margin-bottom:5px;
+	color:#555;
+	}
+	div[data-aura-component='tools/search'] .form-control:focus {
+	background-color: rgba(255,255,255,1);
+	color:#000;
+	margin-bottom:5px;
+	}

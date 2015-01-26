@@ -1,11 +1,9 @@
 div[data-aura-component="displays/admingrid"] #admingridContainer {
-	display:none;
+	display:block;
 }
 
 div[data-aura-component='displays/admingrid'] #admingridContainer {
 	margin:20px;
-
-
 }
 
 div[data-aura-component='displays/admingrid'] #header {
@@ -22,23 +20,25 @@ div[data-aura-component='displays/admingrid'] .close {
     margin: 10px;
 }
 
-div[data-aura-component='displays/datagrid'] #admingrid {
-    height:100px; width:100%; 
-    border:1px solid red; border-radius:4px;
+div[data-aura-component='displays/admingrid'] #admingridContainer #admingrid {
+    /* height value is determined by JavaScript -- w/o JS, grid breaks */
+    width:100%; 
+    border:1px solid #ddd; border-radius:4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
 }
 
-div[data-aura-component='displays/datagrid'] .slick-header-column {
-    box-sizing: content-box; /** Keeps column re-sizing the same for headers/rows **/
-    background: #f0f0f0;
+div[data-aura-component='displays/admingrid'] .slick-header-column {
+    box-sizing: content-box;
     color: black;
     height: 18px;
 }
 
-div[data-aura-component='displays/datagrid'] .slick-header-column:hover {
+div[data-aura-component='displays/admingrid'] .slick-header-column:hover {
     cursor: pointer;
-    background-color: #E0E0E0;
+    background-color: #2680CC;
 }
 
-div[data-aura-component='displays/datagrid'] .slick-cell.selected {
+div[data-aura-component='displays/admingrid'] .slick-cell.selected {
     background-color: #D4F7FF;
 }
+

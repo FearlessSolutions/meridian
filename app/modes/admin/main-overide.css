@@ -2,6 +2,7 @@
 /**
  * Add any css modifications here.
  */
+html, body { overflow:hidden;}
 
 .navbar-admin { 
 	
@@ -9,6 +10,7 @@
 	border:none;
 	border-bottom:1px solid #999; 
 	border-radius:0px;
+	
 	}
 	.container { 
 		margin-left:0px;
@@ -21,19 +23,35 @@
 			}
 			a.navbar-brand img {
 				margin-right:10px;			}
+		
+		.container-login { 
+			height:25px; width:290px;
+			position:absolute;
+			top:8px; right:10px;
+		}
 		.navbar-right {
 			margin:10px;
+			float:left;			
 		}
-		.navbar-text.navbar-right:last-child {
-			margin-top:15px;
-			
-		}
-		.navbar-link { color:#fff; }
 
- .page-header {
+		.navbar-text {
+			float:right;
+			margin-top:7px
+			
+			}
+			@media (max-width: 767px) {
+  				.navbar-text {
+				    margin-right: 5px;
+				  }
+			}
+		.navbar-link { color:#fff; }
+		.container .btn { float:right;}
+
+.page-header {
 	margin:1px;
 }
 
+
 .panel { 
 	margin:20px; 
-}
+}#

@@ -7,19 +7,58 @@ define([
     'slickpager'
 ], function (publisher) {
 
-    var context;
+    var context,
+    grid,
+    data,
+    dataView, columns, options;
     var exposed = {
         init: function(thisContext) {
-            
+                
             context = thisContext;
+            data = [];
+            gridHeight();
+            var columns = [
+                {id: "userId", name: "User ID", field: "userId"},
+                {id: "dataSource", name: "Data Source", field: "dataSource"},
+                {id: "start", name: "Query Date", field: "start"},
+                {id: "finish", name: "Expiration Date", field: "finish"},
+            ],
+            options = {
+                enableCellNavigation: true,
+                enableColumnReorder: false,
+                defaultColumnWidth: 120,
+                fullWidthRows: true
+            };
+
+            for (var i = 0; i < 249; i++) {
+                  data[i] = {
+                    userId: "User ID " + i,
+                    dataSource: "mockDB" + i,                    
+                    start: "01/01/2009",
+                    finish: "01/05/2009"                    
+                  };
+            }
+
+            grid = new Slick.Grid('#admingrid', data, columns, options);
+            // redraws grid on browser resize
+            $(window).resize(function(){                
+                gridHeight();
+                grid.resizeCanvas();
+            });
             
+
         },
         destroy: function() {
             $('#admingridContainer').remove();
         },        
         open: function() {
-            renderGrid();
-            $('#admingridContainer').show();            
+            //renderGrid();
+            //$('#admingridContainer').show();            
+        },
+        resize: function() {
+            
+
+
         }
         
     };
@@ -30,34 +69,8 @@ define([
      * Sets each header width to the text length, or a minimum if that is too small.
      * @returns {Array}
      */
-     function renderGrid() {
-        var dataView = new Slick.Data.DataView();
-        columns = [
-            {id: "column1", name: "User ID", field: "userId"},
-            {id: "column2", name: "Data Source", field: "dataSource"},    
-            {id: "column3", name: "Query Date", field: "start"},
-            {id: "column4", name: "Expiration Date", field: "finish"}
-        ],
-        options = {
-            enableCellNavigation: true,
-            enableColumnReorder: false,
-            defaultColumnWidth: 150,
-            fullWidthRows: true
-        };
-
-        //var data = [];
-        
-            // for (var i = 0; i < 500; i++) {
-            //     data[i] = {
-            //         userId: "User ID " + i,
-            //         dataSource: "mockDB" + i,
-            //         start: "01/01/2009",
-            //         finish: "01/05/2009"
-            //     };
-            // }
-            
-            var grid = new Slick.Grid('#admingrid', data, columns, options);   
-            
+     function gridHeight () {
+        $('#admingrid').height($(window).height() - ($('.panel-body').height() + 145));
      }
 
 
