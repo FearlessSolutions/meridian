@@ -45,22 +45,25 @@ define([
 //            });
 
             //Create draw layer options //TODO
-//            drawParams = {
-//                map: params.map,
-//                layerId: 'static_draw',
-//                static: true,
-//                styleMap: {
-//                    default: {
-//                        fillOpacity: 0.05,
-//                        strokeOpacity: 1
-//                    }
-//                }
-//            };
-//            drawLayer = exposed.createVectorLayer(drawParams);
-//            addDrawListeners({
+            drawParams = {
+                map: params.map,
+                layerId: 'static_draw',
+                static: true,
+                styleMap: {
+                    default: {
+                        fillOpacity: 0.05,
+                        strokeOpacity: 1
+                    }
+                }
+            };
+            drawLayer = exposed.createVectorLayer(drawParams);
+
+//            addDrawListeners({ //TODO trying not to do this here
 //                map: params.map,
 //                layer: drawLayer
 //            });
+
+            params.map.addLayer(drawLayer);
 
             //Create heatmap layer options //TODO
 //            heatmapParams = {
@@ -109,22 +112,16 @@ define([
          *      layerId - Id for this layer (must be unique).
          *      selectable - If this layer's features should be interactive
          * }
-         * @returns {ol.Layer.Vector}
+         * @returns {ol.layer.Vector}
          */
         createVectorLayer: function(params) {
-            var options,
+            var style,
                 newVectorLayer,
                 selector,
                 layers;
 
-            newVectorLayer = new ol.layer.Vector({
-                source: new ol.source.Vector({
-                    features: []
-                }),
-                style: function(feature, resolution){
-                    
-                }
-            });
+//            style = new ol.style.Style(params.styleMap || {});
+
 
 //            options = {
 //                layerId: params.layerId, // set as layerId, is not present its null
@@ -135,13 +132,32 @@ define([
 ////            if(params.styleMap) { //TODO
 ////                options.styleMap = new ol.StyleMap(params.styleMap);
 ////            }
-//
+
 //            delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
-//
-//            newVectorLayer = new ol.Layer.Vector(
-//                params.layerId,
-//                options
-//            );
+
+
+
+            newVectorLayer = new ol.layer.Vector({
+                layerId: params.layerId,
+                source: new ol.source.Vector({
+                    features: []
+                })//,
+//                style: new ol.style.Style({ //TODO this is just a default style for box
+//                    fill: new ol.style.Fill({
+//                        color: 'rgba(255, 255, 255, 0.2)'
+//                    }),
+//                    stroke: new ol.style.Stroke({
+//                        color: '#ffcc33',
+//                        width: 2
+//                    }),
+//                    image: new ol.style.Circle({
+//                        radius: 7,
+//                        fill: new ol.style.Fill({
+//                            color: '#ffcc33'
+//                        })
+//                    })
+//                })
+            });
 //
 //            if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
 //                newVectorLayer.setVisibility(false);

@@ -31,10 +31,11 @@ define([
          */
         init: function(thisContext) {
             context = thisContext;
+            addFunctionsToOL();
 
             mapBase.init(context);
 //            mapClustering.init(context);
-//            mapDraw.init(context);
+            mapDraw.init(context);
 //            mapFeatures.init(context);
 //            mapHeatmap.init(context);
             mapLayers.init(context);
@@ -371,6 +372,21 @@ define([
             });
         }
     };
-    
+
+    function addFunctionsToOL(){
+        //Add a get function for layers by ID. This was included in OL2, but not in OL3
+        if (ol.Map.prototype.getLayer === undefined) {
+            ol.Map.prototype.getLayer = function (id) {
+                var layer;
+                this.getLayers().forEach(function (lyr) {
+                    if (id == lyr.get('layerId')) {
+                        layer = lyr;
+                    }
+                });
+                return layer;
+            }
+        }
+    }
+
     return exposed;
 });

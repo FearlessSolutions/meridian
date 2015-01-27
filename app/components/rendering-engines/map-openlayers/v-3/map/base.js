@@ -21,7 +21,6 @@ define([
                 
             mapElement = (params && params.el) ? params.el : 'map';
             map = new ol.Map({
-//                    layers: [],
                     target: mapElement,
                     view: new ol.View({
                         center: [0,0],
