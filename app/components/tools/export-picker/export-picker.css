@@ -3,9 +3,8 @@ div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-dialo
     width: 600px;
 }
 
-div[data-aura-component='tools/export-picker'] #export-picker-simplified-modal .modal-dialog {
-    margin: 5% auto;
-    width: 800px;
+div[data-aura-component='tools/export-picker'] #export-picker-modal .modal-dialog.singlePoint {
+    width: 230px;
 }
 
 div[data-aura-component='tools/export-picker'] {
@@ -34,12 +33,16 @@ div[data-aura-component='tools/export-picker'] .list-container{
  */
 div[data-aura-component='tools/export-picker'] #layer-container {
     float: left;
-    /*padding-left: 15px;*/
     width: 100%;
     height: 100%;
     z-index: 10;
     position: absolute;
+    visibility: visible;
     left: 0;
+}
+
+div[data-aura-component='tools/export-picker'] .singlePoint #layer-container {
+    visibility: hidden;
 }
 
 div[data-aura-component='tools/export-picker'] #layer-container .layer-checkbox {
@@ -97,8 +100,7 @@ div[data-aura-component='tools/export-picker'] #layer-options .layer-option{
  * Exports
  */
 div[data-aura-component='tools/export-picker'] #export-container {
-    /*padding-left: 15px;*/
-    width: 180px;
+    width: 228px;
     float: left;
     position:absolute;
     opacity: 0;
@@ -111,8 +113,6 @@ div[data-aura-component='tools/export-picker'] #export-container {
 div[data-aura-component='tools/export-picker'] #export-options-header {
     font-weight: bold;
     padding: 8px 15px 8px 15px;
-    /*padding-top: 8px;*/
-    /*padding-bottom: 8px;*/
     border-bottom:1px solid #E5E5E5;
 }
 

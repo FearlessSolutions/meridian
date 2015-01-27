@@ -23,7 +23,7 @@ define([
             layerListTemplate = Handlebars.compile(layersHBS);
 
             $modal = context.$('#export-picker-modal');
-            $modalDialog = $modal.find('modal-dialog');
+            $modalDialog = $modal.find('.modal-dialog');
 
             //Layer objects
             $layerContainer = $modal.find('#layer-container');
@@ -122,8 +122,7 @@ define([
                     enabledExtraOptions;
 
                 $exportContainer.find('.radio').removeClass('selected');
-               // $this.parent().parent().addClass('selected'); //TODO does 'selected' do anything anymore?
-                enabledExtraOptions = enableExtraOptions(exportId);
+                enableExtraOptions(exportId);
 
             });
 
@@ -156,6 +155,8 @@ define([
                     featureId: params.featureId,
                     layerId: params.layerId
                 });
+                $modalDialog.addClass('singlePoint');
+                stepOneSinglePoint();
 
             }else if(params && params.layerId){ //It is a specific layer
                 //message came from timeline containing params.overlayId
@@ -181,7 +182,6 @@ define([
         close: function() {
             $modal.modal('hide');
             selectedFeature = null;
-            clean();
         },
         clear: function() {
             exposed.close();
@@ -229,7 +229,6 @@ define([
         $exportContainer.stop().animate({left: "598px"}, 500, 'swing', function(){
             $exportContainer.css('opacity', 0);
         });
-       
     }
 
     function validateFeature(params){
@@ -303,7 +302,12 @@ define([
         $selectAll.removeProp('checked');
         $layerContainer.find('.layer-option input').prop('checked', false);
         $exportContainer.find('.radio').removeClass('selected');
-        showStepOne();
+        $modalDialog.removeClass('singlePoint');
+        $modalDialog.css({"width": "600px"})
+        cleanExtraFields();
+        //force step one without animation.
+        $exportContainer.css({"opacity": 0, "left": "598px"});
+        $extraContainer.css({"opacity": 0, "left": "598px"});
     }
 
     //verifies if the export option has additional options
@@ -311,11 +315,17 @@ define([
         var $exportPane = $extraContainer.find('#tab-' + exportId);
 
         if($exportPane.length) { //Check if there is a pane for the export id
-            showStepThree();
-            return true;
+            if($modalDialog.hasClass('singlePoint')){
+                stepTwoSinglePoint();
+            }else{
+                showStepThree();
+            }
         }else{
-            showStepTwo(); 
-            return false;
+            if($modalDialog.hasClass('singlePoint')){
+                stepOneSinglePoint();
+            }else{
+                showStepTwo(); 
+            }
         }
     }
     
@@ -325,7 +335,7 @@ define([
         $exportContainer.stop().animate({left: "106px"}, 500, 'swing');
 
         $extraContainer.css("opacity", 1);
-        $extraContainer.stop().animate({left: "237px"}, 450, 'swing');
+        $extraContainer.stop().animate({left: "237px"}, 500, 'swing');
     }
     //hides the extra options pane.
     function hideExtraOptions(){
@@ -339,7 +349,7 @@ define([
         var $inputs = $extraContainer.find('#tab-' + exportId + ' input'),
             fieldValueMap = {};
 
-        $inputs.each(function(){
+        context.sandbox.utils.each($inputs, function(){
             var $this = context.$(this);
             if($this.is(':checkbox')){
                 fieldValueMap[$this.data('field')] = $this.is(':checked');
@@ -349,6 +359,25 @@ define([
         });
 
         return fieldValueMap;
+    }
+
+    function cleanExtraFields(){
+        var $exports = $exportContainer.find('input:radio[name=exportOption]'),
+            exportId,
+            $inputs;
+
+        context.sandbox.utils.each($exports, function(){
+            exportId = context.$(this).val();
+            $inputs = $extraContainer.find('#tab-' + exportId + ' input');
+            context.sandbox.utils.each($inputs, function(){
+                var $this = context.$(this);
+                if($this.is(':checkbox')){
+                    $this.prop('checked', false);
+                }else{
+                    $this.val("");
+                }
+            });
+        });
     }
 
     //View that only contains the layer list.
@@ -364,6 +393,17 @@ define([
     //View that contains layer list, export options and the additional options.
     function showStepThree(){
         showExtraOptions();
+    }
+
+    function stepOneSinglePoint(){
+        $exportContainer.css({"opacity": 1, "left": 0});
+        $extraContainer.stop().animate({"opacity": 0, "left": "598px"}, 500, 'swing');
+        $modalDialog.stop().animate({"width": "230px"}, 500, 'swing');
+    }
+
+    function stepTwoSinglePoint() {
+        $extraContainer.stop().animate({"opacity": 1, "left": "180px"}, 500, 'swing');
+        $modalDialog.stop().animate({"width": "542px"}, 500, 'swing');
     }
 
     return exposed;
