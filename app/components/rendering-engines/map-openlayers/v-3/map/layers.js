@@ -447,9 +447,7 @@ define([
                 } else{
                     baseLayer.setVisible(false);
                 }
-                console.debug(baseLayer);
             });
-//            params.map.getLayers().setAt(0, params.basemapLayer); //Make the basemap the bottom layer.
         },
         /**
          * Add popup to feature, even if it is in a cluster

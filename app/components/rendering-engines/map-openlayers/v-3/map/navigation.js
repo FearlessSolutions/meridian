@@ -10,10 +10,14 @@ define([
             context = thisContext;
         },
         zoomIn: function(params) {
-            params.map.zoomIn();
+            var view = params.map.getView(),
+                zoom = view.getZoom();
+            view.setZoom(++zoom);
         },
         zoomOut: function(params) {
-            params.map.zoomOut();
+            var view = params.map.getView(),
+                zoom = view.getZoom();
+            view.setZoom(--zoom);
         },
         /**
          * Zoom to bbox
