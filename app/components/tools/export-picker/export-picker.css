@@ -15,6 +15,7 @@ div[data-aura-component='tools/export-picker'] {
 div[data-aura-component='tools/export-picker'] .modal-body {
     padding: 0 0 0 0;
     height: 280px;
+    overflow: hidden;
 }
 
 /*overwrite negative margin of default row class*/
@@ -101,7 +102,6 @@ div[data-aura-component='tools/export-picker'] #export-container {
     float: left;
     position:absolute;
     opacity: 0;
-    visibility: hidden;/*prevent clicks*/
     background-color: #fafafa;
     left: 598px;
     z-index: 100;
@@ -133,7 +133,6 @@ div[data-aura-component='tools/export-picker'] #extra-export-container {
     width: 360px;
     position:absolute;
     opacity: 0;
-    visibility: hidden;/*prevent clicks*/
     background-color: #fff;
     left: 598px;
     z-index: 200;

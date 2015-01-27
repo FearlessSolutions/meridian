@@ -23,6 +23,7 @@ define([
             layerListTemplate = Handlebars.compile(layersHBS);
 
             $modal = context.$('#export-picker-modal');
+            $modalDialog = $modal.find('modal-dialog');
 
             //Layer objects
             $layerContainer = $modal.find('#layer-container');
@@ -218,15 +219,15 @@ define([
     };
 
     function showExportOptions(){
-        $exportContainer.css("visibility", "visible");
-        $exportContainer.stop().animate({left: "418px", opacity:1 }, 500, 'swing');
+        $exportContainer.css("opacity", 1);
+        $exportContainer.stop().animate({left: "418px"}, 500, 'swing');
     }
 
 
     function hideExportOptions(){
-        //perform the visibility hidden when the animation completes.
-        $exportContainer.stop().animate({left: "598px", opacity:0 }, 500, 'swing', function(){
-            $exportContainer.css("visibility", "hidden");
+        //change the opacity when the animation completes.
+        $exportContainer.stop().animate({left: "598px"}, 500, 'swing', function(){
+            $exportContainer.css('opacity', 0);
         });
        
     }
@@ -320,19 +321,17 @@ define([
     
     //shows the extra option container and moves the export options further left.
     function showExtraOptions(){
-        //$extraContainer.show();
-        $exportContainer.css("visibility", "visible");
-        $exportContainer.stop().animate({left: "106px", opacity:1 }, 500, 'swing');
+        $exportContainer.css("opacity", 1);
+        $exportContainer.stop().animate({left: "106px"}, 500, 'swing');
 
-        $extraContainer.css("visibility", "visible");
-        $extraContainer.stop().animate({left: "237px", opacity:1 }, 500, 'swing');
+        $extraContainer.css("opacity", 1);
+        $extraContainer.stop().animate({left: "237px"}, 450, 'swing');
     }
     //hides the extra options pane.
     function hideExtraOptions(){
-        $extraContainer.stop().animate({left: "598px", opacity:0 }, 500, 'swing', function(){
-            $extraContainer.css("visibility", "hidden");
+        $extraContainer.stop().animate({left: "598px"}, 500, 'swing', function(){
+            $extraContainer.css("opacity", 0);
         });
-
     }
 
     function getExtraFields(exportId){
