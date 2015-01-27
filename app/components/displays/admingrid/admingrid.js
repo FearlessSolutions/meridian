@@ -14,8 +14,7 @@ define([
     var exposed = {
         init: function(thisContext) {
                 
-            context = thisContext;            
-            //var dataView = new Slick.Data.DataView();
+            context = thisContext;
             gridHeight();
             var columns = [
                 {id: "col1", name: "User ID", field: "id"},
@@ -29,9 +28,8 @@ define([
                 defaultColumnWidth: 120,
                 fullWidthRows: true
             };            
-            data = [];
-           
-            //data.push(tempObject, tempObject1)
+            data = [];           
+            
             grid = new Slick.Grid('#admingrid', data, columns, options);
 
             var newAJAX = context.sandbox.utils.ajax({
@@ -54,32 +52,18 @@ define([
                 });
                 
                 grid.setData(currentDataArray);
-                 
-                    grid.resizeCanvas();
-
+                grid.resizeCanvas();
             });
-
 
             $(window).resize(function(){                
                 // redraws grid on browser resize
                 gridHeight();
                 grid.resizeCanvas();
             });
-
-          
-            
-
         },
         open: function() {            
             $('#admingridContainer').css('visibility','visible');                    
-        },
-        updateDataHistory: function()  {
-             var tempObject = {'userId': 'user1', 'dataSource': 'mockDB', 'start': 1995, 'finish': 2001};
-            var tempObject1 = {'userId': 'user2', 'dataSource': 'mockDB', 'start': 1995, 'finish': 2001};
-            data.push(tempObject, tempObject1);
-        }
-    
-        
+        }        
     };
 
     /**
@@ -91,7 +75,6 @@ define([
      function gridHeight () {
         $('#admingrid').height($(window).height() - ($('.panel-body').height() + 145));
      }
-
 
     function getHeaders(){
         
@@ -105,41 +88,7 @@ define([
      * @returns {Array}
      */
     function compileData(layerId, features, headers){
-        var compiledData = [],
-            layerState = context.sandbox.stateManager.layers[layerId],
-            isLayerVisible,
-            layerHiddenFeatures;
-
-        if(!layerState){
-            return [];
-        }
-
-        isLayerVisible = layerState.visible;
-        layerHiddenFeatures = layerState.hiddenFeatures;
-
-        context.sandbox.utils.each(features, function (featureIndex, feature) {
-            var tempObject = {},
-                featureId = feature.attributes.featureId;
-
-            context.sandbox.utils.each(headers, function (headerIndex, header) {
-                var fieldName = header.field;
-                if (feature.attributes.hasOwnProperty(fieldName)) {
-                    tempObject[fieldName] = feature.attributes[fieldName];
-                }
-            });
-
-            tempObject.id = featureId; //Each data point needs a unique id
-            tempObject.featureId = featureId; //Each data point needs a unique id
-            tempObject.layerId = layerId; //Each data point needs a unique id
-
-            if(!isLayerVisible || layerHiddenFeatures.indexOf(featureId) > -1){
-                tempObject[HIDDEN_PROPERTY] = true;
-            }
-
-            compiledData.push(tempObject);
-        });
-
-        return compiledData;
+        
     }
 
     /**
