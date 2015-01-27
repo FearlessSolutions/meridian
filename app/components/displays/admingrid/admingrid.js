@@ -18,56 +18,67 @@ define([
             //var dataView = new Slick.Data.DataView();
             gridHeight();
             var columns = [
-                {id: "col1", name: "User ID", field: "userId"},
+                {id: "col1", name: "User ID", field: "id"},
                 {id: "col2", name: "Data Source", field: "dataSource"},
-                {id: "col3", name: "Query Date", field: "start"},
-                {id: "col4", name: "Expiration Date", field: "finish"},
+                {id: "col3", name: "Query Date", field: "queryDate"},
+                {id: "col4", name: "Expiration Date", field: "expireDate"},
             ],
             options = {
                 enableCellNavigation: true,
                 enableColumnReorder: false,
                 defaultColumnWidth: 120,
                 fullWidthRows: true
-            };
-
-            // for (var i = 0; i < 249; i++) {
-            //       data[i] = {
-            //         userId: "User" + i,
-            //         dataSource: "mockDB" + i,                    
-            //         start: "01/01/2009",
-            //         finish: "01/05/2009"                    
-            //       };
-            // }
-            
-            data = [
-              {'userId': 'user1', 'dataSource': 'mockDB', 'start': 1995, 'finish': 2001},
-              {'userId': 'user2', 'dataSource': 'fake', 'start': 1995, 'finish': 2001},
-              {'userId': 'user3', 'dataSource': 'mockDB', 'start': 2000, 'finish': 2001},
-              {'userId': 'user1', 'dataSource': 'fake', 'start': 1991, 'finish': 2001}              
-            ];
-
+            };            
+            data = [];
+           
+            //data.push(tempObject, tempObject1)
             grid = new Slick.Grid('#admingrid', data, columns, options);
 
-            // redraws grid on browser resize
+            var newAJAX = context.sandbox.utils.ajax({
+                type: "GET",
+                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/user',
+                xhrFields: {
+                    "withCredentials": true
+                }
+            })
+            .done(function(data) {
+                var currentDataArray = [];
+              
+                context.sandbox.utils.each(data, function (queryId, obj) {
+                    var tempObject = {};
+                    tempObject.id = queryId;
+                    tempObject.dataSource = obj.dataSource;
+                    tempObject.queryDate = obj.createdOn || '';
+                    tempObject.expireDate = obj.expiresOn || '';
+                    currentDataArray.push(tempObject);
+                });
+                
+                grid.setData(currentDataArray);
+                 
+                    grid.resizeCanvas();
+
+            });
+
+
             $(window).resize(function(){                
+                // redraws grid on browser resize
                 gridHeight();
                 grid.resizeCanvas();
             });
+
+          
             
 
         },
-        destroy: function() {
-            $('#admingridContainer').remove();
-        },        
-        open: function() {
-            //renderGrid();
-            $('#admingridContainer').css('visibility','visible');            
+        open: function() {            
+            $('#admingridContainer').css('visibility','visible');                    
         },
-        resize: function() {
-            
-
-
+        updateDataHistory: function()  {
+             var tempObject = {'userId': 'user1', 'dataSource': 'mockDB', 'start': 1995, 'finish': 2001};
+            var tempObject1 = {'userId': 'user2', 'dataSource': 'mockDB', 'start': 1995, 'finish': 2001};
+            data.push(tempObject, tempObject1);
         }
+    
         
     };
 
