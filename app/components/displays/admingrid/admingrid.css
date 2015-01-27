@@ -1,5 +1,5 @@
 div[data-aura-component="displays/admingrid"] #admingridContainer {
-	display:block;
+	visibility:hidden;
 }
 
 div[data-aura-component='displays/admingrid'] #admingridContainer {
