@@ -23,14 +23,17 @@ define([
             // TODO: Need to address how geoJSON feature collections are handled
             geoJsonParser = new ol.format.GeoJSON({
 //                ignoreExtraDims: true, //Sometimes we get points which are 3d. This prevents OL from failing.
-                defaultDataProjection: params.map.projection//, //TODO the map projection, or 4326?
+                defaultDataProjection: 'EPSG:4326'//, //TODO the map projection, or 4326?
 //                externalProjection: params.map.projectionWGS84
             });
 
             if(layer) {
                 context.sandbox.utils.each(data, function(key, value) {
                     
-                    var currentFeature = geoJsonParser.readFeature(value),
+                    var currentFeature = geoJsonParser.readFeature(value, {
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: params.map.getView().getProjection()
+                        }),
                         iconData;
                     
 //                    currentFeature.featureId = value.id || '';

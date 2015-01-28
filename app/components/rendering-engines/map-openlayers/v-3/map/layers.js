@@ -133,7 +133,8 @@ define([
             newVectorLayer = new ol.layer.Vector({
                 layerId: params.layerId,
                 source: new ol.source.Vector({
-                    features: []
+                    features: [],
+                    projection: 'EPSG:4326'
                 })//,
 //                style: new ol.style.Style({ //TODO this is just a default style for box
 //                    fill: new ol.style.Fill({

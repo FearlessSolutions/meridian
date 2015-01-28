@@ -386,16 +386,10 @@ define([
                 return layer;
             }
         }
-k
-        if (ol.Map.prototype.getLayer === undefined) {
-            ol.Map.prototype.getLayer = function (id) {
-                var layer;
-                this.getLayers().forEach(function (lyr) {
-                    if (id == lyr.get('layerId')) {
-                        layer = lyr;
-                    }
-                });
-                return layer;
+
+        if (ol.layer.Layer.prototype.addFeatures === undefined) {
+            ol.layer.Layer.prototype.addFeatures = function (features) {
+                this.getSource().addFeatures(features);
             }
         }
 
