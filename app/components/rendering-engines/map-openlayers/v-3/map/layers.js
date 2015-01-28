@@ -58,13 +58,6 @@ define([
             };
             drawLayer = exposed.createVectorLayer(drawParams);
 
-//            addDrawListeners({ //TODO trying not to do this here
-//                map: params.map,
-//                layer: drawLayer
-//            });
-
-            params.map.addLayer(drawLayer);
-
             //Create heatmap layer options //TODO
 //            heatmapParams = {
 //                map: params.map,
@@ -163,7 +156,7 @@ define([
 //                newVectorLayer.setVisibility(false);
 //            }
 //
-//            params.map.addLayers([newVectorLayer]);
+            params.map.addLayer(newVectorLayer);
 //
 //            if(params.selectable) {
 //                selector = params.map.getControlsByClass('ol.Control.SelectFeature')[0];
@@ -172,12 +165,12 @@ define([
 //                selector.setLayer(layers);
 //            }
 //
-//            // Default state manager settings for a new layer
-//            context.sandbox.stateManager.layers[params.layerId] = {
-//                visible: true,
-//                hiddenFeatures: [],
-//                identifiedFeatures: []
-//            };
+            // Default state manager settings for a new layer
+            context.sandbox.stateManager.layers[params.layerId] = {
+                visible: true,
+                hiddenFeatures: [],
+                identifiedFeatures: []
+            };
 
             return newVectorLayer;
         },
@@ -625,37 +618,6 @@ define([
                     map: params.map
                 });
             }    
-        });
-    }
-
-    // TODO: Split the control func into the drawing.js file and the boxLayer converts to more generic drawing func.
-    function addDrawListeners(params) {
-        params.layer.events.on({
-            featureadded: function(evt) {
-                var feature = evt.feature,
-                    boundingBox,
-                    splitBoundingBox,
-                    coords;
-
-                feature.attributes = feature.attributes || {};
-
-                if(feature) {
-                    boundingBox = feature.geometry.bounds.transform(params.map.projection, params.map.projectionWGS84).toBBOX();
-                    splitBoundingBox = boundingBox.split(',');
-                    coords = {
-                        minLon: splitBoundingBox[0],
-                        minLat: splitBoundingBox[1],
-                        maxLon: splitBoundingBox[2],
-                        maxLat: splitBoundingBox[3]
-                    };
-
-                    publisher.stopDrawing(coords);
-                }
-
-                if(params.layer.features.length > 1) {
-                    params.layer.removeFeatures([params.layer.features[0]]);
-                }
-            }
         });
     }
 

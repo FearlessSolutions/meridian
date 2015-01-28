@@ -18,7 +18,6 @@ define([
             context = thisContext;
             drawControl = new ol.interaction.DragBox({
                 condition: ol.events.condition.always,
-                projection: new ol.proj.Projection('EPSG:4326'),
                 style: new ol.style.Style({ //TODO this is just a default style for box
                     fill: new ol.style.Fill({
                         color: 'rgba(255, 255, 255, 0.2)'
@@ -51,7 +50,7 @@ define([
                 var drawLayerSource = params.map.getLayer(DRAW_LAYER_ID).getSource(),
                     polygon = this.getGeometry();
 
-                drawLayerSource.addFeature(new ol.Feature(polygon.clone()));
+                drawLayerSource.addFeature(new ol.Feature(polygon.clone())); //Has to be cloned
                 params.map.removeInteraction(drawControl);
                 context.$('#map').css('cursor', 'default');
                 publisher.stopDrawing(convertPolygonToCoordinates(polygon, params.map.getView().getProjection()));

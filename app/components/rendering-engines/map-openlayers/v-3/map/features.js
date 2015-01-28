@@ -17,43 +17,44 @@ define([
             var layerId = params.layerId,
                 data = params.data,
                 newFeatures = [],
-                layer = params.map.getLayersBy('layerId', layerId)[0],
+                layer = params.map.getLayer(layerId),
                 geoJsonParser;
 
             // TODO: Need to address how geoJSON feature collections are handled
-            geoJsonParser = new ol.Format.GeoJSON({
-                "ignoreExtraDims": true, //Sometimes we get points which are 3d. This prevents OL from failing.
-                "internalProjection": params.map.projection,
-                "externalProjection": params.map.projectionWGS84
+            geoJsonParser = new ol.format.GeoJSON({
+//                ignoreExtraDims: true, //Sometimes we get points which are 3d. This prevents OL from failing.
+                defaultDataProjection: params.map.projection//, //TODO the map projection, or 4326?
+//                externalProjection: params.map.projectionWGS84
             });
 
             if(layer) {
                 context.sandbox.utils.each(data, function(key, value) {
                     
-                    var currentFeature = geoJsonParser.parseFeature(value);
+                    var currentFeature = geoJsonParser.readFeature(value),
+                        iconData;
                     
-                    currentFeature.featureId = value.id || '';
-                    currentFeature.attributes.dataService = value.dataService || '';
-
-                    // Handle default styles if none defined
-                    if(!currentFeature.attributes.icon) {
-                        iconData = context.sandbox.icons.getIconForFeature(value);
-                        currentFeature.attributes.icon = iconData.icon;
-                        currentFeature.attributes.height = iconData.height;
-                        currentFeature.attributes.width = iconData.width;
-                    }
+//                    currentFeature.featureId = value.id || '';
+//                    currentFeature.attributes.dataService = value.dataService || '';
+//
+//                    // Handle default styles if none defined
+//                    if(!currentFeature.attributes.icon) {
+//                        iconData = context.sandbox.icons.getIconForFeature(value);
+//                        currentFeature.attributes.icon = iconData.icon;
+//                        currentFeature.attributes.height = iconData.height;
+//                        currentFeature.attributes.width = iconData.width;
+//                    }
                      
                     newFeatures.push(currentFeature);
                 });
 
                 layer.addFeatures(newFeatures);
-                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
-                    layer.recluster();
-                }
-                layer.refresh({
-                    "force": true,
-                    "forces": true
-                });
+//                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+//                    layer.recluster();
+//                }
+//                layer.refresh({
+//                    force: true,
+//                    forces: true
+//                });
             }
         },
         hideFeatures: function(params) {
@@ -65,14 +66,14 @@ define([
             if(layer) {
                 if(params.exclusive === true) { // Show all previously hidden features before hiding new ones
                     exposed.showAllFeatures({
-                        "map": params.map,
-                        "layerId": layerId
+                        map: params.map,
+                        layerId: layerId
                     });
                 }
 
                 context.sandbox.stateManager.addHiddenFeaturesByLayerId({
-                    "layerId": layerId,
-                    "featureIds": featureIds
+                    layerId: layerId,
+                    featureIds: featureIds
                 });
 
                 if(context.sandbox.stateManager.map.visualMode === 'cluster') {
@@ -85,7 +86,7 @@ define([
                         if(!feature.style) {
                             feature.style = {}; 
                         }
-                        feature.style.display = "none";
+                        feature.style.display = 'none';
                     } else {
                         context.sandbox.utils.each(layer.features, function(index, clusterFeature) {
                             if(clusterFeature.cluster) {
@@ -94,7 +95,7 @@ define([
                                         if(!feature.style) {
                                             feature.style = {}; 
                                         }
-                                        feature.style.display = "none"; 
+                                        feature.style.display = 'none';
                                         return;
                                     }
                                 });
@@ -105,21 +106,21 @@ define([
 
                 layer.redraw();
                 layer.refresh({
-                    "force": true,
-                    "forces": true
+                    force: true,
+                    forces: true
                 });
 
                 var identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
-                    "layerId": layer.layerId
+                    layerId: layer.layerId
                 });
                 context.sandbox.utils.each(identifiedFeatures, function(i1, identifiedfid){
                     context.sandbox.utils.each(featureIds, function(i2, fid){
                         if(fid === identifiedfid) {
                             mapBase.clearMapSelection({
-                                "map": params.map
+                                map: params.map
                             });
                             mapBase.clearMapPopups({
-                                "map": params.map
+                                map: params.map
                             });
                             return;
                         }
@@ -139,20 +140,20 @@ define([
                         if(!record.style) {
                             record.style = {}; 
                         }
-                        record.style.display = "none";
+                        record.style.display = none;
                     });
                 } else {
                     hiddenFeatureIds.push(feature.featureId);
                     if(!feature.style) {
                         feature.style = {}; 
                     }
-                    feature.style.display = "none";
+                    feature.style.display = 'none';
                 }
             });
 
             context.sandbox.stateManager.addHiddenFeaturesByLayerId({
-                "layerId": layerId,
-                "featureIds": hiddenFeatureIds
+                layerId: layerId,
+                featureIds: hiddenFeatureIds
             });
 
             if(context.sandbox.stateManager.map.visualMode === 'cluster') {
@@ -161,8 +162,8 @@ define([
 
             layer.redraw();
             layer.refresh({
-                "force": true,
-                "forces": true
+                force: true,
+                forces: true
             });
         },
         showFeatures: function(params) {
@@ -174,29 +175,29 @@ define([
             if(layer) {
                 if(params.exclusive === true) { // Show all previously hidden features before hiding new ones
                     exposed.hideAllFeatures({
-                        "map": params.map,
-                        "layerId": layerId
+                        map: params.map,
+                        layerId: layerId
                     });
 
                     // Steps to clear popup IF it doess not belong to one of the features exclussively being shown
                     identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
-                        "layerId": layer.layerId
+                        layerId: layer.layerId
                     });
                     context.sandbox.utils.each(identifiedFeatures, function(i1, identifiedfid){  // TODO: if this is ever enhanced to allow multiple identifation windows, this will need updating
                         if(featureIds.indexOf(identifiedfid) === -1) {
                             mapBase.clearMapSelection({
-                                "map": params.map
+                                map: params.map
                             });
                             mapBase.clearMapPopups({
-                                "map": params.map
+                                map: params.map
                             });
                         }  
                     });
                 }
 
                 context.sandbox.stateManager.removeHiddenFeaturesByLayerId({
-                    "layerId": layerId,
-                    "featureIds": featureIds
+                    layerId: layerId,
+                    featureIds: featureIds
                 });
 
                 if(context.sandbox.stateManager.map.visualMode === 'cluster') {
@@ -223,8 +224,8 @@ define([
 
                 layer.redraw();
                 layer.refresh({
-                    "force": true,
-                    "forces": true
+                    force: true,
+                    forces: true
                 });
             }
         },
@@ -233,7 +234,7 @@ define([
                 layer = params.map.getLayersBy('layerId', layerId)[0];
 
             context.sandbox.stateManager.removeAllHiddenFeaturesByLayerId({
-                "layerId": layerId
+                layerId: layerId
             });
 
             if(context.sandbox.stateManager.map.visualMode === 'cluster') {
@@ -252,8 +253,8 @@ define([
 
             layer.redraw();
             layer.refresh({
-                "force": true,
-                "forces": true
+                force: true,
+                forces: true
             });
         },
         updateFeatures: function(params) {  // TODO: finish method to support full feature updating (attributes, styles, etc.)
@@ -288,8 +289,8 @@ define([
 
             layer.redraw();
             layer.refresh({
-                "force": true,
-                "forces": true
+                force: true,
+                forces: true
             });
         }
     };

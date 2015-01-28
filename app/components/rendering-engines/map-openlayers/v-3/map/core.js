@@ -36,7 +36,7 @@ define([
             mapBase.init(context);
 //            mapClustering.init(context);
             mapDraw.init(context);
-//            mapFeatures.init(context);
+            mapFeatures.init(context);
 //            mapHeatmap.init(context);
             mapLayers.init(context);
             mapNavigation.init(context);
@@ -189,27 +189,27 @@ define([
                     layerId: params.layerId
                 };
             layerOptions.map = map;
-            mapClustering.addClusteringToLayerOptions(layerOptions);
+//            mapClustering.addClusteringToLayerOptions(layerOptions);
 
             // If a symbolizers were provided, overwrite the default symbolizers from clustering
-            if(params.symbolizers) {
-                layerOptions.styleMap = mapClustering.applyCustomSymbolizers({
-                    symbolizers: params.symbolizers
-                });
-            }
+//            if(params.symbolizers) {
+//                layerOptions.styleMap = mapClustering.applyCustomSymbolizers({
+//                    symbolizers: params.symbolizers
+//                });
+//            }
             // If a styleMap was provided, overwrite the default style from clustering
-            if(params.styleMap) {
-                layerOptions.styleMap = params.styleMap;
-            }
-            if(params.selectable) {
-                layerOptions.selectable = params.selectable;
-            }
+//            if(params.styleMap) {
+//                layerOptions.styleMap = params.styleMap;
+//            }
+//            if(params.selectable) {
+//                layerOptions.selectable = params.selectable;
+//            }
             newLayer = mapLayers.createVectorLayer(layerOptions);
-            mapLayers.addEventListenersToLayer({
-                map: map,
-                layer: newLayer,
-                eventListeners: params.events // Can pass in your own event listeners or take the default by not providing any
-            });
+//            mapLayers.addEventListenersToLayer({
+//                map: map,
+//                layer: newLayer,
+//                eventListeners: params.events // Can pass in your own event listeners or take the default by not providing any
+//            });
         },
         /**
          * Delete Layer
@@ -386,6 +386,19 @@ define([
                 return layer;
             }
         }
+k
+        if (ol.Map.prototype.getLayer === undefined) {
+            ol.Map.prototype.getLayer = function (id) {
+                var layer;
+                this.getLayers().forEach(function (lyr) {
+                    if (id == lyr.get('layerId')) {
+                        layer = lyr;
+                    }
+                });
+                return layer;
+            }
+        }
+
     }
 
     return exposed;
