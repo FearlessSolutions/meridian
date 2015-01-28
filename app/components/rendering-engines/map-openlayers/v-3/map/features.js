@@ -18,7 +18,9 @@ define([
                 data = params.data,
                 newFeatures = [],
                 layer = params.map.getLayer(layerId),
-                geoJsonParser;
+                geoJsonParser,
+                mapProjection = params.map.getProjection();
+
 
             // TODO: Need to address how geoJSON feature collections are handled
             geoJsonParser = new ol.format.GeoJSON({
@@ -29,10 +31,9 @@ define([
 
             if(layer) {
                 context.sandbox.utils.each(data, function(key, value) {
-                    
                     var currentFeature = geoJsonParser.readFeature(value, {
                             dataProjection: 'EPSG:4326',
-                            featureProjection: params.map.getView().getProjection()
+                            featureProjection: mapProjection
                         }),
                         iconData;
                     
@@ -50,6 +51,9 @@ define([
                     newFeatures.push(currentFeature);
                 });
 
+                console.debug(mapProjection);
+                console.debug('features', newFeatures);
+                console.debug('data', data);
                 layer.addFeatures(newFeatures);
 //                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
 //                    layer.recluster();

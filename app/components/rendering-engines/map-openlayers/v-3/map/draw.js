@@ -20,16 +20,16 @@ define([
                 condition: ol.events.condition.always,
                 style: new ol.style.Style({ //TODO this is just a default style for box
                     fill: new ol.style.Fill({
-                        color: 'rgba(255, 255, 255, 0.2)'
+                        color: 'rgba(255, 0, 255, 0.2)'
                     }),
                     stroke: new ol.style.Stroke({
-                        color: '#ffcc33',
+                        color: 'purple',
                         width: 2
                     }),
                     image: new ol.style.Circle({
                         radius: 7,
                         fill: new ol.style.Fill({
-                            color: '#ffcc33'
+                            color: 'pink'
                         })
                     })
                 })
@@ -50,10 +50,12 @@ define([
                 var drawLayerSource = params.map.getLayer(DRAW_LAYER_ID).getSource(),
                     polygon = this.getGeometry();
 
+                console.debug("draw", new ol.Feature(polygon.clone()));
+
                 drawLayerSource.addFeature(new ol.Feature(polygon.clone())); //Has to be cloned
                 params.map.removeInteraction(drawControl);
                 context.$('#map').css('cursor', 'default');
-                publisher.stopDrawing(convertPolygonToCoordinates(polygon, params.map.getView().getProjection()));
+                publisher.stopDrawing(convertPolygonToCoordinates(polygon, params.map.getProjection()));
             };
 
             params.map.addInteraction(drawControl);
@@ -67,7 +69,7 @@ define([
          */
         clearDrawing: function(params) {
 //            removeControl(); //TODO need this?
-            params.map.getLayer(DRAW_LAYER_ID).getSource().clear();
+            params.map.getLayer(DRAW_LAYER_ID).clear();
 
         }
     };

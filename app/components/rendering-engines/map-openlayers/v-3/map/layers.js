@@ -134,7 +134,7 @@ define([
                 layerId: params.layerId,
                 source: new ol.source.Vector({
                     features: [],
-                    projection: 'EPSG:4326'
+                    projection: params.map.getProjection()
                 })//,
 //                style: new ol.style.Style({ //TODO this is just a default style for box
 //                    fill: new ol.style.Fill({
@@ -173,6 +173,7 @@ define([
                 identifiedFeatures: []
             };
 
+            console.debug("created layer ", params.layerId);
             return newVectorLayer;
         },
         /**
@@ -306,7 +307,7 @@ define([
          * @param params
          */
         clearLayer: function(params) {
-            params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
+//            params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
         },
         hideLayer: function(params) {
             var currentLayer,

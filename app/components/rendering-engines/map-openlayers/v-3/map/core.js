@@ -386,6 +386,11 @@ define([
                 return layer;
             }
         }
+        if (ol.Map.prototype.getProjection === undefined) {
+            ol.Map.prototype.getProjection = function (id) {
+                return this.getView().getProjection();
+            }
+        }
 
         if (ol.layer.Layer.prototype.addFeatures === undefined) {
             ol.layer.Layer.prototype.addFeatures = function (features) {
@@ -393,6 +398,11 @@ define([
             }
         }
 
+        if (ol.layer.Layer.prototype.clear === undefined) {
+            ol.layer.Layer.prototype.clear = function () {
+                this.getSource().clear();
+            }
+        }
     }
 
     return exposed;

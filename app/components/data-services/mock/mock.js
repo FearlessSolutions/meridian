@@ -98,8 +98,14 @@ define([
                     minLon = params.queryBbox ? params.queryBbox.left : null;
                     maxLon = params.queryBbox ? params.queryBbox.right : null;
 
-                    createLayer({queryId: params.queryId, name: queryName,
-                        minLat: minLat, minLon: minLon, maxLat: maxLat, maxLon: maxLon});
+                    createLayer({
+                        queryId: params.queryId,
+                        name: queryName,
+                        minLat: minLat,
+                        minLon: minLon,
+                        maxLat: maxLat,
+                        maxLon: maxLon
+                    });
                     initiateQuery(queryName);
 
                     getPage = function(params, start, pageSize){
