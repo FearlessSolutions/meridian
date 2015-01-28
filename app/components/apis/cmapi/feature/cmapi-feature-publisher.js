@@ -6,29 +6,14 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishPlotFeature: function(message) {
-          context.sandbox.emit('map.features.plot', message);
+        createLayer: function(args){
+            context.sandbox.emit('map.layer.create', args);  
         },
-        publishPlotFinish: function(params) {
-            context.sandbox.emit('data.finished', params);
+        plotFeatures: function(args){
+            context.sandbox.emit('map.features.plot', args);  
         },
-        publishPlotError: function(params) {
-            context.sandbox.emit('data.error', params);
-        },
-        publishCreateLayer: function(args) {
-            context.sandbox.emit('map.layer.create', args);
-        },
-        publishHideFeatures: function(args) {
-            context.sandbox.emit('map.features.hide', args);
-        },
-        publishShowFeatures: function(args) {
-            context.sandbox.emit('map.features.show', args);
-        },
-        publishZoomToFeatures: function(args) {
-            context.sandbox.emit('map.zoom.toFeatures', args);
-        },
-        publishCenterOnBounds: function(args){
-            context.sandbox.emit('map.zoom.toLocation', args);
+        zoomToFeatures: function(args){
+            context.sandbox.emit('map.zoom.toLayer', args);  
         }
     };
 

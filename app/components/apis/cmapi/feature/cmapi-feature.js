@@ -17,7 +17,8 @@ define([
         },
         receive: function(channel, message) {
             if(receiveChannels[channel]) {
-                receiveChannels[channel](message);
+                var channelRemainder = channel.split
+                receiveChannels[channel](channel, message);
             } else {
                 sendError(channel, message, 'Channel not supported');
             }
@@ -29,15 +30,11 @@ define([
 
     //Map channels to functions, and error if a channel is not supported
     var receiveChannels= {
-		"map.feature.plot": function(message) { // TODO: if featureId already exists, remove it and replot
+		"map.feature.plot": function(channel, message) { // TODO: if featureId already exists, remove it and replot
             if(message === '') {
-                return;
-            } else if(!message.format || message.format === 'geojson') {
-                plotGeoJSON(message);
-            } else if(message.format === 'kml') {
-                sendError('map.feature.unplot', message, 'KML is not currently supported');
+                sendError(channel, message, 'No message payload supplied');
             } else {
-                sendError('map.feature.unplot', message, 'GeoJSON is the only supported format, for now.');
+                plotFeatures(message);
             }
 		},
 		"map.feature.plot.url": function(message) {
@@ -297,6 +294,28 @@ define([
         //TODO: modify format more?
 
     }
+
+    function plotFeatures(message) {
+        //check if layer exsist, if not create it
+        if(!context.sandbox.dataStorage.datasets[message.overlayId]) {
+            //create new layer with overlayId provided
+            publisher.createLayer({
+                layerId: message.overlayId,
+            });    
+        }
+        //plot feature(s) from payload
+        publisher.plotFeatures({
+            layerId: message.overlayId,
+            data: message.feature.features
+        });    
+        
+        //zoom to feature if specified in payload
+        if(message.zoom) {
+            publisher.zoomToFeatures({
+                "layerId": message.overlayId,
+            });
+        }
+    }    
 
     return exposed;
 

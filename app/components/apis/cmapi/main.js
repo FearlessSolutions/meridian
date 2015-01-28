@@ -39,7 +39,6 @@ define([
         }
     };
 
-
     /**
      * Takes in the message and tries to parse it.
      * Passes that message to the correct module
@@ -89,8 +88,6 @@ define([
 
             if(processing[category]) {
                 processing[category].receive(channel, message);
-
-                //need to think about how to distinguish between core API and extensions
             } else {
                 sendError(channel, message, 'Failure processing message - channel does not exsist');
             }
@@ -125,17 +122,4 @@ define([
 
 
     return exposed;
-
-    /* //TODO this is for KML; not using right now; might use in the future?
-    function parseXMLString(text){//TODO move to Utils?
-        if (window.DOMParser){
-            var parser = new DOMParser();
-            return parser.parseFromString(text, 'text/xml');
-        }
-        else{ // Internet Explorer
-            var xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
-            xmlDoc.async = false;
-            return xmlDoc.loadXML(text); 
-        }
-    }*/
 });
