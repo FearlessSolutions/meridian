@@ -57,33 +57,28 @@ define([
             if(!message || message.widgetName === context.sandbox.systemConfiguration.appName){
                 return;
             }
-            
-            sendError(channel, message, 'Channel not supported');
             try {
                 if(message !== '') {
                     message = JSON.parse(message);
                     if(!message.origin) {
                         message.origin = context.sandbox.cmapi.defaultLayerId;
                     }
+
+                    if(!message.format || message.format === 'kml'){ 
+                        try{
+                            //need to convert kml features of payload to geojson
+                            var domParser=new DOMParser(); //putting KML in DOM for proper parsing by togeojson
+                            var kmlDoc=domParser.parseFromString(message.feature,"text/xml");
+                            message.feature = toGeoJSON.kml(kmlDoc);
+                        }catch(){
+                            console.debug(parseKMLerror);
+                            sendError(channel, message, 'Failure parsing geoJSON message');
+                        }
+                    }
                 }            
             }catch(parseJSONError) {
                 console.debug(parseJSONError);
                 sendError(channel, message, 'Failure parsing geoJSON message');
-                try{
-                    //parsing KML message
-                    var domParser=new DOMParser(); //putting KML in DOM for proper parsing by togeojson
-                    kmlDoc=parser.parseFromString(message,"text/xml");
-                    message = toGeoJSON.kml(kmlDoc);
-
-                    if(message !== '') {
-                        if(!message.origin) {
-                            message.origin = context.sandbox.cmapi.defaultLayerId;
-                        }
-                    }
-                }catch(parseKMLError){
-                    console.debug(parseKMLError);
-                    sendError(channel, message, 'Failure parsing KML message');
-                }
             }
 
             if(processing[category]) {

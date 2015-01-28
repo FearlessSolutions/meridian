@@ -291,6 +291,9 @@ define([
                 force: true,
                 forces: true
             });
+        },
+        removeFeatures: function(params) {  // TODO: finish method to support full feature updating (attributes, styles, etc.)
+        
         }
     };
     return exposed;
