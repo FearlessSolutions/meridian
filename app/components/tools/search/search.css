@@ -8,3 +8,8 @@ div[data-aura-component='tools/search'] .form-control {
 	color:#000;
 	margin-bottom:5px;
 	}
+	@media (max-width: 971px) {
+		div[data-aura-component='tools/search'] .navbar-form .form-control {
+			width:100%;
+		}
+	}

@@ -4,7 +4,8 @@ define([
     'slickgrid',
     'slickdataview',
     'slickRowSelectionModel',
-    'slickpager'
+    'slickpager',
+    'moment'
 ], function (publisher) {
 
     var context,
@@ -14,23 +15,28 @@ define([
     var exposed = {
         init: function(thisContext) {
                 
-            context = thisContext;
+            context = thisContext,
+            dataView = new Slick.Data.DataView();
             gridHeight();
             var columns = [
                 {id: "col1", name: "User ID", field: "id"},
-                {id: "col2", name: "Data Source", field: "dataSource"},
-                {id: "col3", name: "Query Date", field: "queryDate"},
-                {id: "col4", name: "Expiration Date", field: "expireDate"},
+                {id: "col2", name: "Data Source", field: "dataSource", maxWidth: 120 },
+                {id: "col3", name: "Query Date", field: "queryDate", maxWidth: 240 },
+                {id: "col4", name: "Expiration Date", field: "expireDate", maxWidth: 240 }
             ],
             options = {
                 enableCellNavigation: true,
                 enableColumnReorder: false,
-                defaultColumnWidth: 120,
-                fullWidthRows: true
-            };            
+                //defaultColumnWidth: 120,
+                enableColumnReorder: false,
+                multiColumnSort: false,
+                forceFitColumns: true,
+                fulWlidthRows: true
+            };
+
             data = [];           
             
-            grid = new Slick.Grid('#admingrid', data, columns, options);
+            grid = new Slick.Grid('#admingrid', dataView, columns, options);
 
             var newAJAX = context.sandbox.utils.ajax({
                 type: "GET",
@@ -40,21 +46,28 @@ define([
                 }
             })
             .done(function(data) {
+
                 var currentDataArray = [];
               
                 context.sandbox.utils.each(data, function (queryId, obj) {
+                    var now = moment(),
+                        sDate = moment.unix(obj.createdOn) || '', 
+                        eDate = moment.unix(obj.expireOn) || '';
+                        var sVal = sDate.format('MMMM Do YYYY, hh:mm:ss A');
+                        var eVal = eDate.format('MMMM Do YYYY, hh:mm:ss A');
+
                     var tempObject = {};
-                    tempObject.id = queryId;
+                    tempObject.id = obj.userId;
                     tempObject.dataSource = obj.dataSource;
-                    tempObject.queryDate = obj.createdOn || '';
-                    tempObject.expireDate = obj.expiresOn || '';
+                    tempObject.queryDate = sVal;
+                    tempObject.expireDate =  eVal;
                     currentDataArray.push(tempObject);
                 });
                 
                 grid.setData(currentDataArray);
                 grid.resizeCanvas();
             });
-
+           
             $(window).resize(function(){                
                 // redraws grid on browser resize
                 gridHeight();
@@ -76,9 +89,12 @@ define([
         $('#admingrid').height($(window).height() - ($('.panel-body').height() + 145));
      }
 
-    function getHeaders(){
-        
-    }
+    
+function comparer(a, b) {
+ var x = a[sortcol], y = b[sortcol];
+ return (x == y ? 0 : (x > y ? 1 : -1));
+}
+
 
     /**
      * Take in an array of features for a layer, and make grid data objects for them.
