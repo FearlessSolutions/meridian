@@ -118,6 +118,7 @@ div[data-aura-component='tools/export-picker'] #export-options-header {
 
 div[data-aura-component='tools/export-picker'] #export-options {
     padding-top: 8px;
+    padding-left: 15px;
 }
 
 div[data-aura-component='tools/export-picker'] #export-options .radio{

@@ -156,7 +156,7 @@ define([
                     layerId: params.layerId
                 });
                 $modalDialog.addClass('singlePoint');
-                stepOneSinglePoint();
+                initStepOneSinglePoint();
 
             }else if(params && params.layerId){ //It is a specific layer
                 //message came from timeline containing params.overlayId
@@ -283,6 +283,7 @@ define([
         var $exportRadioDiv = $exportContainer.find('#export-'+ exportId);
         $exportRadioDiv.hide();
         $exportRadioDiv.find(':radio').prop('disabled', true);
+        $exportRadioDiv.find(':radio').prop('checked', false);//if its hidden, it should not be checked
 
     }
     function enableExportOption(exportId, type){
@@ -400,6 +401,12 @@ define([
     //View that contains layer list, export options and the additional options.
     function showStepThree(){
         showExtraOptions();
+    }
+
+    function initStepOneSinglePoint(){
+        $exportContainer.css({'opacity': 1, 'left': 0});
+        $extraContainer.stop().animate({'opacity': 0, 'left': '598px'}, 500, 'swing');
+        $modalDialog.css({'width': '230px'});
     }
 
     function stepOneSinglePoint(){
