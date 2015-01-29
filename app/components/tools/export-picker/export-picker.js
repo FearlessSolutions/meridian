@@ -128,7 +128,7 @@ define([
 
             //Layercontainer click logic.
             $layerContainer.on('click', function(event){
-                if(event.target.type != 'checkbox'){
+                if(event.target.type !== 'checkbox'){
                     if($extraContainer.css('opacity') == 1){
                         showStepTwo();
                     }
@@ -207,7 +207,7 @@ define([
                 var $allCheckboxes = $layerList.find('.layer-checkbox:checkbox'),
                     $checkedItems = $layerList.find('.layer-checkbox:checkbox:checked');
 
-                if($allCheckboxes.length == $checkedItems.length){
+                if($allCheckboxes.length === $checkedItems.length){
                     $selectAll.prop('checked', true);
                 }
                 else{
@@ -217,7 +217,7 @@ define([
                 validateLayers();
                 var selectedOptions = getSelectedLayers();
                     //if at least one layer is selected, keep the export options tab open
-                    if(selectedOptions.length == 0){
+                    if(selectedOptions.length === 0){
                         showStepOne();
                     }else{
                         showStepTwo();
