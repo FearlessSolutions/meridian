@@ -32,7 +32,7 @@ define([
             if(layer) {
                 context.sandbox.utils.each(data, function(key, value) {
                     var currentFeature = geoJsonParser.readFeature(value, {
-                            dataProjection: 'EPSG:4326',
+//                            dataProjection: 'EPSG:4326',
                             featureProjection: mapProjection
                         }),
                         iconData;

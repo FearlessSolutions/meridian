@@ -23,6 +23,7 @@ define([
             map = new ol.Map({
                     target: mapElement,
                     view: new ol.View({
+                        projection: 'EPSG:900913',
                         center: [0,0],
                         zoom: 5 //TODO set center?
                     })

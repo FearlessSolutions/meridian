@@ -132,7 +132,7 @@ define([
 
             newVectorLayer = new ol.layer.Vector({
                 layerId: params.layerId,
-                source: new ol.source.Vector({
+                source: new ol.source.GeoJSON({
                     features: [],
                     projection: params.map.getProjection()
                 })//,
@@ -187,6 +187,7 @@ define([
                 source: new ol.source.OSM({
                     url: params.url
                 })
+//                source: new ol.source.OSM()
             });
 
             return baseLayer;
@@ -424,7 +425,6 @@ define([
                             map: params.map,
                             name: baselayerParams.name,
                             url: baselayerParams.url,
-                            style: baselayerParams.style,
                             matrixSet: baselayerParams.matrixSet || context.sandbox.mapConfiguration.projection,
                             matrixIds: baselayerParams.matrixIds || null,
                             layer: baselayerParams.layer || null,
