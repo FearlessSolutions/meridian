@@ -14,7 +14,8 @@ define([
         $layerContainer,
         $exportContainer,
         $extraContainer,
-        COMPONENT_DESIGNATION = 'export-picker-modal'
+        $modalDialog,
+        COMPONENT_DESIGNATION = 'export-picker-modal';
 
     var exposed = {
         init: function(thisContext) {
@@ -99,7 +100,6 @@ define([
                 event.preventDefault();
                 publisher.close();
             });
-
 
             //select all logic. WILL NOT WORK consistently WITH .attr
             $selectAll.on('change', function(event) {
@@ -280,18 +280,18 @@ define([
     }
 
     function disableExportOption(exportId){
-        var exportRadioDiv = $exportContainer.find('#export-'+ exportId);
-        exportRadioDiv.hide();
-        exportRadioDiv.find(':radio').prop('disabled', true);
+        var $exportRadioDiv = $exportContainer.find('#export-'+ exportId);
+        $exportRadioDiv.hide();
+        $exportRadioDiv.find(':radio').prop('disabled', true);
 
     }
     function enableExportOption(exportId, type){
-        var exportRadioDiv = $exportContainer.find('#export-'+ exportId),
-            exportRadio = exportRadioDiv.find(':radio');
+        var $exportRadioDiv = $exportContainer.find('#export-'+ exportId),
+            $exportRadio = $exportRadioDiv.find(':radio');
 
-        exportRadioDiv.show();
-        exportRadio.prop('disabled', false);
-        exportRadio.prop('checked', false);
+        $exportRadioDiv.show();
+        $exportRadio.prop('disabled', false);
+        $exportRadio.prop('checked', false);
     }
 
     function getSelectedLayers(){
@@ -305,13 +305,12 @@ define([
     }
 
     //set modal to initial view clean of all selections.
-    //TODO: clean options from extraContainer
     function clean(){
         $selectAll.prop('checked', false);
         $layerContainer.find('.layer-option input').prop('checked', false);
         $exportContainer.find('.radio').removeClass('selected');
         $modalDialog.removeClass('singlePoint');
-        $modalDialog.css({'width': '600px'})
+        $modalDialog.css({'width': '600px'});//must do this. Removing class is not enough.
         cleanExtraFields();
         //force step one without animation.
         $exportContainer.css({'opacity': 0, 'left': '598px'});

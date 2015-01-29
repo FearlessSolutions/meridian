@@ -12,7 +12,7 @@ div[data-aura-component='tools/export-picker'] {
 }
 
 div[data-aura-component='tools/export-picker'] .modal-body {
-    padding: 0 0 0 0;
+    padding: 0;
     height: 280px;
     overflow: hidden;
 }
@@ -150,4 +150,3 @@ div[data-aura-component='tools/export-picker'] .modal-footer {
     padding: 10px;
     border-top: 1px solid #E5E5E5;
 }
-

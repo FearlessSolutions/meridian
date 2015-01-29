@@ -30,7 +30,6 @@ define([
             };
             app.sandbox.datasources.push(datasource);
 
-
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }

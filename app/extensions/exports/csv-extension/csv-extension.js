@@ -24,19 +24,8 @@ define([
     function exportFunction(params) {
         var suffix = '?ids=' + params.layerIds.join();
 
-
         if (params.featureId && params.layerId) { //Not done
-//            context.sandbox.export.export[EXPORT_ID]({
-//                featureId: params.featureId,
-//                layerId: params.layerId,
-//                callback: function(callbackParams){
-//                    publisher.publishMessage({
-//                        messageType: callbackParams.messageType,
-//                        messageTitle: 'CSV export',
-//                        messageText: callbackParams.messageText
-//                    });
-//                }
-//            });
+
         } else if (params.layerIds) {
             if (verifyLayers(params.layerIds)) {
                 context.sandbox.utils.ajax({
