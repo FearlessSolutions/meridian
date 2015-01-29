@@ -128,11 +128,11 @@ define([
 
             //Layercontainer click logic.
             $layerContainer.on('click', function(event){
-                if(event.target.type != "checkbox"){
-                    if($extraContainer.css("opacity") == 1){
+                if(event.target.type != 'checkbox'){
+                    if($extraContainer.css('opacity') == 1){
                         showStepTwo();
                     }
-                    else if($exportContainer.css("opacity") == 1){
+                    else if($exportContainer.css('opacity') == 1){
                         showStepOne();
                     }
                 }
@@ -164,7 +164,6 @@ define([
                     componentOpening: COMPONENT_DESIGNATION
                 });
                 exposed.updateExportLayerList();
-                $selectAll.removeProp('checked');
 
                 $layerContainer.find('.layer-option input[value=' + params.layerId +']').prop('checked', true);
                 showStepTwo();
@@ -205,7 +204,16 @@ define([
 
             //Apply update logic to layer checkboxs
             $layerList.find('.layer-checkbox:checkbox').on('change',function(event){
-                $selectAll.removeProp('checked');//TODO: not working on chrome??
+                var $allCheckboxes = $layerList.find('.layer-checkbox:checkbox'),
+                    $checkedItems = $layerList.find('.layer-checkbox:checkbox:checked');
+
+                if($allCheckboxes.length == $checkedItems.length){
+                    $selectAll.prop('checked', true);
+                }
+                else{
+                    $selectAll.prop('checked', false);
+                }
+               
                 validateLayers();
                 var selectedOptions = getSelectedLayers();
                     //if at least one layer is selected, keep the export options tab open
@@ -219,14 +227,14 @@ define([
     };
 
     function showExportOptions(){
-        $exportContainer.css("opacity", 1);
-        $exportContainer.stop().animate({left: "418px"}, 500, 'swing');
+        $exportContainer.css('opacity', 1);
+        $exportContainer.stop().animate({left: '418px'}, 500, 'swing');
     }
 
 
     function hideExportOptions(){
         //change the opacity when the animation completes.
-        $exportContainer.stop().animate({left: "598px"}, 500, 'swing', function(){
+        $exportContainer.stop().animate({left: '598px'}, 500, 'swing', function(){
             $exportContainer.css('opacity', 0);
         });
     }
@@ -299,15 +307,15 @@ define([
     //set modal to initial view clean of all selections.
     //TODO: clean options from extraContainer
     function clean(){
-        $selectAll.removeProp('checked');
+        $selectAll.prop('checked', false);
         $layerContainer.find('.layer-option input').prop('checked', false);
         $exportContainer.find('.radio').removeClass('selected');
         $modalDialog.removeClass('singlePoint');
-        $modalDialog.css({"width": "600px"})
+        $modalDialog.css({'width': '600px'})
         cleanExtraFields();
         //force step one without animation.
-        $exportContainer.css({"opacity": 0, "left": "598px"});
-        $extraContainer.css({"opacity": 0, "left": "598px"});
+        $exportContainer.css({'opacity': 0, 'left': '598px'});
+        $extraContainer.css({'opacity': 0, 'left': '598px'});
     }
 
     //verifies if the export option has additional options
@@ -331,16 +339,16 @@ define([
     
     //shows the extra option container and moves the export options further left.
     function showExtraOptions(){
-        $exportContainer.css("opacity", 1);
-        $exportContainer.stop().animate({left: "106px"}, 500, 'swing');
+        $exportContainer.css('opacity', 1);
+        $exportContainer.stop().animate({left: '106px'}, 500, 'swing');
 
-        $extraContainer.css("opacity", 1);
-        $extraContainer.stop().animate({left: "237px"}, 500, 'swing');
+        $extraContainer.css('opacity', 1);
+        $extraContainer.stop().animate({left: '237px'}, 500, 'swing');
     }
     //hides the extra options pane.
     function hideExtraOptions(){
-        $extraContainer.stop().animate({left: "598px"}, 500, 'swing', function(){
-            $extraContainer.css("opacity", 0);
+        $extraContainer.stop().animate({left: '598px'}, 500, 'swing', function(){
+            $extraContainer.css('opacity', 0);
         });
     }
 
@@ -374,7 +382,7 @@ define([
                 if($this.is(':checkbox')){
                     $this.prop('checked', false);
                 }else{
-                    $this.val("");
+                    $this.val('');
                 }
             });
         });
@@ -396,14 +404,14 @@ define([
     }
 
     function stepOneSinglePoint(){
-        $exportContainer.css({"opacity": 1, "left": 0});
-        $extraContainer.stop().animate({"opacity": 0, "left": "598px"}, 500, 'swing');
-        $modalDialog.stop().animate({"width": "230px"}, 500, 'swing');
+        $exportContainer.css({'opacity': 1, 'left': 0});
+        $extraContainer.stop().animate({'opacity': 0, 'left': '598px'}, 500, 'swing');
+        $modalDialog.stop().animate({'width': '230px'}, 500, 'swing');
     }
 
     function stepTwoSinglePoint() {
-        $extraContainer.stop().animate({"opacity": 1, "left": "180px"}, 500, 'swing');
-        $modalDialog.stop().animate({"width": "542px"}, 500, 'swing');
+        $extraContainer.stop().animate({'opacity': 1, 'left': '180px'}, 500, 'swing');
+        $modalDialog.stop().animate({'width': '542px'}, 500, 'swing');
     }
 
     return exposed;
