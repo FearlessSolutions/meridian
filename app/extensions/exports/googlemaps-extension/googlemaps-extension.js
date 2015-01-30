@@ -50,7 +50,7 @@ define([
                 });
 
         } else if(params.layerIds && params.layerIds.length){
-            params.callback(true);  //Google Maps doesn't do layers //TODO return to false
+            params.callback(false);  //Google Maps doesn't do layers
         } else{
             params.callback(false);
         }
