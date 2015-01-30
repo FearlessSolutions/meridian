@@ -129,7 +129,6 @@ define([
 //            delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
 
 
-
             newVectorLayer = new ol.layer.Vector({
                 layerId: params.layerId,
                 source: new ol.source.GeoJSON({

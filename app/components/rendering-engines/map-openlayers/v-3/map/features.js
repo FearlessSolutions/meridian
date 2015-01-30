@@ -22,6 +22,8 @@ define([
                 mapProjection = params.map.getProjection();
 
 
+
+
             // TODO: Need to address how geoJSON feature collections are handled
             geoJsonParser = new ol.format.GeoJSON({
 //                ignoreExtraDims: true, //Sometimes we get points which are 3d. This prevents OL from failing.
@@ -51,7 +53,7 @@ define([
                     newFeatures.push(currentFeature);
                 });
 
-                console.debug(mapProjection);
+//                console.debug(mapProjection);
                 console.debug('features', newFeatures);
                 console.debug('data', data);
                 layer.addFeatures(newFeatures);

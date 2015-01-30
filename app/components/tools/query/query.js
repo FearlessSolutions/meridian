@@ -20,13 +20,13 @@ define([
             $maxLat = context.$('.query-form #query-location-maxLat');
 
             $modal.modal({
-                "backdrop": "static",
-                "keyboard": false,
-                "show": false
+                backdrop: 'static',
+                keyboard: false,
+                show: false
             });
 
             // $modal.on('shown.bs.dialog', function(){
-            //     publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            //     publisher.publishOpening({'componentOpening': MENU_DESIGNATION});
             // });
             
             context.$('.query-form button[type="submit"]').on('click', function(event) {
@@ -40,15 +40,32 @@ define([
                     dataSource = context.$('#query-source').val() || '',
                     errorFree = true;
 
+                //The lat/lon comes in as a string, so turn them into numbers. If one is invalid, all are.
+                if(minLon !== ''
+                    && minLat !== ''
+                    && maxLon !== ''
+                    && maxLat !== ''){
+                    minLon = parseFloat(minLon);
+                    minLat = parseFloat(minLat);
+                    maxLon = parseFloat(maxLon);
+                    maxLat = parseFloat(maxLat);
+                } else {
+                    minLon = '';
+                    minLat = '';
+                    maxLon = '';
+                    maxLat = '';
+                }
+
+
                 var queryObject = {
-                        "name": name,
-                        "dataSourceId": dataSource,
-                        "justification": justification,
-                        "minLat": minLat,
-                        "minLon": minLon, 
-                        "maxLat": maxLat, 
-                        "maxLon": maxLon, 
-                        "pageSize": 300
+                        name: name,
+                        dataSourceId: dataSource,
+                        justification: justification,
+                        minLat: minLat,
+                        minLon: minLon,
+                        maxLat: maxLat,
+                        maxLon: maxLon,
+                        pageSize: 300
                 };   
 
 
@@ -103,9 +120,9 @@ define([
                     exposed.clearQueryForm();
                 } else {
                     publisher.publishMessage({
-                        "messageType": "error",
-                        "messageTitle": "Query Tool",
-                        "messageText": "Invalid query parameters."
+                        messageType: 'error',
+                        messageTitle: 'Query Tool',
+                        messageText: 'Invalid query parameters.'
                     });
                 }  
 

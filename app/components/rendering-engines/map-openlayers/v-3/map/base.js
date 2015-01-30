@@ -23,7 +23,8 @@ define([
             map = new ol.Map({
                     target: mapElement,
                     view: new ol.View({
-                        projection: 'EPSG:900913',
+                        projection: 'EPSG:3857',
+//                        projection: 'EPSG:900913',
                         center: [0,0],
                         zoom: 5 //TODO set center?
                     })
@@ -41,12 +42,12 @@ define([
 //                    })
 //                }
             );
-
+//
             //TODO
 //            exposed.addSelector({
 //                map: map
 //            });
-
+//
             //TODO
             // Check user settings for default setting to display cursor location
 //            if(
@@ -90,7 +91,7 @@ define([
 //                    }
 //                });
 //            });
-
+//
             //TODO
 //            map.events.register('zoomend', map, function(evt) {
 //                // Basic cleanup for things on the map when zoom changes... can adjust later as needed
