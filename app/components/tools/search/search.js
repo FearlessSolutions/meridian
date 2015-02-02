@@ -7,7 +7,7 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            $toggleSearch = context.$('.btn-primary');
+            $toggleSearch = context.$('#searchAdmin_submit');
 
             $toggleSearch.on('click', function(event) {
                 event.preventDefault();
