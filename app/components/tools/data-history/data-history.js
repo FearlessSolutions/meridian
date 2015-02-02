@@ -147,14 +147,19 @@ define([
                     var now = moment(), //This needs to be done now to prevent race condition later
                         dataDate = moment.unix(dataEntry.createdOn),
                         expireDate = moment.unix(dataEntry.expireOn),
-                        disableRestore = expireDate.isBefore(now), // Use isExpired as default
-                        tempDataEntry;
+                        disableRestore = expireDate.isBefore(now); // Use isExpired as default
+
+                    if(!context.sandbox.dataServices[dataEntry.dataSource]){
+                        console.debug('No datasource for', dataEntry);
+                        return;
+                    }
 
                     if(context.sandbox.stateManager.layers[dataEntry.queryId]){
                         disableRestore = true;
                     }
 
-                    tempDataEntry = {
+                    currentDataSet[dataEntry.queryId] = dataEntry;
+                    currentDataArray.push({
                         datasetId: dataEntry.queryId,
                         dataSessionId: dataEntry.sessionId,
                         dataSource: context.sandbox.dataServices[dataEntry.dataSource].DISPLAY_NAME,
@@ -163,12 +168,7 @@ define([
                         rawDate: dataEntry.createdOn,
                         disableRestore: disableRestore,
                         dataRecordCount: dataEntry.numRecords
-                    };
-                    
-                    if(tempDataEntry.dataSource !== ""){
-                        currentDataArray.push(tempDataEntry);
-                        currentDataSet[dataEntry.queryId] = dataEntry;    
-                    }
+                    });
                 });
 
                 currentDataArray.sort(dynamicSort('-rawDate'));
