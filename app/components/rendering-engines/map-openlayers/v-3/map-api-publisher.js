@@ -8,7 +8,7 @@ define([
             context = thisContext;
         },
         publishMessage: function(params) {
-            context.sandbox.emit('message.publish', params); 
+            context.sandbox.emit('message.publish', params);
         },
         stopDrawing: function(params) {
             context.sandbox.emit('map.draw.stop', params);

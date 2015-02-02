@@ -134,22 +134,8 @@ define([
                 source: new ol.source.GeoJSON({
                     features: [],
                     projection: params.map.getProjection()
-                })//,
-//                style: new ol.style.Style({ //TODO this is just a default style for box
-//                    fill: new ol.style.Fill({
-//                        color: 'rgba(255, 255, 255, 0.2)'
-//                    }),
-//                    stroke: new ol.style.Stroke({
-//                        color: '#ffcc33',
-//                        width: 2
-//                    }),
-//                    image: new ol.style.Circle({
-//                        radius: 7,
-//                        fill: new ol.style.Fill({
-//                            color: '#ffcc33'
-//                        })
-//                    })
-//                })
+                }),
+                style: createStyling(params.styleMap)
             });
 //
 //            if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
@@ -724,5 +710,70 @@ define([
         });
     }
 
+
+    function createStyling(layerStyling){
+        var style;
+
+        return defaultStyling;
+
+
+//        if(!layerStyling){
+//            return defaultStyling;
+//        }
+
+//        return new ol.style.Style({ //TODO this is just a default style for box
+//            fill: new ol.style.Fill({
+//                color: 'rgba(255, 255, 255, 0.2)'
+//            }),
+//            stroke: new ol.style.Stroke({
+//                color: '#ffcc33',
+//                width: 2
+//            }),
+////            image: new ol.style.Circle({
+////                radius: 7,
+////                fill: new ol.style.Fill({
+////                    color: '#ffcc33'
+////                })
+////            })
+//            image: new ol.style.Icon({
+//                src: "/extensions/map-configuration-extension/images/markerIcons/marker.png",
+//                anchor: [0.5, 1],
+//                anchorXUnits: 'fraction',
+//                anchorYUnits: 'fraction',
+//                scale:.5
+//            })
+//        })
+    }
+    function defaultStyling(feature, resolution){
+        var icon = feature.get('icon') || context.sandbox.mapConfiguration.markerIcons.default.icon,
+            height = feature.get('height') || context.sandbox.mapConfiguration.markerIcons.default.height,
+            width = feature.get('width') || context.sandbox.mapConfiguration.markerIcons.default.width,
+            yOffset = feature.get('yOffset');
+
+         if(icon){
+             return [new ol.style.Style({ //TODO this is just a default style for box
+                 fill: new ol.style.Fill({
+                     color: 'rgba(255, 255, 255, 0.2)'
+                 }),
+                 stroke: new ol.style.Stroke({
+                     color: '#ffcc33',
+                     width: 2
+                 }),
+//            image: new ol.style.Circle({
+//                radius: 7,
+//                fill: new ol.style.Fill({
+//                    color: '#ffcc33'
+//                })
+//            })
+                 image: new ol.style.Icon({
+                     src: icon,
+                     anchor: [0.5, 1],
+                     anchorXUnits: 'fraction',
+                     anchorYUnits: 'fraction',
+                     scale: .5
+                 })
+             })];
+         }
+    }
     return exposed;
 });

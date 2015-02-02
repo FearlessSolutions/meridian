@@ -5,6 +5,17 @@ define([
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
+
+    var icon = new ol.style.Icon({
+        src: "/extensions/map-configuration-extension/images/markerIcons/marker.png",
+        anchor: [0.5, 46],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        opacity: 0.75
+//            size: new ol.Size([width, height]),
+//            size: [width, height],
+//            offset: [0, yOffset]
+    });
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
@@ -26,19 +37,16 @@ define([
 
             // TODO: Need to address how geoJSON feature collections are handled
             geoJsonParser = new ol.format.GeoJSON({
-//                ignoreExtraDims: true, //Sometimes we get points which are 3d. This prevents OL from failing.
                 defaultDataProjection: 'EPSG:4326'//, //TODO the map projection, or 4326?
-//                externalProjection: params.map.projectionWGS84
             });
 
             if(layer) {
                 context.sandbox.utils.each(data, function(key, value) {
                     var currentFeature = geoJsonParser.readFeature(value, {
-//                            dataProjection: 'EPSG:4326',
                             featureProjection: mapProjection
                         }),
                         iconData;
-                    
+
 //                    currentFeature.featureId = value.id || '';
 //                    currentFeature.attributes.dataService = value.dataService || '';
 //
@@ -49,13 +57,12 @@ define([
 //                        currentFeature.attributes.height = iconData.height;
 //                        currentFeature.attributes.width = iconData.width;
 //                    }
-                     
+//                     currentFeature.setStyle(icon);
                     newFeatures.push(currentFeature);
                 });
 
 //                console.debug(mapProjection);
-                console.debug('features', newFeatures);
-                console.debug('data', data);
+
                 layer.addFeatures(newFeatures);
 //                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
 //                    layer.recluster();

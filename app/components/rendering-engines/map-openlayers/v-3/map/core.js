@@ -198,9 +198,9 @@ define([
 //                });
 //            }
             // If a styleMap was provided, overwrite the default style from clustering
-//            if(params.styleMap) {
-//                layerOptions.styleMap = params.styleMap;
-//            }
+            if(params.styleMap) {
+                layerOptions.styleMap = params.styleMap;
+            }
 //            if(params.selectable) {
 //                layerOptions.selectable = params.selectable;
 //            }
