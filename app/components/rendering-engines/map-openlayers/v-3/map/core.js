@@ -18,11 +18,8 @@ define([
     mapClustering,
     mapHeatmap
 ){
-    // Setup context for storing the context of 'this' from the component's main.js 
-    var context;
-
-    // Set Full-Scope Variables
-    var map;
+    var context,
+        map;
 
     var exposed = {
         /**
@@ -374,6 +371,8 @@ define([
     };
 
     function addFunctionsToOL(){
+        ol.ENABLE_NAMED_COLORS = true;
+
         //Add a get function for layers by ID. This was included in OL2, but not in OL3
         if (ol.Map.prototype.getLayer === undefined) {
             ol.Map.prototype.getLayer = function (id) {

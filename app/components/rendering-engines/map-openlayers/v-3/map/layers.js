@@ -113,7 +113,7 @@ define([
                 selector,
                 layers;
 
-//            style = new ol.style.Style(params.styleMap || {});
+            style = createStyling(params.styleMap);
 
 
 //            options = {
@@ -135,7 +135,7 @@ define([
                     features: [],
                     projection: params.map.getProjection()
                 }),
-                style: createStyling(params.styleMap)
+                style: style
             });
 //
 //            if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
@@ -712,59 +712,63 @@ define([
 
 
     function createStyling(layerStyling){
-        var style;
+        var options = {},
+            color;
 
-        return defaultStyling;
+        if(layerStyling){
+            //TODO dynamic choosers (This assumes that all properties are static
+            if(layerStyling.icon){
+                options.image = new ol.style.Icon({
+                    src: layerStyling.icon.icon,
+                    anchor: [0.5, 1], //TODO make dynamic?
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    scale:.5
+                });
+            }
+
+            /**
+             * If there is fill options, use them.
+             * OL doesn't have a seperate option for opacity, so turn hex/string into rgb
+             */
+            if(layerStyling.fill && 'fillColor' in layerStyling.fill) {
+                color = ol.color.asArray(layerStyling.fill.fillColor);
+                if('fillOpacity' in layerStyling.fill){
+                    color = color.slice(); //This is to not interfere will ol.color.asArray
+                    color[3] = layerStyling.fill.fillOpacity;
+                    color = ol.color.asString(color);
+                }
+                options.fill =  new ol.style.Fill({
+                    color: color
+                });
+            }
+
+            if(layerStyling.stroke
+                && 'strokeColor' in layerStyling.stroke
+                && 'strokeOpacity' in layerStyling.stroke
+                && 'strokeWidth' in layerStyling.stroke){
+                options.stroke = new ol.style.Stroke({
+                    color: layerStyling.stroke.strokeColor,
+                    opacity: layerStyling.stroke.strokeOpacity,
+                    width: 2
+                });
+            }
+
+            return new ol.style.Style(options);
+        } else {
+            return defaultStyling;
+        }
 
 
-//        if(!layerStyling){
-//            return defaultStyling;
-//        }
-
-//        return new ol.style.Style({ //TODO this is just a default style for box
-//            fill: new ol.style.Fill({
-//                color: 'rgba(255, 255, 255, 0.2)'
-//            }),
-//            stroke: new ol.style.Stroke({
-//                color: '#ffcc33',
-//                width: 2
-//            }),
-////            image: new ol.style.Circle({
-////                radius: 7,
-////                fill: new ol.style.Fill({
-////                    color: '#ffcc33'
-////                })
-////            })
-//            image: new ol.style.Icon({
-//                src: "/extensions/map-configuration-extension/images/markerIcons/marker.png",
-//                anchor: [0.5, 1],
-//                anchorXUnits: 'fraction',
-//                anchorYUnits: 'fraction',
-//                scale:.5
-//            })
-//        })
     }
     function defaultStyling(feature, resolution){
-        var icon = feature.get('icon') || context.sandbox.mapConfiguration.markerIcons.default.icon,
-            height = feature.get('height') || context.sandbox.mapConfiguration.markerIcons.default.height,
-            width = feature.get('width') || context.sandbox.mapConfiguration.markerIcons.default.width,
-            yOffset = feature.get('yOffset');
+        var icon = feature.get('icon') || context.sandbox.mapConfiguration.markerIcons.default.icon//,
+//            height = feature.get('height') || context.sandbox.mapConfiguration.markerIcons.default.height,
+//            width = feature.get('width') || context.sandbox.mapConfiguration.markerIcons.default.width,
+//            yOffset = feature.get('yOffset');
 
          if(icon){
              return [new ol.style.Style({ //TODO this is just a default style for box
-                 fill: new ol.style.Fill({
-                     color: 'rgba(255, 255, 255, 0.2)'
-                 }),
-                 stroke: new ol.style.Stroke({
-                     color: '#ffcc33',
-                     width: 2
-                 }),
-//            image: new ol.style.Circle({
-//                radius: 7,
-//                fill: new ol.style.Fill({
-//                    color: '#ffcc33'
-//                })
-//            })
                  image: new ol.style.Icon({
                      src: icon,
                      anchor: [0.5, 1],
