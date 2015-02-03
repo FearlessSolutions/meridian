@@ -20,21 +20,21 @@ define([
             gridHeight();
             var columns = [
                 {id: "col1", name: "User ID", field: "id"},
-                {id: "col2", name: "Data Source", field: "dataSource", maxWidth: 120 },
+                {id: "col2", name: "Data Source", field: "dataSource", maxWidth: 120, sortable: true },
                 {id: "col3", name: "Query Date", field: "queryDate", maxWidth: 240 },
                 {id: "col4", name: "Expiration Date", field: "expireDate", maxWidth: 240 }
             ],
             options = {
                 enableCellNavigation: true,
-                enableColumnReorder: false,
                 //defaultColumnWidth: 120,
-                enableColumnReorder: false,
+                enableColumnReorder: true,
                 multiColumnSort: false,
                 forceFitColumns: true,
+                syncColumnCellResize: true,
                 fulWlidthRows: true
             };
 
-            data = [];           
+            //data = [];           
             
             grid = new Slick.Grid('#admingrid', dataView, columns, options);
 
@@ -67,7 +67,7 @@ define([
                 grid.setData(currentDataArray);
                 grid.resizeCanvas();
             });
-           
+
             $(window).resize(function(){                
                 // redraws grid on browser resize
                 gridHeight();
@@ -85,24 +85,10 @@ define([
      * Sets each header width to the text length, or a minimum if that is too small.
      * @returns {Array}
      */
-     function gridHeight () {
+    function gridHeight () {
         $('#admingrid').height($(window).height() - ($('.panel-body').height() + 145));
-     }
+    }
 
-    
-function comparer(a, b) {
- var x = a[sortcol], y = b[sortcol];
- return (x == y ? 0 : (x > y ? 1 : -1));
-}
-
-
-    /**
-     * Take in an array of features for a layer, and make grid data objects for them.
-     * @param layerId Id of the layer
-     * @param features Array of features in the layer
-     * @param headers Header/column information to get keys from
-     * @returns {Array}
-     */
     function compileData(layerId, features, headers){
         
     }
