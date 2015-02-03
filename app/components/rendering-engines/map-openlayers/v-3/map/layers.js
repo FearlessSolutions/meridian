@@ -109,6 +109,7 @@ define([
          */
         createVectorLayer: function(params) {
             var style,
+                source,
                 newVectorLayer,
                 selector,
                 layers;
@@ -128,15 +129,82 @@ define([
 
 //            delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
 
-
-            newVectorLayer = new ol.layer.Vector({
-                layerId: params.layerId,
-                source: new ol.source.GeoJSON({
+            var geoSource = new ol.source.GeoJSON({
                     features: [],
                     projection: params.map.getProjection()
-                }),
-                style: style
+                });
+            var clusterSource = new ol.source.Cluster({
+                distance: 40,
+                source: geoSource
             });
+
+            var styleCache = {};
+            var newVectorLayer = new ol.layer.Vector({
+                layerId: params.layerId,
+                source: clusterSource,
+                style: function(feature, resolution) {
+                    var size = feature.get('features') ? feature.get('features').length : 0;
+                    var style = styleCache[size];
+                    if (!style) {
+                        style = [new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 10,
+                                stroke: new ol.style.Stroke({
+                                    color: '#fff'
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: '#3399CC'
+                                })
+                            }),
+                            text: new ol.style.Text({
+                                text: size.toString(),
+                                fill: new ol.style.Fill({
+                                    color: '#fff'
+                                })
+                            })
+                        })];
+                        styleCache[size] = style;
+                    }
+                    return style;
+                }
+            });
+
+//            newVectorLayer = new ol.layer.Vector({
+//                layerId: params.layerId,
+//                source: new ol.source.Cluster({
+//                    distance: 20,
+//                    source: new ol.source.GeoJSON({
+//                        features: [],
+//                        projection: params.map.getProjection()
+//                    }),
+////                    style: style,
+//                    style: function(feature, resolution) {
+//                        var size = feature.get('features').length;
+//                        var style = styleCache[size];
+//                        if (!style) {
+//                            style = [new ol.style.Style({
+//                                image: new ol.style.Circle({
+//                                    radius: 10,
+//                                    stroke: new ol.style.Stroke({
+//                                        color: '#fff'
+//                                    }),
+//                                    fill: new ol.style.Fill({
+//                                        color: '#3399CC'
+//                                    })
+//                                }),
+//                                text: new ol.style.Text({
+//                                    text: size.toString(),
+//                                    fill: new ol.style.Fill({
+//                                        color: '#fff'
+//                                    })
+//                                })
+//                            })];
+//                            styleCache[size] = style;
+//                        }
+//                        return style;
+//                    }
+//                })
+//            });
 //
 //            if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
 //                newVectorLayer.setVisibility(false);
@@ -758,7 +826,6 @@ define([
         } else {
             return defaultStyling;
         }
-
 
     }
     function defaultStyling(feature, resolution){

@@ -5,17 +5,6 @@ define([
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
-
-    var icon = new ol.style.Icon({
-        src: "/extensions/map-configuration-extension/images/markerIcons/marker.png",
-        anchor: [0.5, 46],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'pixels',
-        opacity: 0.75
-//            size: new ol.Size([width, height]),
-//            size: [width, height],
-//            offset: [0, yOffset]
-    });
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
@@ -32,38 +21,43 @@ define([
                 geoJsonParser,
                 mapProjection = params.map.getProjection();
 
-
-
-
             // TODO: Need to address how geoJSON feature collections are handled
             geoJsonParser = new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:4326'//, //TODO the map projection, or 4326?
             });
 
             if(layer) {
+//                var count = 20000;
+//                var newFeatures = new Array(count);
+//                var e = 4500000;
+//                for (var i = 0; i < count; ++i) {
+//                    var coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
+//                    newFeatures[i] = new ol.Feature(new ol.geom.Point(coordinates));
+//                }
+
+
                 context.sandbox.utils.each(data, function(key, value) {
+
+                    if(value.geometry.type === "Polygon") return;
+
                     var currentFeature = geoJsonParser.readFeature(value, {
                             featureProjection: mapProjection
-                        }),
-                        iconData;
+                        });
 
 //                    currentFeature.featureId = value.id || '';
 //                    currentFeature.attributes.dataService = value.dataService || '';
 //
-//                    // Handle default styles if none defined
-//                    if(!currentFeature.attributes.icon) {
-//                        iconData = context.sandbox.icons.getIconForFeature(value);
-//                        currentFeature.attributes.icon = iconData.icon;
-//                        currentFeature.attributes.height = iconData.height;
-//                        currentFeature.attributes.width = iconData.width;
-//                    }
-//                     currentFeature.setStyle(icon);
+
                     newFeatures.push(currentFeature);
                 });
 
-//                console.debug(mapProjection);
 
                 layer.addFeatures(newFeatures);
+//                var clusterSource = layer.getSource();
+//                var geoSource = clusterSource.source_;
+//                geoSource.addFeatures(newFeatures);
+//                console.debug(layer);
+
 //                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
 //                    layer.recluster();
 //                }

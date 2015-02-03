@@ -371,7 +371,7 @@ define([
     };
 
     function addFunctionsToOL(){
-        ol.ENABLE_NAMED_COLORS = true;
+        ol.ENABLE_NAMED_COLORS = true; //Allows use of things like 'grey' to be used
 
         //Add a get function for layers by ID. This was included in OL2, but not in OL3
         if (ol.Map.prototype.getLayer === undefined) {
@@ -393,7 +393,13 @@ define([
 
         if (ol.layer.Layer.prototype.addFeatures === undefined) {
             ol.layer.Layer.prototype.addFeatures = function (features) {
-                this.getSource().addFeatures(features);
+                var source = this.getSource();
+
+                //Sometimes, the source has a source itself. Go all the way down.
+                while(source.source_){
+                    source = source.source_;
+                }
+                source.addFeatures(features);
             }
         }
 
