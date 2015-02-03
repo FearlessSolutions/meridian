@@ -23,7 +23,7 @@ define([
                         var html = template({
                             attributes: attributes,
                             title: 'Uploaded Feature',
-                            thumbnail: './extensions/map-configuration-extension/images/markerIcons/marker-2x-80x80.png'
+                            thumbnail: './extensions/map-configuration-extension/images/markerIcons/marker_128x128.png'
                         });
 
                         return html;

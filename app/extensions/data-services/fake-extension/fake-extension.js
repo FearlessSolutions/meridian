@@ -30,7 +30,6 @@ define([
             };
             app.sandbox.datasources.push(datasource);
 
-
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
             }
@@ -53,13 +52,22 @@ define([
                     postRenderingAction: function(feature, layerId) {                        
                         $('.' + config.namespace + ' .infoDiv .exportFeature .btn').on('click', function(){
                             //emiting message to open export picker.
-                            context.sandbox.emit('export.picker.open', {featureId: feature.featureId});
+                            context.sandbox.emit('export.picker.open', {
+                                featureId: feature.featureId,
+                                layerId: feature.queryId
+                            });
                         });
                     }
                 },
                 //See data-storage-extension for key variable descriptions
                 keys: config.keys
             };
+
+            //Add the datasource to the export options
+            app.sandbox.export.utils.addDatasource({
+                id: DATASOURCE_NAME,
+                exports: config.exports
+            });
         }
     };
 

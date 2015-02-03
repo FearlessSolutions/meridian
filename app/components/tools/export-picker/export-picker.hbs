@@ -6,15 +6,44 @@
                 <p class="modal-title">Export</p>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-7" id="options"></div>
-                    <!--
-                    <div class="col-md-7" id="scope">
-                        <div>
-                            <input id="exportSelected" type="checkbox"> Export selected features only
-                        </div>
+                <div id="layer-container">
+                    <div id="layer-options-header" class="row">
+                        <input type="checkbox" value="checkAll" class="layer-checkbox">
+                        <div class="layer-name">Layer Name</div>
+                        <div class="layer-source">Source</div>
+                        <div class="record-count">Records</div>
                     </div>
-                    -->
+
+                    <div id="layer-options" class="row list-container">
+                        <!-- This gets filled in manually -->
+                    </div>
+                </div>
+                <div id="export-container">
+                    <div id="export-options-header" class="row">
+                        <div class="layer-source">Export To </div>
+                    </div>
+                    <div id="export-options" class="list-container">
+                        {{#each exports}}
+                            <div id="export-{{this.id}}" class="radio">
+                                <label>
+                                    <input type="radio" name="exportOption" value="{{this.id}}">
+                                    {{this.label}}
+                                </label>
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+                <div id="extra-export-container">
+                    <div id="extra-export-options-header" class="row">
+                        <div class="layer-source">Additional Options </div>
+                    </div>
+                    <div class="tab-content extra-export-fields">
+                        {{#each exports}}
+                            {{#if this.template}}
+                                <div id="tab-{{this.id}}">{{{this.template}}}</div>
+                            {{/if}}
+                        {{/each}}
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

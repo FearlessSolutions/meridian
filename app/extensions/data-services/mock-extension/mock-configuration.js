@@ -17,7 +17,13 @@ define([
         DATASOURCE_NAME: 'mock',
         DISPLAY_NAME: 'Mock',
         SERVER_NAME: 'mock',
-        namespace: 'mock-extension'
+        namespace: 'mock-extension',
+        exports: [
+            'geojson',
+            'csv',
+//            'kml',
+            'googlemaps'
+        ]
     };
 
     return config;

@@ -201,8 +201,8 @@ define([
             datagridVisible = false;
         },
         clear: function() {
-            grid.setItems([]);
-            grid.setColumns([]);
+            grid.setColumns([]); //Update columns
+            dataView.setItems([]); //Update rows
 
             exposed.close();
         },

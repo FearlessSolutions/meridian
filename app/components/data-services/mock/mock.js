@@ -141,6 +141,7 @@ define([
     function createLayer(params) {
         context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
         context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
+        context.sandbox.dataStorage.datasets[params.queryId].layerName = params.name || paramns.queryId;
 
         publisher.createLayer({
             layerId: params.queryId,

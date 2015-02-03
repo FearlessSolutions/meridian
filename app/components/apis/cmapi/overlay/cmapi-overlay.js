@@ -53,6 +53,8 @@ define([
             } else {
                 context.sandbox.dataStorage.datasets[message.layerId] = new Backbone.Collection();
                 context.sandbox.dataStorage.datasets[message.layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
+                context.sandbox.dataStorage.datasets[message.layerId].layerName = message.name || message.layerId;
+
 
                 publisher.publishCreateLayer({
                     "layerId": message.layerId,
