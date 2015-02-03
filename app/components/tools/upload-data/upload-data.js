@@ -103,6 +103,7 @@ define([
                     //Create a new collection for the data
                     context.sandbox.dataStorage.datasets[queryId] = new Backbone.Collection();
                     context.sandbox.dataStorage.datasets[queryId].dataService = DATASOURCE_NAME;
+                    context.sandbox.dataStorage.datasets[queryId].layerName = queryName;
 
                     createLayer({
                         queryId: queryId,
@@ -388,6 +389,7 @@ define([
     function createLayer(params){
         context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
         context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
+        context.sandbox.dataStorage.datasets[params.queryId].layerName = params.queryName;
 
         publisher.createLayer({
             layerId: params.queryId,

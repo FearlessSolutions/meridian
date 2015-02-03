@@ -142,7 +142,6 @@ define([
                 currentDataSet = {};
                 currentDataArray = [];
 
-
                 context.sandbox.utils.each(data, function(index, dataEntry) {
                     var now = moment(), //This needs to be done now to prevent race condition later
                         dataDate = moment.unix(dataEntry.createdOn),
