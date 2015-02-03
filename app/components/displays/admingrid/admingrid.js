@@ -38,16 +38,18 @@ define([
             
             grid = new Slick.Grid('#admingrid', dataView, columns, options);
 
-            var newAJAX = context.sandbox.utils.ajax({
-                type: "GET",
-                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/user',
-                xhrFields: {
-                    "withCredentials": true
-                }
-            })
-            .done(function(data) {
 
-                var currentDataArray = [];
+            $(window).resize(function(){                
+                // redraws grid on browser resize
+                gridHeight();
+                grid.resizeCanvas();
+            });
+        },
+        open: function() {            
+            $('#admingridContainer').css('visibility','visible');                    
+        },
+        something: function(data) {
+            var currentDataArray = [];
               
                 context.sandbox.utils.each(data, function (queryId, obj) {
                     var now = moment(),
@@ -66,17 +68,7 @@ define([
                 
                 grid.setData(currentDataArray);
                 grid.resizeCanvas();
-            });
-
-            $(window).resize(function(){                
-                // redraws grid on browser resize
-                gridHeight();
-                grid.resizeCanvas();
-            });
-        },
-        open: function() {            
-            $('#admingridContainer').css('visibility','visible');                    
-        }        
+        }
     };
 
     /**

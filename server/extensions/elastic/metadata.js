@@ -26,6 +26,19 @@ exports.getMetadataBySessionId = function(userId, sessionId, callback){
         }
     });
 };
+exports.getMetadataByTerm = function(userId, callback){
+    query.getMetadataByTerm(userId, function(err, meta){
+        if (err) {
+            callback(err);
+        } else {
+            var ret = {};
+            meta.hits.hits.forEach(function(ele){
+                ret[ele._source.queryId] = new MetadataBuilder(ele._source);
+            });
+            callback(null, ret);
+        }
+    });
+};
 
 exports.getMetadataByUserId = function(userId, callback){
     query.getMetadataByUserId(userId, function(err, meta){

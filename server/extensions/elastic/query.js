@@ -153,6 +153,30 @@ exports.getMetadataBySessionId = function(userId, sessionId, callback){
     getJSONByQuery(null, config.index.metadata, null, query, callback);
 };
 
+exports.getMetadataByTerm = function(queryterms, callback){
+    var terms = [],
+    key,
+    term;
+    for ( key in queryterms) {
+        term = {
+            term: {}
+        };
+        term.term[key] = queryterms[key];
+        terms.push(term);
+        
+    }
+    var query = {
+        query:{
+            bool:{
+                must: terms
+            }
+        }
+    };
+    getJSONByQuery(null, config.index.metadata, null, query, callback);
+    console.log(queryterms);
+    console.log(query);
+};
+
 exports.getMetadataByUserId = function(userId, callback){
     var query = {
         query:{
