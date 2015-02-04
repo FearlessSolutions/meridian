@@ -148,12 +148,17 @@ define([
                     if (!style) {
                         style = [new ol.style.Style({
                             image: new ol.style.Circle({
-                                radius: 10,
+                                radius: 10 + size/2,
                                 stroke: new ol.style.Stroke({
-                                    color: '#fff'
+                                    color: 'rgb(123, 0, 123)',
+//                                    color: 'rgb(153, 0, 153, .5)',
+                                    opacity:.5,
+                                    width: size/3.0
                                 }),
                                 fill: new ol.style.Fill({
-                                    color: '#3399CC'
+                                    color: 'rgb(153, 0, 153)',
+//                                    color: 'rgb(153, 0, 153, .9)'
+                                    opacity:.5
                                 })
                             }),
                             text: new ol.style.Text({
