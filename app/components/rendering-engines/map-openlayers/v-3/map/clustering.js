@@ -109,6 +109,7 @@ define([], function() {
         visualModeChanged: function(params) {
             var map = params.map;
 
+            //Do false's first so that we are not rendering more than we have to
             if(params.mode === CLUSTER_MODE) {
                 context.sandbox.utils.each(cache, function(layerId, layerCache){
                     map.getLayer(layerId).setVisible(false);
@@ -116,8 +117,8 @@ define([], function() {
                 });
             } else if(params.mode === POINT_MODE) {
                 context.sandbox.utils.each(cache, function(layerId, layerCache){
-                    map.getLayer(layerId).setVisible(true);
                     map.getLayer(layerId + LAYERID_SUFFIX).setVisible(false);
+                    map.getLayer(layerId).setVisible(true);
                 });
             } else {
                 context.sandbox.utils.each(cache, function(layerId, layerCache){
@@ -158,7 +159,6 @@ define([], function() {
             });
 
             map.addLayer(newClusterLayer);
-
         },
         applyCustomSymbolizers: function(params) {
             var symbolizers = params.symbolizers;
@@ -237,28 +237,6 @@ define([], function() {
             };
 
             return styleMap;
-        },
-        getClusterStyle: function(params){
-            var feature = params.feature,
-                resolution= params.resolution,
-                cluster = feature.get('features'),
-                layerId,
-                cacheEntry;
-
-            if(!cluster){ //Isn't a cluster
-                return null;
-            } else {
-                layerId = cluster[0].get('layerId');
-                cacheEntry = cache[layerId];
-
-                if(!cacheEntry){ //Isn't a layer with clustering
-                    return null;
-                } else if (cluster.length === 1) {
-                    return cacheEntry.pointStyleFunction(cluster[0], resolution); //Style the single point in the cluster
-                } else {
-                    return cacheEntry.clusterStyleFunction(feature, resolution, layerId);
-                }
-            }
         }
     };
 

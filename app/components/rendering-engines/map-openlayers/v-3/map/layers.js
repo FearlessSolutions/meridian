@@ -12,7 +12,8 @@ define([
         styleCache = {},
         visualMode, //TODO move this out of here
         CLUSTER_MODE = 'cluster',
-        POINT_MODE = 'feature';
+        POINT_MODE = 'feature',
+        HEAT_MODE = 'heatmap';
 
     var exposed = {
         init: function(thisContext) {
@@ -383,6 +384,10 @@ define([
                 mode: params.mode,
                 map: params.map
             });
+
+            if(params.mode === HEAT_MODE){
+                doSpy(params.map);
+            }
 
             params.map.render();
 //            params.map.renderSync();
@@ -830,7 +835,60 @@ define([
          }
     }
 
+    var radius = 75;
+    function doSpy(map){
+        $(document).keydown(function(evt) {
+            if (evt.which === 38) {
+                radius = Math.min(radius + 5, 150);
+                map.render();
+            } else if (evt.which === 40) {
+                radius = Math.max(radius - 5, 25);
+                map.render();
+            }
+        });
 
+        // get the pixel position with every move
+        var mousePosition = null;
+        var viewPort = map.getViewport();
+        var $viewPort = $(viewPort);
+
+        $viewPort.on('mousemove', function(evt) {
+            mousePosition = map.getEventPixel(evt.originalEvent);
+            map.render();
+        }).on('mouseout', function() {
+            mousePosition = null;
+            map.render();
+        });
+
+        var keys = Object.keys(basemapLayers);
+        var baseLayer1 = basemapLayers[keys[0]];
+        var baseLayer2 = basemapLayers[keys[1]];
+        baseLayer1.setVisible(true);
+        baseLayer2.setVisible(true);
+
+// before rendering the layer, do some clipping
+        baseLayer2.on('precompose', function(event) {
+            var ctx = event.context;
+            var pixelRatio = event.frameState.pixelRatio;
+            ctx.save();
+            ctx.beginPath();
+            if (mousePosition) {
+                // only show a circle around the mouse
+                ctx.arc(mousePosition[0] * pixelRatio, mousePosition[1] * pixelRatio,
+                        radius * pixelRatio, 0, 2 * Math.PI);
+                ctx.lineWidth = 5 * pixelRatio;
+                ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+                ctx.stroke();
+            }
+            ctx.clip();
+        });
+
+// after rendering the layer, restore the canvas context
+        baseLayer2.on('postcompose', function(event) {
+            var ctx = event.context;
+            ctx.restore();
+        });
+    }
 
     return exposed;
 });
