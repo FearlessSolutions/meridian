@@ -8,11 +8,16 @@ define([
 ], function(publisher, mapBase, mapClustering, mapHeatmap) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context,
-        basemapLayers;
+        basemapLayers,
+        styleCache = {},
+        mode; //TODO move this out of here
+
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
             basemapLayers = {};
+            styleCache = {};
+            mode = 'CLUSTER';
         },
         /**
          * Create layers that are not accessible to the user, and that don't go away
@@ -104,18 +109,19 @@ define([
          *      styleMap - Style map for just this layer
          *      layerId - Id for this layer (must be unique).
          *      selectable - If this layer's features should be interactive
+         *      canCluster - If this layer's features should cluster
          * }
          * @returns {ol.layer.Vector}
          */
         createVectorLayer: function(params) {
-            var style,
-                source,
+            var layerId = params.layerId,
+                canCluster = params.canCluster,
+                pointStyle = createStyling(params.styleMap),
+                geoSource,
+                clusterSource,
                 newVectorLayer,
                 selector,
                 layers;
-
-            style = createStyling(params.styleMap);
-
 
 //            options = {
 //                layerId: params.layerId, // set as layerId, is not present its null
@@ -129,48 +135,42 @@ define([
 
 //            delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
 
-            var geoSource = new ol.source.GeoJSON({
+            geoSource = new ol.source.GeoJSON({
                     features: [],
                     projection: params.map.getProjection()
                 });
-            var clusterSource = new ol.source.Cluster({
-                distance: 40,
-                source: geoSource
-            });
+//            if(canCluster){
+                clusterSource = new ol.source.Cluster({
+                    distance: 40,
+                    source: geoSource
+                });
+//            }
 
-            var styleCache = {};
+            styleCache[layerId] = { //TODO make this more dynamic (with all variables filled out, per variable set ....)
+//                cluster: canCluster ? clusterStyling : pointStyle,
+                cluster: clusterStyling,
+                point: pointStyle
+            };
+
             var newVectorLayer = new ol.layer.Vector({
-                layerId: params.layerId,
-                source: clusterSource,
+                layerId: layerId,
+                canCluster: canCluster,
+//                source: canCluster ? clusterSource : geoSource,
+                source:  clusterSource,
                 style: function(feature, resolution) {
-                    var size = feature.get('features') ? feature.get('features').length : 0;
-                    var style = styleCache[size];
-                    if (!style) {
-                        style = [new ol.style.Style({
-                            image: new ol.style.Circle({
-                                radius: 10 + size/2,
-                                stroke: new ol.style.Stroke({
-                                    color: 'rgb(123, 0, 123)',
-//                                    color: 'rgb(153, 0, 153, .5)',
-                                    opacity:.5,
-                                    width: size/3.0
-                                }),
-                                fill: new ol.style.Fill({
-                                    color: 'rgb(153, 0, 153)',
-//                                    color: 'rgb(153, 0, 153, .9)'
-                                    opacity:.5
-                                })
-                            }),
-                            text: new ol.style.Text({
-                                text: size.toString(),
-                                fill: new ol.style.Fill({
-                                    color: '#fff'
-                                })
-                            })
-                        })];
-                        styleCache[size] = style;
+                    var layerId = feature.get('layerId'),
+                        cluster = feature.get('features');
+                    if(mode === 'CLUSTER' && cluster){
+                        layerId = cluster[0].get('layerId');
+                        if(cluster.length = 1){
+                            return styleCache[layerId].point(feature, resolution);
+                        } else {
+                            return styleCache[layerId].cluster(feature, resolution);
+                        }
                     }
-                    return style;
+                    else {
+                        return styleCache[layerId].point(feature, resolution);
+                    }
                 }
             });
 
@@ -784,9 +784,16 @@ define([
     }
 
 
+    /**
+     * Creates function to style the point layer
+     * TODO REQUIRED the styles all need to be saved instead of manually calculated each time
+     * @param layerStyling
+     * @returns {*} function(feature, resolution) for styling
+     */
     function createStyling(layerStyling){
         var options = {},
-            color;
+            color,
+            style;
 
         if(layerStyling){
             //TODO dynamic choosers (This assumes that all properties are static
@@ -826,8 +833,11 @@ define([
                     width: 2
                 });
             }
+            style = new ol.style.Style(options);
 
-            return new ol.style.Style(options);
+            return function(){
+                return [style]
+            };
         } else {
             return defaultStyling;
         }
@@ -851,5 +861,37 @@ define([
              })];
          }
     }
+
+    function clusterStyling(feature, resolution){
+        var size = feature.get('features') ? feature.get('features').length : 0;
+        var style = styleCache[size];
+        if (!style) {
+            style = [new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 10 + size/2,
+                    stroke: new ol.style.Stroke({
+                        color: 'rgb(123, 0, 123)',
+//                                    color: 'rgb(153, 0, 153, .5)',
+                        opacity:.5,
+                        width: size/3.0
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgb(153, 0, 153)',
+//                                    color: 'rgb(153, 0, 153, .9)'
+                        opacity:.5
+                    })
+                }),
+                text: new ol.style.Text({
+                    text: size.toString(),
+                    fill: new ol.style.Fill({
+                        color: '#fff'
+                    })
+                })
+            })];
+            styleCache[size] = style;
+        }
+        return style;
+    }
+
     return exposed;
 });

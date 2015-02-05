@@ -44,6 +44,9 @@ define([
                             featureProjection: mapProjection
                         });
 
+//                    currentFeature.values.layer = layer;
+                    currentFeature.set('layer', layer); //TODO decide which one of these we will actually use
+                    currentFeature.set('layerId', layerId);
 //                    currentFeature.featureId = value.id || '';
 //                    currentFeature.attributes.dataService = value.dataService || '';
 //
@@ -56,7 +59,7 @@ define([
 //                var clusterSource = layer.getSource();
 //                var geoSource = clusterSource.source_;
 //                geoSource.addFeatures(newFeatures);
-//                console.debug(layer);
+                console.debug(layer);
 
 //                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
 //                    layer.recluster();

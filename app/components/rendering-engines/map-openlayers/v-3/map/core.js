@@ -183,7 +183,8 @@ define([
         createLayer: function(params) { // TODO: look into this more, it is currently always creating a Vector Layer. Channels may need to be more specific.
             var newLayer,
                 layerOptions = {
-                    layerId: params.layerId
+                    layerId: params.layerId,
+                    canCluster: params.canCluster
                 };
             layerOptions.map = map;
 //            mapClustering.addClusteringToLayerOptions(layerOptions);

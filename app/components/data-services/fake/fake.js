@@ -137,6 +137,7 @@ define([
             layerId: params.queryId,
             name: params.name,
             selectable: true,
+            canCluster: true,
             coords: {
                 minLat: params.minLat,
                 minLon: params.minLon,
