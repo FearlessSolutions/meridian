@@ -1,14 +1,17 @@
 div[data-aura-component='tools/search'] .navbar-form { padding-top:0px; padding-left:0px; padding-right:0px;}
 
-div[data-aura-component='tools/search'] .form-control {
-	background-color: rgba(238,238,238,0.5);
+div[data-aura-component='tools/search'] .form-control {	
 	margin-bottom:5px;
 	color:#555;
 	}
-	div[data-aura-component='tools/search'] .form-control:focus {
-	background-color: rgba(255,255,255,1);
-	color:#000;
-	margin-bottom:5px;
+	div[data-aura-component='tools/search'] input[type="text"].form-control {
+		background-color: rgba(238,238,238,0.5);
+	}
+	div[data-aura-component='tools/search'] #searchAdmin_datasource, div[data-aura-component='tools/search'] #searchAdmin_sdate, 
+	div[data-aura-component='tools/search'] #searchAdmin_edate { display:none; }
+	div[data-aura-component='tools/search'] select:focus, div[data-aura-component='tools/search'] input[type="text"]:focus {
+		background-color: rgba(255,255,255,1);
+		color:#000;
 	}
 	div[data-aura-component='tools/search'] .btn { margin-top:-3px;}
 

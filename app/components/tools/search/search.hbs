@@ -3,6 +3,12 @@
         <h4 class="page-header">Enter Search Criteria</h4>
         <form class="navbar-form navbar-left" role="search">
             <div class="form-group">
+                <select id="searchAdmin_toggleType" class="form-control">
+                    <option value="0">User ID</option>
+                    <option value="1">Data Source</option>
+                    <option value="2">Query Date</option>
+                    <option value="3">Expiration Date</option>
+                </select>
                 <input type="text" class="form-control" placeholder="User ID" id="searchAdmin_userid">
                 <input type="text" class="form-control" placeholder="Datasource" id="searchAdmin_datasource">
                 <input type="text" class="form-control" placeholder="Query Date" id="searchAdmin_sdate">

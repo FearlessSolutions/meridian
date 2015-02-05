@@ -7,10 +7,30 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            $toggleSearch = context.$('#searchAdmin_submit');
+            $toggleSearchType = context.$('#searchAdmin_toggleType');
+            $toggleSubmit = context.$('#searchAdmin_submit');
             $toggleClear = context.$('#searchAdmin_clear');
             $focusInput = context.$('.form-group .form-control');
             
+            $toggleSearchType.change(function() {
+                $('input.form-control').hide();
+                switch($toggleSearchType.val()) {
+                    case "0":
+                        $('#searchAdmin_userid').show();
+                        break;
+                    case "1":
+                        $('#searchAdmin_userid').show();
+                        break;
+                    case "2":
+                        $('#searchAdmin_userid').show();
+                        break;
+                    case "3":
+                        $('#searchAdmin_userid').show();
+                        break;
+                }
+
+            });
+
             $focusInput.keyup(function(event) {
                 if($focusInput.filter(function() { return $.trim(this.value) != ''; }).length > 0) {
                     //There is at least one populated input
@@ -19,9 +39,8 @@ define([
                 }
             });            
 
-            $toggleSearch.on('click', function(event) {
-                event.preventDefault();
-                // function for null on input x 4
+            $toggleSubmit.on('click', function(event) {
+                event.preventDefault();                
                 var val1 = $('#searchAdmin_userid').val(),
                     val2 = $('#searchAdmin_datasource').val(),
                     val3 = $('#searchAdmin_sdate').val(),
@@ -48,19 +67,15 @@ define([
                     }
                 })
                 .done(function(data) {
-                    if(!val1 && !val2 && !val3 && !val4){  
-                        $('#searchAdmin_userid').addClass('warning');
-                        $('#searchAdmin_datasource').addClass('warning');
-                        $('#searchAdmin_sdate').addClass('warning');
-                        $('#searchAdmin_edate').addClass('warning');
-                        $('#container-searchmsg').show();
-                    } else {
-                        // if(val1 || val2 || val3 || val4 == null || undefined){}
-                        if(data == '') {
-                            alert('NO RESULTS!');}
-                        //console.log(val1,val2,val3,val4);
+                    // if(!currentField) {  
+                    //     $('#searchAdmin_userid').addClass('warning');
+                    //     $('#searchAdmin_datasource').addClass('warning');
+                    //     $('#searchAdmin_sdate').addClass('warning');
+                    //     $('#searchAdmin_edate').addClass('warning');
+                    //     $('#container-searchmsg').show();
+                    // } else {                        
                         publisher.publisherSearchAdmingridCreate(data);
-                    };
+                    // };
                 });               
             });
             $toggleClear.on('click', function() { 
