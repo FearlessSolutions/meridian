@@ -6,14 +6,21 @@ define([], function() {
     var config,
         rules = [],
         layerOptionsCollection = [],
-        enabled = true;
+        enabled = true,
+        visualMode,
+        CLUSTER_MODE = 'cluster',
+        POINT_MODE = 'feature',
+        LAYERID_SUFFIX = '_cluster',
+        cache;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
             config = context.sandbox.mapConfiguration.clustering;
-            populateRules();
-            overrideDefaultClustering();
+            cache = {};
+            visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
+//            populateRules();
+
         },
         enable: function() {
             enabled = true;
@@ -100,12 +107,23 @@ define([], function() {
             });
         },
         visualModeChanged: function(params) {
-            if(params.mode === 'cluster') {
-                exposed.enable();
-            } else if(params.mode === 'feature') {
-                exposed.disable();
+            var map = params.map;
+
+            if(params.mode === CLUSTER_MODE) {
+                context.sandbox.utils.each(cache, function(layerId, layerCache){
+                    map.getLayer(layerId).setVisible(false);
+                    map.getLayer(layerId + LAYERID_SUFFIX).setVisible(true);
+                });
+            } else if(params.mode === POINT_MODE) {
+                context.sandbox.utils.each(cache, function(layerId, layerCache){
+                    map.getLayer(layerId).setVisible(true);
+                    map.getLayer(layerId + LAYERID_SUFFIX).setVisible(false);
+                });
             } else {
-                return; // likely the value is heatmap, or something else not handled here
+                context.sandbox.utils.each(cache, function(layerId, layerCache){
+                    map.getLayer(layerId).setVisible(false);
+                    map.getLayer(layerId + LAYERID_SUFFIX).setVisible(false);
+                });
             }
         },
         recluster: function(params) {
@@ -114,6 +132,33 @@ define([], function() {
         },
         clear: function() {
             layerOptionsCollection = [];
+        },
+        setupClusteringForLayer: function(params, geoSource, pointStyle){
+            var layerId = params.layerId,
+                map = params.map,
+                clusterSource,
+                newClusterLayer;
+
+            clusterSource = clusterSource = new ol.source.Cluster({
+                distance: 40,
+                source: geoSource
+            });
+
+            cache[layerId] = {
+                clusterStyleFunction: clusterStyling,
+                pointStyleFunction: pointStyle,
+                styleCache: {}
+            };
+
+            newClusterLayer = new ol.layer.Vector({
+                layerId: layerId + LAYERID_SUFFIX,
+                source: clusterSource,
+                style: clusterStyling,
+                visible: visualMode === CLUSTER_MODE
+            });
+
+            map.addLayer(newClusterLayer);
+
         },
         applyCustomSymbolizers: function(params) {
             var symbolizers = params.symbolizers;
@@ -192,9 +237,32 @@ define([], function() {
             };
 
             return styleMap;
+        },
+        getClusterStyle: function(params){
+            var feature = params.feature,
+                resolution= params.resolution,
+                cluster = feature.get('features'),
+                layerId,
+                cacheEntry;
+
+            if(!cluster){ //Isn't a cluster
+                return null;
+            } else {
+                layerId = cluster[0].get('layerId');
+                cacheEntry = cache[layerId];
+
+                if(!cacheEntry){ //Isn't a layer with clustering
+                    return null;
+                } else if (cluster.length === 1) {
+                    return cacheEntry.pointStyleFunction(cluster[0], resolution); //Style the single point in the cluster
+                } else {
+                    return cacheEntry.clusterStyleFunction(feature, resolution, layerId);
+                }
+            }
         }
     };
 
+    //TODO
     function populateRules() {
         var lowRule,
             midRule,
@@ -242,117 +310,43 @@ define([], function() {
 
     }
 
-    /**
-     * Change the default clustering logic to use our own
-     * Does not cluster polygons (leaves them unclustered and visible)
-     */
-    function overrideDefaultClustering() {
 
-        // Override
-        ol.Strategy.Cluster.prototype.cacheFeatures = function(event) {
-            var propagate = true;
-            if(!this.clustering) {
-                //this.clearCache();
-                if(this.features === null) {
-                    this.features = [];
-                }
-                this.features = this.features.concat(event.features);
-                this.cluster();
-                propagate = false;
+    function clusterStyling(feature, resolution, layerId){
+        var cluster = feature.get('features'),
+            size =  cluster.length,
+            layerId = cluster[0].get('layerId'),
+            style = cache[layerId].styleCache[size];
+
+        if (!style) {
+            if(size === 1){
+                style = cache[layerId].pointStyleFunction(cluster[0], resolution);
+            } else {
+                style = [new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 10 + size/2,
+                        stroke: new ol.style.Stroke({
+                            color: 'rgb(123, 0, 123)',
+//                                    color: 'rgb(153, 0, 153, .5)',
+                            opacity:.5,
+                            width: size/3.0
+                        }),
+                        fill: new ol.style.Fill({
+                            color: 'rgb(153, 0, 153)',
+//                                    color: 'rgb(153, 0, 153, .9)'
+                            opacity:.5
+                        })
+                    }),
+                    text: new ol.style.Text({
+                        text: size.toString(),
+                        fill: new ol.style.Fill({
+                            color: '#fff'
+                        })
+                    })
+                })];
+                cache[layerId].styleCache[size] = style; //This is only done for size > 1 because 1 is handled by point
             }
-            return propagate;
-        };
-
-        // New Function
-        ol.Strategy.Cluster.prototype.recluster = function() {
-            var event={"recluster":true};
-            this.cluster(event);
-        };
-
-        // Override
-        ol.Strategy.Cluster.prototype.cluster = function(event) {
-            if((event && event.recluster) || !event || resolution != this.resolution || !this.clustersExist()) {
-                var i,
-                    j,
-                    feature,
-                    clustered,
-                    cluster,
-                    clone,
-                    candidate,
-                    clusters = [],
-                    resolution = this.layer.map.getResolution();
-
-                if((event && event.recluster) || resolution != this.resolution || !this.clustersExist()) {
-                    this.resolution = resolution;
-                    if (this.features) {
-                        for(i=0; i<this.features.length; ++i) {
-                            feature = this.features[i];
-                            if(feature.geometry) {
-                                if(
-                                    feature.geometry.CLASS_NAME === 'ol.Geometry.Point' &&
-                                    context.sandbox.stateManager.getFeatureVisibility({
-                                        "layerId": this.layer.layerId,
-                                        "featureId": feature.featureId
-                                    })
-                                ){
-                                    clustered = false;
-                                    for(j=clusters.length-1; j>=0; --j) {
-                                        cluster = clusters[j];
-                                        /**
-                                         * If the 'cluster' contains points, and feature is close enough to cluster, do it
-                                         * Since non-points will be in clusters by themselves, checking cluster.cluster[0] is enough
-                                         */
-                                        if( cluster.cluster[0].geometry.CLASS_NAME === 'ol.Geometry.Point' &&
-                                            this.shouldCluster(cluster, feature)) {
-                                            this.addToCluster(cluster, feature);
-                                            clustered = true;
-                                            break;
-                                        }
-                                    }
-                                    if(!clustered) {
-                                        clusters.push(this.createCluster(this.features[i]));
-                                    }
-                                } else {
-                                    if(
-                                        context.sandbox.stateManager.getFeatureVisibility({
-                                            "layerId": this.layer.layerId,
-                                            "featureId": feature.featureId
-                                        })
-                                    ){
-                                        clusters.push(this.createCluster(this.features[i]));
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                    this.clustering = true;
-                    this.layer.removeAllFeatures();
-                    this.clustering = false;
-                    if(clusters.length > 0) {
-                        if(this.threshold > 1) {
-                            clone = clusters.slice();
-                            clusters = [];
-                            for(i=0, len=clone.length; i<len; ++i) {
-                                candidate = clone[i];
-                                if(candidate.attributes.count < this.threshold) {
-                                    Array.prototype.push.apply(clusters, candidate.cluster);
-                                } else {
-                                    clusters.push(candidate);
-                                }
-                            }
-                        }
-                        this.clustering = true;
-                        // A legitimate feature addition could occur during this
-                        // addFeatures call.  For clustering to behave well, features
-                        // should be removed from a layer before requesting a new batch.
-                        this.layer.addFeatures(clusters);
-                        this.clustering = false;
-                    }
-                    this.clusters = clusters;
-                }
-            }
-        };
+        }
+        return style;
     }
 
     return exposed;

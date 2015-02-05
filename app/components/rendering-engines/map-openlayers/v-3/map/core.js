@@ -31,7 +31,7 @@ define([
             addFunctionsToOL();
 
             mapBase.init(context);
-//            mapClustering.init(context);
+            mapClustering.init(context);
             mapDraw.init(context);
             mapFeatures.init(context);
 //            mapHeatmap.init(context);
@@ -277,7 +277,7 @@ define([
          * @param {object} params - JSON parameters
          * @param {array} params.featureIds - ids of features to be shown
          * @param {string} params.layerId - layer id
-         */
+//         */
         showFeatures: function(params) {
             mapFeatures.showFeatures({
                 map: map,

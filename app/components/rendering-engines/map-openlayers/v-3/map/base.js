@@ -197,9 +197,9 @@ define([
             if(params && params.mode) {
                 context.sandbox.stateManager.map.visualMode = params.mode;
             }
-            exposed.clearMapPopups({
-                map: params.map
-            });
+//            exposed.clearMapPopups({
+//                map: params.map
+//            });
         }
     };
     return exposed;
