@@ -10,14 +10,14 @@ define([
             $toggleSearch = context.$('#searchAdmin_submit');
             $toggleClear = context.$('#searchAdmin_clear');
             $focusInput = context.$('.form-group .form-control');
-
-            $focusInput.on('keyup', function() {
-                if ($(focusInput.val() != "" ) {
+            
+            $focusInput.keyup(function(event) {
+                if($focusInput.filter(function() { return $.trim(this.value) != ''; }).length > 0) {
+                    //There is at least one populated input
                     $focusInput.removeClass('warning');
                     $('#container-searchmsg').hide();
                 }
-                
-            });
+            });            
 
             $toggleSearch.on('click', function(event) {
                 event.preventDefault();
@@ -26,21 +26,26 @@ define([
                     val2 = $('#searchAdmin_datasource').val(),
                     val3 = $('#searchAdmin_sdate').val(),
                     val4 = $('#searchAdmin_edate').val();
+                                       
+                var searchSet = { userId: val1, dataSource: val2, createdOn: val3, expireOn: val4 };
 
-                    emptyTest();
-                    console.log(val1);
+                for(var key in searchSet) {
+                    // value is empty string
+                    if(searchSet[key] === '') {
+                        delete searchSet[key];
+                    }
+                }
 
                 var newAJAX = context.sandbox.utils.ajax({
                     // i want
                     // var query =  "SELECT * FROM Queries  WHERE userId LIKE @searchAdmin_userid AND dataSource LIKE @searchAdmin_datasource"
-
+             
                     type: "GET",
-                    data: { userId: val1, dataSource: val2 },
+                    data: searchSet,                    
                     url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/term',
                     xhrFields: {
                         "withCredentials": true
                     }
-
                 })
                 .done(function(data) {
                     if(!val1 && !val2 && !val3 && !val4){  
@@ -50,6 +55,10 @@ define([
                         $('#searchAdmin_edate').addClass('warning');
                         $('#container-searchmsg').show();
                     } else {
+                        // if(val1 || val2 || val3 || val4 == null || undefined){}
+                        if(data == '') {
+                            alert('NO RESULTS!');}
+                        //console.log(val1,val2,val3,val4);
                         publisher.publisherSearchAdmingridCreate(data);
                     };
                 });               
@@ -60,14 +69,9 @@ define([
                 $('#searchAdmin_sdate').val('');
                 $('#searchAdmin_edate').val('');
             });
-            function emptyTest(){
-                // if(value === null || value === undefined){
-                //     return '';
-                // }else{
-                //     return value.toString();
-                // }
-                console.log('dd');
-            }
+            function emptyTest(thingy){                                
+                
+            }                
         }       
     };
     return exposed;
