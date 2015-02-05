@@ -16,7 +16,16 @@ define([
         init: function(thisContext) {
             context = thisContext;
             basemapLayers = {};
-            styleCache = {};
+            styleCache = {
+                defaultStyle: {
+                    point: {
+                        cache: {}
+                    },
+                    cluster: {
+                        cache: {}
+                    }
+                }
+            };
             mode = 'CLUSTER';
         },
         /**
@@ -139,37 +148,43 @@ define([
                     features: [],
                     projection: params.map.getProjection()
                 });
-//            if(canCluster){
+            if(canCluster){
                 clusterSource = new ol.source.Cluster({
                     distance: 40,
                     source: geoSource
                 });
-//            }
+            }
 
             styleCache[layerId] = { //TODO make this more dynamic (with all variables filled out, per variable set ....)
-//                cluster: canCluster ? clusterStyling : pointStyle,
-                cluster: clusterStyling,
-                point: pointStyle
+                cluster: {
+                    styleFunction: canCluster ? clusterStyling : pointStyle,
+                    cache: {}
+                },
+                point: {
+                    styleFunction: pointStyle,
+                    cache: {}
+                }
             };
 
             var newVectorLayer = new ol.layer.Vector({
                 layerId: layerId,
                 canCluster: canCluster,
-//                source: canCluster ? clusterSource : geoSource,
-                source:  clusterSource,
+                source: canCluster ? clusterSource : geoSource,
+//                source:  clusterSource,
                 style: function(feature, resolution) {
                     var layerId = feature.get('layerId'),
                         cluster = feature.get('features');
+
                     if(mode === 'CLUSTER' && cluster){
                         layerId = cluster[0].get('layerId');
-                        if(cluster.length = 1){
-                            return styleCache[layerId].point(feature, resolution);
+                        if(cluster.length === 1){
+                            return styleCache[layerId].point.styleFunction(feature, resolution, layerId);
                         } else {
-                            return styleCache[layerId].cluster(feature, resolution);
+                            return styleCache[layerId].cluster.styleFunction(feature, resolution, layerId);
                         }
                     }
                     else {
-                        return styleCache[layerId].point(feature, resolution);
+                        return styleCache[layerId].point.styleFunction(feature, resolution, layerId);
                     }
                 }
             });
@@ -862,9 +877,9 @@ define([
          }
     }
 
-    function clusterStyling(feature, resolution){
+    function clusterStyling(feature, resolution, layerId){
         var size = feature.get('features') ? feature.get('features').length : 0;
-        var style = styleCache[size];
+        var style = styleCache[layerId].cluster.cache[size];
         if (!style) {
             style = [new ol.style.Style({
                 image: new ol.style.Circle({
@@ -888,7 +903,7 @@ define([
                     })
                 })
             })];
-            styleCache[size] = style;
+            styleCache[layerId].cluster.cache[size] = style;
         }
         return style;
     }

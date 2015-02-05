@@ -38,7 +38,7 @@ define([
 
                 context.sandbox.utils.each(data, function(key, value) {
 
-                    if(value.geometry.type === "Polygon") return;
+//                    if(value.geometry.type === "Polygon") return;
 
                     var currentFeature = geoJsonParser.readFeature(value, {
                             featureProjection: mapProjection
