@@ -10,10 +10,12 @@ define([
     var context,
         basemapLayers,
         styleCache = {},
-        visualMode, //TODO move this out of here
         CLUSTER_MODE = 'cluster',
-        POINT_MODE = 'feature',
-        HEAT_MODE = 'heatmap';
+        FEATURE_MODE = 'feature',
+        HEAT_MODE = 'heatmap',
+        AOI_TYPE = 'aoi',
+        STATIC_TYPE = 'static';
+
 
     var exposed = {
         init: function(thisContext) {
@@ -21,7 +23,7 @@ define([
             basemapLayers = {};
             styleCache = {
                 defaultStyle: {
-                    point: {
+                    feature: {
                         cache: {}
                     },
                     cluster: {
@@ -29,7 +31,6 @@ define([
                     }
                 }
             };
-            visualMode = 'cluster';
         },
         /**
          * Create layers that are not accessible to the user, and that don't go away
@@ -39,14 +40,13 @@ define([
             var geolocatorParams,
                 geolocatorLayer,
                 drawParams,
-                drawLayer,
-                heatmapParams,
-                heatmapLayer;
+                drawLayer;
 
             //Create geolocator layer options
             geolocatorParams = {
                 map: params.map,
                 layerId: 'static_geolocator',
+                layerType: STATIC_TYPE,
                 static: true,
                 styleMap: {
                     externalGraphic: '${icon}',
@@ -65,6 +65,7 @@ define([
             drawParams = {
                 map: params.map,
                 layerId: 'static_draw',
+                layerType: STATIC_TYPE,
                 static: true,
                 styleMap: {
                     default: {
@@ -76,44 +77,9 @@ define([
             drawLayer = exposed.createVectorLayer(drawParams);
 
             //Create heatmap layer options //TODO
-//            heatmapParams = {
-//                map: params.map,
-//                layerId: 'static_heatmap',
-//                renderers: ['Heatmap'],
-//                static: true,
-//                styleMap: {
-//                    default: new ol.Style({
-//                        pointRadius: 10,
-//                        // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer.
-//                        // The weight is calcluated by the context.weight function below.
-//                        weight: '${weight}'
-//                    }, {
-//                        context: {
-//                            weight: function() {
-//                                var visibleDataRecordCount = 0;
-//                                // Build the visibleDataRecordCount by adding all records from datasets that are visible
-//                                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value) {
-//                                    if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible) {
-//                                        visibleDataRecordCount += value.length;
-//                                    }
-//                                });
-//                                // Set initial weight value to 0.1,
-//                                // once there are more than 10k records it will decrease by 0.01 per 1k records,
-//                                // stopping at a lowest weight of 0.01 at 100k records (it will not go lower, even if more than 100k records)
-//                                return Math.max(Math.min(1000 / visibleDataRecordCount, 0.1), 0.01);
-//                            }
-//                        }
-//                    })
-//                }
-//            };
-//            heatmapLayer = exposed.createVectorLayer(heatmapParams);
-
-//            params.map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]); //TODO
-//            mapBase.addLayerToSelector({ //TODO
-//                map: params.map,
-//                layer: geolocatorLayer
-//            });
-
+            mapHeatmap.createHeatmap({
+                map: params.map
+            });
         },
         /**
          * Create new vector layer
@@ -127,49 +93,43 @@ define([
          */
         createVectorLayer: function(params) {
             var layerId = params.layerId,
+                layerType = params.layerType || FEATURE_MODE,
                 canCluster = params.canCluster,
-                pointStyle = createStyling(params.styleMap),
+                featureStyle = createStyling(params.styleMap),
                 geoSource,
-                newPointLayer,
+                newFeatureLayer,
+                visualMode = context.sandbox.stateManager.map.visualMode,
+                shouldBeVisible,
                 selector,
                 layers;
-
-//            options = {
-//                layerId: params.layerId, // set as layerId, is not present its null
-//                styleMap: null  // set as null for default of not providing a stylemap
-//            };
-//
-//            context.sandbox.utils.extend(options, params);
-////            if(params.styleMap) { //TODO
-////                options.styleMap = new ol.StyleMap(params.styleMap);
-////            }
-
-//            delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
 
             geoSource = new ol.source.GeoJSON({
                 features: [],
                 projection: params.map.getProjection()
             });
 
-
             styleCache[layerId] = { //TODO make this more dynamic (with all variables filled out, per variable set ....) {
-                styleFunction: pointStyle,
+                styleFunction: featureStyle,
                 styleCache: {}
             };
 
-            var newPointLayer = new ol.layer.Vector({
+            shouldBeVisible = visualMode === FEATURE_MODE
+                || layerType === STATIC_TYPE
+                || (layerType === AOI_TYPE && visualMode !== HEAT_MODE);
+
+            newFeatureLayer = new ol.layer.Vector({
                 layerId: layerId,
+                layerType: layerType,
                 canCluster: canCluster,
                 source: geoSource,
-                style: pointStyle,
-                visible: visualMode === POINT_MODE || !canCluster
+                style: featureStyle,
+                visible: shouldBeVisible
             });
 
-//
-            params.map.addLayer(newPointLayer);
+            params.map.addLayer(newFeatureLayer);
 
             if(canCluster){
-                mapClustering.setupClusteringForLayer(params, geoSource, pointStyle);
+                mapClustering.setupClusteringForLayer(params, geoSource, featureStyle);
             }
 //
 //            if(params.selectable) {
@@ -187,7 +147,7 @@ define([
             };
 
             console.debug("created layer ", params.layerId);
-            return newPointLayer;
+            return newFeatureLayer;
         },
         /**
          * Add base layer of OSM format
@@ -378,28 +338,53 @@ define([
          * @param params
          */
         visualModeChanged: function(params) {
-            visualMode = params.mode;
+            var map = params.map,
+                visualMode = context.sandbox.stateManager.map.visualMode;
 
-            mapClustering.visualModeChanged({
-                mode: params.mode,
-                map: params.map
-            });
-
-            if(params.mode === HEAT_MODE){
-                doSpy(params.map);
+            //Change mode, disabling before enabling
+            if(visualMode === FEATURE_MODE){
+                mapHeatmap.disable({
+                    map: map
+                });
+                mapClustering.disable({
+                    map: map
+                });
+                enableFeature({
+                    map: map
+                });
+            } else if(visualMode === CLUSTER_MODE){
+                mapHeatmap.disable({
+                    map: map
+                });
+                disableFeature({
+                    map: map
+                });
+                mapClustering.enable({
+                    map: map
+                });
+            } else if(visualMode === HEAT_MODE){
+                mapClustering.disable({
+                    map: map
+                });
+                disableFeature({
+                    map: map
+                });
+                mapHeatmap.enable({
+                    map: map
+                });
+            } else {
+                mapHeatmap.disable({
+                    map: map
+                });
+                mapClustering.disable({
+                    map: map
+                });
+                disableFeature({
+                    map: map
+                });
             }
 
             params.map.render();
-//            params.map.renderSync();
-//            var selector = params.map.getControlsByClass('ol.Control.SelectFeature')[0];
-//            selector.unselectAll();
-//            mapClustering.update({
-//                map: params.map
-//            });
-
-//            mapHeatmap.update({
-//                map: params.map
-//            });
         },
         /**
          * Clear all features and feature layers
@@ -611,7 +596,7 @@ define([
      */
     function addGeoLocatorListeners(params) {
         params.layer.events.on({
-            beforefeatureselected: function(evt) {
+            beforeFeatureselected: function(evt) {
                 mapBase.clearMapSelection({
                     map: params.map
                 });
@@ -666,7 +651,6 @@ define([
                     maxAuto;
 
                 if(!feature.cluster) {
-
                     context.sandbox.dataStorage.getFeatureById({
                         featureId: feature.featureId},
                         function(fullFeature) {
@@ -750,15 +734,32 @@ define([
         });
     }
 
+    function enableFeature(params){
+        var map = params.map;
 
-    function getPointStyle (feature, resolution){
-        var layerId = feature.get('layerId');
+        map.getLayers().forEach(function(layer, layerIndex, layerArray){
+            var layerType = layer.get('layerType');
+            if (layerType === FEATURE_MODE
+                || layerType === STATIC_TYPE
+                || layerType === AOI_TYPE){
+                layer.setVisible(true);
+            }
+        });
+    }
 
-        return styleCache[layerId].styleFunction(feature, resolution);
+    function disableFeature(params){
+        var map = params.map;
+
+        map.getLayers().forEach(function(layer, layerIndex, layerArray){
+            var layerType = layer.get('layerType');
+            if (layerType === FEATURE_MODE){
+                layer.setVisible(false);
+            }
+        });
     }
 
     /**
-     * Creates function to style the point layer
+     * Creates function to style the feature layer
      * TODO REQUIRED the styles all need to be saved instead of manually calculated each time
      * @param layerStyling
      * @returns {*} function(feature, resolution) for styling

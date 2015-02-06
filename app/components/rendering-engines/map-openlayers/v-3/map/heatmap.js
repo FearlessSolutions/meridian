@@ -1,29 +1,67 @@
+//-add all to layer
+//-clear (which might need to be done by changing to a vector source) before update
+//-toggle layer as needed
+
+
 define([], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context;
+    var context,
+        heatLayer,
+        CLUSTER_MODE = 'cluster',
+        FEATURE_MODE = 'feature',
+        HEAT_MODE = 'heatmap',
+        AOI_TYPE = 'aoi',
+        STATIC_TYPE = 'static';
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
         },
-        update: function(params) {
-            var heatLayer = params.map.getLayersBy('layerId', 'static_heatmap')[0];
+        enable: function(params){
+            var map = params.map;
 
-            if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
-                heatLayer.setVisibility(true);
+            //Turn off all of the AOIs
+            map.getLayers().forEach(function(layer, layerIndex, layerArray){
+                var layerType = layer.get('layerType');
+                if (layerType === AOI_TYPE){
+                    layer.setVisible(false);
+                }
+            });
+
+            generateHeatmap(params);
+        },
+        disable: function(params){
+            exposed.clear(params)
+        },
+        update: function(params) {
+            if(context.sandbox.stateManager.map.visualMode === HEAT_MODE) {
                 generateHeatmap({
-                    "map": params.map
+                    map: params.map
                 });
             } else {
-                heatLayer.setVisibility(false);
-                heatLayer.destroyFeatures();
+                heatLayer.clear();
             }
         },
+        createHeatmap: function(params){
+            exposed.clear({
+                map: params.map
+            });
+        },
         clear: function(params) {
-            var heatLayer = params.map.getLayersBy('layerId', 'static_heatmap')[0];
-            if(heatLayer) {
-                heatLayer.deleteFeatures();
+            var map = params.map;
+
+            if(heatLayer){
+                map.removeLayer(heatLayer)
             }
+
+            heatLayer =  new ol.layer.Heatmap({
+                layerType: HEAT_MODE,
+                source: new ol.source.GeoJSON({
+                    features: []
+                }),
+                radius: 5
+            });
+            params.map.addLayer(heatLayer);
         }
     };
 
@@ -34,47 +72,38 @@ define([], function() {
      * //TODO polygons
      */
     function generateHeatmap(params) {
-        var heatLayer = params.map.getLayersBy('layerId', 'static_heatmap')[0],
-            newData = [],
-            geoJsonParser;
+        var map = params.map,
+            heatFeatures = [];
 
-        geoJsonParser = new ol.Format.GeoJSON({
-            "ignoreExtraDims": false,
-            "internalProjection": params.map.projection,
-            "externalProjection": params.map.projectionWGS84
+        exposed.clear({
+            map: map
         });
-
-        heatLayer.destroyFeatures();
 
         context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, collection) {
+            var layer,
+                layerSource,
+                features;
+
             if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible && collection.models) {
-                collection.models.forEach(function(model){
-                    var geometry = model.attributes.geometry;
-                    if(
-                        geometry.type === "Point" && 
-                        context.sandbox.stateManager.getFeatureVisibility({
-                            "layerId": model.attributes.layerId,
-                            "featureId": model.attributes.featureId
-                        })
-                    ){
-                        newData.push(new ol.Feature.Vector(
-                            new ol.Geometry.Point(
-                                geometry.coordinates[0],
-                                geometry.coordinates[1]
-                            ).transform(
-                                params.map.projectionWGS84,
-                                params.map.projection
-                            )
-                        ));
-                    } else { //TODO The heatmap library only handles points.
-                      //  var feature = geoJsonParser.parseFeature(model.attributes);
-                      //  newData.push(feature);
+                layer = map.getLayer(key);
+                if(layer){
+                    //Get the source of the layer. It might have two layers of sources, so dig down.
+                    layerSource = layer.getSource();
+                    while(layerSource.source_){
+                        layerSource = layerSource.source_;
                     }
-                });
-            }                
+
+                    features = layerSource.getFeatures();
+                    context.sandbox.utils.each(features, function(featureIndex, feature){
+                        if(feature.getGeometry().getType() === 'Point'){
+                            heatFeatures.push(feature.clone()); //Only heatmap point
+                        }
+                    });
+                }
+            }
         });
         
-        heatLayer.addFeatures(newData);
+        heatLayer.addFeatures(heatFeatures);
     }
 
     return exposed;

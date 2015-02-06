@@ -34,7 +34,7 @@ define([
             mapClustering.init(context);
             mapDraw.init(context);
             mapFeatures.init(context);
-//            mapHeatmap.init(context);
+            mapHeatmap.init(context);
             mapLayers.init(context);
             mapNavigation.init(context);
 
@@ -184,6 +184,7 @@ define([
             var newLayer,
                 layerOptions = {
                     layerId: params.layerId,
+                    layerType: params.layerType,
                     canCluster: params.canCluster
                 };
             layerOptions.map = map;
@@ -401,6 +402,18 @@ define([
                     source = source.source_;
                 }
                 source.addFeatures(features);
+            }
+        }
+
+        if (ol.layer.Layer.prototype.getFeatures === undefined) {
+            ol.layer.Layer.prototype.getFeatures = function (features) {
+                var source = this.getSource();
+
+                //Sometimes, the source has a source itself. Go all the way down.
+                while(source.source_){
+                    source = source.source_;
+                }
+                return source.getFeatures();
             }
         }
 

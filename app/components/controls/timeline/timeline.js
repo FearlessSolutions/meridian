@@ -33,6 +33,7 @@ define([
                     publisher.createLayer({
                         layerId: layerId + '_aoi',
                         name: name + '_aoi',
+                        layerType: 'aoi',
                         initialVisibility: true,
                         styleMap: {
                             stroke: {

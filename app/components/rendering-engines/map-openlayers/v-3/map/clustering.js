@@ -6,10 +6,11 @@ define([], function() {
     var config,
         rules = [],
         layerOptionsCollection = [],
-        enabled = true,
-        visualMode,
         CLUSTER_MODE = 'cluster',
-        POINT_MODE = 'feature',
+        FEATURE_MODE = 'feature',
+        HEAT_MODE = 'heatmap',
+        AOI_TYPE = 'aoi',
+        STATIC_TYPE = 'static',
         LAYERID_SUFFIX = '_cluster',
         cache;
 
@@ -18,144 +19,72 @@ define([], function() {
             context = thisContext;
             config = context.sandbox.mapConfiguration.clustering;
             cache = {};
-            visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
 //            populateRules();
 
         },
-        enable: function() {
-            enabled = true;
-            layerOptionsCollection.forEach(function(layerOptions) {
-                layerOptions.strategies.forEach(function(strat) {
-                    if (strat.clusters) {
-                        strat.distance = config.thresholds.clustering.distance;
-                        strat.threshold = config.thresholds.clustering.threshold;
-                        strat.recluster();
-                    }
-                });
+        enable: function(params) {
+            var map = params.map;
+
+            map.getLayers().forEach(function(layer, layerIndex, layerArray){
+                var layerType = layer.get('layerType');
+                if (layerType === CLUSTER_MODE
+                    || layerType === STATIC_TYPE
+                    || layerType === AOI_TYPE){
+                    layer.setVisible(true);
+                }
             });
         },
-        disable: function() {
-            enabled = false;
-            layerOptionsCollection.forEach(function(layerOptions) {
-                layerOptions.strategies.forEach(function(strat) {
-                    if (strat.clusters) {
-                        strat.distance = config.thresholds.noClustering.distance;
-                        strat.threshold = config.thresholds.noClustering.threshold;
-                        strat.recluster();
-                    }
-                });
+        disable: function(params) {
+            var map = params.map;
+
+            map.getLayers().forEach(function(layer, layerIndex, layerArray){
+                var layerType = layer.get('layerType');
+                if (layerType === CLUSTER_MODE){
+                    layer.setVisible(false);
+                }
             });
         },
         update: function(params) {
-            var visibility = false;
-            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(layerId, collections) {
-                if(context.sandbox.stateManager.map.visualMode === 'cluster' || context.sandbox.stateManager.map.visualMode === 'feature') {
-                    visibility = context.sandbox.stateManager.layers[layerId].visible;
-                }
-                params.map.getLayersBy('layerId', layerId)[0].setVisibility(visibility);
-            });
-        },
-        /**
-         * Add the clustering stylesheets to a layer
-         * @param layerOptions
-         */
-        addClusteringToLayerOptions: function(layerOptions) {
-            var style = new ol.Style(ol.Util.applyDefaults({
-                externalGraphic: "${icon}",
-                graphicOpacity: 1,
-                pointRadius: 15,
-                graphicHeight: "${height}",
-                graphicWidth: "${width}",
-                graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
-            }, ol.Feature.Vector.style["default"]), {
-                rules: rules,
-                context: {
-                    width: function(feature) {
-                        return feature.cluster ? 0 : feature.attributes.width;
-                    },
-                    height: function(feature) {
-                        return feature.cluster ? 0 : feature.attributes.height;
-                    },
-                    icon: function(feature) {
-                        return feature.cluster ? "" : feature.attributes.icon;
-                    }
-                }
-            });
-
-            layerOptions.styleMap = {
-               "default": style,
-               "select": style
-            };
-
-            layerOptions.strategies = [
-                new ol.Strategy.Cluster(enabled ?
-                    config.thresholds.clustering : config.thresholds.noClustering)
-            ];
-            layerOptions.rendererOptions = {zIndexing: true};
-            layerOptions.recluster = function() {
-                this.strategies[0].recluster();
-            };
-
-            layerOptionsCollection.push(layerOptions);
-        },
-        deleteClusteringLayerOptions: function(params) {
-            context.sandbox.utils.each(layerOptionsCollection, function(key, value) {
-                if(value.layerId === params.layerId) {
-                    layerOptionsCollection.splice(key, 1);
-                    return false;
-                }
-            });
-        },
-        visualModeChanged: function(params) {
-            var map = params.map;
-
-            //Do false's first so that we are not rendering more than we have to
-            if(params.mode === CLUSTER_MODE) {
-                context.sandbox.utils.each(cache, function(layerId, layerCache){
-                    map.getLayer(layerId).setVisible(false);
-                    map.getLayer(layerId + LAYERID_SUFFIX).setVisible(true);
-                });
-            } else if(params.mode === POINT_MODE) {
-                context.sandbox.utils.each(cache, function(layerId, layerCache){
-                    map.getLayer(layerId + LAYERID_SUFFIX).setVisible(false);
-                    map.getLayer(layerId).setVisible(true);
-                });
-            } else {
-                context.sandbox.utils.each(cache, function(layerId, layerCache){
-                    map.getLayer(layerId).setVisible(false);
-                    map.getLayer(layerId + LAYERID_SUFFIX).setVisible(false);
-                });
-            }
+//            var visibility = false,
+//                visualMode = context.sandbox.stateManager.map.visualMode;
+//
+//            context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(layerId, collections) {
+//                if(visualMode === 'cluster' || visualMode === 'feature') {
+//                    visibility = context.sandbox.stateManager.layers[layerId].visible;
+//                }
+//                params.map.getLayersBy('layerId', layerId)[0].setVisibility(visibility);
+//            });
         },
         recluster: function(params) {
-            var layer =  params.map.getLayersBy('layerId', params.layerId)[0];
-            layer.recluster();
+//            var layer =  params.map.getLayersBy('layerId', params.layerId)[0];
+//            layer.recluster();
         },
         clear: function() {
             layerOptionsCollection = [];
         },
-        setupClusteringForLayer: function(params, geoSource, pointStyle){
+        setupClusteringForLayer: function(params, geoSource, featureStyle){
             var layerId = params.layerId,
                 map = params.map,
                 clusterSource,
                 newClusterLayer;
 
-            clusterSource = clusterSource = new ol.source.Cluster({
+            clusterSource = new ol.source.Cluster({
                 distance: 40,
                 source: geoSource
             });
 
             cache[layerId] = {
                 clusterStyleFunction: clusterStyling,
-                pointStyleFunction: pointStyle,
+                featureStyleFunction: featureStyle,
                 styleCache: {}
             };
 
             newClusterLayer = new ol.layer.Vector({
                 layerId: layerId + LAYERID_SUFFIX,
+                layerType: CLUSTER_MODE,
                 source: clusterSource,
                 style: clusterStyling,
-                visible: visualMode === CLUSTER_MODE
+                visible: context.sandbox.stateManager.map.visualMode === CLUSTER_MODE
             });
 
             map.addLayer(newClusterLayer);
@@ -289,7 +218,7 @@ define([], function() {
     }
 
 
-    function clusterStyling(feature, resolution, layerId){
+    function clusterStyling(feature, resolution){
         var cluster = feature.get('features'),
             size =  cluster.length,
             layerId = cluster[0].get('layerId'),
@@ -297,7 +226,7 @@ define([], function() {
 
         if (!style) {
             if(size === 1){
-                style = cache[layerId].pointStyleFunction(cluster[0], resolution);
+                style = cache[layerId].featureStyleFunction(cluster[0], resolution);
             } else {
                 style = [new ol.style.Style({
                     image: new ol.style.Circle({
@@ -321,7 +250,7 @@ define([], function() {
                         })
                     })
                 })];
-                cache[layerId].styleCache[size] = style; //This is only done for size > 1 because 1 is handled by point
+                cache[layerId].styleCache[size] = style; //This is only done for size > 1 because 1 is handled by feature
             }
         }
         return style;
