@@ -157,24 +157,37 @@ exports.getMetadataByTerm = function(queryterms, callback){
     var terms = [],
     key,
     term;
+
+    // terms.push({ 
+    //         range: { 
+    //             createdOn: {
+    //                 gt: rangeStartValue,
+    //                 lt: rangeEndValue
+    //                 // gt: 1422538047,
+    //                 // lt: 1422383997
+    //             }
+    //         } 
+    // });
+
+
     for ( key in queryterms) {
-        term = {
+        x = {
             term: {}
         };
-        term.term[key] = queryterms[key];
-        terms.push(term);
-        
+        x.term[key] = queryterms[key]; //--> x.term.userId = queryTerms.userId
+        // have to add range up here       
+        terms.push(x);        
     }
+
     var query = {
         query:{
             bool:{
-                must: terms
+                must: terms            
             }
         }
     };
-    getJSONByQuery(null, config.index.metadata, null, query, callback);
-    console.log(queryterms);
-    console.log(query);
+    console.log(JSON.stringify(query, null, "  "));
+    getJSONByQuery(null, config.index.metadata, null, query, callback);    
 };
 
 exports.getMetadataByUserId = function(userId, callback){

@@ -52,15 +52,16 @@ define([
             var currentDataArray = [];
               
                 context.sandbox.utils.each(data, function (queryId, obj) {
+                    
                     var now = moment(),
-                        sDate = moment.unix(obj.createdOn) || '', 
+                        sDate = moment.unix(obj.createdOn) || '',
                         eDate = moment.unix(obj.expireOn) || '';
                         var sVal = sDate.format('MMMM Do YYYY, hh:mm:ss A');
                         var eVal = eDate.format('MMMM Do YYYY, hh:mm:ss A');
 
                     var tempObject = {};
                     tempObject.id = obj.userId;
-                    tempObject.dataSource = obj.dataSource;
+                    tempObject.dataSource = obj.dataSource;                   
                     tempObject.queryDate = sVal;
                     tempObject.expireDate =  eVal;
                     currentDataArray.push(tempObject);

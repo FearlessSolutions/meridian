@@ -1,6 +1,7 @@
 define([    
     './search-publisher',
-    'bootstrap'
+    'bootstrap',
+    'daterangepicker'
 ], function (publisher) {
     var context;
 
@@ -8,6 +9,7 @@ define([
         init: function(thisContext) {
             context = thisContext;
             $toggleSearchType = context.$('#searchAdmin_toggleType');
+            $toggleSearchDateType = context.$('#searchAdmin_searchDateType');
             $inputSearch1 = context.$('#searchAdmin_userid');
             $inputSearch2 = context.$('#searchAdmin_datasource');
             $inputSearch3 = context.$('#searchAdmin_sdate');
@@ -18,10 +20,31 @@ define([
             $focusInput = context.$('.form-group .form-control');
             $searchMsg = context.$('#container-searchmsg');
             var currentInput, currentKey;
-            //placeholder for now
+            //placeholder 
             currentKey = 'userId';
+
+            $('#testdiv').daterangepicker({
+                // ranges: {
+                //     'Last hour': [moment().subtract(1, 'hours'), moment()],
+                //     'Last 4 hours': [moment().subtract(4, 'hours'), moment()],
+                //     'Last 12 hours': [moment().subtract(12, 'hours'), moment()],
+                //     'Last 24 hours': [moment().subtract(24,'hours'), moment()]
+                // },
+                timePicker: true,
+                startDate: moment().subtract(1, 'days'),
+                endDate: moment(),
+                maxDate: moment()
+                }, function(start, end, label) {
+                    console.log(start.toISOString(), end.toISOString(), label);
+
+                    var rangeStartDate = start.toISOString();
+                    console.log(rangeStartDate);
+                });
+
+            
                         
             $toggleSearchType.change(function() {
+                $toggleSearchDateType.hide();
                 $inputGeneric.val('').hide();
                 $searchMsg.hide();
                 switch($toggleSearchType.val()) {
@@ -34,12 +57,14 @@ define([
                         currentKey = 'dataSource';
                         break;
                     case "input3val":
-                        $inputSearch3.show().focus();
+                        $toggleSearchDateType.show().focus();
                         currentKey = 'createOn';
+                        //currentInput = '1422390816';
                         break;
                     case "input4val":
-                       $inputSearch4.show().focus();
-                        currentKey = 'eVal';
+                       $toggleSearchDateType.show().focus();
+                        currentKey = 'expireOn';
+                        //currentInput = '1423142805';
                         break; 
                 }
             });
@@ -55,15 +80,21 @@ define([
             $toggleSubmit.on('click', function(event) {
 
                 event.preventDefault();
-                currentInput = $.trim($('input[type="text"]:visible').val());
+                if ($toggleSearchDateType.is(':visible')) {
+                    // hardcoded, but for single date, not range
+                    //$('#rangeHidden').val('1422383967');
+                    currentInput = $('#rangeHidden').val();
+                    console.log(currentInput);
+                } else {
+                    currentInput = $.trim($('input[type="text"]:visible').val());
+                };
+                
                 var searchSet = {};
                 var dynKey = currentKey;                
-                searchSet[dynKey] = currentInput;   
+                searchSet[dynKey] = currentInput;
                 console.log(searchSet);
-                
-                var newAJAX = context.sandbox.utils.ajax({
-                    // i want
-                    // var query =  "SELECT * FROM Queries  WHERE userId LIKE @searchAdmin_userid AND dataSource LIKE @searchAdmin_datasource"
+
+                var newAJAX = context.sandbox.utils.ajax({                  
              
                     type: "GET",
                     data: searchSet,                    
@@ -84,9 +115,6 @@ define([
             $toggleClear.on('click', function() { 
                 $inputGeneric.val('');                
             });
-            function emptyTest(thingy){                                
-                
-            }                
         }       
     };
     return exposed;
