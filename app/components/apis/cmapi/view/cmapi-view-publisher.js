@@ -12,7 +12,7 @@ define([
         publishSetCenter: function(args) {
             context.sandbox.emit('map.center.set', args);
         },
-        publishZoomToLayer: function(args) {
+        zoomToLayer: function(args) {
             context.sandbox.emit('map.zoom.toLayer', args);
         },
         publishCenterOnBounds: function(args) {

@@ -22,17 +22,11 @@ define([
     };
 
     var receiveChannels= {
-		"map.view.zoom": function(message) { //TODO verify this is correct
+		"map.view.zoom": function(message) {
 			if('range' in message) {
-				// publisher.publishZoom(message); // TODO: support for range in meters doesnt make sense in 2d mapping
-			} else if ('direction' in message) { //TODO should we support this?
-                if(message.direction === 'in') {
-                    //TODO
-                } else if (message.direction === 'out') {
-                    //TODO
-                }
+				// publisher.publishZoom(message); //To
 			} else {
-                sendError('map.view.zoom', message, 'Must include either "range" or "direction"');
+                sendError('map.view.zoom', message, 'Must include "range" as an option');
             }
 		},
 		"map.view.center.overlay": function(message) {
