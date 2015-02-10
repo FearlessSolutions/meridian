@@ -53,6 +53,7 @@ define([
                 layerId: context.sandbox.mapConfiguration.GEOLOCATOR_LAYERID,
                 layerType: STATIC_TYPE,
                 canCluster: false,
+                selectable: true,
                 static: true
             };
             geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
@@ -94,6 +95,7 @@ define([
         createVectorLayer: function(params) {
             var layerId = params.layerId,
                 layerType = params.layerType || FEATURE_MODE,
+                selectable = 'selectable' in params ? params.selectable : false,
                 canCluster = params.canCluster,
                 featureStyle = createStyling(params.styleMap),
                 geoSource,
@@ -120,6 +122,7 @@ define([
             newFeatureLayer = new ol.layer.Vector({
                 layerId: layerId,
                 layerType: layerType,
+                selectable: selectable,
                 canCluster: canCluster,
                 source: geoSource,
                 style: featureStyle,
@@ -146,7 +149,6 @@ define([
                 identifiedFeatures: []
             };
 
-            console.debug("created layer ", params.layerId);
             return newFeatureLayer;
         },
         /**
@@ -586,8 +588,6 @@ define([
                 }
             }
         }
-
-
     };
 
     /**

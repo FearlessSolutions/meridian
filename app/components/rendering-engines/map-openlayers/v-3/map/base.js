@@ -21,26 +21,27 @@ define([
                 
             mapElement = (params && params.el) ? params.el : 'map';
             map = new ol.Map({
-                    target: mapElement,
-                    view: new ol.View({
-                        projection: 'EPSG:3857',
-//                        projection: 'EPSG:900913',
-                        center: [0,0],
-                        zoom: 5 //TODO set center?
-                    })
-                }
+                target: mapElement,
+                view: new ol.View({
+                    projection: 'EPSG:3857',
+                    center: [0,0],
+                    zoom: 5 //TODO set center?
+                })
+            });
+
+            map.addInteraction(//,
+                new ol.interaction.Select({
+                    condition: ol.events.condition.click,
+                    layers: function(layer){ //Layers that can be selected will have the 'selectable' property
+                        if(layer.get('selectable')){
+                            return true;
+                        } else{
+                            return false;
+                        }
+                    }
+                })
 
 
-
-//                mapElement,{
-////                    controls: [new ol.control.zoom()],
-//                    projection: new ol.proj.Projection({
-//                        code: context.sandbox.mapConfiguration.projection
-//                    }),
-//                    projectionWGS84: new ol.proj.Projection({
-//                        code: 'EPSG:4326'
-//                    })
-//                }
             );
 //
             //TODO

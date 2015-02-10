@@ -40,7 +40,6 @@ define([
 
 //                    if(value.geometry.type === "Polygon") return;
 
-                    console.debug(value);
                     var currentFeature = geoJsonParser.readFeature(value, {
                             featureProjection: mapProjection
                         });
@@ -60,7 +59,6 @@ define([
 //                var clusterSource = layer.getSource();
 //                var geoSource = clusterSource.source_;
 //                geoSource.addFeatures(newFeatures);
-                console.debug(layer);
 
 //                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
 //                    layer.recluster();

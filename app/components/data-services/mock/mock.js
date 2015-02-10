@@ -15,6 +15,7 @@ define([
             if(params.dataSourceId === DATASOURCE_NAME) {
                 // Set a query ID to pass to the server
                 params.queryId = context.sandbox.utils.UUID();
+                params.selectable = true;
 
                 // Create the snapshot prior to executing query, so user knows something happened
                 if(!context.sandbox.dataStorage.datasets[params.queryId]) {

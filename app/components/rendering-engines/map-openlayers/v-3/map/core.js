@@ -185,6 +185,7 @@ define([
                 layerOptions = {
                     layerId: params.layerId,
                     layerType: params.layerType,
+                    selectable: params.selectable,
                     canCluster: params.canCluster
                 };
             layerOptions.map = map;

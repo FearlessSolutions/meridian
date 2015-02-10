@@ -71,6 +71,7 @@ define([], function() {
         setupClusteringForLayer: function(params, geoSource, featureStyle){
             var layerId = params.layerId,
                 map = params.map,
+                selectable = 'selectable' in params ? params.selectable : false,
                 clusterSource,
                 newClusterLayer;
 
@@ -88,6 +89,7 @@ define([], function() {
             newClusterLayer = new ol.layer.Vector({
                 layerId: layerId + LAYERID_SUFFIX,
                 layerType: CLUSTER_MODE,
+                selectable: selectable,
                 source: clusterSource,
                 style: clusterStyling,
                 visible: context.sandbox.stateManager.map.visualMode === CLUSTER_MODE
