@@ -6,18 +6,24 @@ define([], function() {
     var config,
         rules = [],
         layerOptionsCollection = [],
-        CLUSTER_MODE = 'cluster',
-        FEATURE_MODE = 'feature',
-        HEAT_MODE = 'heatmap',
-        AOI_TYPE = 'aoi',
-        STATIC_TYPE = 'static',
-        LAYERID_SUFFIX = '_cluster',
+        CLUSTER_MODE,
+        FEATURE_MODE,
+        HEAT_MODE,
+        AOI_TYPE,
+        STATIC_TYPE,
+        LAYERID_SUFFIX,
         cache;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
             config = context.sandbox.mapConfiguration.clustering;
+            CLUSTER_MODE = context.sandbox.mapConfiguration.CLUSTER_MODE;
+            FEATURE_MODE = context.sandbox.mapConfiguration.FEATURE_MODE;
+            HEAT_MODE = context.sandbox.mapConfiguration.HEAT_MODE;
+            AOI_TYPE = context.sandbox.mapConfiguration.AOI_TYPE;
+            STATIC_TYPE = context.sandbox.mapConfiguration.STATIC_TYPE;
+            LAYERID_SUFFIX = context.sandbox.mapConfiguration.LAYERID_SUFFIX;
             cache = {};
 //            populateRules();
 

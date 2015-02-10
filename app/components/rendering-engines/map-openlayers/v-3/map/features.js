@@ -40,6 +40,7 @@ define([
 
 //                    if(value.geometry.type === "Polygon") return;
 
+                    console.debug(value);
                     var currentFeature = geoJsonParser.readFeature(value, {
                             featureProjection: mapProjection
                         });

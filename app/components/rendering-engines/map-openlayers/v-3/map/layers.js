@@ -10,11 +10,11 @@ define([
     var context,
         basemapLayers,
         styleCache = {},
-        CLUSTER_MODE = 'cluster',
-        FEATURE_MODE = 'feature',
-        HEAT_MODE = 'heatmap',
-        AOI_TYPE = 'aoi',
-        STATIC_TYPE = 'static';
+        CLUSTER_MODE,
+        FEATURE_MODE,
+        HEAT_MODE,
+        AOI_TYPE,
+        STATIC_TYPE;
 
 
     var exposed = {
@@ -31,6 +31,11 @@ define([
                     }
                 }
             };
+            CLUSTER_MODE = context.sandbox.mapConfiguration.CLUSTER_MODE;
+            FEATURE_MODE = context.sandbox.mapConfiguration.FEATURE_MODE;
+            HEAT_MODE = context.sandbox.mapConfiguration.HEAT_MODE;
+            AOI_TYPE = context.sandbox.mapConfiguration.AOI_TYPE;
+            STATIC_TYPE = context.sandbox.mapConfiguration.STATIC_TYPE;
         },
         /**
          * Create layers that are not accessible to the user, and that don't go away
@@ -45,15 +50,10 @@ define([
             //Create geolocator layer options
             geolocatorParams = {
                 map: params.map,
-                layerId: 'static_geolocator',
+                layerId: context.sandbox.mapConfiguration.GEOLOCATOR_LAYERID,
                 layerType: STATIC_TYPE,
-                static: true,
-                styleMap: {
-                    externalGraphic: '${icon}',
-                    graphicHeight: '${height}',
-                    graphicWidth:  '${width}',
-                    graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
-                }
+                canCluster: false,
+                static: true
             };
             geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
 //            addGeoLocatorListeners({ //TODO
@@ -349,14 +349,14 @@ define([
                 mapClustering.disable({
                     map: map
                 });
-                enableFeature({
+                enableFeatureMode({
                     map: map
                 });
             } else if(visualMode === CLUSTER_MODE){
                 mapHeatmap.disable({
                     map: map
                 });
-                disableFeature({
+                disableFeatureMode({
                     map: map
                 });
                 mapClustering.enable({
@@ -366,7 +366,7 @@ define([
                 mapClustering.disable({
                     map: map
                 });
-                disableFeature({
+                disableFeatureMode({
                     map: map
                 });
                 mapHeatmap.enable({
@@ -379,7 +379,7 @@ define([
                 mapClustering.disable({
                     map: map
                 });
-                disableFeature({
+                disableFeatureMode({
                     map: map
                 });
             }
@@ -734,7 +734,7 @@ define([
         });
     }
 
-    function enableFeature(params){
+    function enableFeatureMode(params){
         var map = params.map;
 
         map.getLayers().forEach(function(layer, layerIndex, layerArray){
@@ -747,7 +747,7 @@ define([
         });
     }
 
-    function disableFeature(params){
+    function disableFeatureMode(params){
         var map = params.map;
 
         map.getLayers().forEach(function(layer, layerIndex, layerArray){
