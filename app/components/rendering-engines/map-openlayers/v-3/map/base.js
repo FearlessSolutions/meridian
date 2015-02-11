@@ -1,13 +1,18 @@
 define([
-    './../map-api-publisher',
     './../libs/v3.0.0/build/ol-debug' //TODO make this 'ol'
-], function(publisher) {
+], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context;
+    var context,
+        mapClustering,
+        mapLayers,
+        publisher;
 
     var exposed = {
-        init: function(thisContext) {
-            context = thisContext;
+        init: function(modules) {
+            context = modules.context;
+            mapClustering = modules.clustering;
+            mapLayers = modules.layers;
+            publisher = modules.publisher;
         },
         /**
          * Create the basic map and set default values for initial viewport
@@ -37,6 +42,19 @@ define([
                             return true;
                         } else{
                             return false;
+                        }
+                    },
+                    style: function(feature, resolution){
+                        if(feature.get('features')){ //It is a cluster
+                            return mapClustering.getSelectedStyling({
+                                feature: feature,
+                                resolution: resolution
+                            });
+                        } else {
+                            return mapLayers.getSelectedStyling({
+                                feature: feature,
+                                resolution: resolution
+                            });
                         }
                     }
                 })

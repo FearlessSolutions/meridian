@@ -27,16 +27,27 @@ define([
          * @param {object} thisContext - Aura's sandboxed 'this'
          */
         init: function(thisContext) {
+            var modules = {
+                base: mapBase,
+                navigation: mapNavigation,
+                layers: mapLayers,
+                features: mapFeatures,
+                draw: mapDraw,
+                clustering: mapClustering,
+                heatmap: mapHeatmap,
+                context: thisContext,
+                publisher: publisher
+            };
             context = thisContext;
             addFunctionsToOL();
 
-            mapBase.init(context);
-            mapClustering.init(context);
-            mapDraw.init(context);
-            mapFeatures.init(context);
-            mapHeatmap.init(context);
-            mapLayers.init(context);
-            mapNavigation.init(context);
+            mapBase.init(modules);
+            mapClustering.init(modules);
+            mapDraw.init(modules);
+            mapFeatures.init(modules);
+            mapHeatmap.init(modules);
+            mapLayers.init(modules);
+            mapNavigation.init(modules);
 
             exposed.createMap();
         },

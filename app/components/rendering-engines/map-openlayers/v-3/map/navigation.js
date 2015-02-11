@@ -1,13 +1,14 @@
 define([
-    './../map-api-publisher',
     './../libs/v3.0.0/build/ol-debug'
-], function(publisher) {
+], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context;
+    var context,
+        publisher;
 
     var exposed = {
-        init: function(thisContext) {
-            context = thisContext;
+        init: function(modules) {
+            context = modules.context;
+            publisher = modules.publisher;
         },
         zoomIn: function(params) {
             var view = params.map.getView(),

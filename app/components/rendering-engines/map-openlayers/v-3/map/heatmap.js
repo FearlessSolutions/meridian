@@ -15,8 +15,8 @@ define([], function() {
         LAYERID_SUFFIX;
 
     var exposed = {
-        init: function(thisContext) {
-            context = thisContext;
+        init: function(modules) {
+            context = modules.context;
 
             CLUSTER_MODE = context.sandbox.mapConfiguration.CLUSTER_MODE;
             FEATURE_MODE = context.sandbox.mapConfiguration.FEATURE_MODE;

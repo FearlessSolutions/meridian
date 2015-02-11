@@ -1,9 +1,9 @@
 define([
-    './../map-api-publisher',
     './../libs/v3.0.0/build/ol-debug'
-], function(publisher) {
+], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context;
+    var context,
+        publisher;
 
     // Set Full-Scope Variables
     var drawControl,
@@ -14,8 +14,9 @@ define([
          * Initialize Draw.js
          * @param  {object} thisContext Aura's sandboxed 'this'
          */
-        init: function(thisContext) {
-            context = thisContext;
+        init: function(modules) {
+            context = modules.context;
+            publisher = modules.publisher;
             drawControl = new ol.interaction.DragBox({
                 condition: ol.events.condition.always,
                 style: new ol.style.Style({ //TODO this is just a default style for box

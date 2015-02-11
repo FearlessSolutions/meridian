@@ -12,11 +12,13 @@ define([], function() {
         AOI_TYPE,
         STATIC_TYPE,
         LAYERID_SUFFIX,
-        cache;
+        mapLayers,
+        styleCache;
 
     var exposed = {
-        init: function(thisContext) {
-            context = thisContext;
+        init: function(modules) {
+            context = modules.context;
+            mapLayers = modules.layers;
             config = context.sandbox.mapConfiguration.clustering;
             CLUSTER_MODE = context.sandbox.mapConfiguration.CLUSTER_MODE;
             FEATURE_MODE = context.sandbox.mapConfiguration.FEATURE_MODE;
@@ -24,7 +26,12 @@ define([], function() {
             AOI_TYPE = context.sandbox.mapConfiguration.AOI_TYPE;
             STATIC_TYPE = context.sandbox.mapConfiguration.STATIC_TYPE;
             LAYERID_SUFFIX = context.sandbox.mapConfiguration.LAYERID_SUFFIX;
-            cache = {};
+            styleCache = {
+                default: {
+                    styleCache: {},
+                    selectedStyleCache:{}
+                }
+            };
 //            populateRules();
 
         },
@@ -68,7 +75,7 @@ define([], function() {
         clear: function() {
             layerOptionsCollection = [];
         },
-        setupClusteringForLayer: function(params, geoSource, featureStyle){
+        setupClusteringForLayer: function(params, geoSource, featureStyle, selectedFeatureStyle){
             var layerId = params.layerId,
                 map = params.map,
                 selectable = 'selectable' in params ? params.selectable : false,
@@ -80,10 +87,9 @@ define([], function() {
                 source: geoSource
             });
 
-            cache[layerId] = {
-                clusterStyleFunction: clusterStyling,
-                featureStyleFunction: featureStyle,
-                styleCache: {}
+            styleCache[layerId] = {
+                styleCache: {},
+                selectedStyleCache: {}
             };
 
             newClusterLayer = new ol.layer.Vector({
@@ -174,6 +180,42 @@ define([], function() {
             };
 
             return styleMap;
+        },
+        getSelectedStyling: function(params){
+            var cluster = feature.get('features'),
+                size =  cluster.length,
+                layerId = cluster[0].get('layerId'),
+                style = styleCache[layerId].selectedStyleCache[size];
+            if (!style) {
+                if(size === 1){
+                    style = styleCache[layerId].featureStyleFunction(cluster[0], resolution);
+                } else {
+                    style = [new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 10 + size/2,
+                            stroke: new ol.style.Stroke({
+                                color: 'rgb(123, 0, 123)',
+//                                    color: 'rgb(153, 0, 153, .5)',
+                                opacity:.5,
+                                width: size/3.0
+                            }),
+                            fill: new ol.style.Fill({
+                                color: 'rgb(153, 0, 153)',
+//                                    color: 'rgb(153, 0, 153, .9)'
+                                opacity:.5
+                            })
+                        }),
+                        text: new ol.style.Text({
+                            text: size.toString(),
+                            fill: new ol.style.Fill({
+                                color: '#fff'
+                            })
+                        })
+                    })];
+                    styleCache[layerId].styleCache[size] = style; //This is only done for size > 1 because 1 is handled by feature
+                }
+            }
+            return style;
         }
     };
 
@@ -226,15 +268,19 @@ define([], function() {
     }
 
 
+
     function clusterStyling(feature, resolution){
         var cluster = feature.get('features'),
             size =  cluster.length,
             layerId = cluster[0].get('layerId'),
-            style = cache[layerId].styleCache[size];
+            style = styleCache[layerId].styleCache[size];
 
         if (!style) {
             if(size === 1){
-                style = cache[layerId].featureStyleFunction(cluster[0], resolution);
+                style = mapLayers.getFeatureStyling({
+                    feature: cluster[0],
+                    resolution: resolution
+                });
             } else {
                 style = [new ol.style.Style({
                     image: new ol.style.Circle({
@@ -258,7 +304,7 @@ define([], function() {
                         })
                     })
                 })];
-                cache[layerId].styleCache[size] = style; //This is only done for size > 1 because 1 is handled by feature
+                styleCache[layerId].styleCache[size] = style; //This is only done for size > 1 because 1 is handled by feature
             }
         }
         return style;

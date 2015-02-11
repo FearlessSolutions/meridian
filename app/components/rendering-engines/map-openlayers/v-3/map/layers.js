@@ -1,13 +1,12 @@
 define([
-    './../map-api-publisher',
-    './base',
-    './clustering',
-    './heatmap',
-    './../libs/v3.0.0/build/ol-debug'//,
-//    './../libs/Heatmap/Heatmap'
-], function(publisher, mapBase, mapClustering, mapHeatmap) {
+    './../libs/v3.0.0/build/ol-debug'
+], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context,
+        publisher,
+        mapBase,
+        mapClustering,
+        mapHeatmap,
         basemapLayers,
         styleCache = {},
         CLUSTER_MODE,
@@ -18,17 +17,17 @@ define([
 
 
     var exposed = {
-        init: function(thisContext) {
-            context = thisContext;
+        init: function(modules) {
+            context = modules.context;
+            publisher = modules.publisher;
+            mapBase = modules.base;
+            mapClustering = modules.clustering;
+            mapHeatmap = modules.heatmap;
             basemapLayers = {};
             styleCache = {
-                defaultStyle: {
-                    feature: {
-                        cache: {}
-                    },
-                    cluster: {
-                        cache: {}
-                    }
+                default: {
+                    styleCache: {},
+                    selectedStyleCache:{}
                 }
             };
             CLUSTER_MODE = context.sandbox.mapConfiguration.CLUSTER_MODE;
@@ -97,12 +96,11 @@ define([
                 layerType = params.layerType || FEATURE_MODE,
                 selectable = 'selectable' in params ? params.selectable : false,
                 canCluster = params.canCluster,
-                featureStyle = createStyling(params.styleMap),
+                styleMap = params.styleMap,
                 geoSource,
                 newFeatureLayer,
                 visualMode = context.sandbox.stateManager.map.visualMode,
                 shouldBeVisible,
-                selector,
                 layers;
 
             geoSource = new ol.source.GeoJSON({
@@ -111,8 +109,9 @@ define([
             });
 
             styleCache[layerId] = { //TODO make this more dynamic (with all variables filled out, per variable set ....) {
-                styleFunction: featureStyle,
-                styleCache: {}
+                styleMap: styleMap,
+                styleCache: {},
+                selectedStyleCache: {}
             };
 
             shouldBeVisible = visualMode === FEATURE_MODE
@@ -125,23 +124,16 @@ define([
                 selectable: selectable,
                 canCluster: canCluster,
                 source: geoSource,
-                style: featureStyle,
+                style: featureStyling,
                 visible: shouldBeVisible
             });
 
             params.map.addLayer(newFeatureLayer);
 
             if(canCluster){
-                mapClustering.setupClusteringForLayer(params, geoSource, featureStyle);
+                mapClustering.setupClusteringForLayer(params, geoSource);
             }
-//
-//            if(params.selectable) {
-//                selector = params.map.getControlsByClass('ol.Control.SelectFeature')[0];
-//                layers = selector.layers;
-//                layers.push(newVectorLayer);
-//                selector.setLayer(layers);
-//            }
-//
+
             // Default state manager settings for a new layer
             context.sandbox.stateManager.layers[params.layerId] = {
                 visible: true,
@@ -587,6 +579,16 @@ define([
                     selectController.select(feature);
                 }
             }
+        },
+        getFeatureStyling: function(params){
+            var feature = params.feature,
+                resolution = params.resolution;
+            return featureStyling(feature, resolution);
+        },
+        getSelectedStyling: function(params){
+            var feature = params.feature,
+                resolution = params.resolution;
+            return featureStyling(feature, resolution);//TODO not this one, do selected version
         }
     };
 
@@ -758,82 +760,93 @@ define([
         });
     }
 
-    /**
-     * Creates function to style the feature layer
-     * TODO REQUIRED the styles all need to be saved instead of manually calculated each time
-     * @param layerStyling
-     * @returns {*} function(feature, resolution) for styling
-     */
-    function createStyling(layerStyling){
-        var options = {},
+    function featureStyling(feature, resolution){
+        var layerId = feature.get('layerId'),
+            styleMap = styleCache[layerId].styleMap,
+            styleKey = '',
+            options = {},
+            icon,
             color,
             style;
 
-        if(layerStyling){
+        if(styleMap){
             //TODO dynamic choosers (This assumes that all properties are static
-            if(layerStyling.icon){
-                options.image = new ol.style.Icon({
-                    src: layerStyling.icon.icon,
-                    anchor: [0.5, 1], //TODO make dynamic?
-                    anchorXUnits: 'fraction',
-                    anchorYUnits: 'fraction',
-                    scale:.5
-                });
+            if(styleMap.icon){
+                styleKey += 'icon|'
+                    + styleMap.icon.icon
             }
-
-            /**
-             * If there is fill options, use them.
-             * OL doesn't have a seperate option for opacity, so turn hex/string into rgb
-             */
-            if(layerStyling.fill && 'fillColor' in layerStyling.fill) {
-                color = ol.color.asArray(layerStyling.fill.fillColor);
-                if('fillOpacity' in layerStyling.fill){
-                    color = color.slice(); //This is to not interfere will ol.color.asArray
-                    color[3] = layerStyling.fill.fillOpacity;
-                    color = ol.color.asString(color);
+            if(styleMap.fill){
+                styleKey += 'fill|'
+                    + styleMap.fill.fillColor
+                    + styleMap.fill.fillOpacity
+            }
+            if(styleMap.stroke){
+                styleKey += 'stroke|'
+                    + styleMap.stroke.strokeColor
+                    + styleMap.stroke.strokeOpacity
+                    + styleMap.stroke.strokeWidth
+            }
+            style = styleCache[layerId].styleCache[styleKey];
+            if(!style){
+                if(styleMap.icon){
+                    options.image = new ol.style.Icon({
+                        src: styleMap.icon.icon,
+                        anchor: [0.5, 1], //TODO make dynamic?
+                        anchorXUnits: 'fraction',
+                        anchorYUnits: 'fraction',
+                        scale:.5
+                    });
                 }
-                options.fill =  new ol.style.Fill({
-                    color: color
-                });
+
+                /**
+                 * If there is fill options, use them.
+                 * OL doesn't have a seperate option for opacity, so turn hex/string into rgb
+                 */
+                if(styleMap.fill && 'fillColor' in styleMap.fill) {
+                    color = ol.color.asArray(styleMap.fill.fillColor);
+                    if('fillOpacity' in styleMap.fill){
+                        color = color.slice(); //This is to not interfere will ol.color.asArray
+                        color[3] = styleMap.fill.fillOpacity;
+                        color = ol.color.asString(color);
+                    }
+                    options.fill =  new ol.style.Fill({
+                        color: color
+                    });
+                }
+
+                if(styleMap.stroke
+                    && 'strokeColor' in styleMap.stroke
+                    && 'strokeOpacity' in styleMap.stroke
+                    && 'strokeWidth' in styleMap.stroke){
+                    options.stroke = new ol.style.Stroke({
+                        color: styleMap.stroke.strokeColor,
+                        opacity: styleMap.stroke.strokeOpacity,
+                        width: 2
+                    });
+                }
+                style = new ol.style.Style(options);
+                styleCache[layerId].styleCache[styleKey] = style;
             }
 
-            if(layerStyling.stroke
-                && 'strokeColor' in layerStyling.stroke
-                && 'strokeOpacity' in layerStyling.stroke
-                && 'strokeWidth' in layerStyling.stroke){
-                options.stroke = new ol.style.Stroke({
-                    color: layerStyling.stroke.strokeColor,
-                    opacity: layerStyling.stroke.strokeOpacity,
-                    width: 2
-                });
-            }
-            style = new ol.style.Style(options);
-
-            return function(){
-                return [style]
-            };
         } else {
-            return defaultStyling;
+            icon = styleKey = feature.get('icon') || context.sandbox.mapConfiguration.markerIcons.default.icon;
+            style = styleCache.default.styleCache[styleKey];
+            if(!style){
+                style = new ol.style.Style({ //TODO this is just a default style for box
+                    image: new ol.style.Icon({
+                        src: icon,
+                        anchor: [0.5, 1],
+                        anchorXUnits: 'fraction',
+                        anchorYUnits: 'fraction',
+                        scale: .5
+                    })
+                });
+
+                styleCache.default.styleCache[styleKey] = style;
+            }
         }
 
-    }
-    function defaultStyling(feature, resolution){
-        var icon = feature.get('icon') || context.sandbox.mapConfiguration.markerIcons.default.icon//,
-//            height = feature.get('height') || context.sandbox.mapConfiguration.markerIcons.default.height,
-//            width = feature.get('width') || context.sandbox.mapConfiguration.markerIcons.default.width,
-//            yOffset = feature.get('yOffset');
-
-         if(icon){
-             return [new ol.style.Style({ //TODO this is just a default style for box
-                 image: new ol.style.Icon({
-                     src: icon,
-                     anchor: [0.5, 1],
-                     anchorXUnits: 'fraction',
-                     anchorYUnits: 'fraction',
-                     scale: .5
-                 })
-             })];
-         }
+        return [style];
     }
 
     var radius = 75;
