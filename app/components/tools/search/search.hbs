@@ -9,13 +9,7 @@
                     <option value="input3val">Query Date</option>
                     <option value="input4val">Expiration Date</option>
                 </select>
-                <select id="searchAdmin_searchDateType" class="form-control">
-                    <option value="">Last 1 hour</option>
-                    <option value="searchDateType_last4">Last 4 hours</option>
-                    <option value="searchDateType_last12">Last 12 hours</option>
-                    <option value="searchDateType_last24">Last 24 hours</option>
-                    <option value="searchDateType_last24" disabled>Custom</option>
-                </select>
+                <input id="searchAdmin_searchDateType" class="form-control" placeholder="Select your Search Type" />
                 <input type="text" class="form-control" placeholder="Enter User ID" id="searchAdmin_userid">
                 <input type="text" class="form-control" placeholder="Enter Datasource" id="searchAdmin_datasource">
                 <input type="text" class="form-control" placeholder="Enter Query Date" id="searchAdmin_sdate">
@@ -23,8 +17,8 @@
             </div>
             <button type="submit" class="btn btn-primary" id="searchAdmin_submit">Submit</button>
             <button type="button" class="btn btn-primary" id="searchAdmin_clear">Clear</button>
-            <input id="testdiv" style="width:500px;" placeholder="TEST" />
-            <input id="rangeHidden" type="text" style="" />
+            
+            
             <div id="container-searchmsg" class="alert alert-warning">You must enter a value for the search criteria</div>
     </div>
 </div>

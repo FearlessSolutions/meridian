@@ -5,6 +5,8 @@ define([
 ], function (publisher) {
     var context;
 
+    var datePickerObj;
+
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
@@ -23,25 +25,21 @@ define([
             //placeholder 
             currentKey = 'userId';
 
-            $('#testdiv').daterangepicker({
-                // ranges: {
-                //     'Last hour': [moment().subtract(1, 'hours'), moment()],
-                //     'Last 4 hours': [moment().subtract(4, 'hours'), moment()],
-                //     'Last 12 hours': [moment().subtract(12, 'hours'), moment()],
-                //     'Last 24 hours': [moment().subtract(24,'hours'), moment()]
-                // },
+            $toggleSearchDateType.daterangepicker({
+                ranges: {
+                    'Last hour': [moment().subtract(1, 'hours'), moment()],
+                    'Last 4 hours': [moment().subtract(4, 'hours'), moment()],
+                    'Last 12 hours': [moment().subtract(12, 'hours'), moment()],
+                    'Last 24 hours': [moment().subtract(24,'hours'), moment()]
+                },
                 timePicker: true,
                 startDate: moment().subtract(1, 'days'),
                 endDate: moment(),
                 maxDate: moment()
                 }, function(start, end, label) {
                     console.log(start.toISOString(), end.toISOString(), label);
-
-                    var rangeStartDate = start.toISOString();
-                    console.log(rangeStartDate);
                 });
-
-            
+            datePickerObj = $toggleSearchDateType.data('daterangepicker');            
                         
             $toggleSearchType.change(function() {
                 $toggleSearchDateType.hide();
@@ -58,13 +56,11 @@ define([
                         break;
                     case "input3val":
                         $toggleSearchDateType.show().focus();
-                        currentKey = 'createOn';
-                        //currentInput = '1422390816';
+                        currentKey = 'createdOn';                        
                         break;
                     case "input4val":
                        $toggleSearchDateType.show().focus();
-                        currentKey = 'expireOn';
-                        //currentInput = '1423142805';
+                        currentKey = 'expireOn';                        
                         break; 
                 }
             });
@@ -78,22 +74,32 @@ define([
             });    
 
             $toggleSubmit.on('click', function(event) {
-
+                var searchSet = {};
+                var queryType;
                 event.preventDefault();
-                if ($toggleSearchDateType.is(':visible')) {
-                    // hardcoded, but for single date, not range
-                    //$('#rangeHidden').val('1422383967');
-                    currentInput = $('#rangeHidden').val();
-                    console.log(currentInput);
-                } else {
+
+                if (currentKey == 'userId' || currentKey == 'dataSource')  {
                     currentInput = $.trim($('input[type="text"]:visible').val());
+                    var dynKey = currentKey;
+                    searchSet[dynKey] = currentInput;
+                } else if (currentKey == 'createdOn'){
+                    var dpSDVal = datePickerObj.startDate._d;                    
+                    var dpEDVal = datePickerObj.endDate._d;
+                    searchSet = { 
+                            createdOn: {                                 
+                                dateStartValue: moment(dpSDVal).unix(),
+                                dateEndValue: moment(dpEDVal).unix() 
+                            }
+                    }
+                    console.log(searchSet);
+                    //console.log(moment(dpSDVal).unix());
+                    // console.log(moment(dpEDVal).unix());
+                    // currentInput = moment(dpSDVal).unix();
+                    //currentInput = 1422554430;
+                } else if (currentKey == 'expireOn'){
                 };
                 
-                var searchSet = {};
-                var dynKey = currentKey;                
-                searchSet[dynKey] = currentInput;
                 console.log(searchSet);
-
                 var newAJAX = context.sandbox.utils.ajax({                  
              
                     type: "GET",
