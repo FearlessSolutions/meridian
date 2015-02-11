@@ -33,7 +33,8 @@ define([
          * @param params
          */
         zoomToLayer: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
+            var map = params.map,
+                layer = map.getLayer(params.layerId);
 
             if(layer && layer.getDataExtent()) {
                 params.map.zoomToExtent(layer.getDataExtent());

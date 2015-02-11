@@ -51,8 +51,6 @@ define([
                 var drawLayerSource = params.map.getLayer(DRAW_LAYER_ID).getSource(),
                     polygon = this.getGeometry();
 
-                console.debug("draw", new ol.Feature(polygon.clone()));
-
                 drawLayerSource.addFeature(new ol.Feature(polygon.clone())); //Has to be cloned
                 params.map.removeInteraction(drawControl);
                 context.$('#map').css('cursor', 'default');
@@ -69,7 +67,6 @@ define([
          * @param {string} params.layerId the layerId
          */
         clearDrawing: function(params) {
-//            removeControl(); //TODO need this?
             params.map.getLayer(DRAW_LAYER_ID).clear();
 
         }

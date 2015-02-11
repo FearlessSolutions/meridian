@@ -113,21 +113,8 @@ define([
 //                });
 //            });
 //
-            //TODO
-//            map.events.register('zoomend', map, function(evt) {
-//                // Basic cleanup for things on the map when zoom changes... can adjust later as needed
-//                exposed.clearMapSelection({
-//                    map: map
-//                });
-//                exposed.clearMapPopups({
-//                    map: map
-//                });
-//            });
 
             return map;
-        },
-        resetSelector: function(params) { //TODO
-
         },
         clearMapSelection: function(params) {
             selector.unselectAll();
