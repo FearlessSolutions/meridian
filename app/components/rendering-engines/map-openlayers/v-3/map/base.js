@@ -59,6 +59,9 @@ define([
                 }
             });
             map.addInteraction(selector);
+            map.on('moveend', function(event){ //On zoom, remove selected stuff
+                exposed.clearMapSelection();
+            });
 
 //
             //TODO
