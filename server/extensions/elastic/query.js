@@ -153,34 +153,42 @@ exports.getMetadataBySessionId = function(userId, sessionId, callback){
     getJSONByQuery(null, config.index.metadata, null, query, callback);
 };
 
-exports.getMetadataByTerm = function(queryterms, callback){
+exports.getMetadataByTerm = function(queryTerms, callback){
     var terms = [],
+    x,
     key,
     term;
 
-    terms.push({ 
-            range: { 
-                createdOn: {
-                    // gt: dateStartValue,
-                    // lt: dateEndValue
-                    gt: 1422538047,
-                    lt: 1422383997
-                }
-            } 
-    });
+    // terms.push({ 
+    //         range: { 
+    //             createdOn: {
+    //                 // gt: dateStartValue,
+    //                 // lt: dateEndValue
+    //                 gt: 1422383997,
+    //                 lt: 1422538047
+    //             }
+    //         } 
+    // });
 
 
-    // for ( key in queryterms) {
-    //     x = {
-    //         term: {}
-    //     };
-    //     x.term[key] = queryterms[key]; //--> x.term.userId = queryTerms.userId
-    //     // have to add range up here        
-
-    //     console.log(x);
-    // // { term: { userId: theValue } }
-    //     //terms.push(x);        
-    // }
+    for ( key in queryTerms) {
+        if(key === 'createdOn'){
+            terms.push({ 
+                range: { 
+                    createdOn: {
+                        gt: queryTerms.createdOn.dateStartValue,
+                        lt: queryTerms.createdOn.dateEndValue                       
+                    }
+                } 
+            });
+        } else {
+             x = {
+              term: {}
+            };
+            x.term[key] = queryTerms[key]; //--> x.term.userId = queryTerms.userId
+            terms.push(x);
+        }
+    }
 
     var query = {
         query:{

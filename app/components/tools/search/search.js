@@ -35,7 +35,8 @@ define([
                 timePicker: true,
                 startDate: moment().subtract(1, 'days'),
                 endDate: moment(),
-                maxDate: moment()
+                maxDate: moment(),
+                dateLimit: { days: 14 }
                 }, function(start, end, label) {
                     console.log(start.toISOString(), end.toISOString(), label);
                 });
@@ -75,28 +76,28 @@ define([
 
             $toggleSubmit.on('click', function(event) {
                 var searchSet = {};
-                var queryType;
+                var dpSDVal = datePickerObj.startDate;
+                var dpEDVal = datePickerObj.endDate;
                 event.preventDefault();
 
                 if (currentKey == 'userId' || currentKey == 'dataSource')  {
                     currentInput = $.trim($('input[type="text"]:visible').val());
                     var dynKey = currentKey;
                     searchSet[dynKey] = currentInput;
-                } else if (currentKey == 'createdOn'){
-                    var dpSDVal = datePickerObj.startDate._d;                    
-                    var dpEDVal = datePickerObj.endDate._d;
-                    searchSet = { 
-                            createdOn: {                                 
-                                dateStartValue: moment(dpSDVal).unix(),
-                                dateEndValue: moment(dpEDVal).unix() 
+                } else if (currentKey == 'createdOn'){                    
+                    searchSet = {
+                            createdOn: {
+                                dateStartValue: dpSDVal.unix(),
+                                dateEndValue: dpEDVal.unix()
                             }
                     }
-                    console.log(searchSet);
-                    //console.log(moment(dpSDVal).unix());
-                    // console.log(moment(dpEDVal).unix());
-                    // currentInput = moment(dpSDVal).unix();
-                    //currentInput = 1422554430;
                 } else if (currentKey == 'expireOn'){
+                    searchSet = {
+                            expireOn: {
+                                dateStartValue: dpSDVal.unix(),
+                                dateEndValue: dpEDVal.unix()
+                            }
+                    }
                 };
                 
                 console.log(searchSet);
@@ -110,11 +111,15 @@ define([
                     }
                 })
                 .done(function(data) {
-                    if(!currentInput) {                        
-                        $('input[type="text"]:visible').addClass('warning');                    
-                        $searchMsg.show();                    
+                    if (currentKey == 'userId' || currentKey == 'dataSource') {
+                        if(!currentInput) {                        
+                            $('input[type="text"]:visible').addClass('warning');                    
+                            $searchMsg.show();                    
+                        } else {
+                            publisher.publisherSearchAdmingridCreate(data);
+                        };
                     } else {
-                        publisher.publisherSearchAdmingridCreate(data);                    
+                        publisher.publisherSearchAdmingridCreate(data);
                     };
                 });               
             });
