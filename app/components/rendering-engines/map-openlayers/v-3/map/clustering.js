@@ -68,9 +68,14 @@ define([], function() {
 //                params.map.getLayersBy('layerId', layerId)[0].setVisibility(visibility);
 //            });
         },
-        recluster: function(params) {
-//            var layer =  params.map.getLayersBy('layerId', params.layerId)[0];
-//            layer.recluster();
+        hideLayer: function(params) {
+            var map = params.map,
+                layerId = params.layerId + LAYERID_SUFFIX,
+                currentLayer = map.getLayer(layerId);
+
+            if(currentLayer){
+                currentLayer.setVisible(false);
+            }
         },
         clear: function(params) {
             var map = params.map,

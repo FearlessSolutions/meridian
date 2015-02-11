@@ -324,10 +324,22 @@ define([
          * @param {string} params.layerId - id of layer
          */
         hideLayer: function(params) {
+            if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
+                context.sandbox.stateManager.layers[params.layerId].visible = false;
+            }
+
             mapLayers.hideLayer({
                 map: map,
                 layerId: params.layerId
             });
+            mapClustering.hideLayer({
+                map: map,
+                layerId: params.layerId
+            });
+            mapHeatmap.update({
+                map: map
+            })
+
         },
         /**
          * Show Layer

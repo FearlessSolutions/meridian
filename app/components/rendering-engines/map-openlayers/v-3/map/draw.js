@@ -49,9 +49,12 @@ define([
             //This must be set here to use the same map object.
             drawControl.onBoxEnd = function(){
                 var drawLayerSource = params.map.getLayer(DRAW_LAYER_ID).getSource(),
-                    polygon = this.getGeometry();
+                    polygon = this.getGeometry(),
+                    newFeature = new ol.Feature(polygon.clone()); //Has to be cloned
 
-                drawLayerSource.addFeature(new ol.Feature(polygon.clone())); //Has to be cloned
+                newFeature.set('layerId', DRAW_LAYER_ID); //Set layerId for lookup
+
+                drawLayerSource.addFeature(newFeature);
                 params.map.removeInteraction(drawControl);
                 context.$('#map').css('cursor', 'default');
                 publisher.stopDrawing(convertPolygonToCoordinates(polygon, params.map.getProjection()));

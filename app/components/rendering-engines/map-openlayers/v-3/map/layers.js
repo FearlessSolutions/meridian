@@ -278,36 +278,29 @@ define([
 //            params.map.getLayersBy('layerId', params.layerId)[0].removeAllFeatures();
         },
         hideLayer: function(params) {
-            var currentLayer,
-                identifiedFeatures; 
+            var map = params.map,
+                layerId = params.layerId,
+                currentLayer = map.getLayer(layerId),
+                identifiedFeatures;
 
-            identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
-                layerId: params.layerId
-            });
-
-            if(identifiedFeatures.length) {
-                mapBase.clearMapSelection({
-                    map: params.map
-                });
-                mapBase.clearMapPopups({
-                    map: params.map
-                });
+            if(currentLayer){
+                currentLayer.setVisible(false);
             }
 
-            if(context.sandbox.stateManager.layers[params.layerId] && context.sandbox.dataStorage.datasets[params.layerId]) {
-                context.sandbox.stateManager.layers[params.layerId].visible = false;
-                mapClustering.update({
-                    map: params.map
-                });
-                mapHeatmap.update({
-                    map: params.map
-                });
-            } else {
-                currentLayer = params.map.getLayersBy('layerId', params.layerId)[0];
-                if(currentLayer) {
-                    currentLayer.setVisibility(false);
-                }
-            }
+//            TODO when identified works with popups, do this
+//            identifiedFeatures = context.sandbox.stateManager.getIdentifiedFeaturesByLayerId({
+//                layerId: params.layerId
+//            });
+//
+//            if(identifiedFeatures.length) {
+//                mapBase.clearMapSelection({
+//                    map: params.map
+//                });
+//                mapBase.clearMapPopups({
+//                    map: params.map
+//                });
+//            }
+
         },
         showLayer: function(params) {
             var currentLayer;
