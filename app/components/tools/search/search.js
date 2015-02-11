@@ -33,12 +33,12 @@ define([
                     'Last 24 hours': [moment().subtract(24,'hours'), moment()]
                 },
                 timePicker: true,
-                startDate: moment().subtract(1, 'days'),
+                startDate: moment().subtract(1, 'days').startOf('day'),
                 endDate: moment(),
-                maxDate: moment(),
-                dateLimit: { days: 14 }
-                }, function(start, end, label) {
-                    console.log(start.toISOString(), end.toISOString(), label);
+                minDate: moment().subtract(14, 'days').startOf('day'),
+                maxDate: moment()               
+                // }, function(start, end, label) {
+                //     console.log(start.toISOString(), end.toISOString(), label);
                 });
             datePickerObj = $toggleSearchDateType.data('daterangepicker');            
                         
@@ -100,7 +100,6 @@ define([
                     }
                 };
                 
-                console.log(searchSet);
                 var newAJAX = context.sandbox.utils.ajax({                  
              
                     type: "GET",

@@ -156,20 +156,8 @@ exports.getMetadataBySessionId = function(userId, sessionId, callback){
 exports.getMetadataByTerm = function(queryTerms, callback){
     var terms = [],
     x,
-    key,
+    key,    
     term;
-
-    // terms.push({ 
-    //         range: { 
-    //             createdOn: {
-    //                 // gt: dateStartValue,
-    //                 // lt: dateEndValue
-    //                 gt: 1422383997,
-    //                 lt: 1422538047
-    //             }
-    //         } 
-    // });
-
 
     for ( key in queryTerms) {
         if(key === 'createdOn'){
@@ -178,6 +166,15 @@ exports.getMetadataByTerm = function(queryTerms, callback){
                     createdOn: {
                         gt: queryTerms.createdOn.dateStartValue,
                         lt: queryTerms.createdOn.dateEndValue                       
+                    }
+                } 
+            });
+        } else if(key === 'expireOn'){
+            terms.push({ 
+                range: { 
+                    expireOn: {
+                        gt: queryTerms.expireOn.dateStartValue,
+                        lt: queryTerms.expireOn.dateEndValue                       
                     }
                 } 
             });
