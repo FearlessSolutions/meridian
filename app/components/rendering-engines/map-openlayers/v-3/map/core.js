@@ -434,6 +434,12 @@ define([
                 this.getSource().clear();
             }
         }
+
+        if(ol.interaction.Select.prototype.unselectAll === undefined) {
+            ol.interaction.Select.prototype.unselectAll = function () {
+                this.getFeatures().clear();
+            }
+        }
     }
 
     return exposed;

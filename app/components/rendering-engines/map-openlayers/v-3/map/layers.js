@@ -585,10 +585,30 @@ define([
                 resolution = params.resolution;
             return featureStyling(feature, resolution);
         },
-        getSelectedStyling: function(params){
+        getSelectedFeatureStyling: function(params){
             var feature = params.feature,
-                resolution = params.resolution;
-            return featureStyling(feature, resolution);//TODO not this one, do selected version
+                resolution = params.resolution,
+                icon,
+                style,
+                styleKey;
+
+            icon = styleKey = feature.get('selectedIcon') || context.sandbox.mapConfiguration.markerIcons.selectedDefault.icon;
+            style = styleCache.default.selectedStyleCache[styleKey];
+            if(!style){
+                style = new ol.style.Style({ //TODO this is just a default style for box
+                    image: new ol.style.Icon({
+                        src: icon,
+                        anchor: [0.5, 1],
+                        anchorXUnits: 'fraction',
+                        anchorYUnits: 'fraction',
+                        scale: .2
+                    })
+                });
+
+                styleCache.default.selectedStyleCache[styleKey] = style;
+            }
+
+            return [style];
         }
     };
 

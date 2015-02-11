@@ -5,7 +5,8 @@ define([
     var context,
         mapClustering,
         mapLayers,
-        publisher;
+        publisher,
+        selector;
 
     var exposed = {
         init: function(modules) {
@@ -34,33 +35,31 @@ define([
                 })
             });
 
-            map.addInteraction(//,
-                new ol.interaction.Select({
-                    condition: ol.events.condition.click,
-                    layers: function(layer){ //Layers that can be selected will have the 'selectable' property
-                        if(layer.get('selectable')){
-                            return true;
-                        } else{
-                            return false;
-                        }
-                    },
-                    style: function(feature, resolution){
-                        if(feature.get('features')){ //It is a cluster
-                            return mapClustering.getSelectedStyling({
-                                feature: feature,
-                                resolution: resolution
-                            });
-                        } else {
-                            return mapLayers.getSelectedStyling({
-                                feature: feature,
-                                resolution: resolution
-                            });
-                        }
+            selector = new ol.interaction.Select({
+                condition: ol.events.condition.click,
+                layers: function(layer){ //Layers that can be selected will have the 'selectable' property
+                    if(layer.get('selectable')){
+                        return true;
+                    } else{
+                        return false;
                     }
-                })
+                },
+                style: function(feature, resolution){
+                    if(feature.get('features')){ //It is a cluster
+                        return mapClustering.getSelectedClusterStyling({
+                            feature: feature,
+                            resolution: resolution
+                        });
+                    } else {
+                        return mapLayers.getSelectedFeatureStyling({
+                            feature: feature,
+                            resolution: resolution
+                        });
+                    }
+                }
+            });
+            map.addInteraction(selector);
 
-
-            );
 //
             //TODO
 //            exposed.addSelector({
@@ -124,44 +123,11 @@ define([
 
             return map;
         },
-        addSelector: function(params) {
-            //This is single click (no double-click selection)
-            //TODO make sure it is not shift for multi--If it is, change it
-            var selector = new ol.interaction.Select([], {
-//                click: true, //TODO options
-//                autoActivate: true
-            });
-            params.map.addControl(selector);
-        },
-        addLayerToSelector: function(params) {
-            var selector = params.map.getControlsByClass('ol.Control.SelectFeature')[0];
-            selector.setLayer([params.layer]);
-        },
-        removeAllSelectors: function(params) {
-            var controls = params.map.getControlsByClass('ol.Control.SelectFeature');
-            controls.forEach(function(control) {
-                control.destroy();
-            });
-        },
-        resetSelector: function(params) {
-            exposed.clearMapSelection({
-                map: params.map
-            });
-            exposed.clearMapPopups({
-                map: params.map
-            });
-            exposed.removeAllSelectors({
-                map: params.map
-            });
-            exposed.addSelector({
-                map: params.map
-            });
+        resetSelector: function(params) { //TODO
+
         },
         clearMapSelection: function(params) {
-            var controls = params.map.getControlsByClass('ol.Control.SelectFeature');
-            controls.forEach(function(control) {
-                control.unselectAll();
-            });
+            selector.unselectAll();
         },
         trackMousePosition: function(params) {
             params.map.events.register('mousemove', params.map, function(e) {
@@ -216,9 +182,8 @@ define([
             if(params && params.mode) {
                 context.sandbox.stateManager.map.visualMode = params.mode;
             }
-//            exposed.clearMapPopups({
-//                map: params.map
-//            });
+
+            exposed.clearMapSelection();
         }
     };
     return exposed;

@@ -148,6 +148,12 @@ define([
                 height: 24,
                 width: 15,
                 graphicYOffset: -24
+            },
+            selectedDefault : {
+                icon: '/extensions/map-configuration-extension/images/markerIcons/cat.jpg',
+                height: 24,
+                width: 15,
+                graphicYOffset: -24
             }
         },
         clustering: {

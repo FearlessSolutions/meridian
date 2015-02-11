@@ -181,26 +181,33 @@ define([], function() {
 
             return styleMap;
         },
-        getSelectedStyling: function(params){
-            var cluster = feature.get('features'),
+        getSelectedClusterStyling: function(params){
+            var clusterFeature = params.feature,
+                resolution = params.resolution,
+                cluster = clusterFeature.get('features'),
                 size =  cluster.length,
                 layerId = cluster[0].get('layerId'),
-                style = styleCache[layerId].selectedStyleCache[size];
+                styleKey = size,
+                style = styleCache[layerId].selectedStyleCache[styleKey];
+
             if (!style) {
                 if(size === 1){
-                    style = styleCache[layerId].featureStyleFunction(cluster[0], resolution);
+                    style = mapLayers.getSelectedFeatureStyling({
+                        feature: cluster[0],
+                        resolution: resolution
+                    });
                 } else {
                     style = [new ol.style.Style({
                         image: new ol.style.Circle({
                             radius: 10 + size/2,
                             stroke: new ol.style.Stroke({
-                                color: 'rgb(123, 0, 123)',
+                                color: 'rgb(160, 0, 160)',
 //                                    color: 'rgb(153, 0, 153, .5)',
                                 opacity:.5,
                                 width: size/3.0
                             }),
                             fill: new ol.style.Fill({
-                                color: 'rgb(153, 0, 153)',
+                                color: 'rgb(185, 0, 185)',
 //                                    color: 'rgb(153, 0, 153, .9)'
                                 opacity:.5
                             })
@@ -212,7 +219,7 @@ define([], function() {
                             })
                         })
                     })];
-                    styleCache[layerId].styleCache[size] = style; //This is only done for size > 1 because 1 is handled by feature
+                    styleCache[layerId].selectedStyleCache[styleKey] = style; //This is only done for size > 1 because 1 is handled by feature
                 }
             }
             return style;
