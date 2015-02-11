@@ -30,7 +30,7 @@ define([
 //            context.sandbox.on('map.zoom.toLocation', mapCore.zoomToExtent);
 //            context.sandbox.on('map.zoom.toFeatures', mapCore.zoomToFeatures);
 //            context.sandbox.on('map.zoom.toLayer', mapCore.zoomToLayer);
-//            context.sandbox.on('data.clear.all', mapCore.clear);
+            context.sandbox.on('data.clear.all', mapCore.clear);
         },
         subscribeOff: function() {
             context.sandbox.off('map.features.plot', mapCore.plotFeatures);

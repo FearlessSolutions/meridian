@@ -72,8 +72,22 @@ define([], function() {
 //            var layer =  params.map.getLayersBy('layerId', params.layerId)[0];
 //            layer.recluster();
         },
-        clear: function() {
-            layerOptionsCollection = [];
+        clear: function(params) {
+            var map = params.map,
+                layers = map.getLayers();
+
+            layers.forEach(function(layer){
+                if(layer.get('layerType') === CLUSTER_MODE){
+                    map.removeLayer(layer);
+                }
+            });
+
+            styleCache = {
+                default: {
+                    styleCache: {},
+                    selectedStyleCache:{}
+                }
+            };
         },
         setupClusteringForLayer: function(params, geoSource, featureStyle, selectedFeatureStyle){
             var layerId = params.layerId,

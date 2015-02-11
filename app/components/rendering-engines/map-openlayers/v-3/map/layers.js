@@ -385,15 +385,28 @@ define([
          * @param params
          */
         clear: function(params) {
-            var layers = params.map.getLayersByClass('ol.Layer.Vector');
-            layers.forEach(function(layer) {
-                layer.destroy();              
-            });
+            var map = params.map,
+                layers = map.getLayers();
+
             context.sandbox.stateManager.layers = {};
-            mapClustering.clear();
-            mapHeatmap.clear({
-                map: params.map
+
+            layers.forEach(function(layer) {
+                var layerType = layer.get('layerType'),
+                    layerId = layer.get('layerId');
+
+                if(layerType === AOI_TYPE || layerType === FEATURE_MODE){ //totally remove feature layers and AOIs
+                    map.removeLayer(layer);
+                } else if (layerType === STATIC_TYPE){ //Clear geolocator and draw
+                    layer.clear();
+                }
             });
+
+            styleCache = {
+                default: {
+                    styleCache: {},
+                    selectedStyleCache:{}
+                }
+            };
         },
         addEventListenersToLayer: function(params) {
             if(params.eventListeners) {

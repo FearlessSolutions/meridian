@@ -372,13 +372,14 @@ define([
          * Clear All Layers
          */
         clear: function() {
-            mapBase.resetSelector({
-                map: map
-            });
+            mapBase.clearMapSelection();
             mapLayers.clear({
                 map: map
             });
-            mapLayers.createStaticLayers({
+            mapClustering.clear({
+                map: map
+            });
+            mapHeatmap.clear({
                 map: map
             });
         }
