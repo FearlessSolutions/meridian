@@ -7,6 +7,7 @@ define([
     './draw',
     './clustering',
     './heatmap',
+    './selection',
     './../libs/v3.0.0/build/ol-debug' //TODO make this 'ol' to minimize when ready
 ], function(
     publisher,
@@ -16,7 +17,8 @@ define([
     mapFeatures,
     mapDraw,
     mapClustering,
-    mapHeatmap
+    mapHeatmap,
+    mapSelection
 ){
     var context,
         map;
@@ -35,6 +37,7 @@ define([
                 draw: mapDraw,
                 clustering: mapClustering,
                 heatmap: mapHeatmap,
+                selection: mapSelection,
                 context: thisContext,
                 publisher: publisher
             };
@@ -48,6 +51,7 @@ define([
             mapHeatmap.init(modules);
             mapLayers.init(modules);
             mapNavigation.init(modules);
+            mapSelection.init(modules);
 
             exposed.createMap();
         },
@@ -57,11 +61,24 @@ define([
          * @param {string} params.el - name of map (optional)
          */
         createMap: function(params) {
-            map = mapBase.createMap(params);
+            var mapAsOptions = {
+                map: mapBase.createMap(params)
+            };
 
-            mapLayers.loadBasemaps({
-                map: map
-            });
+            map = mapAsOptions.map;
+            mapBase.setMap(mapAsOptions);
+            mapClustering.setMap(mapAsOptions);
+            mapDraw.setMap(mapAsOptions);
+            mapFeatures.setMap(mapAsOptions);
+            mapHeatmap.setMap(mapAsOptions);
+            mapLayers.setMap(mapAsOptions);
+            mapNavigation.setMap(mapAsOptions);
+            mapSelection.setMap(mapAsOptions);
+
+
+
+
+            mapLayers.loadBasemaps({});
 
 //            mapNavigation.zoomToExtent({
 //                map: map,
@@ -72,14 +89,13 @@ define([
 //            });
 
             exposed.setBasemap({
-                map: map,
                 basemap: context.sandbox.mapConfiguration.defaultBaseMap
             });
 
-            mapLayers.createStaticLayers({
-                map: map
-            });
-            
+            mapLayers.createStaticLayers({});
+
+            //Create heatmap layer options
+            mapHeatmap.createHeatmap({});
 //            context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
             
             context.sandbox.stateManager.triggerMapStatusReady();
@@ -88,17 +104,13 @@ define([
          * Zoom In
          */
         zoomIn: function() {
-            mapNavigation.zoomIn({
-                map: map
-            });
+            mapNavigation.zoomIn({});
         },
         /**
          * Zoom Out
          */
         zoomOut: function() {
-            mapNavigation.zoomOut({
-                map: map
-            });
+            mapNavigation.zoomOut({});
         },
         /**
          * Zoom to Extent
@@ -110,7 +122,6 @@ define([
          */
         zoomToExtent: function(params) {
             mapNavigation.zoomToExtent({
-                map: map,
                 minLon: params.minLon,
                 minLat: params.minLat,
                 maxLon: params.maxLon,
@@ -124,7 +135,6 @@ define([
          */
         zoomToLayer: function(params) {
             mapNavigation.zoomToLayer({
-                map: map,
                 layerId: params.layerId
             });
         },
@@ -136,7 +146,6 @@ define([
          */
         zoomToFeatures: function(params) {
             mapNavigation.zoomToFeatures({
-                map: map,
                 layerId: params.layerId,
                 featureIds: params.featureIds
             });
@@ -148,7 +157,6 @@ define([
          */
         setBasemap: function(params) {
             mapLayers.setBasemap({
-                map: map,
                 basemap: params.basemap
             });
         },
@@ -160,7 +168,6 @@ define([
          */
         setCenter: function(params) {
             mapNavigation.setCenter({
-                map: map,
                 lat: params.lat,
                 lon: params.lon
             });
@@ -170,7 +177,6 @@ define([
          */
         startDrawing: function() {
             mapDraw.startDrawing({
-                map: map,
                 layerId: 'static_draw'
             });
         },
@@ -179,7 +185,6 @@ define([
          */
         clearDrawing: function() {
             mapDraw.clearDrawing({
-                map: map,
                 layerId: 'static_draw'
             });
         },
@@ -199,7 +204,6 @@ define([
                     selectable: params.selectable,
                     canCluster: params.canCluster
                 };
-            layerOptions.map = map;
 //            mapClustering.addClusteringToLayerOptions(layerOptions);
 
             // If a symbolizers were provided, overwrite the default symbolizers from clustering
@@ -229,7 +233,6 @@ define([
          */
         deleteLayer: function(params) {
             mapLayers.deleteLayer({
-                map: map,
                 layerId: params.layerId
             });
         },
@@ -241,7 +244,6 @@ define([
          */
         setLayerIndex: function(params) {
             mapLayers.setLayerIndex({
-                map: map,
                 layerId: params.layerId,
                 layerIndex: params.layerIndex
             });
@@ -254,14 +256,11 @@ define([
          */
         plotFeatures: function(params) {
             mapFeatures.plotFeatures({
-                map: map,
                 layerId: params.layerId,
                 data: params.data
             });
             if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
-                mapHeatmap.update({
-                    map: map
-                });
+                mapHeatmap.update({});
             }
         },
         /**
@@ -273,15 +272,12 @@ define([
          */
         hideFeatures: function(params) {
             mapFeatures.hideFeatures({
-                map: map,
                 layerId: params.layerId,
                 featureIds: params.featureIds,
                 exclusive: params.exclusive
             });
             if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
-                mapHeatmap.update({
-                    map: map
-                });
+                mapHeatmap.update({});
             }
             publisher.updateEventCounter(); // TODO: Hack for updating event counter
         },
@@ -293,15 +289,12 @@ define([
 //         */
         showFeatures: function(params) {
             mapFeatures.showFeatures({
-                map: map,
                 layerId: params.layerId,
                 featureIds: params.featureIds,
                 exclusive: params.exclusive
             });
             if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
-                mapHeatmap.update({
-                    map: map
-                });
+                mapHeatmap.update({});
             }
             publisher.updateEventCounter(); // TODO: Hack for updating event counter
         },
@@ -313,7 +306,6 @@ define([
          */
         updateFeatures: function(params) {
             mapFeatures.updateFeatures({
-                map: map,
                 layerId: params.layerId,
                 featureObjects: params.featureObjects // [{featureId: 123, style:{stylishstuff}}]
             });
@@ -329,16 +321,12 @@ define([
             }
 
             mapLayers.hideLayer({
-                map: map,
                 layerId: params.layerId
             });
             mapClustering.hideLayer({
-                map: map,
                 layerId: params.layerId
             });
-            mapHeatmap.update({
-                map: map
-            })
+            mapHeatmap.update({})
 
         },
         /**
@@ -348,7 +336,6 @@ define([
          */
         showLayer: function(params) {
             mapLayers.showLayer({
-                map: map,
                 layerId: params.layerId
             });
         },
@@ -359,11 +346,9 @@ define([
          */
         changeVisualMode: function(params) {
             mapBase.setVisualMode({
-                map: map,
                 mode: params.mode
             });
             mapLayers.visualModeChanged({
-                map: map,
                 mode: params.mode
             });
         },
@@ -375,7 +360,6 @@ define([
          */
         identifyRecord: function(params) {
             mapLayers.identifyFeature({
-                map: map,
                 layerId: params.layerId,
                 featureId: params.featureId
             });
@@ -385,15 +369,10 @@ define([
          */
         clear: function() {
             mapBase.clearMapSelection();
-            mapLayers.clear({
-                map: map
-            });
-            mapClustering.clear({
-                map: map
-            });
-            mapHeatmap.clear({
-                map: map
-            });
+            mapLayers.clear({});
+            mapClustering.clear({});
+            mapHeatmap.clear({});
+            mapSelection.clear({})
         }
     };
 

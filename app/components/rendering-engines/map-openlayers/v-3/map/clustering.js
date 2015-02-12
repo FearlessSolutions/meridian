@@ -13,6 +13,7 @@ define([], function() {
         STATIC_TYPE,
         LAYERID_SUFFIX,
         mapLayers,
+        map,
         styleCache;
 
     var exposed = {
@@ -35,9 +36,10 @@ define([], function() {
 //            populateRules();
 
         },
+        setMap: function(params){
+            map = params.map;
+        },
         enable: function(params) {
-            var map = params.map;
-
             map.getLayers().forEach(function(layer, layerIndex, layerArray){
                 var layerType = layer.get('layerType');
                 if (layerType === CLUSTER_MODE
@@ -48,8 +50,6 @@ define([], function() {
             });
         },
         disable: function(params) {
-            var map = params.map;
-
             map.getLayers().forEach(function(layer, layerIndex, layerArray){
                 var layerType = layer.get('layerType');
                 if (layerType === CLUSTER_MODE){
@@ -69,8 +69,7 @@ define([], function() {
 //            });
         },
         hideLayer: function(params) {
-            var map = params.map,
-                layerId = params.layerId + LAYERID_SUFFIX,
+            var layerId = params.layerId + LAYERID_SUFFIX,
                 currentLayer = map.getLayer(layerId);
 
             if(currentLayer){
@@ -78,8 +77,7 @@ define([], function() {
             }
         },
         clear: function(params) {
-            var map = params.map,
-                layers = map.getLayers();
+            var layers = map.getLayers();
 
             layers.forEach(function(layer){
                 if(layer.get('layerType') === CLUSTER_MODE){
@@ -96,7 +94,6 @@ define([], function() {
         },
         setupClusteringForLayer: function(params, geoSource, featureStyle, selectedFeatureStyle){
             var layerId = params.layerId,
-                map = params.map,
                 selectable = 'selectable' in params ? params.selectable : false,
                 clusterSource,
                 newClusterLayer;
@@ -194,8 +191,8 @@ define([], function() {
             });
 
             styleMap = {
-               "default": style,
-               "select": style
+               default: style,
+               select: style
             };
 
             return styleMap;

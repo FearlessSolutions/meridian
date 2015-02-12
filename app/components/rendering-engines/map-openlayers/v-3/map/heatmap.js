@@ -6,6 +6,7 @@
 define([], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context,
+        map,
         heatLayer,
         CLUSTER_MODE,
         FEATURE_MODE,
@@ -25,9 +26,10 @@ define([], function() {
             STATIC_TYPE = context.sandbox.mapConfiguration.STATIC_TYPE;
             LAYERID_SUFFIX = context.sandbox.mapConfiguration.LAYERID_SUFFIX;
         },
+        setMap: function(params){
+            map = params.map;
+        },
         enable: function(params){
-            var map = params.map;
-
             //Turn off all of the AOIs
             map.getLayers().forEach(function(layer, layerIndex, layerArray){
                 var layerType = layer.get('layerType');
@@ -43,21 +45,16 @@ define([], function() {
         },
         update: function(params) {
             if(context.sandbox.stateManager.map.visualMode === HEAT_MODE) {
-                generateHeatmap({
-                    map: params.map
-                });
+                generateHeatmap({});
             } else {
                 heatLayer.clear();
             }
         },
         createHeatmap: function(params){
             exposed.clear({
-                map: params.map
             });
         },
         clear: function(params) {
-            var map = params.map;
-
             if(heatLayer){
                 map.removeLayer(heatLayer)
             }
@@ -69,7 +66,7 @@ define([], function() {
                 }),
                 radius: 5
             });
-            params.map.addLayer(heatLayer);
+            map.addLayer(heatLayer);
         }
     };
 
@@ -80,12 +77,9 @@ define([], function() {
      * //TODO polygons
      */
     function generateHeatmap(params) {
-        var map = params.map,
-            heatFeatures = [];
+        var heatFeatures = [];
 
-        exposed.clear({
-            map: map
-        });
+        exposed.clear({});
 
         context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, collection) {
             var layer,

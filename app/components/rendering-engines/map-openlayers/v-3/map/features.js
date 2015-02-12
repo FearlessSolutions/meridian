@@ -2,12 +2,16 @@ define([
     './../libs/v3.0.0/build/ol-debug'
 ], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context;
+    var context,
+        map;
 
     var exposed = {
         init: function(modules) {
             context = modules.context;
             mapBase = modules.base;
+        },
+        setMap: function(params){
+            map = params.map;
         },
         /**
          * Plot features given in geoJSON format
@@ -17,9 +21,9 @@ define([
             var layerId = params.layerId,
                 data = params.data,
                 newFeatures = [],
-                layer = params.map.getLayer(layerId),
+                layer = map.getLayer(layerId),
                 geoJsonParser,
-                mapProjection = params.map.getProjection();
+                mapProjection = map.getProjection();
 
             // TODO: Need to address how geoJSON feature collections are handled
             geoJsonParser = new ol.format.GeoJSON({
@@ -72,13 +76,12 @@ define([
         hideFeatures: function(params) {
             var layerId = params.layerId,
                 featureIds = params.featureIds,
-                layer = params.map.getLayersBy('layerId', layerId)[0],
+                layer = map.getLayersBy('layerId', layerId)[0],
                 currentHiddenFeatures = [];
 
             if(layer) {
                 if(params.exclusive === true) { // Show all previously hidden features before hiding new ones
                     exposed.showAllFeatures({
-                        map: params.map,
                         layerId: layerId
                     });
                 }
@@ -128,12 +131,8 @@ define([
                 context.sandbox.utils.each(identifiedFeatures, function(i1, identifiedfid){
                     context.sandbox.utils.each(featureIds, function(i2, fid){
                         if(fid === identifiedfid) {
-                            mapBase.clearMapSelection({
-                                map: params.map
-                            });
-                            mapBase.clearMapPopups({
-                                map: params.map
-                            });
+                            mapBase.clearMapSelection({});
+                            mapBase.clearMapPopups({});
                             return;
                         }
                     });   
@@ -142,7 +141,7 @@ define([
         },
         hideAllFeatures: function(params) {
             var layerId = params.layerId,
-                layer = params.map.getLayersBy('layerId', layerId)[0],
+                layer = map.getLayersBy('layerId', layerId)[0],
                 hiddenFeatureIds = [];
 
             context.sandbox.utils.each(layer.features, function(index, feature) {
@@ -181,7 +180,7 @@ define([
         showFeatures: function(params) {
             var layerId = params.layerId,
                 featureIds = params.featureIds,
-                layer = params.map.getLayersBy('layerId', layerId)[0],
+                layer = map.getLayersBy('layerId', layerId)[0],
                 identifiedFeatures;
 
             if(layer) {
@@ -198,10 +197,8 @@ define([
                     context.sandbox.utils.each(identifiedFeatures, function(i1, identifiedfid){  // TODO: if this is ever enhanced to allow multiple identifation windows, this will need updating
                         if(featureIds.indexOf(identifiedfid) === -1) {
                             mapBase.clearMapSelection({
-                                map: params.map
                             });
                             mapBase.clearMapPopups({
-                                map: params.map
                             });
                         }  
                     });
@@ -243,7 +240,7 @@ define([
         },
         showAllFeatures: function(params) {
             var layerId = params.layerId,
-                layer = params.map.getLayersBy('layerId', layerId)[0];
+                layer = map.getLayersBy('layerId', layerId)[0];
 
             context.sandbox.stateManager.removeAllHiddenFeaturesByLayerId({
                 layerId: layerId
@@ -272,7 +269,7 @@ define([
         updateFeatures: function(params) {  // TODO: finish method to support full feature updating (attributes, styles, etc.)
             var layerId = params.layerId,
                 featureObjects = params.featureObjects,
-                layer = params.map.getLayersBy('layerId', layerId)[0];
+                layer = map.getLayersBy('layerId', layerId)[0];
 
             if(layer) {
                 context.sandbox.utils.each(featureObjects, function(key, featureObject) {

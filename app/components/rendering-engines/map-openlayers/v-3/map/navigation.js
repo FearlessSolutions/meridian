@@ -3,6 +3,7 @@ define([
 ], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context,
+        map,
         publisher;
 
     var exposed = {
@@ -10,13 +11,16 @@ define([
             context = modules.context;
             publisher = modules.publisher;
         },
+        setMap: function(params){
+            map = params.map;
+        },
         zoomIn: function(params) {
-            var view = params.map.getView(),
+            var view = map.getView(),
                 zoom = view.getZoom();
             view.setZoom(++zoom);
         },
         zoomOut: function(params) {
-            var view = params.map.getView(),
+            var view = map.getView(),
                 zoom = view.getZoom();
             view.setZoom(--zoom);
         },
@@ -26,18 +30,17 @@ define([
          */
         zoomToExtent: function(params) {
             var bounds = new ol.Bounds(params.minLon, params.minLat, params.maxLon, params.maxLat);
-            params.map.zoomToExtent(bounds.transform(params.map.projectionWGS84, params.map.projection), true);
+            params.map.zoomToExtent(bounds.transform(map.projectionWGS84, map.projection), true);
         },
         /**
          * Zoom to extent of layer DATA
          * @param params
          */
         zoomToLayer: function(params) {
-            var map = params.map,
-                layer = map.getLayer(params.layerId);
+            var layer = map.getLayer(params.layerId);
 
             if(layer && layer.getDataExtent()) {
-                params.map.zoomToExtent(layer.getDataExtent());
+                map.zoomToExtent(layer.getDataExtent());
             } else {
                 publisher.publishMessage({
                     messageType: 'warning',
@@ -51,7 +54,7 @@ define([
          * @param params
          */
         zoomToFeatures: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0],
+            var layer = map.getLayersBy('layerId', params.layerId)[0],
                 bounds = new ol.Bounds(),
                 featuresFound = false;
 
@@ -82,7 +85,7 @@ define([
                 });
 
                 if(featuresFound) {
-                   params.map.zoomToExtent(bounds);
+                   map.zoomToExtent(bounds);
                 } else {
                     publisher.publishMessage({
                         messageType: 'warning',
@@ -108,7 +111,7 @@ define([
                 lon = params.lon;
 
             centerPoint = new ol.LonLat(lon, lat);
-            params.map.setCenter(centerPoint.transform(params.map.projectionWGS84, params.map.projection), 8);
+            map.setCenter(centerPoint.transform(map.projectionWGS84, map.projection), 8);
         }
     };
     

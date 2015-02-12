@@ -3,6 +3,7 @@ define([
 ], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context,
+        map,
         publisher;
 
     // Set Full-Scope Variables
@@ -36,10 +37,12 @@ define([
                 })
             });
         },
+        setMap: function(params){
+            map = params.map;
+        },
         /**
          * Activate Drawing
          * @param  {object} params Parameters JSON
-         * @param {object} params.map the map object
          * @param {string} params.layerId the layerId
          * @param {integer} params.sides the number of sides on the polygon
          * @param {boolean} params.irregular true if sides can be of differing length
@@ -48,29 +51,28 @@ define([
 
             //This must be set here to use the same map object.
             drawControl.onBoxEnd = function(){
-                var drawLayerSource = params.map.getLayer(DRAW_LAYER_ID).getSource(),
+                var drawLayerSource = map.getLayer(DRAW_LAYER_ID).getSource(),
                     polygon = this.getGeometry(),
                     newFeature = new ol.Feature(polygon.clone()); //Has to be cloned
 
                 newFeature.set('layerId', DRAW_LAYER_ID); //Set layerId for lookup
 
                 drawLayerSource.addFeature(newFeature);
-                params.map.removeInteraction(drawControl);
+                map.removeInteraction(drawControl);
                 context.$('#map').css('cursor', 'default');
-                publisher.stopDrawing(convertPolygonToCoordinates(polygon, params.map.getProjection()));
+                publisher.stopDrawing(convertPolygonToCoordinates(polygon, map.getProjection()));
             };
 
-            params.map.addInteraction(drawControl);
+            map.addInteraction(drawControl);
             context.$('#map').css('cursor', 'crosshair');
         },
         /**
          * Deactivate Drawing
          * @param  {object} params Parameters JSON
-         * @param {object} params.map the map object
          * @param {string} params.layerId the layerId
          */
         clearDrawing: function(params) {
-            params.map.getLayer(DRAW_LAYER_ID).clear();
+            map.getLayer(DRAW_LAYER_ID).clear();
 
         }
     };

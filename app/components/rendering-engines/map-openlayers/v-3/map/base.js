@@ -3,10 +3,10 @@ define([
 ], function() {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context,
+        map,
         mapClustering,
         mapLayers,
-        publisher,
-        selector;
+        publisher;
 
     var exposed = {
         init: function(modules) {
@@ -15,6 +15,9 @@ define([
             mapLayers = modules.layers;
             publisher = modules.publisher;
         },
+        setMap: function(params){
+            map = params.map;
+        },
         /**
          * Create the basic map and set default values for initial viewport
          * @param params
@@ -22,11 +25,11 @@ define([
          */
         createMap: function(params) {
             var mapElement,
-                map,
+                newMap,
                 showCursorLocationDefault = true;
                 
             mapElement = (params && params.el) ? params.el : 'map';
-            map = new ol.Map({
+            newMap = new ol.Map({
                 target: mapElement,
                 view: new ol.View({
                     projection: 'EPSG:3857',
@@ -35,40 +38,6 @@ define([
                 })
             });
 
-            selector = new ol.interaction.Select({
-                condition: ol.events.condition.click,
-                layers: function(layer){ //Layers that can be selected will have the 'selectable' property
-                    if(layer.get('selectable')){
-                        return true;
-                    } else{
-                        return false;
-                    }
-                },
-                style: function(feature, resolution){
-                    if(feature.get('features')){ //It is a cluster
-                        return mapClustering.getSelectedClusterStyling({
-                            feature: feature,
-                            resolution: resolution
-                        });
-                    } else {
-                        return mapLayers.getSelectedFeatureStyling({
-                            feature: feature,
-                            resolution: resolution
-                        });
-                    }
-                }
-            });
-            map.addInteraction(selector);
-            map.on('moveend', function(event){ //On zoom, remove selected stuff
-                exposed.clearMapSelection();
-            });
-
-//
-            //TODO
-//            exposed.addSelector({
-//                map: map
-//            });
-//
             //TODO
             // Check user settings for default setting to display cursor location
 //            if(
@@ -114,16 +83,15 @@ define([
 //            });
 //
 
-            return map;
+            return newMap;
         },
         clearMapSelection: function(params) {
             selector.unselectAll();
         },
         trackMousePosition: function(params) {
-            params.map.events.register('mousemove', params.map, function(e) {
+            map.events.register('mousemove', map, function(e) {
                 var position = this.events.getMousePosition(e);
                 var latlon = exposed.getMouseLocation({
-                    map: params.map,
                     position: position
                 });
                 publisher.publishMousePosition({
@@ -156,17 +124,18 @@ define([
                 anchor,
                 true,
                 function() {
-                    exposed.clearMapSelection({
-                        map: params.map
-                    });
-                    exposed.clearMapPopups({
-                        map: params.map
-                    });
+                    exposed.clearMapSelection({});
+                    exposed.clearMapPopups({});
                 }
             );
 
             feature.popup = popup;
-            params.map.addPopup(popup);
+            map.addPopup(popup);
+        },
+        deselectByLayer: function(params){
+            var layerId = params.layerId;
+
+
         },
         setVisualMode: function(params) {
             if(params && params.mode) {
