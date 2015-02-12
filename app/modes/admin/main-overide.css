@@ -19,13 +19,13 @@ html, body { overflow:hidden;}
 		a.navbar-brand {
 			color: rgba(0,0,0,0.6);
 			/*color: rgba(255,255,255,.9);*/
-    text-shadow: 1px 1px 3px rgba(255,255,255,0.3);
+    		text-shadow: 1px 1px 3px rgba(255,255,255,0.3);
 			}
 			a.navbar-brand img {
 				margin-right:10px;			}
 		
-		.container-login { 
-			height:25px; width:290px;
+		.container-login {
+			height:25px; width:250px;
 			position:absolute;
 			top:8px; right:10px;
 		}
@@ -36,14 +36,9 @@ html, body { overflow:hidden;}
 
 		.navbar-text {
 			float:right;
-			margin-top:7px
+			margin-top:7px;			
+			}
 			
-			}
-			@media (max-width: 767px) {
-  				.navbar-text {
-				    margin-right: 5px;
-				  }
-			}
 		.navbar-link { color:#fff; }
 		.container .btn { float:right;}
 
@@ -54,4 +49,24 @@ html, body { overflow:hidden;}
 
 .panel { 
 	margin:20px; 
-}#
+}
+@media (max-width: 767px) {
+	.navbar-text {
+		margin-right:15px;
+	}
+
+}
+@media (max-width: 560px) {
+	a.navbar-brand img {		
+		display:none;
+	}
+
+	.container-login { 
+		height:42px; top:5px; right:20px; width:auto;  
+		padding:4px; background:#eee; border-radius:4px; 
+	}
+	.navbar-text {
+		margin-right:5px;
+	}
+	.navbar-link { color:#1f5c9f; } 
+}

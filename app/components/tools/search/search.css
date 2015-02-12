@@ -37,6 +37,7 @@ div[data-aura-component='tools/search'] .btn { margin-top:-3px;}
 	}
 }
 @media (max-width: 560px) {
+	
 	div[data-aura-component='tools/search'] .form-group {		
 		width:100%;		
 	}
