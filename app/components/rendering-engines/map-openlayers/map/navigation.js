@@ -24,6 +24,13 @@ define([
             params.map.zoomToExtent(bounds.transform(params.map.projectionWGS84, params.map.projection), true);
         },
         /**
+         * Zoom to max extent
+         * @param params
+         */
+        zoomToMaxExtent: function(params) {
+            params.map.zoomToMaxExtent();
+        },
+        /**
          * Zoom to extent of layer DATA
          * @param params
          */

@@ -9,13 +9,22 @@ define([
         publishMessage: function(args) {
             context.sandbox.emit('message.publish', args); 
         },
-        publishSetCenter: function(args) {
+        setCenter: function(args) {
             context.sandbox.emit('map.center.set', args);
+        },
+        zoomIn: function(args) {
+            context.sandbox.emit('map.zoom.in', args);
+        },
+        zoomOut: function(args) {
+            context.sandbox.emit('map.zoom.out', args);
+        },
+        zoomToMaxExtent: function(args) {
+            context.sandbox.emit('map.zoom.maxExtent', args);
         },
         zoomToLayer: function(args) {
             context.sandbox.emit('map.zoom.toLayer', args);
         },
-        publishCenterOnBounds: function(args) {
+        centerOnBounds: function(args) {
             context.sandbox.emit('map.zoom.toLocation', args);
         }
     };

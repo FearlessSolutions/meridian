@@ -23,58 +23,65 @@ define([
 
     var receiveChannels= {
 		"map.view.zoom": function(message) {
-			if('range' in message) {
-				// publisher.publishZoom(message); //To
-			} else {
-                sendError('map.view.zoom', message, 'Must include "range" as an option');
-            }
+			sendError('map.view.zoom', message, 'channel not supported');
 		},
-		"map.view.center.overlay": function(message) {
+        "map.view.zoom.in": function(message) {
+            publisher.zoomIn();
+        },
+        "map.view.zoom.out": function(message) {
+            publisher.zoomOut();
+        },
+        "map.view.zoom.max.extent": function(message) {
+            publisher.zoomMaxExtent();
+        },
+        "map.view.center.overlay": function(message) {
             var params = {};
-
-            if(message === '') {
-                params = {
-                    "layerId": defaultLayerId
-                };
+            
+            if('range' in message) {
+                params.layerId = message.overlayId;
             } else {
-                params.layerId = message.overlayId || defaultLayerId;
-                params.zoom = null; // TODO: ensure supoort for zoom parameter to overlay (CMAPI calls for using meters or 'auto')
+                params.layerId = defaultLayerId;
             }
-            publisher.publishZoomToLayer(params);
+            
+            //defaulting auto zoom to null since we dont support zooming into a certain range
+            params.zoom = null; // 
+            publisher.zoomToLayer(params);
 		},
-		"map.view.center.feature": function(message) { // TODO: ensure supoort for zoom parameter to overlay (CMAPI calls for using meters or 'auto')
+		"map.view.center.feature": function(message) {
             var newAJAX;
-            if(message === '' || !message.featureId) {
-                sendError('map.view.center.feature', message, 'Must include "featureId"');
-                return;
+            
+            //check for required fields (featureId)
+            if(message !== '' && message !== undefined) {
+                if(!('featureId' in message)) {
+                    sendError('map.view.center.feature', message, 'message must include a featureId');
+                    return;
+                }
             }
 
-            //Get feature from server, then go to it
             newAJAX = context.sandbox.dataStorage.getFeatureById(message, function(data) {
                 var extent;
-
                 //If the feature is a point, set center; else, zoom to extent
-                if(data.geometry.type === "Point") {
-                    publisher.publishSetCenter({
+               if(data.geometry.type === "Point") {
+                   publisher.setCenter({
                         "lon": data.geometry.coordinates[1],
                         "lat": data.geometry.coordinates[0]
                     });
-                } else {
+                } else { //if feature is any other geometry 
                     extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
-                    publisher.publishCenterOnBounds(extent);
+                    publisher.centerOnBounds(extent);
                 }
             });
 
             context.sandbox.ajax.addActiveAJAX({
                 "newAJAX": newAJAX, 
                 "layerId": layerId
-            }); //Keep track of current AJAX calls
+            }); //keep track of current AJAX calls
 		},
 		"map.view.center.location": function(message) {
 			if('location' in message &&
 				'lat' in message.location &&
 				'lon' in message.location){
-				publisher.publishSetCenter(message.location);
+				publisher.setCenter(message.location);
 			} else {
                 sendError('map.view.center.location', message, 'Requires "location":{"lat", "lon"}');
             }

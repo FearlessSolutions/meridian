@@ -110,6 +110,14 @@ define([
             });
         },
         /**
+         * Zoom to Max Extent
+         */
+        zoomToMaxExtent: function() {
+            mapNavigation.zoomToMaxExtent({
+                "map": map
+            });
+        },
+        /**
          * Zoom in to Layer
          * @param {object} params - JSON parameters
          * @param {string} params.layerId - id of layer
