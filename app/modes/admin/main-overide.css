@@ -4,13 +4,11 @@
  */
 html, body { overflow:hidden;}
 
-.navbar-admin { 
-	
+.navbar-admin {
 	background: linear-gradient(to bottom, rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(32,124,202,1) 51%,rgba(125,185,232,1) 100%); /* W3C */
 	border:none;
 	border-bottom:1px solid #999; 
-	border-radius:0px;
-	
+	border-radius:0px;	
 	}
 	.container { 
 		margin-left:0px;
@@ -36,7 +34,8 @@ html, body { overflow:hidden;}
 
 		.navbar-text {
 			float:right;
-			margin-top:7px;			
+			position:relative;
+			top:-7px;
 			}
 			
 		.navbar-link { color:#fff; }
@@ -45,28 +44,36 @@ html, body { overflow:hidden;}
 .page-header {
 	margin:1px;
 }
-
-
 .panel { 
 	margin:20px; 
 }
+
 @media (max-width: 767px) {
 	.navbar-text {
 		margin-right:15px;
 	}
-
 }
+
 @media (max-width: 560px) {
+	.navbar-brand { position:absolute; top:2px; left:15px; z-index:200;}
 	a.navbar-brand img {		
 		display:none;
 	}
-
 	.container-login { 
-		height:42px; top:5px; right:20px; width:auto;  
-		padding:4px; background:#eee; border-radius:4px; 
-	}
-	.navbar-text {
-		margin-right:5px;
-	}
-	.navbar-link { color:#1f5c9f; } 
+		width:calc(100% - 10px); position:relative; top:5px; left:5px; 
+		height:44px;    
+		padding:4px; background:rgba(255,255,255,0.3); border-radius:4px; 
+		}
+		.navbar-text {
+			margin-right:5px;
+		}
+		.navbar-link { color:#1f5c9f; }
+		.container-login .btn {
+			margin-top:1px;
+			margin-right:2px;
+		}
+}
+@media (max-width: 435px) {
+	.navbar-brand	{ top:-8px; }
+	.navbar-text	{ top:2px; }
 }

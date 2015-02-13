@@ -18,6 +18,11 @@ div[data-aura-component='tools/search'] .form-control {
 	}
 
 div[data-aura-component='tools/search'] .btn { margin-top:-3px;}
+@media (max-width:850px) {
+    /*html,body {overflow:auto;}*/
+    .daterangepicker.dropdown-menu { max-width:255px;}
+    .daterangepicker.show-calendar .calendar { display:none; }
+}
 
 @media (max-width: 767px) {
 	div[data-aura-component='tools/search']  .navbar-form {
