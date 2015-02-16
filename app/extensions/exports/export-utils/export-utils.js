@@ -107,7 +107,7 @@ define([
                 var layer = context.sandbox.dataStorage.datasets[layerId];
 
                 context.sandbox.utils.each(layer.models, function(index, feature){
-                    valid = verifyPoint(feature);
+                    valid = exposed.verifyFeatureIsPoint(feature);
 
                     if(!valid){ //If not valid, exit the loop
                         return false;
