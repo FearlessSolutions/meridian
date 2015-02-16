@@ -128,10 +128,11 @@ define([
             map.addLayer(newFeatureLayer);
 
 
-
-            newFeatureLayer.on('change:visible', function(event){
-               console.debug(event, this) ;
-            });
+            if(selectable){
+                mapSelection.addSelectionToLayer({
+                    layer: newFeatureLayer
+                });
+            }
             if(canCluster){
                 mapClustering.setupClusteringForLayer(params, geoSource);
             }

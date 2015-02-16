@@ -91,21 +91,31 @@ define([
             feature.popup = popup;
             map.addPopup(popup);
         },
-        deselectByLayer: function(params){
-            var layerId = params.layerId;
+        deselectByLayer: function(event){
 
 
         }
     };
 
     function deselectByLayer(event){
-        var layer = event.target;
+        var layer = event.target,
+            layerId = layer.get('layerId'),
+            selectedFeatures = selector.getFeatures();
 
-        if(layer.isVisible()){
-            return; //Don't do anything if it's now visible
+        if(layer.getVisible()){
+            return; //Don't do anything if it is visible
         }
 
-
+        selectedFeatures.forEach(function(selectedFeature, selectedFeatureIndex){
+            var cluster = selectedFeature.get('features');
+            if(cluster){
+                selectedFeature = cluster[0];
+            }
+            if(selectedFeature.get('layerId') === layerId){
+                selectedFeatures.removeAt(selectedFeatureIndex); //TODO this isn't actually removing anything
+            }
+        });
+        console.debug(selectedFeatures);
     }
 
     return exposed;

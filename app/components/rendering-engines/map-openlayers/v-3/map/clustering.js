@@ -13,6 +13,7 @@ define([], function() {
         STATIC_TYPE,
         LAYERID_SUFFIX,
         mapLayers,
+        mapSelection,
         map,
         styleCache;
 
@@ -20,6 +21,7 @@ define([], function() {
         init: function(modules) {
             context = modules.context;
             mapLayers = modules.layers;
+            mapSelection = modules.selection;
             config = context.sandbox.mapConfiguration.clustering;
             CLUSTER_MODE = context.sandbox.mapConfiguration.CLUSTER_MODE;
             FEATURE_MODE = context.sandbox.mapConfiguration.FEATURE_MODE;
@@ -118,6 +120,11 @@ define([], function() {
             });
 
             map.addLayer(newClusterLayer);
+            if(selectable){
+                mapSelection.addSelectionToLayer({
+                    layer: newClusterLayer
+                });
+            }
         },
         applyCustomSymbolizers: function(params) {
             var symbolizers = params.symbolizers;

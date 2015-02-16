@@ -97,7 +97,7 @@ define([
             //Create heatmap layer options
             mapHeatmap.createHeatmap({});
 //            context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
-            
+            mapSelection.addSelector();
             context.sandbox.stateManager.triggerMapStatusReady();
         },
         /**
