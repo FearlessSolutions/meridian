@@ -14,7 +14,7 @@ define([
         },
         receive: function(channel, message) {
             if(receiveChannels[channel]) {
-                receiveChannels[channel](message);
+                receiveChannels[ context.sandbox.cmapi.utils.createChannelNameFunction(channel)](message);
             } else {
                 sendError(channel, message, 'Channel not supported');
             }
@@ -22,19 +22,19 @@ define([
     };
 
     var receiveChannels= {
-		"map.view.zoom": function(message) {
+        mapViewZoom: function(message) {
 			sendError('map.view.zoom', message, 'channel not supported');
 		},
-        "map.view.zoom.in": function(message) {
+        mapViewZoomIn: function(message) {
             publisher.zoomIn();
         },
-        "map.view.zoom.out": function(message) {
+        mapViewZoomOut: function(message) {
             publisher.zoomOut();
         },
-        "map.view.zoom.max.extent": function(message) {
+        mapViewZoomMaxExtent: function(message) {
             publisher.zoomMaxExtent();
         },
-        "map.view.center.overlay": function(message) {
+        mapViewCenterOverlay: function(message) {
             var params = {};
             
             if('range' in message) {
@@ -47,7 +47,7 @@ define([
             params.zoom = null; // 
             publisher.zoomToLayer(params);
 		},
-		"map.view.center.feature": function(message) {
+		mapViewCenterFeature: function(message) {
             var newAJAX;
             
             //check for required fields (featureId)
@@ -77,7 +77,7 @@ define([
                 "layerId": layerId
             }); //keep track of current AJAX calls
 		},
-		"map.view.center.location": function(message) {
+		maViewCenterLocation: function(message) {
 			if('location' in message &&
 				'lat' in message.location &&
 				'lon' in message.location){
@@ -86,7 +86,7 @@ define([
                 sendError('map.view.center.location', message, 'Requires "location":{"lat", "lon"}');
             }
 		},
-		"map.view.center.bounds": function(message){
+		mapViewCenterBounds: function(message){
             var bounds;
 
             if(
@@ -111,7 +111,7 @@ define([
 
             publisher.publishCenterOnBounds(bounds);
 		},
-        "map.view.center.data": function(message){
+        mapViewCenterData: function(message){
             var extent,
                 minLatDelta,
                 minLonDelta,
@@ -137,8 +137,9 @@ define([
                 "maxLon": extent.maxLon + maxLonDelta
             });
         },
-		"map.view.clicked": function(message){
-        } //This is not supported
+		mapViewClicked: function(message){
+            sendError('map.view.clicked', message, 'channel not supported');
+        } 
     };
 
     return exposed;

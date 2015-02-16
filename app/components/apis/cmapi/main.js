@@ -57,46 +57,24 @@ define([
             if(!message || message.widgetName === context.sandbox.systemConfiguration.appName){
                 return;
             }
-
+            //parse message to make sure its valid
             try {
                 if(message !== '') {
                     message = JSON.parse(message);
                     if(!message.origin) {
                         message.origin = context.sandbox.cmapi.defaultLayerId;
                     }
-                    /* //TODO this is for handling kml also; not doing right now
-                    var split = message.split('<');
-                    if(split.length > 1){                    
-                        message = split.shift();
-                        var kml = '';
-
-                        while(split.length > 1){
-                            kml += '<' + split.shift();
-                        }
-
-                        var end = split[0].split('>');
-                        kml += '<' + end[0] + '>';
-                        message += end[1];
-
-                        message = JSON.parse(message);
-
-                        message.feature = kml;
-                        message.format = 'kml';
-                    }else{
-                        message = JSON.parse(message);    
-                    }  
-                
-                    if(!message.origin){
-                        message.origin = 'cmapi';
-                    }*/
                 }            
             } catch(parseE) {
                 console.debug(parseE);
-            } //This might not be an actual error?
+                sendError(channel, message, 'Failure processing message - parsing message error');
+            }
 
             if(processing[category]) {
                 processing[category].receive(channel, message);
-            } else {} //Error?
+            } else {
+                sendError(channel, message, 'Failure processing message - channel does not exsist');
+            }
         }
     }
 
@@ -126,19 +104,6 @@ define([
         emit('map.error', payload);
     }
 
-
     return exposed;
 
-    /* //TODO this is for KML; not using right now; might use in the future?
-    function parseXMLString(text){//TODO move to Utils?
-        if (window.DOMParser){
-            var parser = new DOMParser();
-            return parser.parseFromString(text, 'text/xml');
-        }
-        else{ // Internet Explorer
-            var xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
-            xmlDoc.async = false;
-            return xmlDoc.loadXML(text); 
-        }
-    }*/
 });
