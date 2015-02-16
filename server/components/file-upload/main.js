@@ -82,7 +82,7 @@ exports.init = function(thisContext){
                                         saveRecursive;
 
                                     _.each(data.features, function (feature, index) {
-                                        var featureId = feature.properties.featureId || feature.properties.id || uuid.v4();
+                                        var featureId = uuid.v4();
 
                                         feature.featureId = featureId;
                                         feature.properties.featureId = featureId;

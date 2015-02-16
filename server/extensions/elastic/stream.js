@@ -25,7 +25,7 @@ exports.stream = function(routing, index, type, query, pageSize, pageCallback){
                 getPage(routing, index, type, query, start + pageSize, pageSize, pageCallback);
             }
         }, function(err){
-            pageCallback(err, null, null);
+            pageCallback(err, null);
         });
 
     };

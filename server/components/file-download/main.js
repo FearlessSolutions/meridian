@@ -130,8 +130,6 @@ exports.init = function(context){
         );
     });
 
-
-
     app.get('/results.kml', auth.verifyUser, function(req, res) {
         var userName = res.get('Parsed-User'),
             queryIds = req.query.ids.split(','),
@@ -197,7 +195,7 @@ exports.init = function(context){
                         }
                     });
 
-                    mutex--; //TODO remove
+                    mutex--;
                     if(done && mutex === 0){
                         closeKML();
                     }

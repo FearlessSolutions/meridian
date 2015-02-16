@@ -64,6 +64,41 @@ define([
             });
 
             return found;
+        },
+        /**
+         * Check server for file export by calling HEAD
+         * @param datasetIds
+         * @param callback
+         */
+        checkFileHead: function(datasetIds, callback){
+            var suffix = '?ids=' + datasetIds.join();
+
+            context.sandbox.utils.ajax({
+                type: 'HEAD' ,
+                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.*' + suffix,
+                cache: false
+            })
+                .done(function(responseText, status, jqXHR) {
+                    if (jqXHR.status === 204){
+                        callback({
+                            messageType: 'warning',
+                            messageText: 'No data'
+                        }, null);
+                    } else {
+                        callback(null, true);
+
+                    }
+                })
+                .error(function(e) {
+                    callback({
+                        messageType: 'warning',
+                        messageText: 'No data'
+                    }, null);
+                });
+        },
+        getFileExportUrl: function(datasetIds, fileType){
+            var suffix = '?ids=' + datasetIds.join();
+            return context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.' + fileType + suffix;
         }
     };//exposed
 

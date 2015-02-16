@@ -10,7 +10,13 @@ exports.init = function(context){
 };
 
 exports.pipeGeoJSONResponse = function(userName, queryIds, callback, incrementMutex){
-    query.streamQuery(userName, {query:{terms:{queryId:queryIds}}}, 100, function(queryErr, results) {
+    query.streamQuery(userName, {
+                                    query:{
+                                        terms:{
+                                            queryId:queryIds
+                                        }
+                                    }
+                                }, 100, function(queryErr, results) {
 
         //Tell parent that a new thread has been started
         incrementMutex();
@@ -30,15 +36,14 @@ exports.pipeGeoJSONResponse = function(userName, queryIds, callback, incrementMu
     });
 };
 
-
-
-
-
-
-
-
 exports.pipeKMLResponse = function(userName, queryIds, callback, incrementMutex){
-    query.streamQuery(userName, {query:{terms:{queryId:queryIds}}}, 100, function(queryErr, results) {
+    query.streamQuery(userName, {
+                                    query:{
+                                        terms:{
+                                            queryId:queryIds
+                                        }
+                                    }
+                                }, 100, function(queryErr, results) {
 
         //Tell parent that a new thread has been started
         incrementMutex();
@@ -57,25 +62,6 @@ exports.pipeKMLResponse = function(userName, queryIds, callback, incrementMutex)
         }
     });
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Query metadata by user
 // Remove anything that doesn't match the query id
@@ -192,11 +178,10 @@ function _writeArray(buffer, row){
         _appendField(out, row[i]);
         out.push('"');
     }
-    out.push("\r\n");
+    out.push('\r\n');
     buffer += out.join('');
     return buffer;
 }
-
 
 /**
  * Turns database results into normal geoJSON
@@ -204,7 +189,7 @@ function _writeArray(buffer, row){
  */
 function resultsToGeoJSON(results){
     var collection = {
-        type: "FeatureCollection",
+        type: 'FeatureCollection',
         features: []
     };
 
