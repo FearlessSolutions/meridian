@@ -99,6 +99,30 @@ define([
         getFileExportUrl: function(datasetIds, fileType){
             var suffix = '?ids=' + datasetIds.join();
             return context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.' + fileType + suffix;
+        },
+        verifyOnlyPointsInLayer: function(layerIds){
+            var valid = true;
+
+            context.sandbox.utils.each(layerIds, function(index, layerId){
+                var layer = context.sandbox.dataStorage.datasets[layerId];
+
+                context.sandbox.utils.each(layer.models, function(index, feature){
+                    valid = verifyPoint(feature);
+
+                    if(!valid){ //If not valid, exit the loop
+                        return false;
+                    }
+                });
+
+                if(!valid){
+                    return false; //If not valid, exit the loop
+                }
+            });
+
+            return valid;
+        },
+        verifyFeatureIsPoint: function(feature){
+            return feature.attributes.geometry.type === 'Point' ;
         }
     };//exposed
 
