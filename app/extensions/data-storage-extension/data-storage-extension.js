@@ -25,16 +25,6 @@ define([
                     property: "dataService",
                     displayName: "Data Service",
                     weight: 5
-                }],
-                featureId: [{
-                    property: "featureId",
-                    displayName: "Feature ID",
-                    weight: 0
-                }],
-                layerId: [{
-                    property: "layerId",
-                    displayName: "Layer ID",
-                    weight: 0
                 }]
             };
             var dataStorage = {
@@ -73,7 +63,7 @@ define([
                     });
                 },
                 getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
-                    $.ajax({
+                    return $.ajax({
                         type: "GET",
                         url: app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/query/" + queryId + "/session/" + sessionId +
                             "?start=" + start + "&size=" + size

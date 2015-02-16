@@ -16,11 +16,13 @@ define([
 
     return {
         initialize: function() {
+            var template = Handlebars.compile(componentHBS);
+
             this.sandbox.utils.addCSS(componentCSS, COMPONENT_NAME + '-style');
 
-            var template = Handlebars.compile(componentHBS);
-            var html = template();
-            this.html(html);
+            this.html(template({
+                exports: this.sandbox.export.options
+            }));
 
             publisher.init(this);
             component.init(this);

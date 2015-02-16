@@ -34,6 +34,7 @@
 html, body {
     width: 100%;
     height: 100%; /* Setting height is required for loading a map */
+    overflow-y:hidden;
     margin: 0;
     padding: 0;
 }
@@ -329,5 +330,4 @@ a {
     padding : 3px 5px 3px 5px !important;
     font-weight:bold;
 }
-/* END Bootstro CSS 
-
+/* END Bootstro CSS */

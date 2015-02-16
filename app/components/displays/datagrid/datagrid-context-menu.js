@@ -1,159 +1,117 @@
 define([
     './datagrid-publisher',
-    'text!./datagrid-context-menu.hbs',
+    'text!./datagrid-context-menu-row.hbs',
     'handlebars'
-], function (publisher, datagridContextMenuHBS) {
-    var context;
+], function (publisher, menuRowHBS) {
+    var context,
+        $menu,
+        template,
+        HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN';
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-        },
-        menuCallback: function(params) {
-            context.sandbox.emit(params.menuChannel, params.payload);  // dynamically emit publish messages
-        },
-        showMenu: function(params) {
-            var hiddenFeatures,
-                layerVisibility,
-                hideDisabled = '',
-                showDisabled = 'disabled',
-                zoomDisabled = '',
-                datagridContextMenuHTML,
-                $currentMenu;
+            template = Handlebars.compile(menuRowHBS);
+            $menu = context.$('#menu');
+            $menu.hide();
 
-            layerVisibility = context.sandbox.stateManager.getLayerStateById({
-                "layerId": params.layerId
-            }).visible;
-
-            hiddenFeatures = context.sandbox.stateManager.getHiddenFeaturesByLayerId({
-                "layerId": params.layerId
-            });
-
-            if(hiddenFeatures.indexOf(params.featureId) > -1 || !layerVisibility) {
-                hideDisabled = 'disabled';
-                showDisabled = '';
-                zoomDisabled = 'disabled';
-            }
-            // If the layer is not visible, also disable the menu item for show (can't show if the layer is off)
-            if(!layerVisibility) {
-                showDisabled = 'disabled';
-            }
-
-            // Remove any existing datagrid context menus
-            context.$('#datagrid-context-menu').remove();
-
-            datagridContextMenuTemplate = Handlebars.compile(datagridContextMenuHBS);
-            datagridContextMenuHTML = datagridContextMenuTemplate({
-                "layerId": params.layerId,
-                "featureId": params.featureId,
-                "hideDisabled": hideDisabled,
-                "showDisabled": showDisabled,
-                "zoomDisabled": zoomDisabled
-            });
-            
-            $('#datagridContainer').after(datagridContextMenuHTML);
-            $currentMenu = context.$('#datagrid-context-menu');
-
-            // close menu on hover out
-            $currentMenu.hover(
+            //Close menu on hover out
+            $menu.hover(
                 function(){return;},
                 function(){
                     exposed.hideMenu();
                 }
             );
+        },
+        menuCallback: function(params) {
+            context.sandbox.emit(params.menuChannel, params.payload);  // dynamically emit publish messages
+        },
+        showMenu: function(params) {
+            var featureId = params.item.featureId,
+                layerId = params.item.layerId,
+                layerVisibility,
+                featureVisibility = !params.item[HIDDEN_PROPERTY]; //Opposite of hidden
+
+            layerVisibility = context.sandbox.stateManager.getLayerStateById({
+                layerId: layerId
+            }).visible;
+
+            // Clear previous menu
+            $menu.empty();
+
+            //Show Feature option
+            $menu.append(template({
+                channel: 'map.features.show',
+                text: 'Show Feature',
+                disabled: featureVisibility || !layerVisibility, // If the layer is not visible, also disable the menu item for show (can't show if the layer is off)
+                layerId: layerId,
+                featureId: featureId
+            }));
+
+            //Hide Feature option
+            $menu.append(template({
+                channel: 'map.features.hide',
+                text: 'Hide Feature',
+                disabled: !featureVisibility, // Can only hide it if it is shown
+                layerId: layerId,
+                featureId: featureId
+            }));
+
+            //Zoom to Feature option
+            $menu.append(template({
+                channel: 'map.zoom.toFeatures',
+                text: 'Zoom to Feature',
+                disabled: !featureVisibility, // Can only zoom if it is shown
+                layerId: layerId,
+                featureId: featureId
+
+            }));
 
             // set menu item callback control
-            context.$('#datagrid-context-menu li a').click(function(e){
+            $menu.find('li a').click(function(e){
                 e.preventDefault();
                 // Only process the click if the menu item doesn't have disabled class
-                if(!$(this).parent('li').hasClass('disabled')) {
+                if(!context.$(this).parent('li').hasClass('disabled')) {
 
                     // Update StateManager to avoid Race Condition
                     if(this.getAttribute('data-channel') === 'map.features.hide') {
                         context.sandbox.stateManager.addHiddenFeaturesByLayerId({
-                            "layerId": this.getAttribute('data-layerId'),
-                            "featureIds": [this.getAttribute('data-featureId')]
+                            layerId: this.getAttribute('data-layerId'),
+                            featureIds: [this.getAttribute('data-featureId')]
                         });
                     }
                     // Update StateManager to avoid Race Condition
                     if(this.getAttribute('data-channel') === 'map.features.show') {
                         context.sandbox.stateManager.removeHiddenFeaturesByLayerId({
-                            "layerId": this.getAttribute('data-layerId'),
-                            "featureIds": [this.getAttribute('data-featureId')]
+                            layerId: this.getAttribute('data-layerId'),
+                            featureIds: [this.getAttribute('data-featureId')]
                         });
                     }
 
                     // Execute callback from menu click
                     exposed.menuCallback({
-                        "menuChannel": this.getAttribute('data-channel'),
-                        "payload": {
-                            "layerId": this.getAttribute('data-layerId'),
-                            "featureIds": [this.getAttribute('data-featureId')]
-                        }  
+                        menuChannel: this.getAttribute('data-channel'),
+                        payload: {
+                            layerId: this.getAttribute('data-layerId'),
+                            featureIds: [this.getAttribute('data-featureId')]
+                        }
                     });
 
                     // Close Context Menu
                     exposed.hideMenu();
                 }
-                
-            });
-            
 
-            $currentMenu
-                .data("invokedOn", params.event.target)
-                .show()
-                .css({
-                    position: "absolute",
-                    left: getLeftLocation(params.event, $currentMenu),
-                    top: getTopLocation(params.event, $currentMenu)
-                });
-            $currentMenu.show();
+            });
+
+            //Set position and show
+            $menu.css('top', params.event.pageY)
+                .css('left', params.event.pageX)
+                .show();
         },
         hideMenu: function() {
-            context.$('#datagrid-context-menu').remove();
+            $menu.hide();
         }
     };
-
-    function getLeftLocation(event, $menu) {
-        var elementleft,
-            pageWidth,
-            elementWidth;
-
-        elementleft = event.clientX;
-        pageWidth = context.sandbox.utils.pageWidth();
-        elementWidth = $menu.width();
-        
-        // opening menu would pass the side of the page
-        if (elementleft + elementWidth > pageWidth &&
-            elementWidth < elementleft) {
-            return elementleft - elementWidth;
-        } 
-        return elementleft;
-    }        
-    
-
-    function getTopLocation(event, $menu) {
-        var bannerHeight = 0,
-            elementTop,
-            pageHeight,
-            elementHeight;
-
-        // Accounting for height of banners, if they exist (TODO: find a better way)
-        context.sandbox.utils.each($('.banner'), function(){ // going outside of scope, not cool... find a better way
-            bannerHeight += $(this).height(); // going outside of scope, not cool... find a better way
-        });
-
-        elementTop = event.clientY;
-        pageHeight = context.sandbox.utils.pageHeight('#mapContainer');
-        elementHeight = $menu.height();
-
-        // Check if opening menu would pass the bottom of the page
-        if (elementTop  > pageHeight &&
-            elementHeight < elementTop) {
-            return elementTop - elementHeight - (bannerHeight/2);
-        } 
-        return elementTop;
-    }
 
     return exposed;
 });

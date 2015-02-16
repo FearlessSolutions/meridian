@@ -48,7 +48,7 @@ div[data-aura-component='tools/support'] #about-modal .logo {
 div[data-aura-component='tools/support'] #about-modal .modal-body{
   padding: 10px;
   text-align: center;
-  max-height: 280px;
+  height: auto;
 }
 /*Make the ok button slighly larger for a better look and feel.*/
 div[data-aura-component='tools/support'] #about-modal #ok {
@@ -63,4 +63,5 @@ div[data-aura-component='tools/support'] #about-modal .modal-body .support-actio
     margin-right: auto;
     text-align:center;
     margin-top: 20px;
+    margin-bottom:10px;
 }

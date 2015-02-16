@@ -1,0 +1,9 @@
+    {{#each layers}}
+        <div class="layer-option row">
+            <input type="checkbox" value="{{this.layerId}}" class="layer-checkbox">
+
+            <div class="layer-name">{{this.layerName}}</div>
+            <div class="layer-source">{{this.dataSource}}</div>
+            <div class="record-count">{{this.count}}</div>
+        </div>
+    {{/each}}

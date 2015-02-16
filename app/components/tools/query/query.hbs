@@ -65,8 +65,9 @@
                             <label class="col-sm-5 control-label" for="query-type">Data Source</label>
                             <div class="col-sm-7">
                                 <select id="query-source" name="query-source" class="form-control">
-                                    <option value="mock">mock</option>
-                                    <option value="fake">fake</option>
+                                    {{#each datasources}}
+                                        <option value="{{DATASOURCE_NAME}}">{{DISPLAY_NAME}}</option>
+                                    {{/each}}
                                 </select>
                             </div>
                         </div>

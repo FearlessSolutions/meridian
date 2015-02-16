@@ -103,8 +103,12 @@ define([
                     initiateQuery(queryName);
 
                     getPage = function(params, start, pageSize){
-                        context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.queryId, params.sessionId, start, pageSize, function(err, results){
+                        var newAJAX = context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.queryId, params.sessionId, start, pageSize, function(err, results){
                             if(err) {
+                                //If the error was because we aborted, ignore
+                                if(err.statusText === 'abort') {
+                                    return;
+                                }
                                 handleError({queryId: params.queryId});
                             } else if (!results || results.length === 0) {
                                 completeQuery(queryName, params.queryId);
@@ -112,6 +116,11 @@ define([
                                 processDataPage(results, {queryId: params.queryId, name: queryName});
                                 getPage(params, start + RESTORE_PAGE_SIZE, RESTORE_PAGE_SIZE);
                             }
+                        });
+
+                        context.sandbox.ajax.addActiveAJAX({
+                            newAJAX: newAJAX,
+                            layerId: params.queryId
                         });
                     };
 
@@ -132,6 +141,7 @@ define([
     function createLayer(params) {
         context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
         context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
+        context.sandbox.dataStorage.datasets[params.queryId].layerName = params.name || paramns.queryId;
 
         publisher.createLayer({
             layerId: params.queryId,
@@ -200,6 +210,8 @@ define([
         //For each feature, create the minimized feature to be stored locally, with all the fields needed for datagrid
         context.sandbox.utils.each(data, function(dataIndex, dataFeature){
             var newValue = {};
+
+            dataFeature.properties.mapUrl = context.sandbox.dataServices[DATASOURCE_NAME].processMapUrl(dataFeature.properties); //Add the map url
 
             if(keys){
                 //For each of the keys required, if that property exists in the feature, hoist it

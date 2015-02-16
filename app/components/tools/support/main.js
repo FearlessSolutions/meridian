@@ -23,7 +23,8 @@ define([
             
             var aboutTemplate = Handlebars.compile(aboutHBS);
             var aboutHTML = aboutTemplate({
-                "version": this.sandbox.systemConfiguration.version
+                "version": this.sandbox.systemConfiguration.version,
+                "releaseDate": this.sandbox.systemConfiguration.releaseDate
             });
             var html = supportHTML + aboutHTML
 
