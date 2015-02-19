@@ -13,7 +13,8 @@ define([
             geojson: {
                 extension: '.geojson'
             }
-        }
+        },
+        DISPLAY_NAME: 'Upload'
     };
 
     return configuration;
