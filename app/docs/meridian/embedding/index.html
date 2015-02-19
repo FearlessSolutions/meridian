@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Meridian</title>
+    <meta charset="utf-8" />
+    <link rel='shortcut icon' type='image/x-icon' href='../images/logos/meridthumb.png'/>
+    <link href="../stylesheets/main.css" rel="stylesheet" type="text/css"/>
+    <script src="../javascripts/jquery-1.11.1/jquery.js"></script>
+    <script src="../javascripts/bootstrap-3.2.0/bootstrap.js"></script>
+  </head>
+  <body data-spy="scroll" data-target="#sideNav">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">Meridian</a>
+      </div>
+      <div class="navbar-collapse collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="../getting-started/index.html">Getting Started</a></li>
+          <li><a href="./index.html">Contribute</a></li>
+          <li><a href="../examples/index.html">Examples</a></li>
+          <li class="active"><a href="./embedding/index.html">Embedding</a></li>
+        </ul>
+      </div>
+    </nav>
+    
+    <section class="container">
+      <div class="row">
+        <section class="col-md-10 container">
+
+          <h2 class="page-header" id="embedMeridian">Embedding Meridian</h3>
+            <p>To embed Meridian, please include the following <code>iframe</code> tag on any 
+            HTML page source code:</p>
+            <p><code>&ltiframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/"&gt&lt/iframe&gt</code></p>
+            <p>The embeded application would look something like this: (this is an example of the basic mode.</p>
+            <iframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/basic/index.html" style="height:400px; width:100%"></iframe>  
+
+          <h4 class="page-header" id="componentsExamples">Download Embedding Example - Getting Started Bundle</h4>
+            <p>Here is a simple example of an <code>input-area</code> component. In the current status, the component simply reads the content in the input area. Without any messaging files, this component will not be able to comunicate with any others.</p>
+
+        </section><!-- md-10 container -->
+
+        <section class="col-md-2">
+          <nav class="hidden-print hidden-xs hidden-sm" id="sideNav">
+            <ul class="nav affix">
+              <!--<li><a href="index.html#pullRequest">Pull Request Guidelines</a></li>-->
+            </ul>
+          </nav> <!-- sideNav -->
+        </section><!-- md-2 -->
+      </div><!-- row -->
+    </section><!--container-->
+    
+    <hr>
+
+    <footer class="footer text-center">
+      <div class="container">
+        <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian/archive/master.zip"><i class="glyphicon glyphicon-cloud-download"></i> Download Meridian</a>
+        <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian"><i class="icon-github3"></i> View on Github</a>
+        <a class="btn btn-primary btn-xs" href="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/index.html" target="_blank"><i class="icon-rocket2"></i> Launch Meridian</a>
+      </div>
+        
+      <div class="container new-section small">
+        <p>Software (c) 2014 <a href="http://www.boeing.com/" title="Boeing">The Boeing Company</a></p>
+        <p>The United States Government has unlimited rights in this software, pursuant to the contracts under which it was developed.</p>
+     
+        <p>The AML Center (under OZONE) is released to the public as Open Source Software as required by <a href="http://www.gpo.gov/fdsys/pkg/PLAW-112publ81/pdf/PLAW-112publ81.pdf" title="NDAA FY12">Section 924 of the 2012 National Defense Authorization Act</a>.</p>
+
+        <p>Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html" title="Apache License v2.0">Apache License v2.0</a>.</p>
+
+        <p>Forked from the Open Source Project: <a href="http://aurajs.com/"> Aura JS</a>.</p>
+      </div>
+    </footer>
+  </body>
+</html>
