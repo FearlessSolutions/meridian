@@ -91,7 +91,8 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
         "sources": {"default": "components"},
         "mediator": {"maxListeners": 50},
         "version": "0.5.4",
-        "releaseDate": "01/13/2015"
+        "releaseDate": "01/13/2015",
+        "cmapiVersion": "1.2.0"
     })
     .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')
