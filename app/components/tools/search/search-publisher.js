@@ -9,6 +9,9 @@ define([
         publisherSearchAdmingridCreate: function(params){
             // channel name should be changed later            
             context.sandbox.emit('search.admingrid.create', params);
+        },
+        clearAdminGrid: function() {
+            context.sandbox.emit('search.admingrid.clear');
         }
     };
 

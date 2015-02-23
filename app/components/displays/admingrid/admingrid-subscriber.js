@@ -6,9 +6,9 @@ define([
     var exposed = {
         init: function(thisContext){
             context = thisContext;
-            //context.sandbox.on('search.admingrid.create', admingrid.destroy);
-            context.sandbox.on('search.admingrid.create', admingrid.open);            
-            context.sandbox.on('search.admingrid.create', admingrid.something);            
+            context.sandbox.on('search.admingrid.create', admingrid.visible);
+            context.sandbox.on('search.admingrid.create', admingrid.something);
+            context.sandbox.on('search.admingrid.clear', admingrid.hidden);
         }
     };
 

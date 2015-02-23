@@ -123,7 +123,8 @@ define([
                 });               
             });
             $toggleClear.on('click', function() { 
-                $inputGeneric.val('');                
+                $inputGeneric.val('');
+                publisher.clearAdminGrid();
             });
         }       
     };

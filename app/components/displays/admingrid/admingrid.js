@@ -44,8 +44,11 @@ define([
                 grid.resizeCanvas();
             });
         },
-        open: function() {            
+        visible: function() {
             $('#admingridContainer').css('visibility','visible');                    
+        },
+        hidden: function() {
+            $('#admingridContainer').css('visibility','hidden');
         },
         something: function(data) {
             var currentDataArray = [];
