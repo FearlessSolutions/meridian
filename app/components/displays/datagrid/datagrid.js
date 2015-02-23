@@ -26,6 +26,7 @@ define([
         dataView,
         pager,
         $datagridContainer,
+        $searchTextBox,
         $testArea,
         datagridVisible = false,
         GRID_CONTAINER_HEIGHT = 328,
@@ -61,6 +62,7 @@ define([
             datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
             $testArea = context.$('#test-area');
+            $searchTextBox = context.$('#grid-search-text');
 
             context.$('.close').on('click', function(){
                 publisher.closeDatagrid();
@@ -152,7 +154,7 @@ define([
             });
 
             context.$('#grid-search-btn').on('click', function(e){
-                var searchString = context.$('#grid-search-text').val();
+                var searchString = $searchTextBox.val();
                 Slick.GlobalEditorLock.cancelCurrentEdit(); //Stop any edits taking place
 
                 dataView.setFilterArgs({
@@ -162,7 +164,7 @@ define([
             });
 
             //If the user hits 'enter' while entering a search, run the search
-            context.$('#grid-search-text').on('keydown', function(e){
+            $searchTextBox.on('keydown', function(e){
                 var key = e.keyCode;
 
                 if(key === ENTER_KEY){
@@ -203,6 +205,10 @@ define([
         clear: function() {
             grid.setColumns([]); //Update columns
             dataView.setItems([]); //Update rows
+            $searchTextBox.val('');
+            dataView.setFilterArgs({
+                searchString: ''
+            });
 
             exposed.close();
         },
