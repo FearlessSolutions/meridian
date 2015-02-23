@@ -17,7 +17,7 @@ define([
             $locator = context.$('#locator');
             $locatorButton = context.$('#locator .btn');
             $locatorInput = context.$('#locator input');
-            //$locatorButton.attr('disabled', true);      /*Valid location must be selected before button is enabled.*/
+            $locatorButton.attr('disabled', true);      /*Valid location must be selected before button is enabled.*/
 
             //Activate bootstrap tooltip. 
             //No need to specify container to make the tooltip appear in one line. 
@@ -39,7 +39,7 @@ define([
                         messageTitle: 'Search',
                         messageText: 'No valid location selected. Please try again.'
                     });
-                    //$locatorButton.attr('disabled', true);
+                    $locatorButton.attr('disabled', true);
                 }else if('lat' in selectedLocation) { //It is coordinates
                     exposed.markLocation(selectedLocation);
                 }else {
@@ -64,7 +64,7 @@ define([
                  * timeout delay has been added.*/
                 source: function(query,process) {
                     selectedLocation = null;
-                    //$locatorButton.attr('disabled', true);
+                    $locatorButton.attr('disabled', true);
 
                     if(timeout) {
                         clearTimeout(timeout);
@@ -80,7 +80,7 @@ define([
                                 context.sandbox.locator.queryCoordinates(query, function(coordinates){
                                     if(coordinates){
                                         selectedLocation = coordinates;
-                                        //$locatorButton.attr('disabled', false);
+                                        $locatorButton.attr('disabled', false);
                                     }
                                 });
                             }else { 
@@ -129,7 +129,7 @@ define([
                         messageText: 'Valid location selected.'
                     });
 
-                    //$locatorButton.attr('disabled', false);
+                    $locatorButton.attr('disabled', false);
                     return item;
                 }
             });
@@ -150,7 +150,7 @@ define([
                 maxLat: selectedLocation.maxLat
             });
             $locatorInput.val('');
-            //$locatorButton.attr('disabled',true);
+            $locatorButton.attr('disabled',true);
         },//end of goToLocation
         markLocation: function(coordinates) {
             publisher.markLocation({
