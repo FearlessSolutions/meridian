@@ -22,40 +22,27 @@ define([
 	};//exposed
 
     function exportFunction(params) {
-        var suffix = '?ids=' + params.layerIds.join();
+        var layerIds = params.layerIds;
 
         if (params.featureId && params.layerId) { //Not done
 
         } else if (params.layerIds) {
-            if (verifyLayers(params.layerIds)) {
-                context.sandbox.utils.ajax({
-                    type: 'HEAD',
-                    url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.csv' + suffix,
-                    cache: false,
-                    success: function (responseText, status, jqXHR) {
-                        if (jqXHR.status === 204) {
-                            params.callback({
-                                messageType: 'warning',
-                                messageTitle: 'CSV export',
-                                messageText: 'No data'
-                            });
-                        } else {
-                            params.callback({
-                                messageType: 'info',
-                                messageTitle: 'CSV export',
-                                messageText: 'CSV download started'
-                            });
-
-                            window.location.assign(context.sandbox.utils.getCurrentNodeJSEndpoint() +
-                                '/results.csv' + suffix);
-                        }
-                    },
-                    error: function (e) {
+            if (context.sandbox.export.utils.verifyOnlyPointsInLayer(layerIds)) {
+                context.sandbox.export.utils.checkFileHead(layerIds, function(err, pass){
+                    if(err) {
                         params.callback({
-                            messageType: 'error',
+                            messageType: err.messageType,
                             messageTitle: 'CSV export',
-                            messageText: 'Connection to server failed.'
+                            messageText: err.messageText
                         });
+                    } else {
+                        params.callback({
+                            messageType: 'info',
+                            messageTitle: 'CSV export',
+                            messageText: 'CSV download started'
+                        });
+
+                        window.location.assign(context.sandbox.export.utils.getFileExportUrl(layerIds, 'csv'));
                     }
                 });
             } else {
@@ -83,32 +70,6 @@ define([
         }
 
         params.callback(valid);
-    }
-
-    function verifyPoint(feature){
-        return feature.attributes.geometry.type === 'Point' ;
-    }
-
-    function verifyLayers(layerIds){
-        var valid = true;
-
-        context.sandbox.utils.each(layerIds, function(index, layerId){
-            var layer = context.sandbox.dataStorage.datasets[layerId];
-
-            context.sandbox.utils.each(layer.models, function(index, feature){
-                valid = verifyPoint(feature);
-
-                if(!valid){ //If not valid, exit the loop
-                    return false;
-                }
-            });
-
-            if(!valid){
-                return false; //If not valid, exit the loop
-            }
-        });
-
-        return valid;
     }
 
 	return exposed;

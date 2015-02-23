@@ -43,7 +43,7 @@ exports.getMetadataByUserId = function(userId, callback){
 
 function saveMetadata(userName, sessionId, queryId, metadata, callback){
     save.writeMetadata(userName, sessionId, queryId, metadata, callback);
-};
+}
 
 
 // TODO: ExpireAt should be calculated from a config and that config should
@@ -62,10 +62,10 @@ exports.create = function(userName, sessionId, queryId){
         queryName: "",
         rawQuery: {},
         dataSource: ""
-    }
+    };
 
     return new MetadataBuilder(seedMeta);
-}
+};
 
 var MetadataBuilder = function(seedMeta){
     var meta = seedMeta;

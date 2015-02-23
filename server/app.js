@@ -27,10 +27,12 @@ exports.init = function(app){
     use('extensions/gazetteer');
     use('extensions/kmltogeojson');
     use('extensions/transformation');
+    use('extensions/xml-parser');
 
     // Components
     use('components/mock');
     use('components/fake');
     use('components/file-upload');
+    use('components/file-download');
 
 };

@@ -21,7 +21,7 @@ define([
         exports: [
             'geojson',
             'csv',
-//            'kml',
+            'kml',
             'googlemaps'
         ]
     };

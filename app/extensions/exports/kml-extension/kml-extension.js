@@ -1,5 +1,5 @@
 define([
-'./kml-configuration'
+    './kml-configuration'
 ], function(configuration) {
 
     var context;
@@ -21,7 +21,29 @@ define([
 	};
 
     function exportFunction(params){
-        //TODO
+        var layerIds = params.layerIds;
+
+        if (params.featureId && params.layerId) { //Not done
+
+        } else if (layerIds) {
+            context.sandbox.export.utils.checkFileHead(layerIds, function(err, pass){
+                if(err) {
+                    params.callback({
+                        messageType: err.messageType,
+                        messageTitle: 'KML export',
+                        messageText: err.messageText
+                    });
+                } else {
+                    params.callback({
+                        messageType: 'info',
+                        messageTitle: 'KML export',
+                        messageText: 'KML download started'
+                    });
+
+                    window.location.assign(context.sandbox.export.utils.getFileExportUrl(layerIds, 'kml'));
+                }
+            });
+        }
     }
 
     function validate(params){
