@@ -49,7 +49,9 @@ define([
 
             $locatorInput.on('keydown', function(e) {
                 if (e.keyCode === 13) {
-                    $locatorButton.click();
+                    if (!$('.typeahead').is(':visible')) {
+                        $locatorButton.click();
+                    }
                 }
             });
 
