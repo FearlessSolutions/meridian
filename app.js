@@ -71,6 +71,7 @@ app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));
 app.use('/basic', express.static(__dirname + '/app/modes/basic'));
 app.use('/basic-with-settings', express.static(__dirname + '/app/modes/basic-with-settings'));
 app.use('/embedded', express.static(__dirname + '/app/modes/embedded'));
+app.use('/dashboard', express.static(__dirname + '/app/modes/dashboard'));
 
 // Initiate routes
 require('./server/app').init(app);
