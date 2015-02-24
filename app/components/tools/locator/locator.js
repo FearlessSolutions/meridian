@@ -40,6 +40,7 @@ define([
                         messageText: 'No valid location selected. Please try again.'
                     });
                     $locatorButton.attr('disabled', true);
+                    alert('toofast')
                 }else if('lat' in selectedLocation) { //It is coordinates
                     exposed.markLocation(selectedLocation);
                 }else {
