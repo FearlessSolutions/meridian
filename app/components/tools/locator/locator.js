@@ -1,8 +1,9 @@
 define([
     './locator-publisher',
+    'coordinateConverter',
     'typeahead',
     'bootstrap'
-], function (publisher) {
+], function (publisher,cc) {
     var context,
         timeout,
         selectedLocation = null,
@@ -28,6 +29,8 @@ define([
                     show: 500
                 }
             });
+
+            cc.testing();
 
             $locatorButton.on('click', function(event) {
                 var input = $locatorInput.val();
