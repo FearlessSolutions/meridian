@@ -365,11 +365,13 @@ define([
          * Clear All Layers
          */
         clear: function() {
-            mapBase.clearMapSelection();
             mapLayers.clear({});
             mapClustering.clear({});
             mapHeatmap.clear({});
             mapSelection.clear({})
+
+            //TODO this is just for show
+            mapLayers.doSpy();
         }
     };
 

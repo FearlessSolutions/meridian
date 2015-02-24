@@ -573,7 +573,8 @@ define([
             }
 
             return [style];
-        }
+        },
+        doSpy: doSpy
     };
 
     /**
@@ -819,7 +820,7 @@ define([
     }
 
     var radius = 75;
-    function doSpy(map){
+    function doSpy(){
         $(document).keydown(function(evt) {
             if (evt.which === 38) {
                 radius = Math.min(radius + 5, 150);

@@ -62,6 +62,9 @@ define([
         clearMapSelection: function(params) {
             selector.unselectAll();
         },
+        clear: function(){ //TODO choose one of these
+            selector.unselectAll();
+        },
         clearMapPopups: function(params) {
             while(map.popups.length) {
                 map.removePopup(map.popups[0]);
