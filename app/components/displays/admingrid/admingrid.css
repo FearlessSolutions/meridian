@@ -38,4 +38,6 @@ div[data-aura-component='displays/admingrid'] .slick-header-column:hover {
 div[data-aura-component='displays/admingrid'] .slick-cell.selected {
     background-color: #D4F7FF;
 }
-
+div[data-aura-component='displays/admingrid'] .slick-row:hover {
+    background-color: #d9e8fb;
+}

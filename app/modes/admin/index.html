@@ -18,10 +18,19 @@
         <nav class="navbar navbar-admin" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#"><img src="../../docs/meridian/images/logos/meridthumb.png" alt="Admin Dashboard">ADMIN DASHBOARD</a>
+
+                    <a class="navbar-brand" href="#">
+                        <div class="wrapper_img">
+                            <img src="../../docs/meridian/images/logos/meridthumb.png" alt="Admin Dashboard">
+                        </div>
+                        <div class="wrapper_hlabel">Administrative Dashboard</div>
+                    </a>
                 </div>
                 <div class="container-login">
-                    <p class="navbar-text">Signed in as <a href="#" class="navbar-link">John Snow</a></p>
+                    <div class="wrapper_login">
+                        <div data-aura-component="displays/user-info"></div>
+                        <p class="navbar-text">Signed in as</p>
+                    </div>
                 </div>
             </div>
         </nav>        

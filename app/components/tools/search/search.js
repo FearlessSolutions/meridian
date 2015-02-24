@@ -21,8 +21,10 @@ define([
             $toggleClear = context.$('#searchAdmin_clear');
             $focusInput = context.$('.form-group .form-control');
             $searchMsg = context.$('#container-searchmsg');
-            var currentInput, currentKey;
-            //placeholder 
+            var currentInput, currentKey, msgOneCrit, msgNoResults;
+            //placeholder
+            msgOneCrit = "You must enter a value for the search criteria";
+            msgNoResults = "No Results Found";
             currentKey = 'userId';
 
             $toggleSearchDateType.daterangepicker({
@@ -36,9 +38,7 @@ define([
                 startDate: moment().subtract(1, 'days').startOf('day'),
                 endDate: moment(),
                 minDate: moment().subtract(14, 'days').startOf('day'),
-                maxDate: moment()               
-                // }, function(start, end, label) {
-                //     console.log(start.toISOString(), end.toISOString(), label);
+                maxDate: moment()
                 });
             datePickerObj = $toggleSearchDateType.data('daterangepicker');            
                         
@@ -65,14 +65,29 @@ define([
                         break; 
                 }
             });
+            $focusInput.on('keydown', function(e) {
+                if (e.keyCode === 13) {
+                    $toggleSubmit.click();
+                }
+            });
 
-            $focusInput.keyup(function(event) {
+            $focusInput.keyup(function(e) {
+                if (e.keyCode === 13) {
+                    $toggleSubmit.click();
+                } else if($focusInput.filter(function() { return $.trim(this.value) != ''; }).length > 0) {
+                    //There is at least one populated input
+                    $focusInput.removeClass('warning');
+                    $searchMsg.hide();
+                }
+            });
+            $focusInput.on('paste', function(e) {
                 if($focusInput.filter(function() { return $.trim(this.value) != ''; }).length > 0) {
                     //There is at least one populated input
                     $focusInput.removeClass('warning');
                     $searchMsg.hide();
                 }
-            });    
+            });
+
 
             $toggleSubmit.on('click', function(event) {
                 var searchSet = {};
@@ -111,19 +126,33 @@ define([
                 })
                 .done(function(data) {
                     if (currentKey == 'userId' || currentKey == 'dataSource') {
-                        if(!currentInput) {                        
-                            $('input[type="text"]:visible').addClass('warning');                    
-                            $searchMsg.show();                    
+                        if(!currentInput) {
+                            $('input[type="text"]:visible').addClass('warning');
+                            $searchMsg.text(msgOneCrit).show();
+                            publisher.clearAdminGrid();
                         } else {
-                            publisher.publisherSearchAdmingridCreate(data);
+                            if($.isEmptyObject(data)) {
+                                $searchMsg.text(msgNoResults).show();
+                                publisher.clearAdminGrid();
+                            } else {
+                                $searchMsg.hide();
+                                publisher.publisherSearchAdmingridCreate(data);
+                            };
                         };
                     } else {
-                        publisher.publisherSearchAdmingridCreate(data);
+                        if($.isEmptyObject(data)) {
+                            $searchMsg.text(msgNoResults).show();
+                            publisher.clearAdminGrid();
+                        } else {
+                            $searchMsg.hide();
+                            publisher.publisherSearchAdmingridCreate(data);
+                        };
                     };
                 });               
             });
             $toggleClear.on('click', function() { 
-                $inputGeneric.val('');
+                $inputGeneric.removeClass('warning').val('');
+                $searchMsg.hide();
                 publisher.clearAdminGrid();
             });
         }       

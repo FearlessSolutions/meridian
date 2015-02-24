@@ -15,31 +15,54 @@ html, body { overflow:hidden;}
 		width:100%;
 		}
 		a.navbar-brand {
-			color: rgba(0,0,0,0.6);
-			/*color: rgba(255,255,255,.9);*/
-    		text-shadow: 1px 1px 3px rgba(255,255,255,0.3);
+            position:absolute; top:-14px; left:15px;
+            margin-left:0px;
+            z-index:200;
 			}
-			a.navbar-brand img {
-				margin-right:10px;			}
-		
-		.container-login {
-			height:25px; width:250px;
-			position:absolute;
-			top:8px; right:10px;
-		}
-		.navbar-right {
-			margin:10px;
-			float:left;			
-		}
+        .wrapper_img {
+            position:relative; top:4px; left:-10px;
+            height:40px; width:50px;
+            border-radius:4px;
+            background-color:rgba(255,255,255,0.3); }
 
-		.navbar-text {
-			float:right;
-			position:relative;
-			top:-7px;
-			}
-			
-		.navbar-link { color:#fff; }
-		.container .btn { float:right;}
+			a.navbar-brand img {
+				backgrouind-color:rgba(0,0,0,0.1);
+                transform: scale(0.8,0.8);
+                margin-right:10px;
+                position:relative; top: -5px;
+            }
+        .wrapper_hlabel {
+            position:absolute;
+            top:30px; left:65px; width:230px;
+            color: rgba(0,0,0,0.6);
+            text-shadow: 1px 1px 3px rgba(255,255,255,0.5);
+            }
+            .wrapper_hlabel:hover{ text-shadow: 1px 1px 3px rgba(255,255,255,0.7); }
+		.container-login {
+            width:calc(100% - 10px); position:relative; top:5px; left:5px;
+            height:40px;
+            padding:4px; background:rgba(255,255,255,0.3); border-radius:4px;
+            }
+            .wrapper_login {
+                margin-top:4px; float:right;
+                height:24px; width:230px; max-width:280px;
+                /*background:rgba(255,255,255,0.2);  */
+                background: linear-gradient(to right, rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.1) 37%,rgba(255,255,255,0.3) 38%,rgba(255,255,255,0.3) 100%); /* W3C */
+                border-radius:4px;
+                font-size:12px; padding-right:10px;
+                }
+                div[data-aura-component='displays/user-info'] .user-info {
+                    float:right;
+                    position:relative;
+                    top:4px;
+                    color:rgba(0,0,0,0.7); font-weight: bold;
+                }
+                .navbar-text {
+                    float:right;
+                    position:relative;
+                    top:-11px;
+                    margin-right:15px;
+                    }
 
 .page-header {
 	margin:1px;
@@ -48,32 +71,24 @@ html, body { overflow:hidden;}
 	margin:20px; 
 }
 
-@media (max-width: 767px) {
-	.navbar-text {
-		margin-right:15px;
+@media (min-width: 768px) {
+    .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand, .navbar-text {
+		margin-left:0px;
 	}
 }
-
 @media (max-width: 560px) {
-	.navbar-brand { position:absolute; top:2px; left:15px; z-index:200;}
-	a.navbar-brand img {		
+    .wrapper_hlabel { left:15px; }
+	.wrapper_img, a.navbar-brand img {
 		display:none;
 	}
-	.container-login { 
-		width:calc(100% - 10px); position:relative; top:5px; left:5px; 
-		height:44px;    
-		padding:4px; background:rgba(255,255,255,0.3); border-radius:4px; 
-		}
-		.navbar-text {
-			margin-right:5px;
-		}
-		.navbar-link { color:#1f5c9f; }
-		.container-login .btn {
-			margin-top:1px;
-			margin-right:2px;
-		}
 }
-@media (max-width: 435px) {
-	.navbar-brand	{ top:-8px; }
-	.navbar-text	{ top:2px; }
+@media (max-width: 490px) {
+    .wrapper_hlabel { top:20px; }
+    .wrapper_login {
+        background:rgba(255,255,255,0);
+        }
+        div[data-aura-component='displays/user-info'] .user-info {
+            top:15px;
+        }
+    .navbar-text	{ top:0px; }
 }

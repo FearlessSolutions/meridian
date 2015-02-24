@@ -17,7 +17,7 @@ define([
                 
             context = thisContext,
             dataView = new Slick.Data.DataView();
-            gridHeight();
+            //gridHeight();
             var columns = [
                 {id: "col1", name: "User ID", field: "id"},
                 {id: "col2", name: "Data Source", field: "dataSource", maxWidth: 120, sortable: true },
@@ -25,17 +25,14 @@ define([
                 {id: "col4", name: "Expiration Date", field: "expireDate", maxWidth: 240, sortable: true }
             ],
             options = {
-                enableCellNavigation: true,
+                enableCellNavigation: false,
                 //defaultColumnWidth: 120,
                 enableColumnReorder: true,
                 multiColumnSort: false,
                 forceFitColumns: true,
                 syncColumnCellResize: true,
-                fulWlidthRows: true
+                fullWidthRows: true
             };
-
-            //data = [];           
-            
             grid = new Slick.Grid('#admingrid', dataView, columns, options);
 
             $(window).resize(function(){                
@@ -68,7 +65,7 @@ define([
                     tempObject.expireDate =  eVal;
                     currentDataArray.push(tempObject);
                 });
-                
+                gridHeight();
                 grid.setData(currentDataArray);
                 grid.resizeCanvas();
         }
