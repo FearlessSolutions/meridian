@@ -30,7 +30,9 @@
     ECC_PRIME_SQUARED = ECC_SQUARED / (1 - ECC_SQUARED);
 
 
-
+    console.info('PI value: ', Math.PI);
+    console.info('Deb 2 RAD: ', Math.PI/180);
+    console.info('Deg 2 RAD: ', Math.PI/180.0);
 
 
 	
@@ -292,9 +294,91 @@
         }
     };
 
+    var dmsToDecimal = function(angle){
+        var reg = /^[NSEW\-]?\d{1,3}[° ]\d{1,2}[' ]\d{1,2}(\.\d{1,3})?[" ][NSEW]?$/,
+            regSplit = /-?\d+(\.\d+)?/g,
+            dms = {},
+            tmp,
+            ret;
+
+        if (typeof angle === 'object') {
+            dms = dmsVerify(angle);
+        } else {
+            if (!reg.test(angle)) {
+                throw "Angle not formatted correctly: " + angle;
+            }
+            tmp = angle.match(regSplit);
+
+            dms.degrees = parseInt(tmp[0], 10);
+            dms.minutes = parseInt(tmp[1], 10);
+            dms.seconds = parseFloat(tmp[2]);
+        }
+
+        tmp = String(dms.minutes / 60 + dms.seconds / 3600);
+        ret = dms.degrees + '.' + tmp.substring(tmp.indexOf('.') + 1);
+
+        return parseFloat(ret);
+    };
+
+     /*
+     * Retrieves zone number from latitude and longitude.
+     *
+     * Zone numbers range from 1 - 60 over the range [-180 to +180]. Each
+     * range is 6 degrees wide. Special cases for points outside normal
+     * [-80 to +84] latitude zone.
+     */
+    var getZoneNumber = function(lat, lon){
+        var zoneNumber;
+
+        lat = parseFloat(lat);
+        lon = parseFloat(lon);
+
+        // sanity check on input, remove for production
+        if (lon > 360 || lon < -180 || lat > 90 || lat < -90) {
+            throw "Bad input. lat: " + lat + " lon: " + lon;
+        }
+
+        zoneNumber = parseInt((lon + 180) / 6, 10) + 1;
+
+        // Handle special case of west coast of Norway
+        if (lat >= 56.0 && lat < 64.0 && lon >= 3.0 && lon < 12.0) {
+            zoneNumber = 32;
+        }
+
+        // Special zones for Svalbard
+        if (lat >= 72.0 && lat < 84.0) {
+            if (lon >= 0.0  && lon <  9.0) {
+                zoneNumber = 31;
+            } else if (lon >= 9.0  && lon < 21.0) {
+                zoneNumber = 33;
+            } else if (lon >= 21.0 && lon < 33.0) {
+                zoneNumber = 35;
+            } else if (lon >= 33.0 && lon < 42.0) {
+                zoneNumber = 37;
+            }
+        }
+
+        return zoneNumber;    
+    };
+
   	//FUNCTIONS
   	
   	cc.ddToMgrs = function(lat, lon, precision){
+        var coords;
+
+        if (typeof precision === 'string') {
+            precision = parseInt(precision, 10);
+        }
+
+        precision = precision ? precision : 5;
+
+        lat = parseFloat(lat);
+        lon = parseFloat(lon);
+
+        // convert lat/lon to UTM coordinates
+        coords = cc.ddToUtm(lat, lon);
+
+        return cc.utmToMgrs(coords, precision);
 
   	};
 
@@ -347,12 +431,12 @@
         //mgrs is basically USNG without any space delimiters.
         mgrs = coords.zoneNumber + coords.zoneLetter + letters + usngEasting + usngNorthing;
         
-
+        console.info('MGRS: ', mgrs);
         return mgrs;
     };
 
     /*
-     * Converts decimallatitude and longitude to UTM.
+     * Converts decimal degree (latitude and longitude) to UTM.
      *
      * Converts lat/long to UTM coords.  Equations from USGS Bulletin 1532 
      * (or USGS Professional Paper 1395 "Map Projections - A Working Manual", 
@@ -399,7 +483,7 @@
         lonRad = lon * DEG_2_RAD;
 
         // User-supplied zone number will force coordinates to be computed in a particular zone
-        zoneNumber = zone || helpers.getZoneNumber(lat, lon);
+        zoneNumber = zone || getZoneNumber(lat, lon);
 
         // +3 puts origin in middle of zone
         lonOrigin = (zoneNumber - 1) * 6 - 180 + 3;
@@ -432,12 +516,13 @@
             utmNorthing += 10000000;
         }
 
-        utmcoords.easting = Math.round(utmEasting);
-        utmcoords.northing = Math.round(utmNorthing);
+        utmcoords.easting = utmEasting;
+        utmcoords.northing = utmNorthing;
         utmcoords.zoneNumber = zoneNumber;
-        utmcoords.zoneLetter = helpers.utmLetterDesignator(lat);
+        utmcoords.zoneLetter = utmLetterDesignator(lat);
         utmcoords.hemisphere = lat < 0 ? 'S' : 'N';
 
+        console.info("UTM: ", utmcoords);
         return utmcoords;
     };
   	
