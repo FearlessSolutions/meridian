@@ -85,9 +85,6 @@ define([
 
             return newMap;
         },
-        clearMapSelection: function(params) {
-            selector.unselectAll();
-        },
         trackMousePosition: function(params) {
             map.events.register('mousemove', map, function(e) {
                 var position = this.events.getMousePosition(e);

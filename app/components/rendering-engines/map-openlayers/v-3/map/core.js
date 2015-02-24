@@ -345,9 +345,6 @@ define([
          * @param {string} params.mode - name of visual mode (cluster/feature/heatmap)
          */
         changeVisualMode: function(params) {
-            mapBase.setVisualMode({
-                mode: params.mode
-            });
             mapLayers.visualModeChanged({
                 mode: params.mode
             });
