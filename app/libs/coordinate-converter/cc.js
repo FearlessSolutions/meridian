@@ -4,6 +4,8 @@
         RAD_2_DEG = 180.0 / Math.PI,
         EQUATORIAL_RADIUS,
         ECC_SQUARED,
+        F, //polar flattening.
+        B, //polar axis.
         ECC_PRIME_SQUARED,
         IS_NAD83_DATUM = true,
         EASTING_OFFSET = 500000.0,
@@ -14,10 +16,15 @@
         E1,
         k0 = 0.9996; // scale factor of central meridian
 
-    // check for NAD83
+    // check for NAD83/WGS84
     if (IS_NAD83_DATUM) {
         EQUATORIAL_RADIUS = 6378137.0; // GRS80 ellipsoid (meters)
-        ECC_SQUARED = 0.006694380023; 
+        F = 1 / 298.2572236; 
+        B = EQUATORIAL_RADIUS * (1-F),
+        ECC_SQUARED = 1 - (B/EQUATORIAL_RADIUS) * (B/EQUATORIAL_RADIUS);
+        console.info("ECC_SQUARED: ", ECC_SQUARED);
+        //ECC_SQUARED = 0.006694380023; 
+
     } else {
         // else NAD27 datum is assumed
         EQUATORIAL_RADIUS = 6378206.4; // Clarke 1866 ellipsoid (meters)
@@ -28,11 +35,7 @@
     E1 = (1 - Math.sqrt(1 - ECC_SQUARED)) / (1 + Math.sqrt(1 - ECC_SQUARED));
 
     ECC_PRIME_SQUARED = ECC_SQUARED / (1 - ECC_SQUARED);
-
-
-    console.info('PI value: ', Math.PI);
-    console.info('Deb 2 RAD: ', Math.PI/180);
-    console.info('Deg 2 RAD: ', Math.PI/180.0);
+    console.info("ECC_PRIME_SQUARED: ", ECC_PRIME_SQUARED);
 
 
 	
