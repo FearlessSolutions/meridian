@@ -1,11 +1,13 @@
 var TO_DISPLAY = {
     mock: 'Mock',
-    fake: 'Fake'
+    fake: 'Fake',
+    upload: 'Upload'
 };
 
 var TO_DATASOURCE = {
     Mock: 'mock',
-    Fake: 'fake'
+    Fake: 'fake',
+    Upload: 'upload'
 };
 
 exports.init = function(context){
@@ -16,9 +18,9 @@ exports.init = function(context){
 };
 
 function toDisplay(datasourceName){
-    return TO_DISPLAY[datasourceName];
+    return TO_DISPLAY[datasourceName] || datasourceName;
 }
 
 function fromDisplay(displayName){
-    return TO_DATASOURCE[displayName];
+    return TO_DATASOURCE[displayName] || displayName;
 }
