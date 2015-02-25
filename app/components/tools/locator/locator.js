@@ -17,7 +17,7 @@ define([
             $locator = context.$('#locator');
             $locatorButton = context.$('#locator .btn');
             $locatorInput = context.$('#locator input');
-            $locatorButton.attr('disabled', true);      /*Valid location must be selected before button is enabled.*/
+            $locatorButton.prop('disabled', true);      /*Valid location must be selected before button is enabled.*/
 
             //Activate bootstrap tooltip. 
             //No need to specify container to make the tooltip appear in one line. 
@@ -32,20 +32,32 @@ define([
             $locatorButton.on('click', function(event) {
                 var input = $locatorInput.val();
                 event.preventDefault();
+                var locType = $locatorInput.val();
+                var numCheck = /^([0-9-])/;
 
-                if(selectedLocation === null || input === '') {/*Extra precaution, button should be disabled anyways.*/
-                    publisher.publishMessage({
-                        messageType: 'warning',
-                        messageTitle: 'Search',
-                        messageText: 'No valid location selected. Please try again.'
+                if (numCheck.test(locType)) {
+
+                    context.sandbox.locator.queryCoordinates(locType, function(coordinates){
+                            selectedLocation = coordinates;
+                            console.log(selectedLocation);
+                            exposed.markLocation(selectedLocation);
                     });
-                    $locatorButton.attr('disabled', true);
-                    alert('toofast')
-                }else if('lat' in selectedLocation) { //It is coordinates
-                    exposed.markLocation(selectedLocation);
-                }else {
-                    exposed.goToLocation();
-                }
+                } else {
+
+                    if (selectedLocation === null || input === '') {/*Extra precaution, button should be disabled anyways.*/
+                        publisher.publishMessage({
+                            messageType: 'warning',
+                            messageTitle: 'Search',
+                            messageText: 'No valid location selected. Please try again.'
+                        });
+                        $locatorButton.prop('disabled', true);
+                    //} else if ('lat' in selectedLocation) { //It is coordinates
+                    //    exposed.markLocation(selectedLocation);
+                    } else {
+                        exposed.goToLocation();
+                    }
+                    ;
+                };
             });
 
             $locatorInput.on('keydown', function(e) {
@@ -53,6 +65,12 @@ define([
                     $locatorButton.click();
                 }
             });
+            $locatorInput.on('keyup', function(e) {
+                if ($locatorInput.val() == '') {
+                    $locatorButton.prop('disabled', true);
+                }
+            });
+
 
             //Needed for typeahead functionality.
             $locatorInput.attr('data-provide', 'typeahead');
@@ -65,48 +83,58 @@ define([
                  * timeout delay has been added.*/
                 source: function(query,process) {
                     selectedLocation = null;
-                    $locatorButton.attr('disabled', true);
 
-                    if(timeout) {
-                        clearTimeout(timeout);
-                    }
-                    timeout = setTimeout(function() {
-                        var content = $locatorInput.val().length || null;
+                    var locType = $locatorInput.val();
+                    var numCheck = /^([0-9-])/;
 
-                        /*No need to query empty input*/
-                        if(content !== null) {
-
-                            //Handle both coordinates and places
-                            if(query.match(/^-?\d/)) {
-                                context.sandbox.locator.queryCoordinates(query, function(coordinates){
-                                    if(coordinates){
-                                        selectedLocation = coordinates;
-                                        $locatorButton.attr('disabled', false);
-                                    }
-                                });
-                            }else { 
-                                publisher.publishMessage({
-                                    messageType: 'info',
-                                    messageTitle: 'Looking up suggestions',
-                                    messageText: 'Validating ...'
-                                });
-                                context.sandbox.locator.query(query, function(data){
-                                   var formattedData = context.sandbox.locator.formatData(data);
-                                    if(formattedData.names === []) {
-                                        publisher.publishMessage({
-                                            messageType: 'warning',
-                                            messageTitle: 'Search Results',
-                                            messageText: 'No results/suggestions found.'
-                                        });
-                                    } else {
-                                        dataByName = formattedData.data;
-                                    }
-                                    process(formattedData.names); 
-                                }); 
-                                
-                            }                            
+                    if (numCheck.test(locType)) {
+                        $locatorButton.prop('disabled', false);
+                    } else {
+                        $locatorButton.prop('disabled', true);
+                        if(timeout) {
+                            clearTimeout(timeout);
                         }
-                    }, 800);
+                        timeout = setTimeout(function() {
+                            var content = $locatorInput.val().length || null;
+
+                            /*No need to query empty input*/
+                            if(content !== null) {
+
+                                //Handle both coordinates and places
+                                if(query.match(/^-?\d/)) {
+                                    //context.sandbox.locator.queryCoordinates(query, function(coordinates){
+                                    //    if(coordinates){
+                                    //        selectedLocation = coordinates;
+                                    //        $locatorButton.prop('disabled', false);
+                                    //    }
+                                    //});
+                                }else {
+                                    publisher.publishMessage({
+                                        messageType: 'info',
+                                        messageTitle: 'Looking up suggestions',
+                                        messageText: 'Validating ...'
+                                    });
+                                    context.sandbox.locator.query(query, function(data){
+                                        var formattedData = context.sandbox.locator.formatData(data);
+                                        if(formattedData.names === []) {
+                                            publisher.publishMessage({
+                                                messageType: 'warning',
+                                                messageTitle: 'Search Results',
+                                                messageText: 'No results/suggestions found.'
+                                            });
+                                        } else {
+                                            dataByName = formattedData.data;
+                                        }
+                                        process(formattedData.names);
+                                    });
+
+                                }
+                            }
+                        }, 800);
+
+                    }
+
+
                 },
                 /**
                  * Overwrite matcher function to always show values returned by the service.If the service 
@@ -130,7 +158,7 @@ define([
                         messageText: 'Valid location selected.'
                     });
 
-                    $locatorButton.attr('disabled', false);
+                    $locatorButton.prop('disabled', false);
                     return item;
                 }
             });
@@ -151,7 +179,7 @@ define([
                 maxLat: selectedLocation.maxLat
             });
             $locatorInput.val('');
-            $locatorButton.attr('disabled',true);
+            $locatorButton.prop('disabled',true);
         },//end of goToLocation
         markLocation: function(coordinates) {
             publisher.markLocation({
