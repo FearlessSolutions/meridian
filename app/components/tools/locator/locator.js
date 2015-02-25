@@ -39,8 +39,16 @@ define([
 
                     context.sandbox.locator.queryCoordinates(locType, function(coordinates){
                             selectedLocation = coordinates;
-                            console.log(selectedLocation);
-                            exposed.markLocation(selectedLocation);
+                            //console.log(selectedLocation);
+                            if (selectedLocation === null) {
+                                publisher.publishMessage({
+                                    messageType: 'warning',
+                                    messageTitle: 'Search',
+                                    messageText: 'The coordinate format is not a valid format. Please try again.'
+                                });
+                            } else {
+                                exposed.markLocation(selectedLocation);
+                            };
                     });
                 } else {
 
