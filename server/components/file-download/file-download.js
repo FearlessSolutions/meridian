@@ -1,12 +1,14 @@
 var _ = require('underscore'),
     metadataManager,
     query,
-    transform;
+    transform,
+    displayNameConverter;
 
 exports.init = function(context){
     query = context.sandbox.elastic.query;
     metadataManager = context.sandbox.elastic.metadata;
     transform = context.sandbox.transform;
+    displayNameConverter = context.sandbox.displayText;
 };
 
 exports.pipeGeoJSONResponse = function(userName, queryIds, callback, incrementMutex){
@@ -69,19 +71,27 @@ exports.pipeKMLResponse = function(userName, queryIds, callback, incrementMutex)
 exports.pipeCSVToResponseForQuery = function(userName, queryIdArray, res){
     // Query metadata
     metadataManager.getMetadataByUserId(userName, function(err, meta) {
-        var needToCreateLAT = false; //If there is a need to create the keys, for when they are not already included
-        var needToCreateLON = false;
+        var needToCreateLAT = false, //If there is a need to create the keys, for when they are not already included
+            needToCreateLON = false,
+            // Handle keyToIndex map
+            keyToIndexMap = {},
+            queryIdToMetadataMap = {},
+            maxIndex = 0,
+            buffer,
+            headerRow;
+
         if (err) {
             res.status(500);
             res.send("Error - couldn't fetch metadata for " + userName);
             return;
         }
 
-        // Handle keyToIndex map
-        var keyToIndexMap = {};
-        var maxIndex = 0;
+
         _.each(meta, function (metadata, queryId) {
             if (_.indexOf(queryIdArray, queryId) !== -1) {
+                queryIdToMetadataMap[queryId] = metadata.toJSON(); //Add all metadata for the query to the map
+
+                //Find all the keys in the query, and add the to the list if needed
                 _.each(metadata.getKeys(), function (value, key) {
                     if (keyToIndexMap[key] === undefined) {
                         keyToIndexMap[key] = maxIndex;
@@ -100,12 +110,20 @@ exports.pipeCSVToResponseForQuery = function(userName, queryIdArray, res){
         if (keyToIndexMap.LON === undefined) {
             keyToIndexMap.LON = maxIndex;
             needToCreateLON = true;
-            maxIndex++; //Not required for now, but keeping in case of future additions
+            maxIndex++;
+        }
+        if (keyToIndexMap.meridianDataSource === undefined) {
+            keyToIndexMap.meridianDataSource = maxIndex;
+            maxIndex++;
+        }
+        if (keyToIndexMap.meridianQueryName === undefined) {
+            keyToIndexMap.meridianQueryName = maxIndex;
+            maxIndex++;
         }
 
         // Generate header row
-        var buffer = '\ufeff'; // UTF-8 Byte Order Mark, used by excel
-        var headerRow = new Array(maxIndex);
+        buffer = '\ufeff'; // UTF-8 Byte Order Mark, used by excel
+        headerRow = new Array(maxIndex);
         _.each(keyToIndexMap, function (index, key) {
             headerRow[index] = key;
         });
@@ -121,7 +139,9 @@ exports.pipeCSVToResponseForQuery = function(userName, queryIdArray, res){
             } else {
                 // Write data rows
                 _.each(results.hits.hits, function (result) {
-                    var row = new Array(maxIndex);
+                    var row = new Array(maxIndex),
+                        featureQueryMetadata = queryIdToMetadataMap[result._source.properties.queryId];
+
                     _.each(result._source.properties, function (value, key) {
                         var index = keyToIndexMap[key];
                         row[index] = value;
@@ -134,6 +154,9 @@ exports.pipeCSVToResponseForQuery = function(userName, queryIdArray, res){
                     if (needToCreateLON) {
                         row[keyToIndexMap.LON] = result._source.geometry.coordinates[0];
                     }
+
+                    row[keyToIndexMap.meridianDataSource] = displayNameConverter.toDisplay(featureQueryMetadata.dataSource);
+                    row[keyToIndexMap.meridianQueryName] = featureQueryMetadata.queryName;
 
                     buffer = _writeArray(buffer, row);
                 });
