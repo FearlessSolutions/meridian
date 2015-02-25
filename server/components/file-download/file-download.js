@@ -12,56 +12,96 @@ exports.init = function(context){
 };
 
 exports.pipeGeoJSONResponse = function(userName, queryIds, callback, incrementMutex){
-    query.streamQuery(userName, {
-                                    query:{
-                                        terms:{
-                                            queryId:queryIds
-                                        }
-                                    }
-                                }, 100, function(queryErr, results) {
 
-        //Tell parent that a new thread has been started
-        incrementMutex();
-
-        //Do what is needed for callback
-        if(queryErr){
-            callback(queryErr, null);
-        } else if(results.hits.hits.length === 0){
-            callback(null, null);
-        }else{
-            try {
-                transform.toGeoJSON(resultsToGeoJSON(results), callback);
-            }catch(ogrErr){
-                callback(ogrErr, null);
+    //Start off by getting all of  the metadata for the given queries
+    metadataManager.getMetadataByUserId(userName, function(err, meta) {
+        var metaMap = {};
+        _.each(meta, function (metadata, queryId) {
+            if (_.indexOf(queryIds, queryId) !== -1) {
+                metaMap[queryId] = metadata.toJSON(); //Add all metadata for the query to the map
             }
-        }
+        });
+
+        query.streamQuery(userName, {
+            query:{
+                terms:{
+                    queryId:queryIds
+                }
+            }
+        }, 100, function(queryErr, results) {
+
+            //Tell parent that a new thread has been started
+            incrementMutex();
+
+            //Do what is needed for callback
+            if(queryErr){
+                callback(queryErr, null);
+            } else if(results.hits.hits.length === 0){
+                callback(null, null);
+            }else{
+                //Add queryName and datasource to set
+                _.each(results.hits.hits, function(result, resultIndex){
+                    var featureQueryMetadata = metaMap[result._source.properties.queryId];
+
+                    result._source.properties.meridianDataSource = displayNameConverter.toDisplay(featureQueryMetadata.dataSource);
+                    result._source.properties.meridianQueryName = featureQueryMetadata.queryName;
+                    results.hits.hits[resultIndex] = result;
+                });
+
+                try {
+                    transform.toGeoJSON(resultsToGeoJSON(results), callback);
+                }catch(ogrErr){
+                    callback(ogrErr, null);
+                }
+            }
+        });
     });
 };
 
 exports.pipeKMLResponse = function(userName, queryIds, callback, incrementMutex){
-    query.streamQuery(userName, {
-                                    query:{
-                                        terms:{
-                                            queryId:queryIds
-                                        }
-                                    }
-                                }, 100, function(queryErr, results) {
 
-        //Tell parent that a new thread has been started
-        incrementMutex();
-
-        //Do what is needed for callback
-        if(queryErr){
-            callback(queryErr, null);
-        } else if(results.hits.hits.length === 0){
-            callback(null, null);
-        }else{
-            try {
-                transform.toKML(resultsToGeoJSON(results), callback);
-            }catch(ogrErr){
-                callback(ogrErr, null);
+    //Start off by getting all of  the metadata for the given queries
+    metadataManager.getMetadataByUserId(userName, function(err, meta) {
+        var metaMap = {};
+        _.each(meta, function (metadata, queryId) {
+            if (_.indexOf(queryIds, queryId) !== -1) {
+                metaMap[queryId] = metadata.toJSON(); //Add all metadata for the query to the map
             }
-        }
+        });
+
+        query.streamQuery(userName, {
+            query:{
+                terms:{
+                    queryId:queryIds
+                }
+            }
+        }, 100, function(queryErr, results) {
+
+            //Tell parent that a new thread has been started
+            incrementMutex();
+
+            //Do what is needed for callback
+            if(queryErr){
+                callback(queryErr, null);
+            } else if(results.hits.hits.length === 0){
+                callback(null, null);
+            }else{
+                //Add queryName and datasource to set
+                _.each(results.hits.hits, function(result, resultIndex){
+                    var featureQueryMetadata = metaMap[result._source.properties.queryId];
+
+                    result._source.properties.meridianDataSource = displayNameConverter.toDisplay(featureQueryMetadata.dataSource);
+                    result._source.properties.meridianQueryName = featureQueryMetadata.queryName;
+                    results.hits.hits[resultIndex] = result;
+                });
+
+                try {
+                    transform.toKML(resultsToGeoJSON(results), callback);
+                }catch(ogrErr){
+                    callback(ogrErr, null);
+                }
+            }
+        });
     });
 };
 
