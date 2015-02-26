@@ -36,10 +36,8 @@ define([
                 var numCheck = /^([0-9-])/;
 
                 if (numCheck.test(locType)) {
-
                     context.sandbox.locator.queryCoordinates(locType, function(coordinates){
                             selectedLocation = coordinates;
-                            //console.log(selectedLocation);
                             if (selectedLocation === null) {
                                 publisher.publishMessage({
                                     messageType: 'warning',
@@ -48,6 +46,8 @@ define([
                                 });
                             } else {
                                 exposed.markLocation(selectedLocation);
+                                $locatorInput.val('').blur();
+                                $locatorButton.prop('disabled',true);
                             };
                     });
                 } else {
@@ -63,22 +63,20 @@ define([
                     //    exposed.markLocation(selectedLocation);
                     } else {
                         exposed.goToLocation();
-                    }
-                    ;
+                    };
                 };
             });
 
             $locatorInput.on('keydown', function(e) {
                 if (e.keyCode === 13) {
                     $locatorButton.click();
-                }
+                };
             });
-            $locatorInput.on('keyup', function(e) {
+            $locatorInput.on('keyup', function() {
                 if ($locatorInput.val() == '') {
                     $locatorButton.prop('disabled', true);
-                }
+                };
             });
-
 
             //Needed for typeahead functionality.
             $locatorInput.attr('data-provide', 'typeahead');
@@ -139,10 +137,7 @@ define([
                                 }
                             }
                         }, 800);
-
                     }
-
-
                 },
                 /**
                  * Overwrite matcher function to always show values returned by the service.If the service 
@@ -165,7 +160,6 @@ define([
                         messageTitle: 'Search',
                         messageText: 'Valid location selected.'
                     });
-
                     $locatorButton.prop('disabled', false);
                     return item;
                 }
