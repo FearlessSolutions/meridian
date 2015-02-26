@@ -497,6 +497,11 @@
         C = ECC_PRIME_SQUARED * Math.pow(Math.cos(latRad), 2);
         A = Math.cos(latRad) * (lonRad - lonOriginRad);
 
+        console.info('N = ' + N);
+        console.info('T = ' + T);
+        console.info('C = ' + C);
+        console.info('A = ' + A);
+
         // Note that the term Mo drops out of the "M" equation, because phi 
         // (latitude crossing the central meridian, lambda0, at the origin of the
         //  x,y coordinates), is equal to zero for UTM.
@@ -506,18 +511,26 @@
             (15 * ECC_SQUARED * ECC_SQUARED / 256 + 45 * ECC_SQUARED * ECC_SQUARED * ECC_SQUARED / 1024) * Math.sin(4 * latRad) -
             (35 * ECC_SQUARED * ECC_SQUARED * ECC_SQUARED / 3072) * Math.sin(6 * latRad));
 
+        console.info('M = ' + M);
+
         utmEasting = (k0 * N *
             (A + (1 - T + C) * (A * A * A) / 6 + (5 - 18 * T + T * T + 72 * C - 58 * ECC_PRIME_SQUARED ) * (A * A * A * A * A) / 120) + EASTING_OFFSET);
 
-        utmNorthing = (k0 * ( M + N * Math.tan(latRad) * (
-              (A * A) / 2 + (5 - T + 9 * C + 4 * C * C ) * (A * A * A * A) / 2 +
-              (61 - 58 * T + T * T + 600 * C - 330 * ECC_PRIME_SQUARED ) *
-              (A * A * A * A * A * A) / 720)
-          ) );
+        // utmNorthing = (k0 * ( M + N * Math.tan(latRad) * (
+        //       (A * A) / 2 + (5 - T + 9 * C + 4 * C * C ) * (A * A * A * A) / 2 +
+        //       (61 - 58 * T + T * T + 600 * C - 330 * ECC_PRIME_SQUARED ) *
+        //       (A * A * A * A * A * A) / 720)
+        //   ) );
+
+        utmNorthing = k0*(M + N*Math.tan(latRad)*(A*A*(1/2 + A*A*((5 - T + 9*C + 4*C*C)/24 +
+         A*A*(61 - 58*T + T*T + 600*C - 330*ECC_PRIME_SQUARED)/720))));//Northing from equator
 
         if (utmNorthing < 0) {
             utmNorthing += 10000000;
         }
+
+        console.info('Northing = ' + utmNorthing);
+        console.info('Easting = ' + utmEasting);
 
         utmcoords.easting = utmEasting;
         utmcoords.northing = utmNorthing;
