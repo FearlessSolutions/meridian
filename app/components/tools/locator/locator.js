@@ -41,6 +41,7 @@ define([
                     });
                     console.info("Actual Numbers: ");
                     cc.ddToMgrs(12,12,0);
+                    cc.ddToMgrs(12,12);
 
                 }else if('lat' in selectedLocation) { //It is coordinates
                     exposed.markLocation(selectedLocation);

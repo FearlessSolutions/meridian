@@ -22,7 +22,6 @@
         F = 1 / 298.2572236; 
         B = EQUATORIAL_RADIUS * (1-F),
         ECC_SQUARED = 1 - (B/EQUATORIAL_RADIUS) * (B/EQUATORIAL_RADIUS);
-        console.info("ECC_SQUARED: ", ECC_SQUARED);
         //ECC_SQUARED = 0.006694380023; 
 
     } else {
@@ -35,9 +34,6 @@
     E1 = (1 - Math.sqrt(1 - ECC_SQUARED)) / (1 + Math.sqrt(1 - ECC_SQUARED));
 
     ECC_PRIME_SQUARED = ECC_SQUARED / (1 - ECC_SQUARED);
-    console.info("ECC_PRIME_SQUARED: ", ECC_PRIME_SQUARED);
-
-
 	
 	// Create a safe reference to the cc object for use below.
 	var cc = function(obj) {
@@ -103,7 +99,6 @@
      * given row, column and set identifier (set refers to the zone set:
      * zones 1-6 have a unique set of square identifiers; these identifiers are
      * repeated for zones 7-12, etc.)
-
      * See p. 10 of the "United States National Grid" white paper for a diagram
      * of the zone sets.
      */
@@ -365,8 +360,18 @@
     };
 
   	//FUNCTIONS
-  	
-  	cc.ddToMgrs = function(lat, lon, precision){
+
+  	/*
+     * Converts DD to MGRS
+     * DD: Decimal Degree (latitude, longitude). 
+     * MGRS: Military Grid Reference System.
+     *
+     * @param lat- Latitude in decimal.
+     * @param lon- Longitude in decimal.
+     * @param output- Output format. Accepted values are: 'string' and 'object'.
+     *
+     */
+  	cc.ddToMgrs = function(lat, lon, output, precision){
         var coords;
 
         if (typeof precision === 'string') {
@@ -379,19 +384,29 @@
         lon = parseFloat(lon);
 
         // convert lat/lon to UTM coordinates
-        coords = cc.ddToUtm(lat, lon);
+        // its easier to pass an object to the utm functions.
+        coords = cc.ddToUtm(lat, lon, 'object');
 
-        return cc.utmToMgrs(coords, precision);
+        return cc.utmToMgrs(coords, output, precision);
 
   	};
 
-    cc.utmToMgrs = function(coords, precision){
+    /*
+     * Converts UTM to MGRS.
+     * UTM: Universal Transverse Mercator Coordinate System.
+     * MGRS: Military Grid Reference System.
+     *
+     * @param coords - Object containing zoneNumber, zoneLetter, easting, northing and hemisphere
+     * @param output- Output format. Accepted values are: 'string' and 'object'.
+     * @param precision- Optional coordinate precision.
+     */
+    cc.utmToMgrs = function(coords, output, precision){
       var utmEasting,
             utmNorthing,
             letters,
             usngNorthing,
             usngEasting,
-            usng,
+            mgrs = null,
             i;
 
         if (typeof precision === 'string') {
@@ -425,21 +440,32 @@
         for (i = String(usngNorthing).length; i < precision; i += 1) {
             usngNorthing = "0" + usngNorthing;
         }
-
        
-        usng = coords.zoneNumber + coords.zoneLetter + " " + letters + " " + 
-              usngEasting + " " + usngNorthing;
-        console.info('USNG: ', usng);
+        // usng = coords.zoneNumber + coords.zoneLetter + " " + letters + " " + 
+        //       usngEasting + " " + usngNorthing;
         
+        console.info('output: ', output);
         //mgrs is basically USNG without any space delimiters.
-        mgrs = coords.zoneNumber + coords.zoneLetter + letters + usngEasting + usngNorthing;
+        if(typeof output === 'string' && output === 'object'){
+            mgrs = {};
+            mgrs.zoneNumber = coords.zoneNumber;
+            mgrs.zoneLetter = coords.zoneLetter;
+            mgrs.gridLetters = letters;
+            mgrs.easting = usngEasting;
+            mgrs.northing = usngNorthing
+        }else if(typeof output === 'string' && output === 'string'){
+            mgrs = coords.zoneNumber + coords.zoneLetter + letters + usngEasting + usngNorthing;
+        }else{
+            console.error("No output type specified in utmToMgrs function.");
+        }
         
-        console.info('MGRS: ', mgrs);
         return mgrs;
     };
 
     /*
-     * Converts decimal degree (latitude and longitude) to UTM.
+     * Converts DD to UTM.
+     * DD: Decimal Degree (latitude, longitude). 
+     * UTM: Universal Transverse Mercator Coordinate System.
      *
      * Converts lat/long to UTM coords.  Equations from USGS Bulletin 1532 
      * (or USGS Professional Paper 1395 "Map Projections - A Working Manual", 
@@ -450,9 +476,11 @@
      * @param lat- Latitude in decimal; north is positive, south is negative
      * @param lon- Longitude in decimal; east is positive, west is negative
      * @param zone- optional, result zone
-     * @return Object with three properties, easting, northing, zone
+     * @param output- Optional Output format. Accepted values are: 'string' and 'object'.
+     * @return Object with three properties, easting, northing, zone and hemisphere, or
+     * a string with zone, easting and northing.
      */
-    cc.ddToUtm = function(lat, lon, zone){
+    cc.ddToUtm = function(lat, lon, output, zone){
       var zoneNumber,
             latRad,
             lonRad,
@@ -465,7 +493,7 @@
             C,
             A,
             M,
-            utmcoords = {};
+            utmcoords;
 
         lat = parseFloat(lat);
         lon = parseFloat(lon);
@@ -497,11 +525,6 @@
         C = ECC_PRIME_SQUARED * Math.pow(Math.cos(latRad), 2);
         A = Math.cos(latRad) * (lonRad - lonOriginRad);
 
-        console.info('N = ' + N);
-        console.info('T = ' + T);
-        console.info('C = ' + C);
-        console.info('A = ' + A);
-
         // Note that the term Mo drops out of the "M" equation, because phi 
         // (latitude crossing the central meridian, lambda0, at the origin of the
         //  x,y coordinates), is equal to zero for UTM.
@@ -510,8 +533,6 @@
             (3 * ECC_SQUARED / 8 + 3 * ECC_SQUARED * ECC_SQUARED / 32 + 45 * ECC_SQUARED * ECC_SQUARED * ECC_SQUARED / 1024) * Math.sin(2 * latRad) +
             (15 * ECC_SQUARED * ECC_SQUARED / 256 + 45 * ECC_SQUARED * ECC_SQUARED * ECC_SQUARED / 1024) * Math.sin(4 * latRad) -
             (35 * ECC_SQUARED * ECC_SQUARED * ECC_SQUARED / 3072) * Math.sin(6 * latRad));
-
-        console.info('M = ' + M);
 
         utmEasting = (k0 * N *
             (A + (1 - T + C) * (A * A * A) / 6 + (5 - 18 * T + T * T + 72 * C - 58 * ECC_PRIME_SQUARED ) * (A * A * A * A * A) / 120) + EASTING_OFFSET);
@@ -529,17 +550,123 @@
             utmNorthing += 10000000;
         }
 
-        console.info('Northing = ' + utmNorthing);
-        console.info('Easting = ' + utmEasting);
+        
 
-        utmcoords.easting = utmEasting;
-        utmcoords.northing = utmNorthing;
-        utmcoords.zoneNumber = zoneNumber;
-        utmcoords.zoneLetter = utmLetterDesignator(lat);
-        utmcoords.hemisphere = lat < 0 ? 'S' : 'N';
+        if(typeof output === 'string' && output === 'object'){
+            utmcoords = {};
+            utmcoords.easting = utmEasting;
+            utmcoords.northing = utmNorthing;
+            utmcoords.zoneNumber = zoneNumber;
+            utmcoords.zoneLetter = utmLetterDesignator(lat);
+            utmcoords.hemisphere = lat < 0 ? 'S' : 'N';
+        }else {
+            utmcoords = zoneNumber + utmLetterDesignator(lat) + ' ' 
+                        + utmEasting + ' ' + utmNorthing;
+        }
 
-        console.info("UTM: ", utmcoords);
         return utmcoords;
+    };
+
+
+    /*
+     * Converts decimal degrees to degrees, minutes seconds.
+     * 
+     * This function can either return a formatted string or an object.
+     * 
+     * If string or nothing is specified, it will look like this: 41°25'01"N
+     * 
+     * If object is chosen, it will have two properties, latitude and longitude.
+     * Each will have these properties:
+     * - degrees: positive integer
+     * - minutes: positive integer
+     * - seconds: positive float
+     * - direction: N, S, E, or W
+     * 
+     * @param lat- latitude (float or string representing a float)
+     * @param lon- longitude (float or string representing a float)
+     * @param output- string representing return type (object or string); optional
+     * @param digits- max digits in seconds; can be 3rd parameter; default is 2
+     * @return Depents on type parameter (map of formatted strings or values)
+     */
+    cc.ddToDms = function(lat, lon, digits, output){
+        var latDeg,
+            latMin,
+            latSec,
+            lonDeg,
+            lonMin,
+            lonSec,
+            latDir,
+            lonDir,
+            ret,
+            magic;
+
+        if (typeof digits === 'undefined') {
+            digits = type;
+        }
+
+        if (typeof digits === 'string') {
+            digits = parseInt(digits, 10);
+        } else if (typeof digits !== 'number') {
+            digits = 2;
+        }
+
+        // magic number that helps us round off un-needed digits
+        magic = Math.pow(10, digits);
+
+        lat = (typeof lat === 'string') ? parseFloat(lat) : lat;
+        lon = (typeof lon === 'string') ? parseFloat(lon) : lon;
+
+        if (lat < -90 || lat > 90) {
+            throw "Latitude out of range: " + lat;
+        }
+
+        if (lon < -180 || lon > 180) {
+            throw "Longitude out of range: " + lon;
+        }
+
+        latDir = (lat >= 0) ? 'N' : 'S';
+        lonDir = (lon >= 0) ? 'E' : 'W';
+
+        // Change to absolute value
+        lat = Math.abs(lat);
+        lon = Math.abs(lon);
+
+        // Convert to Degree Minutes Seconds Representation
+        latDeg = Math.floor(lat);
+        lat -= latDeg;
+        latMin = Math.floor(lat * 60);
+        lat -= latMin / 60;
+        latSec = Math.round((lat * 3600) * magic) / magic;
+
+        lonDeg = Math.floor(lon);
+        lon -= lonDeg;
+        lonMin = Math.floor(lon * 60);
+        lon -= lonMin / 60;
+        lonSec = Math.round((lon * 3600) * magic) / magic;
+
+        if (type === 'object') {
+            ret = {
+                latitude: {
+                    degrees: latDeg,
+                    minutes: latMin,
+                    seconds: latSec,
+                    direction: latDir
+                },
+                longitude: {
+                    degrees: lonDeg,
+                    minutes: lonMin,
+                    seconds: lonSec,
+                    direction: lonDir
+                }
+            };
+        } else {
+            ret = {
+                latitude: latDeg + '°' + latMin + '\'' + latSec + '"' + latDir,
+                longitude: lonDeg + '°' + lonMin + '\'' + lonSec + '"' + lonDir
+            };
+        }
+
+        return ret;
     };
   	
 
