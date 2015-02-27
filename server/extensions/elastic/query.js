@@ -14,33 +14,33 @@ exports.updateRecord = function(userName, sessionId, type, updateMap, callback){
 
     _.each(updateMap, function(updateObj, id){
         bulkRequest.push({
-            "update":{
-                "_index": config.index.data,
-                "_type": type,
-                "_id": id,
-                "_routing": userName
+            update:{
+                _index: config.index.data,
+                _type: type,
+                _id: id,
+                _routing: userName
             }
         });
         bulkRequest.push({
-            "doc": updateObj
+            doc: updateObj
         });
     });
 
     client.bulk({
-        "body": bulkRequest
+        body: bulkRequest
     });
 };
 
 exports.executeQuery = function(userName, sessionId, query, callback){
 
     var newQuery = {
-        "query": {
-            "filtered": {
-                "query": query.query,
-                "filter": {
-                    "term": {
-                        "userId": userName,
-                        "sessionId": sessionId
+        query: {
+            filtered: {
+                query: query.query,
+                filter: {
+                    term: {
+                        userId: userName,
+                        sessionId: sessionId
                     }
                 }
             }
@@ -58,30 +58,30 @@ exports.getResultsByQueryId = function(userName, sessionId, queryId, from, size,
     var routing = userName;
 
     var query = {
-        "query":{
-            "bool": {
-                "must": [
+        query:{
+            bool: {
+                must: [
                     {
-                        "term": {
-                            "userId": userName
+                        term: {
+                            userId: userName
                         }
                     },
                     {
-                        "term": {
-                            "sessionId": sessionId
+                        term: {
+                            sessionId: sessionId
                         }
                     },
                     {
-                        "term": {
-                            "queryId": queryId
+                        term: {
+                            queryId: queryId
                         }
                     }
                 ]
             }
 
         },
-        "from": from,
-        "size": size
+        from: from,
+        size: size
     };
 
     getJSONByQuery(routing, config.index.data, null, query, callback);
@@ -96,12 +96,12 @@ exports.executeFilter = function(userId, sessionId, queryId, filter, callback){
 exports.streamQuery = function(userName, query, pageSize, pageCallback){
 
     var newQuery = {
-        "query": {
-            "filtered": {
-                "query": query.query,
-                "filter": {
-                    "term": {
-                        "userId": userName
+        query: {
+            filtered: {
+                query: query.query,
+                filter: {
+                    term: {
+                        userId: userName
                     }
                 }
             }
@@ -123,7 +123,7 @@ exports.getMetadataByQueryId = function(userId, queryId, callback){
         if (err){
             callback(err, null);
         } else if (results._source.userId !== userId){
-            callback("Metadata found but it does not belong to " + userId, null);
+            callback('Metadata found but it does not belong to ' + userId, null);
         } else {
             callback(null, results);
         }
@@ -132,17 +132,17 @@ exports.getMetadataByQueryId = function(userId, queryId, callback){
 
 exports.getMetadataBySessionId = function(userId, sessionId, callback){
     var query = {
-        "query":{
-            "bool": {
-                "must": [
+        query:{
+            bool: {
+                must: [
                     {
-                        "term": {
-                            "userId": userId
+                        term: {
+                            userId: userId
                         }
                     },
                     {
-                        "term": {
-                            "sessionId": sessionId
+                        term: {
+                            sessionId: sessionId
                         }
                     }
                 ]
@@ -193,9 +193,9 @@ var getJSONByQuery = function(routing, index, type, query, callback){
 var getJSONById = function(routing, index, type, id, callback){
 
     var req = {
-        "index": index,
-        "type": type || '_all',
-        "id": id
+        index: index,
+        type: type || '_all',
+        id: id
     };
 
     if (routing){ req.routing = routing; }
@@ -215,8 +215,8 @@ var getJSONById = function(routing, index, type, id, callback){
  */
 exports.getCountByQuery = function(routing, index, type, body, callback){
     var req = {
-        "index": index,
-        "body": body
+        index: index,
+        body: body
     };
 
     if (routing){ req.routing = routing; }

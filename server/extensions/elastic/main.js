@@ -1,6 +1,5 @@
 var query = require('./query');
 var save = require('./save');
-var download = require('./download');
 var mapping = require('./mapping');
 var client = require('./client');
 var stream = require('./stream');
@@ -17,7 +16,6 @@ exports.init = function(context){
     context.sandbox.elastic = {
         query: query,
         save: save,
-        download: download,
         mapping: mapping,
         client: client,
         stream: stream,
@@ -142,28 +140,6 @@ exports.init = function(context){
                 }
             }
         );
-    });
-
-//    app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-//        download.pipeCSVToResponse(res.get('Parsed-User'), res.get('Parsed-SessionId'), res);
-//    });
-
-    app.head('/results.csv', auth.verifyUser, function(req, res){
-        var idArray = req.query.ids.split(",");
-        query.getCountByQuery(null, config.index.data, null, {query:{"terms":{"queryId":idArray}}}, function(err, results){
-            if (err){
-                res.status(500);
-                res.send(err);
-            } else {
-                res.status(results.count === 0 ? 204 : 200); // 204 = No Content
-                res.send();
-            }
-        });
-
-    });
-
-    app.get('/results.csv', auth.verifyUser, function(req, res){
-        download.pipeCSVToResponseForQuery(res.get('Parsed-User'), req.query.ids.split(","), res);
     });
 
     app.get('/clear', auth.verifyUser, auth.verifySessionHeaders, function(req, res){

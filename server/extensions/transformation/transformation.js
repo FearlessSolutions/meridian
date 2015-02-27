@@ -8,15 +8,21 @@ var fs = require('fs'),
         options: []
     };
 
-exports.toGeoJSON = function(streamIn, streamOut) {
+exports.toGeoJSON = function(dataIn, callback) {
     exports.execute({
-        streamIn: streamIn,
-        streamOut: streamOut,
+        dataIn: dataIn,
+        callback: callback,
         format: 'GeoJSON',
         skipFailures: true
     });
 };
 
+/**
+ * NOTE This is impractical except for small batches (no streaming) because
+ *      ogr2ogr cannot apply headers dynamically, or for only the first batch.
+ * @param streamIn
+ * @param streamOut
+ */
 exports.toCSV = function(streamIn, streamOut) {
     exports.execute({
         streamIn: streamIn,
@@ -26,10 +32,10 @@ exports.toCSV = function(streamIn, streamOut) {
     });
 };
 
-exports.toKML = function(streamIn, streamOut) {
+exports.toKML = function(dataIn, callback) {
     exports.execute({
-        streamIn: streamIn,
-        streamOut: streamOut,
+        dataIn: dataIn,
+        callback: callback,
         format: 'KML',
         skipFailures: true
     });
@@ -45,19 +51,20 @@ exports.toShapefile = function(streamIn, streamOut) {
 };
 
 exports.execute = function(params) {
-    if(params.streamIn && params.streamOut) {
+    if(params.dataIn && params.callback) {
         try {
-            ogr2ogr(params.streamIn)
+            ogr2ogr(params.dataIn)
                 .project(params.projection || transformationConfig.projection)
                 .format(params.format || transformationConfig.format)
                 .timeout(params.timeout || transformationConfig.timeout)
                 .skipfailures(params.skipFailures || transformationConfig.skipFailures)
                 .options(params.options || transformationConfig.options)
-                .stream()
-                .pipe(params.streamOut);
+                .exec(params.callback);
         }
         catch(err) {
-            console.log(err);
+            if(params.callback){
+                callback(null);
+            }
         }
     }
 };

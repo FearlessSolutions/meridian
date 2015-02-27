@@ -202,7 +202,7 @@ define([
                                     property: key,
                                     displayName: key,
                                     weight: 50
-                                }
+                                };
                             }
                         });
 
@@ -231,8 +231,8 @@ define([
                     });
 
                     //Add new keys for the datagrid; remove "queryId" and featureId- they are added for other things, but not used here
-                    delete newKeys['queryId'];
-                    delete newKeys['featureId'];
+                    delete newKeys.queryId;
+                    delete newKeys.featureId;
                     context.sandbox.dataStorage.insertKeys({
                         keys: newKeys
                     });
