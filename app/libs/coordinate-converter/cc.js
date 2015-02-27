@@ -366,11 +366,22 @@
      * DD: Decimal Degree (latitude, longitude). 
      * MGRS: Military Grid Reference System.
      *
+     * If Object is chosen it will contain 5 properties:
+     * - easting: Float
+     * - northing: Float
+     * - zoneNumber: Integer
+     * - zoneLetter: String
+     * - gridLetters: String
+     *
+     * If String is selected it will look like this: 
+     * zoneNumber+zoneLetter gridLetters easting+northing
+     * i.e: 33P AA 123456789
+     * 
      * @param lat- Latitude in decimal.
      * @param lon- Longitude in decimal.
-     * @param output- Output format. Accepted values are: 'string' and 'object'.
-     * @param precision- Optional coordinate precision
-     *
+     * @param output- String representing return type (object or string).
+     * @param precision- Optional: coordinate precision.
+     * @return Depends on output parameter (Object or a String).
      */
   	cc.ddToMgrs = function(lat, lon, output, precision){
         var coords,
@@ -394,9 +405,7 @@
         // its easier to pass an object to the utm functions.
         coords = cc.ddToUtm(lat, lon, 'object');
 
-        if(typeof output === 'string' && output === 'object'){
-            mgrs = cc.utmToMgrs(coords, output, precision);
-        }else if(typeof output === 'string' && output === 'string'){
+        if(typeof output === 'string' && (output === 'object' || output === 'string')){
             mgrs = cc.utmToMgrs(coords, output, precision);
         }else{
             throw new Error("ddToMgrs(): Incorrect output type specified. Required: string or object.");
@@ -411,11 +420,21 @@
      * UTM: Universal Transverse Mercator Coordinate System.
      * MGRS: Military Grid Reference System.
      *
-     * @param coords - Object containing zoneNumber, zoneLetter, easting, northing and hemisphere
-     * @param output- Output format. Accepted values are: 'string' and 'object'.
-     * @param precision- Optional coordinate precision.
-     * @return Object with five properties: zoneNumber, zoneLetter, gridLetters, easting and
-     * northing, or a string with all properties.
+     * If Object is chosen it will contain 5 properties:
+     * - easting: Float
+     * - northing: Float
+     * - zoneNumber: Integer
+     * - zoneLetter: String
+     * - gridLetters: String
+     *
+     * If String is selected it will look like this: 
+     * zoneNumber+zoneLetter gridLetters easting+northing
+     * i.e: 33P AA 123456789
+     *
+     * @param coords - Object containing zoneNumber, zoneLetter, easting, northing and hemisphere.
+     * @param output- String representing return type (object or string).
+     * @param precision- Optional: coordinate precision.
+     * @return Depends on output parameter (Object or a String).
      */
     cc.utmToMgrs = function(coords, output, precision){
       var utmEasting,
@@ -495,13 +514,23 @@
      * by John P. Snyder, U.S. Government Printing Office, 1987.)
      * 
      * Note- UTM northings are negative in the southern hemisphere.
+     * 
+     * If Object is chosen it will contain 4 properties:
+     * - easting: Float
+     * - northing: Float
+     * - zoneNumber: Integer
+     * - zoneLetter: String
+     * - hemisphere: 'N' or 'S'
      *
-     * @param lat- Latitude in decimal; north is positive, south is negative
-     * @param lon- Longitude in decimal; east is positive, west is negative
-     * @param zone- optional, result zone
-     * @param output- Optional Output format. Accepted values are: 'string' and 'object'.
-     * @return Object with three properties, easting, northing, zone and hemisphere, or
-     * a string with zone, easting and northing.
+     * If String is selected it will look like this: 
+     * zoneNumber+zoneLetter easting northing
+     * i.e: 33P 123456 12345678
+     *
+     * @param lat- Latitude in decimal; north is positive, south is negative.
+     * @param lon- Longitude in decimal; east is positive, west is negative.
+     * @param output- String representing return type (object or string).
+     * @param zone- Optional: Force coordinates to be computed in a particular zone.
+     * @return Depends on output parameter (Object or a String).
      */
     cc.ddToUtm = function(lat, lon, output, zone){
         var zoneNumber,
@@ -589,7 +618,7 @@
             utmcoords.zoneLetter = utmLetterDesignator(lat);
             utmcoords.hemisphere = lat < 0 ? 'S' : 'N';
         } else if(typeof output === 'string' && output === 'string'){
-            utmcoords = zoneNumber + utmLetterDesignator(lat) + utmEasting + utmNorthing;
+            utmcoords = zoneNumber + utmLetterDesignator(lat) + ' ' + utmEasting + ' ' + utmNorthing;
         } else{
              throw new Error("ddToUtm(): Incorrect output type specified. Required: string or object.");
         }
@@ -616,9 +645,9 @@
      * 
      * @param lat- latitude (float or string representing a float)
      * @param lon- longitude (float or string representing a float)
-     * @param output- string representing return type (object or string); optional
-     * @param digits- Optional: max digits in seconds.
-     * @return Depents on type parameter (map of formatted strings or values)
+     * @param output- String representing return type (object or string).
+     * @param digits- Optional: Max digits in seconds.
+     * @return Depends on output parameter (Object or a String).
      */
     cc.ddToDms = function(lat, lon, output, digits){
         var latDeg,
@@ -632,9 +661,6 @@
             ret,
             magic;
 
-        if (typeof digits === 'undefined') {
-            digits = type;
-        }
 
         if (typeof digits === 'string') {
             digits = parseInt(digits, 10);
