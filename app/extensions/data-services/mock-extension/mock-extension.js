@@ -71,7 +71,7 @@ define([
                     if(app.sandbox.dataServices.mock.exports[option]){
                         callback({
                             result: true
-                        })
+                        });
                     }
                     else{
                         callback({
@@ -82,8 +82,6 @@ define([
                 //See data-storage-extension for key variable descriptions
                 keys: config.keys,
                 processMapUrl: processMapUrl,
-                DATASOURCE_NAME: DATASOURCE_NAME,
-                DISPLAY_NAME: config.DISPLAY_NAME,
                 namespace: config.namespace
             };
 
