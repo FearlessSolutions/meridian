@@ -369,16 +369,23 @@
      * @param lat- Latitude in decimal.
      * @param lon- Longitude in decimal.
      * @param output- Output format. Accepted values are: 'string' and 'object'.
+     * @param precision- Optional coordinate precision
      *
      */
   	cc.ddToMgrs = function(lat, lon, output, precision){
-        var coords;
+        var coords,
+        mgrs = null;
+
+        if(typeof lat === 'undefined' || typeof lon === 'undefined' || typeof output === 'undefined'){
+            throw new Error('ddToMgrs(): Missing arguments. Required: lat,lon,output.');
+        }
 
         if (typeof precision === 'string') {
             precision = parseInt(precision, 10);
         }
 
         precision = precision ? precision : 5;
+
 
         lat = parseFloat(lat);
         lon = parseFloat(lon);
@@ -387,8 +394,16 @@
         // its easier to pass an object to the utm functions.
         coords = cc.ddToUtm(lat, lon, 'object');
 
-        return cc.utmToMgrs(coords, output, precision);
+        if(typeof output === 'string' && output === 'object'){
+            mgrs = cc.utmToMgrs(coords, output, precision);
+        }else if(typeof output === 'string' && output === 'string'){
+            mgrs = cc.utmToMgrs(coords, output, precision);
+        }else{
+            throw new Error("ddToMgrs(): Incorrect output type specified. Required: string or object.");
 
+        }
+
+        return mgrs;
   	};
 
     /*
@@ -399,6 +414,8 @@
      * @param coords - Object containing zoneNumber, zoneLetter, easting, northing and hemisphere
      * @param output- Output format. Accepted values are: 'string' and 'object'.
      * @param precision- Optional coordinate precision.
+     * @return Object with five properties: zoneNumber, zoneLetter, gridLetters, easting and
+     * northing, or a string with all properties.
      */
     cc.utmToMgrs = function(coords, output, precision){
       var utmEasting,
@@ -408,6 +425,13 @@
             usngEasting,
             mgrs = null,
             i;
+
+        if(typeof coords === 'undefined' || typeof output === 'undefined'){
+            throw new Error('utmToMgrs(): Missing arguments. Required: coords,output.');
+        }
+        if(typeof coords !== 'object'){
+            throw new Error('utmToMgrs(): Incorrect type for coords. Required: object.');
+        }
 
         if (typeof precision === 'string') {
             precision = parseInt(precision, 10);
@@ -444,19 +468,18 @@
         // usng = coords.zoneNumber + coords.zoneLetter + " " + letters + " " + 
         //       usngEasting + " " + usngNorthing;
         
-        console.info('output: ', output);
         //mgrs is basically USNG without any space delimiters.
-        if(typeof output === 'string' && output === 'object'){
+        if (typeof output === 'string' && output === 'object'){
             mgrs = {};
             mgrs.zoneNumber = coords.zoneNumber;
             mgrs.zoneLetter = coords.zoneLetter;
             mgrs.gridLetters = letters;
             mgrs.easting = usngEasting;
             mgrs.northing = usngNorthing
-        }else if(typeof output === 'string' && output === 'string'){
-            mgrs = coords.zoneNumber + coords.zoneLetter + letters + usngEasting + usngNorthing;
-        }else{
-            console.error("No output type specified in utmToMgrs function.");
+        } else if(typeof output === 'string' && output === 'string'){
+            mgrs = coords.zoneNumber + coords.zoneLetter + ' ' + letters + ' ' + usngEasting + usngNorthing;
+        } else{
+             throw new Error("utmToMgrs(): Incorrect output type specified. Required: string or object.");
         }
         
         return mgrs;
@@ -481,7 +504,7 @@
      * a string with zone, easting and northing.
      */
     cc.ddToUtm = function(lat, lon, output, zone){
-      var zoneNumber,
+        var zoneNumber,
             latRad,
             lonRad,
             lonOrigin,
@@ -494,6 +517,10 @@
             A,
             M,
             utmcoords;
+
+        if(typeof lat === 'undefined' || typeof lon === 'undefined' || typeof output === 'undefined'){
+            throw new Error('ddToUtm(): Missing arguments. Required: lat,lon,output.');
+        }
 
         lat = parseFloat(lat);
         lon = parseFloat(lon);
@@ -537,6 +564,7 @@
         utmEasting = (k0 * N *
             (A + (1 - T + C) * (A * A * A) / 6 + (5 - 18 * T + T * T + 72 * C - 58 * ECC_PRIME_SQUARED ) * (A * A * A * A * A) / 120) + EASTING_OFFSET);
 
+        // old equation that was off by a few meters.
         // utmNorthing = (k0 * ( M + N * Math.tan(latRad) * (
         //       (A * A) / 2 + (5 - T + 9 * C + 4 * C * C ) * (A * A * A * A) / 2 +
         //       (61 - 58 * T + T * T + 600 * C - 330 * ECC_PRIME_SQUARED ) *
@@ -550,7 +578,8 @@
             utmNorthing += 10000000;
         }
 
-        
+        utmEasting = Math.round(utmEasting);
+        utmNorthing = Math.round(utmNorthing);
 
         if(typeof output === 'string' && output === 'object'){
             utmcoords = {};
@@ -559,9 +588,10 @@
             utmcoords.zoneNumber = zoneNumber;
             utmcoords.zoneLetter = utmLetterDesignator(lat);
             utmcoords.hemisphere = lat < 0 ? 'S' : 'N';
-        }else {
-            utmcoords = zoneNumber + utmLetterDesignator(lat) + ' ' 
-                        + utmEasting + ' ' + utmNorthing;
+        } else if(typeof output === 'string' && output === 'string'){
+            utmcoords = zoneNumber + utmLetterDesignator(lat) + utmEasting + utmNorthing;
+        } else{
+             throw new Error("ddToUtm(): Incorrect output type specified. Required: string or object.");
         }
 
         return utmcoords;
@@ -569,7 +599,9 @@
 
 
     /*
-     * Converts decimal degrees to degrees, minutes seconds.
+     * Converts DD to DMS.
+     * DD: Decimal Degree (latitude, longitude). 
+     * DMS: Degrees, Minutes, Seconds.
      * 
      * This function can either return a formatted string or an object.
      * 
@@ -585,10 +617,10 @@
      * @param lat- latitude (float or string representing a float)
      * @param lon- longitude (float or string representing a float)
      * @param output- string representing return type (object or string); optional
-     * @param digits- max digits in seconds; can be 3rd parameter; default is 2
+     * @param digits- Optional: max digits in seconds.
      * @return Depents on type parameter (map of formatted strings or values)
      */
-    cc.ddToDms = function(lat, lon, digits, output){
+    cc.ddToDms = function(lat, lon, output, digits){
         var latDeg,
             latMin,
             latSec,
