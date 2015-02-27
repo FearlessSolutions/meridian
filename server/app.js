@@ -28,6 +28,7 @@ exports.init = function(app){
     use('extensions/kmltogeojson');
     use('extensions/transformation');
     use('extensions/xml-parser');
+    use('extensions/display-names');
 
     // Components
     use('components/mock');
