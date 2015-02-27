@@ -8,7 +8,7 @@ define([
             context = app;
 
             if(!app.sandbox.export){
-                throw 'Requires export-utils extension to be loaded.'
+                throw 'Requires export-utils extension to be loaded.';
             }
 
             app.sandbox.export.utils.addExport({

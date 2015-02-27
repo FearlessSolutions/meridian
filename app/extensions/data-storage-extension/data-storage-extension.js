@@ -55,7 +55,7 @@ define([
                 getFeatureById: function(params, callback) {
                     var featureId = params.featureId;
 
-                    return ajax = $.ajax({
+                    return $.ajax({
                         type: "GET",
                         url: app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/" + featureId
                     }).done(function(data) {

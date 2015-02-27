@@ -90,7 +90,7 @@ define([
                 context.sandbox.utils.each(selectedIdsByLayer, function(layerId, selectedFeatures){
                     context.sandbox.utils.each(selectedFeatures, function(index, selectedFeatureId){
                         var rowIndex = dataView.getRowById(selectedFeatureId);
-                        if(rowIndex != undefined){ //If the row is not showing, this will be undefined
+                        if(rowIndex !== undefined){ //If the row is not showing, this will be undefined
                             newSelectedRows.push(rowIndex);
                         }
                     });
@@ -438,7 +438,7 @@ define([
                 cssClasses: HIDDEN_CSS
             };
         }else{
-            return {}
+            return {};
         }
     }
 
@@ -450,8 +450,7 @@ define([
             found = false;
 
         context.sandbox.utils.each(item, function(field, value){
-            if (typeof value !== 'undefined' && value != null
-                && value.toString().toLowerCase().indexOf(searchString) != -1) {
+            if (typeof value !== 'undefined' && value !== null && value.toString().toLowerCase().indexOf(searchString) != -1) {
                 found = true;
                 return false; //this breaks the $.each loop
             }
