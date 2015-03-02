@@ -22,7 +22,7 @@
       <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
           <li><a href="../getting-started/index.html">Getting Started</a></li>
-          <li><a href="./index.html">Contribute</a></li>
+          <li><a href="../contribute/index.html">Contribute</a></li>
           <li><a href="../examples/index.html">Examples</a></li>
           <li class="active"><a href="./embedding/index.html">Embedding</a></li>
         </ul>
@@ -34,7 +34,7 @@
         <section class="col-md-10 container">
           <h2 class="page-header" id="embedMeridian">Embedding Meridian</h3>
             <p>Embedding Meridian into you application is as simple as:</p>
-            <p>1.)Creating a HTML file and inserting an iframe into it</p>
+            <p>1.) Creating a HTML file and inserting an iframe into it</p>
             <span class="label label-primary"><a class="anchorLink" id="rootIndex"></a>index.html</span>
             <pre class="line-numbers">
               <code class="language-markup">&lt!DOCTYPE html&gt
@@ -52,7 +52,7 @@
 &lthtml&gt  </code>
           </pre>
 
-           <p>1.)Constructing a message and payload to send to that iframe (leveraging HTML5 post messaging)</p>
+           <p>2.) Constructing a message and payload to send to that iframe (leveraging HTML5 post messaging)</p>
             <span class="label label-primary"><a class="anchorLink" id="rootIndex"></a>index.html</span>
             <pre class="line-numbers">
               <code class="language-javascript">var payload = {
@@ -81,18 +81,18 @@
     "zoom":false,
     "readOnly":false
 }
-
-sendMessage("map.feature.plot", payload);</code>
+sendMessage("map.feature.plot", payload);
+          </code>
           </pre>
 
-          <h4 class="page-header" id="gettingStartedEmbedding">Want to learn more?</h4>
-            <p>A full example of embedding Meridian (including source files) can be found here</p>
+          <h4 class="page-header" id="gettingStartedEmbedding">Want to learn more about embedding Meridian in your application?</h4>
+            <p>A full example of embedding Meridian (including source files) can be found <a href="../examples/index.html">here.</a></p>
 
             <p>To run the example simply open the the sampleEmbed.html in either Firefox or Chrome.  Meridian will load, plot 4 features, and pan/zoom to where those features are located geographically.</p>
 
-            <p>Additionally, Meridian utilizes the Common Map API as teh specification for how channels and their corresponding payloads are sent to the map. You can learn more this specification at <a href="www.cmapi.org">www.cmapi.org</a></p>
+            <p>Additionally, Meridian utilizes the Common Map API as teh specification for how channels and their corresponding payloads are sent to the map. You can learn more this specification at <a href="http://www.cmapi.org">www.cmapi.org</a></p>
 
-            <p><b>Note: The current version of CMAPI supported by Meridian is version 1.2.0.</b> Our intent is to support as much of the specificatoin as possible and extend/override channel functionality where required. Additionally, our team continues to work with the technical community to update and refine the speification.  However, if there are channels you would like to see modifiied or added please joing their Google Group <a href="https://groups.google.com/forum/#!forum/common-map-widget-api/join">here</a>  </p>
+            <p><b>Note: The current version of CMAPI supported by Meridian is version 1.2.0.</b> Our intent is to support as much of the specificatoin as possible and extend/override channel functionality where required. Additionally, our team continues to work with the technical community to update and refine the speification.  However, if there are channels you would like to see modifiied or added please joing their Google Group <a href="https://groups.google.com/forum/#!forum/common-map-widget-api/join">here.</a>  </p>
 
         </section><!-- md-10 container -->
 
