@@ -40,10 +40,10 @@ define([
                         messageText: 'No valid location selected. Please try again.'
                     });
                     console.debug("Actual Numbers: ");
-                    console.debug('ddToMgrs(12,12): ' + cc.ddToMgrs(12,12,'string'));
-                    console.debug('ddToUtm(12,12): ' + cc.ddToUtm(12,12,'string'));
-                    console.debug('ddToDms(12,12): ' + cc.ddToDms(12.5,12.4321,'string'));
-                    console.debug('utmToDd(1383198,220901,33): ' + cc.utmToDd(1383198, 220901, 33,'string',3));
+                    console.debug('ddToMgrs(12.5,14.7): ' + cc.ddToMgrs(12.5,14.7,'string'));
+                    console.debug('ddToUtm(12.5,14.7): ' + cc.ddToUtm(12.5,14.7,'string'));
+                    console.debug('ddToDms(12.5,14.7): ' + cc.ddToDms(12.5,14.7,'string'));
+                    console.debug('utmToDd(1383198,220901,33): ' + cc.utmToDd(1383198, 220901, 33,'string', 3));
 
 
                 }else if('lat' in selectedLocation) { //It is coordinates

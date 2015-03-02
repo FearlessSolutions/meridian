@@ -748,14 +748,14 @@
      *
      * If object is chosen, it will have two properties, latitude and longitude.
      *
-     * @param UTMNorthing- northing-m (numeric), eg. 432001.8  
-     * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
      * @param UTMZoneNumber- 6-deg longitudinal zone (numeric), eg. 18
+     * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
+     * @param UTMNorthing- northing-m (numeric), eg. 432001.8  
      * @param output- String representing return type (object or string).
      * @param precision - Optional decimal precision.
      * @return Depends on output parameter (Object or a String).
      */
-    cc.utmToDd = function(UTMNorthing, UTMEasting, UTMZoneNumber, output, precision){
+    cc.utmToDd = function(UTMZoneNumber, UTMEasting, UTMNorthing, output, precision){
         var xUTM,
             yUTM,
             zoneNumber,
@@ -856,14 +856,14 @@
      * - seconds: positive float
      * - direction: N, S, E, or W
      *
-     * @param UTMNorthing- northing-m (numeric), eg. 432001.8  
-     * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
      * @param UTMZoneNumber- 6-deg longitudinal zone (numeric), eg. 18
+     * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
+     * @param UTMNorthing- northing-m (numeric), eg. 432001.8 
      * @param output- String representing return type (object or string).
      * @param precision - Optional decimal precision.
      * @return Depends on output parameter (Object or a String).
      */
-    cc.utmToDms = function(UTMNorthing, UTMEasting, UTMZoneNumber, output, precision){
+    cc.utmToDms = function(UTMZoneNumber, UTMEasting, UTMNorthing, output, precision){
 
         if( typeof UTMNorthing === 'undefined' || 
             typeof UTMEasting === 'undefined'|| 
@@ -938,7 +938,6 @@
         }
 
         return dd;
-
     };
 
 
