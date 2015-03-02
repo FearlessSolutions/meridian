@@ -360,7 +360,6 @@ module.exports = function (grunt) {
         'jshint',
         'copy:dist',
         'useminPrepare',
-        'imagemin:dist',
         'htmlmin:dist',
         'cssmin:dist',
         'usemin',
