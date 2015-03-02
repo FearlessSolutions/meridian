@@ -34,42 +34,65 @@
         <section class="col-md-10 container">
           <h2 class="page-header" id="embedMeridian">Embedding Meridian</h3>
             <p>Embedding Meridian into you application is as simple as:</p>
-            <p>1.)Inserting the following code</p>
+            <p>1.)Creating a HTML file and inserting an iframe into it</p>
             <span class="label label-primary"><a class="anchorLink" id="rootIndex"></a>index.html</span>
             <pre class="line-numbers">
               <code class="language-markup">&lt!DOCTYPE html&gt
 &lthtml&gt
   &lthead&gt
     &lttitle&gtEmbedded Meridian&lttitle&gt
-    &ltscript src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"&gt&ltscript&gt
+    &ltscript src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"&gt&ltscript&gt
+    &ltscript src="js/sampleEmbed.js"&gt&ltscript&gt
   &lthead&gt
   &ltbody&gt
-    &ltdiv&gt
-      &ltiframe id="webapp" src="https://localhost:3000" height="700px" width="100%"&gt&ltiframe&gt
+    &ltdiv id="youMapDiv"&gt
+      &ltiframe id="meridianMap" src="https://localhost:3000" height="720px" width="100%"&gt&ltiframe&gt
     &ltdiv&gt
   &ltbody&gt
 &lthtml&gt  </code>
           </pre>
 
-           <p>1.)Inserting the following code</p>
+           <p>1.)Constructing a message and payload to send to that iframe (leveraging HTML5 post messaging)</p>
             <span class="label label-primary"><a class="anchorLink" id="rootIndex"></a>index.html</span>
             <pre class="line-numbers">
-              <code class="language-markup">&lt!DOCTYPE html&gt
-&lthtml&gt
-  &lthead&gt
-    &lttitle&gtEmbedded Meridian&lttitle&gt
-    &ltscript src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"&gt&ltscript&gt
-  &lthead&gt
-  &ltbody&gt
-    &ltdiv&gt
-      &ltiframe id="webapp" src="https://localhost:3000" height="700px" width="100%"&gt&ltiframe&gt
-    &ltdiv&gt
-  &ltbody&gt
-&lthtml&gt  </code>
+              <code class="language-javascript">var payload = {
+    "name":"Example Points Plotting",
+    "overlayId":"testOverlayId1",
+    "format":"geojson",
+    "feature": {
+        "type":"FeatureCollection",
+        "features":[
+        {
+            "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [0.0, 10.0]
+                },
+                "properties": {
+                    "featureId": "f1"
+                },
+                "style": {
+                    "height": 24,
+                    "width": 24,
+                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                }
+        }]
+    },
+    "zoom":false,
+    "readOnly":false
+}
+
+sendMessage("map.feature.plot", payload);</code>
           </pre>
 
-          <h4 class="page-header" id="gettingStartedEmbedding">Getting Started with Embedding Meridian</h4>
-            <p>Here is a simple example of an <code>input-area</code> component. In the current status, the component simply reads the content in the input area. Without any messaging files, this component will not be able to comunicate with any others.</p>
+          <h4 class="page-header" id="gettingStartedEmbedding">Want to learn more?</h4>
+            <p>A full example of embedding Meridian (including source files) can be found here</p>
+
+            <p>To run the example simply open the the sampleEmbed.html in either Firefox or Chrome.  Meridian will load, plot 4 features, and pan/zoom to where those features are located geographically.</p>
+
+            <p>Additionally, Meridian utilizes the Common Map API as teh specification for how channels and their corresponding payloads are sent to the map. You can learn more this specification at <a href="www.cmapi.org">www.cmapi.org</a></p>
+
+            <p><b>Note: The current version of CMAPI supported by Meridian is version 1.2.0.</b> Our intent is to support as much of the specificatoin as possible and extend/override channel functionality where required. Additionally, our team continues to work with the technical community to update and refine the speification.  However, if there are channels you would like to see modifiied or added please joing their Google Group <a href="https://groups.google.com/forum/#!forum/common-map-widget-api/join">here</a>  </p>
 
         </section><!-- md-10 container -->
 
