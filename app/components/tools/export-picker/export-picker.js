@@ -310,6 +310,7 @@ define([
         $selectAll.prop('checked', false);
         $layerContainer.find('.layer-option input').prop('checked', false);
         $exportContainer.find('.radio').removeClass('selected');
+        $exportContainer.find(':radio').prop('checked', false);
         $modalDialog.removeClass('singlePoint');
         $modalDialog.css({'width': '600px'});//must do this. Removing class is not enough.
         cleanExtraFields();
