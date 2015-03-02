@@ -154,7 +154,7 @@ define([
             });
 
             context.$('#grid-search-btn').on('click', function(e){
-                var searchString = $searchTextBox.val();
+                var searchString = $searchTextBox.val().toLowerCase();
                 Slick.GlobalEditorLock.cancelCurrentEdit(); //Stop any edits taking place
 
                 dataView.setFilterArgs({
@@ -450,7 +450,7 @@ define([
             found = false;
 
         context.sandbox.utils.each(item, function(field, value){
-            if (typeof value !== 'undefined' && value !== null && value.toString().toLowerCase().indexOf(searchString) != -1) {
+            if (typeof value !== 'undefined' && value !== null && value.toString().indexOf(searchString) != -1) {
                 found = true;
                 return false; //this breaks the $.each loop
             }
