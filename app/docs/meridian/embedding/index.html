@@ -38,9 +38,35 @@
             <span class="label label-primary"><a class="anchorLink" id="rootIndex"></a>index.html</span>
             <pre class="line-numbers">
               <code class="language-markup">&lt!DOCTYPE html&gt
-              &lthtml&gt&lthtml&gt
-              </code>
-            </pre>
+&lthtml&gt
+  &lthead&gt
+    &lttitle&gtEmbedded Meridian&lttitle&gt
+    &ltscript src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"&gt&ltscript&gt
+  &lthead&gt
+  &ltbody&gt
+    &ltdiv&gt
+      &ltiframe id="webapp" src="https://localhost:3000" height="700px" width="100%"&gt&ltiframe&gt
+    &ltdiv&gt
+  &ltbody&gt
+&lthtml&gt  </code>
+          </pre>
+
+           <p>1.)Inserting the following code</p>
+            <span class="label label-primary"><a class="anchorLink" id="rootIndex"></a>index.html</span>
+            <pre class="line-numbers">
+              <code class="language-markup">&lt!DOCTYPE html&gt
+&lthtml&gt
+  &lthead&gt
+    &lttitle&gtEmbedded Meridian&lttitle&gt
+    &ltscript src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"&gt&ltscript&gt
+  &lthead&gt
+  &ltbody&gt
+    &ltdiv&gt
+      &ltiframe id="webapp" src="https://localhost:3000" height="700px" width="100%"&gt&ltiframe&gt
+    &ltdiv&gt
+  &ltbody&gt
+&lthtml&gt  </code>
+          </pre>
 
           <h4 class="page-header" id="gettingStartedEmbedding">Getting Started with Embedding Meridian</h4>
             <p>Here is a simple example of an <code>input-area</code> component. In the current status, the component simply reads the content in the input area. Without any messaging files, this component will not be able to comunicate with any others.</p>
