@@ -1,5 +1,5 @@
 (function(){
-	//CONSTANTS
+//---------------------------- CONSTANTS ----------------------------
 	var DEG_2_RAD = Math.PI / 180,
         RAD_2_DEG = 180.0 / Math.PI,
         EQUATORIAL_RADIUS,
@@ -41,11 +41,10 @@
     	if (!(this instanceof cc)) return new cc(obj);
   	};
 
-  	//Version
+//---------------------------- VERSION ----------------------------
   	cc.VERSION = '0.0.1';
 
-    //HELPERS
-    
+//---------------------------- HELPERS ----------------------------    
     /*
      * Finds the set for a given zone.
      *
@@ -292,30 +291,23 @@
         }
     };
 
-    var dmsToDecimal = function(angle){
-        var reg = /^[NSEW\-]?\d{1,3}[° ]\d{1,2}[' ]\d{1,2}(\.\d{1,3})?[" ][NSEW]?$/,
-            regSplit = /-?\d+(\.\d+)?/g,
-            dms = {},
-            tmp,
-            ret;
+    var dmsToDecimal = function (coordinateString){
+        var splitAtDecimal = coordinateString.split('.'),
+            integerStringArray = splitAtDecimal[0].split(''),
+            degrees,
+            minutes,
+            seconds,
+            coordinate;
 
-        if (typeof angle === 'object') {
-            dms = dmsVerify(angle);
-        } else {
-            if (!reg.test(angle)) {
-                throw "Angle not formatted correctly: " + angle;
-            }
-            tmp = angle.match(regSplit);
+        //Split the coordinate as String/Array
+        seconds = integerStringArray.splice(-2).concat(['.'], splitAtDecimal[1].split(''));
+        seconds = parseFloat(seconds.join(''));
+        minutes = integerStringArray.splice(-2);
+        minutes = parseFloat(minutes.join(''));
+        degrees = parseFloat(integerStringArray.join(''));
 
-            dms.degrees = parseInt(tmp[0], 10);
-            dms.minutes = parseInt(tmp[1], 10);
-            dms.seconds = parseFloat(tmp[2]);
-        }
-
-        tmp = String(dms.minutes / 60 + dms.seconds / 3600);
-        ret = dms.degrees + '.' + tmp.substring(tmp.indexOf('.') + 1);
-
-        return parseFloat(ret);
+        coordinate = degrees + (minutes/60) + (seconds/3600);
+        return coordinate;
     };
 
      /*
@@ -364,8 +356,8 @@
         return n===0 || n<=9 ? '0'+n: ''+n; 
     }
 
-  	//FUNCTIONS
-
+//---------------------------- FUNCTIONS ----------------------------
+//
 //---------------------------- DD to ----------------------------
   	/*
      * Converts DD to MGRS
@@ -551,7 +543,7 @@
      * 
      * This function can either return a formatted string or an object.
      * 
-     * If string or nothing is specified, it will look like this: 41°25'01"N
+     * If string is specified, it will look like this: 412501N, 123456E
      * 
      * If object is chosen, it will have two properties, latitude and longitude.
      * Each will have these properties:
@@ -563,7 +555,7 @@
      * @param lat- latitude (float or string representing a float)
      * @param lon- longitude (float or string representing a float)
      * @param output- String representing return type (object or string).
-     * @param digits- Optional: Max digits in seconds.
+     * @param digits- Optional: Max digits in seconds. Default: 2.
      * @return Depends on output parameter (Object or a String).
      */
     cc.ddToDms = function(lat, lon, output, digits){
@@ -752,6 +744,10 @@
      * East Longitudes are positive, West longitudes are negative. 
      * North latitudes are positive, South latitudes are negative.
      *
+     * If string is specified, it will look like this: 41, 12.
+     *
+     * If object is chosen, it will have two properties, latitude and longitude.
+     *
      * @param UTMNorthing- northing-m (numeric), eg. 432001.8  
      * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
      * @param UTMZoneNumber- 6-deg longitudinal zone (numeric), eg. 18
@@ -760,7 +756,6 @@
      * @return Depends on output parameter (Object or a String).
      */
     cc.utmToDd = function(UTMNorthing, UTMEasting, UTMZoneNumber, output, precision){
-        console.debug('running utmToDd');
         var xUTM,
             yUTM,
             zoneNumber,
@@ -845,7 +840,106 @@
         return dd;
     };
 
+    /*
+     * Converts UTM to DMS.
+     * UTM: Universal Transverse Mercator Coordinate System.
+     * DMS: Degrees, Minutes, Seconds.
+     * 
+     * This function can either return a formatted string or an object.
+     * 
+     * If string or nothing is specified, it will look like this: 412501N, 123456E
+     * 
+     * If object is chosen, it will have two properties, latitude and longitude.
+     * Each will have these properties:
+     * - degrees: positive integer
+     * - minutes: positive integer
+     * - seconds: positive float
+     * - direction: N, S, E, or W
+     *
+     * @param UTMNorthing- northing-m (numeric), eg. 432001.8  
+     * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
+     * @param UTMZoneNumber- 6-deg longitudinal zone (numeric), eg. 18
+     * @param output- String representing return type (object or string).
+     * @param precision - Optional decimal precision.
+     * @return Depends on output parameter (Object or a String).
+     */
+    cc.utmToDms = function(UTMNorthing, UTMEasting, UTMZoneNumber, output, precision){
 
+        if( typeof UTMNorthing === 'undefined' || 
+            typeof UTMEasting === 'undefined'|| 
+            typeof UTMZoneNumber === 'undefined' || 
+            typeof output === 'undefined'){
+            throw new Error('utmToDd(): Missing arguments. Required: UTMNorthing,UTMEasting,UTMZoneNumber,output.');
+        }
+
+        if (typeof output !== 'string' || output !== 'string' || output !== 'object'){
+            throw new Error("utmToDms(): Incorrect output type specified. Required: string or object.");
+        }
+
+        //if no precision is provided, set precision to 2.
+        precision = precision ? precision: 2;
+
+        var dd = cc.utmToDd(UTMNorthing, UTMEasting, UTMZoneNumber, 'object', precision);
+
+        return cc.ddToDms(dd.latitude, dd.longitude, output);
+    };
+
+
+//---------------------------- DMS to ----------------------------
+
+    /*
+     * Converts DMS to DD.
+     * DMS: Degrees, Minutes, Seconds.
+     * DD: Decimal Degree (latitude, longitude). 
+     * 
+     * This function can either return a formatted string or an object.
+     * 
+     * If string is specified, it will look like this: 41, 12.
+     * 
+     * If object is chosen, it will have two properties, latitude and longitude.
+     * 
+     * @param lat- latitude (float or string representing a float)
+     * @param lon- longitude (float or string representing a float)
+     * @param output- String representing return type (object or string).
+     * @return Depends on output parameter (Object or a String).
+     */
+    cc.dmsToDd = function(lat, lon, output){
+        var north = lat.match(/^\d{6,7}(\.\d+)?N/),
+            south = lat.match(/^\d{6,7}(\.\d+)?S/),
+            west = lon.match(/^\d{6,7}(\.\d+)?W$/),
+            east = lon.match(/^\d{6,7}(\.\d+)?E$/),
+            lat,
+            lon,
+            dd = null;
+
+        if(typeof lat === 'undefined' || typeof lon === 'undefined' || typeof output === 'undefined'){
+            throw new Error('dmsToDd(): Missing arguments. Required: lat,lon,output.');
+        }
+
+        if(north){
+            lat = dmsToDecimal(north[0]);
+        }else{ //south
+            lat = dmsToDecimal(south[0]) * (-1); //South is negative
+        }
+
+        if(east){
+            lon = dmsToDecimal(east[0]);
+        }else{ //West
+            lon = dmsToDecimal(west[0]) * (-1); //West is negative
+        }
+
+        if (typeof output === 'string' && output === 'object'){
+            dd.latitude = lat;
+            dd.longitude = lon;
+        }else if (typeof output === 'string' && output === 'string'){
+            dd = lat + ', ' + lon;
+        }else {
+             throw new Error("dmsToDd(): Incorrect output type specified. Required: string or object.");
+        }
+
+        return dd;
+
+    };
 
 
   	// AMD registration happens at the end for compatibility with AMD loaders
