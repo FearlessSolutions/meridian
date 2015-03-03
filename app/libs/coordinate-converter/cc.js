@@ -14,7 +14,8 @@
         GRIDSQUARE_SET_ROW_SIZE = 20, // row height of grid square set
         BLOCK_SIZE  = 100000, // size of square identifier (within grid zone designation),
         E1,
-        k0 = 0.9996; // scale factor of central meridian
+        k0 = 0.9996, // scale factor of central meridian
+        ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     // check for NAD83/WGS84
     if (IS_NAD83_DATUM) {
@@ -661,25 +662,29 @@
      * zoneNumber+zoneLetter gridLetters easting+northing
      * i.e: 33P AA 123456789
      *
-     * @param coords - Object containing zoneNumber, zoneLetter, easting, northing and hemisphere.
+     * @param UTMZone- 6-deg longitudinal zone (numeric) and letter, eg. 18L
+     * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
+     * @param UTMNorthing- northing-m (numeric), eg. 432001.8  
      * @param output- String representing return type (object or string).
-     * @param precision- Optional: coordinate precision.
+     * @param precision - Optional decimal precision. Default value: 5.
      * @return Depends on output parameter (Object or a String).
      */
-    cc.utmToMgrs = function(coords, output, precision){
+    cc.utmToMgrs = function(UTMZone, UTMEasting, UTMNorthing, output, precision){
       var utmEasting,
             utmNorthing,
             letters,
             usngNorthing,
             usngEasting,
+            zoneLetter,
+            zoneNumber,
             mgrs = null,
             i;
 
-        if(typeof coords === 'undefined' || typeof output === 'undefined'){
-            throw new Error('utmToMgrs(): Missing arguments. Required: coords,output.');
-        }
-        if(typeof coords !== 'object'){
-            throw new Error('utmToMgrs(): Incorrect type for coords. Required: object.');
+        if( typeof UTMNorthing === 'undefined' || 
+            typeof UTMEasting === 'undefined'|| 
+            typeof UTMZone === 'undefined' || 
+            typeof output === 'undefined'){
+            throw new Error('utmToDd(): Missing arguments. Required: UTMNorthing,UTMEasting,UTMZoneNumber,output.');
         }
 
         if (typeof precision === 'string') {
@@ -688,16 +693,20 @@
 
         precision = precision ? precision : 5;
 
-        utmEasting = coords.easting;
-        utmNorthing = coords.northing;
+        zoneLetter  = UTMZone.charAt(UTMZone.length - 1);
+        zoneNumber = UTMZone.split(zoneLetter);
+        zoneNumber = parseInt(zoneNumber[0], 10);
 
-        // southern hemisphere case
-        if (coords.hemisphere === 'S') {
-            // Use offset for southern hemisphere
-            utmNorthing += NORTHING_OFFSET; 
+        utmNorthing = UTMNorthing;
+        utmEasting = UTMEasting;
+
+        //any letter coming before "N" in the alphabet is in the southern hemisphere.
+        if(ALPHABET.indexOf(zoneLetter) < 13){
+            //South
+           utmNorthing += NORTHING_OFFSET; 
         }
-
-        letters  = findGridLetters(coords.zoneNumber, utmNorthing, utmEasting);
+        
+        letters  = findGridLetters(zoneNumber, utmNorthing, utmEasting);
         usngNorthing = Math.round(utmNorthing) % BLOCK_SIZE;
         usngEasting  = Math.round(utmEasting)  % BLOCK_SIZE;
 
@@ -720,13 +729,13 @@
         //mgrs is basically USNG without any space delimiters.
         if (typeof output === 'string' && output === 'object'){
             mgrs = {};
-            mgrs.zoneNumber = coords.zoneNumber;
-            mgrs.zoneLetter = coords.zoneLetter;
+            mgrs.zoneNumber = zoneNumber;
+            mgrs.zoneLetter = zoneLetter;
             mgrs.gridLetters = letters;
             mgrs.easting = usngEasting;
             mgrs.northing = usngNorthing
         } else if(typeof output === 'string' && output === 'string'){
-            mgrs = coords.zoneNumber + coords.zoneLetter + ' ' + letters + ' ' + usngEasting + usngNorthing;
+            mgrs = zoneNumber + zoneLetter + ' ' + letters + ' ' + usngEasting + usngNorthing;
         } else{
              throw new Error("utmToMgrs(): Incorrect output type specified. Required: string or object.");
         }
@@ -748,17 +757,18 @@
      *
      * If object is chosen, it will have two properties, latitude and longitude.
      *
-     * @param UTMZoneNumber- 6-deg longitudinal zone (numeric), eg. 18
+     * @param UTMZone- 6-deg longitudinal zone (numeric) and letter, eg. 18L
      * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
      * @param UTMNorthing- northing-m (numeric), eg. 432001.8  
      * @param output- String representing return type (object or string).
-     * @param precision - Optional decimal precision.
+     * @param precision - Optional decimal precision. Default 2.
      * @return Depends on output parameter (Object or a String).
      */
-    cc.utmToDd = function(UTMZoneNumber, UTMEasting, UTMNorthing, output, precision){
+    cc.utmToDd = function(UTMZone, UTMEasting, UTMNorthing, output, precision){
         var xUTM,
             yUTM,
             zoneNumber,
+            zoneLetter,
             lonOrigin,
             M, // M is the "true distance along the central meridian from the Equator to phi (latitude)
             mu,
@@ -771,14 +781,22 @@
             D,
             lat,
             lon,
+            roundingNumber,
             dd = null;
+            
+
+            //console.info(alphabet.indexOf('N'));//13
 
         if( typeof UTMNorthing === 'undefined' || 
             typeof UTMEasting === 'undefined'|| 
-            typeof UTMZoneNumber === 'undefined' || 
+            typeof UTMZone === 'undefined' || 
             typeof output === 'undefined'){
             throw new Error('utmToDd(): Missing arguments. Required: UTMNorthing,UTMEasting,UTMZoneNumber,output.');
         }
+
+        zoneLetter  = UTMZone.charAt(UTMZone.length - 1);
+        zoneNumber = UTMZone.split(zoneLetter);
+        zoneNumber = parseInt(zoneNumber[0], 10);
 
         //if no precision is provided, set precision to 2.
         precision = precision ? precision: 2;
@@ -786,12 +804,22 @@
         // remove 500,000 meter offset for longitude
         xUTM = parseFloat(UTMEasting) - EASTING_OFFSET; 
         yUTM = parseFloat(UTMNorthing);
-        zoneNumber = parseInt(UTMZoneNumber, 10);
 
         // origin longitude for the zone (+3 puts origin in zone center) 
         lonOrigin = (zoneNumber - 1) * 6 - 180 + 3; 
 
-        M = yUTM / k0;
+        //the value of M changes if the zone is south of the equator. 
+        //any letter coming before "N" in the alphabet is in the southern hemisphere, 
+        //and any letter "N" or after is in the northern hemisphere.
+        if(ALPHABET.indexOf(zoneLetter) < 13){
+            //South
+            M = (yUTM-NORTHING_OFFSET);
+        }
+        else{
+            //North
+            M = yUTM / k0;
+        }
+        
         mu = M / ( EQUATORIAL_RADIUS * (1 - ECC_SQUARED / 4 - 3 * ECC_SQUARED * 
                         ECC_SQUARED / 64 - 5 * ECC_SQUARED * ECC_SQUARED * ECC_SQUARED / 256 ));
 
@@ -823,9 +851,12 @@
 
         lon = lonOrigin + lon * RAD_2_DEG;
 
+        // number that helps us round off un-needed digits
+        roundingNumber = Math.pow(10, precision);
+
         //cut of decimal places based on precision.
-        lat = lat.toFixed(precision);
-        lon = lon.toFixed(precision);
+        lat = Math.round(lat*roundingNumber)/roundingNumber;
+        lon = Math.round(lon*roundingNumber)/roundingNumber;
 
         if (typeof output === 'string' && output === 'object'){
             dd = {};
@@ -856,32 +887,32 @@
      * - seconds: positive float
      * - direction: N, S, E, or W
      *
-     * @param UTMZoneNumber- 6-deg longitudinal zone (numeric), eg. 18
+     * @param UTMZone- 6-deg longitudinal zone (numeric) and letter, eg. 18L
      * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
      * @param UTMNorthing- northing-m (numeric), eg. 432001.8 
      * @param output- String representing return type (object or string).
-     * @param precision - Optional decimal precision.
+     * @param digits - Optional: Max digits in seconds. Default: 2.
      * @return Depends on output parameter (Object or a String).
      */
-    cc.utmToDms = function(UTMZoneNumber, UTMEasting, UTMNorthing, output, precision){
+    cc.utmToDms = function(UTMZone, UTMEasting, UTMNorthing, output, digits){
 
         if( typeof UTMNorthing === 'undefined' || 
             typeof UTMEasting === 'undefined'|| 
-            typeof UTMZoneNumber === 'undefined' || 
+            typeof UTMZone === 'undefined' || 
             typeof output === 'undefined'){
-            throw new Error('utmToDd(): Missing arguments. Required: UTMNorthing,UTMEasting,UTMZoneNumber,output.');
+            throw new Error('utmToDms(): Missing arguments. Required: UTMNorthing,UTMEasting,UTMZoneNumber,output.');
         }
 
-        if (typeof output !== 'string' || output !== 'string' || output !== 'object'){
+        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
             throw new Error("utmToDms(): Incorrect output type specified. Required: string or object.");
         }
 
-        //if no precision is provided, set precision to 2.
-        precision = precision ? precision: 2;
+        //if no digits is provided, set digits to 2.
+        digits = digits ? digits: 2;
 
-        var dd = cc.utmToDd(UTMNorthing, UTMEasting, UTMZoneNumber, 'object', precision);
+        var dd = cc.utmToDd(UTMZone, UTMEasting, UTMNorthing, 'object', 2);
 
-        return cc.ddToDms(dd.latitude, dd.longitude, output);
+        return cc.ddToDms(dd.latitude, dd.longitude, output, digits);
     };
 
 

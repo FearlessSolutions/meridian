@@ -43,7 +43,14 @@ define([
                     console.debug('ddToMgrs(12.5,14.7): ' + cc.ddToMgrs(12.5,14.7,'string'));
                     console.debug('ddToUtm(12.5,14.7): ' + cc.ddToUtm(12.5,14.7,'string'));
                     console.debug('ddToDms(12.5,14.7): ' + cc.ddToDms(12.5,14.7,'string'));
-                    console.debug('utmToDd(1383198,220901,33): ' + cc.utmToDd(1383198, 220901, 33,'string', 3));
+
+                    //should be: -12.9, 32.3
+                    console.debug('utmToDd(36, 424059, 8573819): ' + cc.utmToDd('36L', 424059, 8573819,'string', 3));
+
+                    //should be: 125400S, 1000600W
+                    console.debug('utmToDms(36, 424059, 8573819): ' + cc.utmToDms('36L', 424059, 8573819,'string'));
+
+                    //should be: 
 
 
                 }else if('lat' in selectedLocation) { //It is coordinates
