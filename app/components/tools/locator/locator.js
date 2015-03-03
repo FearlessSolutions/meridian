@@ -45,12 +45,13 @@ define([
                     console.debug('ddToDms(12.5,14.7): ' + cc.ddToDms(12.5,14.7,'string'));
 
                     //should be: -12.9, 32.3
-                    console.debug('utmToDd(36, 424059, 8573819): ' + cc.utmToDd('36L', 424059, 8573819,'string', 3));
+                    console.debug('utmToDd(36, 424059, 8573819): ' + cc.utmToDd('36L', 424059, 8573819,'string'));
 
                     //should be: 125400S, 1000600W
                     console.debug('utmToDms(36, 424059, 8573819): ' + cc.utmToDms('36L', 424059, 8573819,'string'));
 
-                    //should be: 
+                    //should be: 36L VL 2405973819
+                    console.debug('utmToMgrs(36, 424059, 8573819): ' + cc.utmToMgrs('36L', 424059, 8573819,'string'));
 
 
                 }else if('lat' in selectedLocation) { //It is coordinates

@@ -405,10 +405,9 @@
         coords = cc.ddToUtm(lat, lon, 'object');
 
         if(typeof output === 'string' && (output === 'object' || output === 'string')){
-            mgrs = cc.utmToMgrs(coords, output, precision);
+            mgrs = cc.utmToMgrs(coords.zoneNumber+coords.zoneLetter, coords.easting, coords.northing, output, precision);
         }else{
             throw new Error("ddToMgrs(): Incorrect output type specified. Required: string or object.");
-
         }
 
         return mgrs;
@@ -684,7 +683,7 @@
             typeof UTMEasting === 'undefined'|| 
             typeof UTMZone === 'undefined' || 
             typeof output === 'undefined'){
-            throw new Error('utmToDd(): Missing arguments. Required: UTMNorthing,UTMEasting,UTMZoneNumber,output.');
+            throw new Error('utmToDd(): Missing arguments. Required: UTMZone, UTMEasting, UTMNorthing, output.');
         }
 
         if (typeof precision === 'string') {
@@ -788,7 +787,7 @@
             typeof UTMEasting === 'undefined'|| 
             typeof UTMZone === 'undefined' || 
             typeof output === 'undefined'){
-            throw new Error('utmToDd(): Missing arguments. Required: UTMNorthing,UTMEasting,UTMZoneNumber,output.');
+            throw new Error('utmToDd(): Missing arguments. Required: UTMZone, UTMEasting, UTMNorthing, output.');
         }
 
         zoneLetter  = UTMZone.charAt(UTMZone.length - 1);
@@ -901,7 +900,7 @@
             typeof UTMEasting === 'undefined'|| 
             typeof UTMZone === 'undefined' || 
             typeof output === 'undefined'){
-            throw new Error('utmToDms(): Missing arguments. Required: UTMNorthing,UTMEasting,UTMZoneNumber,output.');
+            throw new Error('utmToDms(): Missing arguments. Required: UTMZone, UTMEasting, UTMNorthing, output.');
         }
 
         if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
