@@ -379,7 +379,7 @@
      * @param lat- Latitude in decimal.
      * @param lon- Longitude in decimal.
      * @param output- String representing return type (object or string).
-     * @param precision- Optional: coordinate precision.
+     * @param precision- Optional: coordinate precision. Default: 5.
      * @return Depends on output parameter (Object or a String).
      */
   	cc.ddToMgrs = function(lat, lon, output, precision){
@@ -784,9 +784,6 @@
             roundingNumber,
             dd = null;
             
-
-            //console.info(alphabet.indexOf('N'));//13
-
         if( typeof UTMNorthing === 'undefined' || 
             typeof UTMEasting === 'undefined'|| 
             typeof UTMZone === 'undefined' || 
@@ -797,6 +794,10 @@
         zoneLetter  = UTMZone.charAt(UTMZone.length - 1);
         zoneNumber = UTMZone.split(zoneLetter);
         zoneNumber = parseInt(zoneNumber[0], 10);
+
+        if (typeof precision === 'string') {
+            precision = parseInt(precision, 10);
+        }
 
         //if no precision is provided, set precision to 2.
         precision = precision ? precision: 2;
@@ -907,7 +908,11 @@
             throw new Error("utmToDms(): Incorrect output type specified. Required: string or object.");
         }
 
-        //if no digits is provided, set digits to 2.
+        if (typeof digits === 'string') {
+            digits = parseInt(digits, 10);
+        }
+
+        //if no digit is provided, set digits to 2.
         digits = digits ? digits: 2;
 
         var dd = cc.utmToDd(UTMZone, UTMEasting, UTMNorthing, 'object', 2);
@@ -932,9 +937,10 @@
      * @param lat- latitude (float or string representing a float)
      * @param lon- longitude (float or string representing a float)
      * @param output- String representing return type (object or string).
+     * @param precision - Optional decimal precision. Default 2.
      * @return Depends on output parameter (Object or a String).
      */
-    cc.dmsToDd = function(lat, lon, output){
+    cc.dmsToDd = function(lat, lon, output, precision){
         var north = lat.match(/^\d{6,7}(\.\d+)?N/),
             south = lat.match(/^\d{6,7}(\.\d+)?S/),
             west = lon.match(/^\d{6,7}(\.\d+)?W$/),
@@ -946,6 +952,14 @@
         if(typeof lat === 'undefined' || typeof lon === 'undefined' || typeof output === 'undefined'){
             throw new Error('dmsToDd(): Missing arguments. Required: lat,lon,output.');
         }
+
+        if (typeof precision === 'string') {
+            precision = parseInt(precision, 10);
+        }
+
+        //if no precision is provided, set precision to 2.
+        precision = precision ? precision: 2;
+
 
         if(north){
             lat = dmsToDecimal(north[0]);
