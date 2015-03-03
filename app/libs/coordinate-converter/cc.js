@@ -604,13 +604,13 @@
         // Convert to Degree Minutes Seconds Representation
         latDeg = Math.floor(lat);
         lat -= latDeg;
-        latMin = Math.floor(lat * 60);
+        latMin = Math.round((lat * 60) * magic) / magic;
         lat -= latMin / 60;
         latSec = Math.round((lat * 3600) * magic) / magic;
 
         lonDeg = Math.floor(lon);
         lon -= lonDeg;
-        lonMin = Math.floor(lon * 60);
+        lonMin = Math.round((lon * 60) * magic) / magic;
         lon -= lonMin / 60;
         lonSec = Math.round((lon * 3600) * magic) / magic;
 
