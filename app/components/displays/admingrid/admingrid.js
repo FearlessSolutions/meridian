@@ -17,7 +17,6 @@ define([
                 
             context = thisContext,
             dataView = new Slick.Data.DataView();
-            //gridHeight();
             var columns = [
                 {id: "col1", name: "User ID", field: "id"},
                 {id: "col2", name: "Data Source", field: "dataSource", maxWidth: 120, sortable: true },
@@ -26,7 +25,6 @@ define([
             ],
             options = {
                 enableCellNavigation: false,
-                //defaultColumnWidth: 120,
                 enableColumnReorder: true,
                 multiColumnSort: false,
                 forceFitColumns: true,
@@ -47,11 +45,10 @@ define([
         hidden: function() {
             $('#admingridContainer').css('visibility','hidden');
         },
-        something: function(data) {
+        createGridData: function(data) {
             var currentDataArray = [];
               
                 context.sandbox.utils.each(data, function (queryId, obj) {
-                    
                     var now = moment(),
                         sDate = moment.unix(obj.createdOn) || '',
                         eDate = moment.unix(obj.expireOn) || '';
@@ -74,15 +71,7 @@ define([
     function gridHeight () {
         $('#admingrid').height($(window).height() - ($('.panel-body').height() + 145));
     }
-    function compileData(layerId, features, headers){
-        
-    }
-    function gridFormatter(row, cell, value, columnDef, dataContext){
 
-    }        
-    function getItemMetadata(row){
-      
-    }
     return exposed;
 
 });

@@ -6,7 +6,6 @@ define([
 	var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            
         }
     };	
 

@@ -3,9 +3,7 @@ define([
     'bootstrap',
     'daterangepicker'
 ], function (publisher) {
-    var context;
-
-    var datePickerObj;
+    var context, datePickerObj;
 
     var exposed = {
         init: function(thisContext) {
@@ -22,9 +20,9 @@ define([
             $focusInput = context.$('.form-group .form-control');
             $searchMsg = context.$('#container-searchmsg');
             var currentInput, currentKey, msgOneCrit, msgNoResults;
-            //placeholder
             msgOneCrit = "You must enter a value for the search criteria";
             msgNoResults = "No Results Found";
+            //placeholder
             currentKey = 'userId';
 
             $toggleSearchDateType.daterangepicker({
@@ -88,7 +86,6 @@ define([
                 }
             });
 
-
             $toggleSubmit.on('click', function(event) {
                 var searchSet = {};
                 var dpSDVal = datePickerObj.startDate;
@@ -115,8 +112,7 @@ define([
                     }
                 };
                 
-                var newAJAX = context.sandbox.utils.ajax({                  
-             
+                context.sandbox.utils.ajax({
                     type: "GET",
                     data: searchSet,                    
                     url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/term',
