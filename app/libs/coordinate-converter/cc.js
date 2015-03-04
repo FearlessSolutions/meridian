@@ -429,7 +429,7 @@
      * 
      * Note- UTM northings are negative in the southern hemisphere.
      * 
-     * If Object is chosen it will contain 4 properties:
+     * If Object is chosen it will contain 5 properties:
      * - easting: Float
      * - northing: Float
      * - zoneNumber: Integer
@@ -938,8 +938,8 @@
      * 
      * If object is chosen, it will have two properties, latitude and longitude.
      * 
-     * @param lat- latitude (float or string representing a float)
-     * @param lon- longitude (float or string representing a float)
+     * @param lat- latitude (string representing a float)
+     * @param lon- longitude (string representing a float)
      * @param output- String representing return type (object or string).
      * @param precision - Optional decimal precision. Default 2.
      * @return Depends on output parameter (Object or a String).
@@ -1012,8 +1012,8 @@
      * zoneNumber+zoneLetter gridLetters easting+northing
      * i.e: 33P AA 123456789
      * 
-     * @param lat- latitude (float or string representing a float)
-     * @param lon- longitude (float or string representing a float)
+     * @param lat- latitude (string representing a float)
+     * @param lon- longitude (string representing a float)
      * @param output- String representing return type (object or string).
      * @param precision - Optional decimal precision. Default 5.
      * @return Depends on output parameter (Object or a String).
@@ -1043,11 +1043,36 @@
         dd = cc.dmsToDd(lat, lon, 'object', 2);
 
         return cc.ddToMgrs(dd.latitude, dd.longitude, output, precision);
-
-
     };
 
-   
+    /*
+     * Converts DMS to UTM.
+     * DMS: Degrees, Minutes, Seconds.
+     * UTM: Universal Transverse Mercator Coordinate System.
+     *
+     * Converts lat/long to UTM coords.  
+     * Note- UTM northings are negative in the southern hemisphere.
+     * 
+     * If Object is chosen it will contain 5 properties:
+     * - easting: Float
+     * - northing: Float
+     * - zoneNumber: Integer
+     * - zoneLetter: String
+     * - hemisphere: 'N' or 'S'
+     *
+     * If String is selected it will look like this: 
+     * zoneNumber+zoneLetter easting northing
+     * i.e: 33P 123456 12345678
+     * 
+     * @param lat- latitude (string representing a float)
+     * @param lon- longitude (string representing a float)
+     * @param output- String representing return type (object or string).
+     * @param precision - Optional decimal precision. Default 5.
+     * @return Depends on output parameter (Object or a String).
+     */
+    cc.dmsToUtm = function(lat, lon, output, precision){
+
+    };
 
   	// AMD registration happens at the end for compatibility with AMD loaders
   	// that may not enforce next-turn semantics on modules. Even though general
