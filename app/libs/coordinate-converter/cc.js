@@ -381,10 +381,10 @@
      * zoneNumber+zoneLetter gridLetters easting+northing
      * i.e: 33P AA 123456789
      * 
-     * @param lat- Latitude in decimal.
-     * @param lon- Longitude in decimal.
-     * @param output- String representing return type (object or string).
-     * @param precision- Optional: coordinate precision. Default: 5.
+     * @param lat- Latitude in decimal (String or Numeric).
+     * @param lon- Longitude in decimal (String or Numeric).
+     * @param output- String representing return type (Object or String).
+     * @param precision- Optional: coordinate precision, (String or Numeric). Default: 5.
      * @return Depends on output parameter (Object or a String).
      */
   	cc.ddToMgrs = function(lat, lon, output, precision){
@@ -442,8 +442,8 @@
      *
      * @param lat- Latitude in decimal; north is positive, south is negative.
      * @param lon- Longitude in decimal; east is positive, west is negative.
-     * @param output- String representing return type (object or string).
-     * @param zone- Optional: Force coordinates to be computed in a particular zone.
+     * @param output- String representing return type (Object or String).
+     * @param zone- Optional (String or Numeric): Force coordinates to be computed in a particular zone.
      * @return Depends on output parameter (Object or a String).
      */
     cc.ddToUtm = function(lat, lon, output, zone){
@@ -559,8 +559,8 @@
      * 
      * @param lat- latitude (float or string representing a float)
      * @param lon- longitude (float or string representing a float)
-     * @param output- String representing return type (object or string).
-     * @param digits- Optional: Max digits in seconds. Default: 2.
+     * @param output- String representing return type (Object or String).
+     * @param digits- Optional: Max digits in seconds, (String or Numeric). Default: 2.
      * @return Depends on output parameter (Object or a String).
      */
     cc.ddToDms = function(lat, lon, output, digits){
@@ -669,8 +669,8 @@
      * @param UTMZone- 6-deg longitudinal zone and letter (String), eg. 18L
      * @param UTMEasting- easting-m  (String or Numeric), eg. 4000000.0
      * @param UTMNorthing- northing-m (String or Numeric), eg. 432001.8  
-     * @param output- String representing return type (object or string).
-     * @param precision - Optional decimal precision. Default value: 5.
+     * @param output- String representing return type (Object or String).
+     * @param precision - Optional decimal precision, (String or Numeric). Default value: 5.
      * @return Depends on output parameter (Object or a String).
      */
     cc.utmToMgrs = function(UTMZone, UTMEasting, UTMNorthing, output, precision){
@@ -764,8 +764,8 @@
      * @param UTMZone- 6-deg longitudinal zone and letter (String), eg. 18L
      * @param UTMEasting- easting-m (String or Numeric), eg. 4000000.0
      * @param UTMNorthing- northing-m (String or Numeric), eg. 432001.8  
-     * @param output- String representing return type (object or string).
-     * @param precision - Optional decimal precision. Default 2.
+     * @param output- String representing return type (Object or String).
+     * @param precision - Optional decimal precision, (String or Numeric). Default 2.
      * @return Depends on output parameter (Object or a String).
      */
     cc.utmToDd = function(UTMZone, UTMEasting, UTMNorthing, output, precision){
@@ -895,8 +895,8 @@
      * @param UTMZone- 6-deg longitudinal zone and letter (String), eg. 18L
      * @param UTMEasting- easting-m  (String or Numeric), eg. 4000000.0
      * @param UTMNorthing- northing-m (String or Numeric), eg. 432001.8 
-     * @param output- String representing return type (object or string).
-     * @param digits - Optional: Max digits in seconds. Default: 2.
+     * @param output- String representing return type (Object or String).
+     * @param digits - Optional: Max digits in seconds, (String or Numeric). Default: 2.
      * @return Depends on output parameter (Object or a String).
      */
     cc.utmToDms = function(UTMZone, UTMEasting, UTMNorthing, output, digits){
@@ -938,10 +938,10 @@
      * 
      * If object is chosen, it will have two properties, latitude and longitude.
      * 
-     * @param lat- latitude (string representing a float)
-     * @param lon- longitude (string representing a float)
-     * @param output- String representing return type (object or string).
-     * @param precision - Optional decimal precision. Default 2.
+     * @param lat- latitude (String representing a float)
+     * @param lon- longitude (String representing a float)
+     * @param output- String representing return type (Object or String).
+     * @param precision - Optional decimal precision, (String or Numeric). Default 2.
      * @return Depends on output parameter (Object or a String).
      */
     cc.dmsToDd = function(lat, lon, output, precision){
@@ -1012,10 +1012,10 @@
      * zoneNumber+zoneLetter gridLetters easting+northing
      * i.e: 33P AA 123456789
      * 
-     * @param lat- latitude (string representing a float)
-     * @param lon- longitude (string representing a float)
-     * @param output- String representing return type (object or string).
-     * @param precision - Optional decimal precision. Default 5.
+     * @param lat- latitude (String representing a float)
+     * @param lon- longitude (String representing a float)
+     * @param output- String representing return type (Object or String).
+     * @param precision - Optional decimal precision, (String or Numeric). Default 5.
      * @return Depends on output parameter (Object or a String).
      */
     cc.dmsToMgrs = function(lat, lon, output, precision){
@@ -1064,10 +1064,10 @@
      * zoneNumber+zoneLetter easting northing
      * i.e: 33P 123456 12345678
      * 
-     * @param lat- latitude (string representing a float)
-     * @param lon- longitude (string representing a float)
-     * @param output- String representing return type (object or string).
-     * @param zone- Optional: Force coordinates to be computed in a particular zone.
+     * @param lat- latitude (String representing a float)
+     * @param lon- longitude (String representing a float)
+     * @param output- String representing return type (Object or String).
+     * @param zone- Optional (String or Numeric): Force coordinates to be computed in a particular zone.
      * @return Depends on output parameter (Object or a String).
      */
     cc.dmsToUtm = function(lat, lon, output, zone){
@@ -1105,11 +1105,11 @@
      * 
      * If object is chosen, it will have two properties, latitude and longitude.
      * 
-     * @param MGRSZone- Grid zone designator eg. 18L
-     * @param MGRSgridLetters- square Identifier, eg. 4000000.0
-     * @param MGRSlocation- northing-m (numeric), eg. 432001.8  
-     * @param output- String representing return type (object or string).
-     * @param precision - Optional decimal precision. Default 2.
+     * @param MGRSZone- Grid zone designator (String), eg. 18L
+     * @param MGRSgridLetters- square Identifier (String or Numeric), eg. 4000000.0
+     * @param MGRSlocation- northing-m (String or Numeric), eg. 432001.8  
+     * @param output- String representing return type (Object or String).
+     * @param precision - Optional decimal precision, (String or Numeric). Default 2.
      * @return Depends on output parameter (Object or a String).
      */
     cc.mgrsToDd = function(MGRSZone, MGRSgridLetters, MGRSlocation, output, precision){
