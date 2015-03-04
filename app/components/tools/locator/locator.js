@@ -53,6 +53,12 @@ define([
                     //should be: 36L VL 2405973819
                     console.debug('utmToMgrs(36L, 424059, 8573819): ' + cc.utmToMgrs('36L', 424059, 8573819,'string'));
 
+                    //should be: -50.2, 100.1
+                    console.debug('dmsToDd(501200S, 1000600E): ' + cc.dmsToDd('501200S', '1000600E','string'));
+
+                     //should be: 12.5824389, 12
+                    console.debug('dmsToDd(123456.78N, 120000E): ' + cc.dmsToDd('123456.78N', '120000E','string'));
+
 
                 }else if('lat' in selectedLocation) { //It is coordinates
                     exposed.markLocation(selectedLocation);

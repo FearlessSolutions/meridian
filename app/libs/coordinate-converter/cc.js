@@ -253,7 +253,6 @@
     /*
      * Verifies a coordinate object by following these steps:
      * - converts string members (degrees, minutes, seconds) to numbers
-     * - if direction is present, makes degree positive or negative accordingly
      *
      * @param coord- object with at least degrees, minutes, and seconds
      * @return New, cleaned object (doesn't have direction)
@@ -301,7 +300,13 @@
             coordinate;
 
         //Split the coordinate as String/Array
-        seconds = integerStringArray.splice(-2).concat(['.'], splitAtDecimal[1].split(''));
+        if(splitAtDecimal.length > 1){
+           seconds = integerStringArray.splice(-2).concat(['.'], splitAtDecimal[1].split(''));
+        }
+        else{
+            seconds = integerStringArray.splice(-2);
+        }
+        
         seconds = parseFloat(seconds.join(''));
         minutes = integerStringArray.splice(-2);
         minutes = parseFloat(minutes.join(''));
@@ -948,10 +953,16 @@
             lon,
             dd = null;
 
+        //Input checks
         if(typeof lat === 'undefined' || typeof lon === 'undefined' || typeof output === 'undefined'){
             throw new Error('dmsToDd(): Missing arguments. Required: lat,lon,output.');
         }
-
+        if(typeof north === 'undefined' && typeof south === 'undefined'){
+             throw new Error('dmsToDd(): Missing N or S direction in lat param.');
+        }
+        if(typeof west === 'undefined' && typeof east === 'undefined'){
+             throw new Error('dmsToDd(): Missing W or E direction in lon param.');
+        }
         if (typeof precision === 'string') {
             precision = parseInt(precision, 10);
         }
@@ -961,15 +972,15 @@
 
 
         if(north){
-            lat = dmsToDecimal(north[0]);
+            lat = dmsToDecimal(north[0].substring(0, north[0].length - 1));
         }else{ //south
-            lat = dmsToDecimal(south[0]) * (-1); //South is negative
+            lat = dmsToDecimal(south[0].substring(0, south[0].length - 1)) * (-1); //South is negative
         }
 
         if(east){
-            lon = dmsToDecimal(east[0]);
+            lon = dmsToDecimal(east[0].substring(0, east[0].length - 1));
         }else{ //West
-            lon = dmsToDecimal(west[0]) * (-1); //West is negative
+            lon = dmsToDecimal(west[0].substring(0, west[0].length - 1)) * (-1); //West is negative
         }
 
         if (typeof output === 'string' && output === 'object'){
