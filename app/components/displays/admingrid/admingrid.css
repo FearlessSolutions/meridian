@@ -29,7 +29,10 @@ div[data-aura-component='displays/admingrid'] .slick-header-column {
     box-sizing: content-box;
     color: black;
     height: 18px;
-}
+    }
+    div[data-aura-component='displays/admingrid'] .slick-sort-indicator {
+        float:none;
+    }
 
 div[data-aura-component='displays/admingrid'] .slick-header-column:hover {
     cursor: pointer;
