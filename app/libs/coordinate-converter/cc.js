@@ -666,9 +666,9 @@
      * zoneNumber+zoneLetter gridLetters easting+northing
      * i.e: 33P AA 123456789
      *
-     * @param UTMZone- 6-deg longitudinal zone (numeric) and letter, eg. 18L
-     * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
-     * @param UTMNorthing- northing-m (numeric), eg. 432001.8  
+     * @param UTMZone- 6-deg longitudinal zone and letter (String), eg. 18L
+     * @param UTMEasting- easting-m  (String or Numeric), eg. 4000000.0
+     * @param UTMNorthing- northing-m (String or Numeric), eg. 432001.8  
      * @param output- String representing return type (object or string).
      * @param precision - Optional decimal precision. Default value: 5.
      * @return Depends on output parameter (Object or a String).
@@ -761,9 +761,9 @@
      *
      * If object is chosen, it will have two properties, latitude and longitude.
      *
-     * @param UTMZone- 6-deg longitudinal zone (numeric) and letter, eg. 18L
-     * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
-     * @param UTMNorthing- northing-m (numeric), eg. 432001.8  
+     * @param UTMZone- 6-deg longitudinal zone and letter (String), eg. 18L
+     * @param UTMEasting- easting-m (String or Numeric), eg. 4000000.0
+     * @param UTMNorthing- northing-m (String or Numeric), eg. 432001.8  
      * @param output- String representing return type (object or string).
      * @param precision - Optional decimal precision. Default 2.
      * @return Depends on output parameter (Object or a String).
@@ -892,9 +892,9 @@
      * - seconds: positive float
      * - direction: N, S, E, or W
      *
-     * @param UTMZone- 6-deg longitudinal zone (numeric) and letter, eg. 18L
-     * @param UTMEasting- easting-m  (numeric), eg. 4000000.0
-     * @param UTMNorthing- northing-m (numeric), eg. 432001.8 
+     * @param UTMZone- 6-deg longitudinal zone and letter (String), eg. 18L
+     * @param UTMEasting- easting-m  (String or Numeric), eg. 4000000.0
+     * @param UTMNorthing- northing-m (String or Numeric), eg. 432001.8 
      * @param output- String representing return type (object or string).
      * @param digits - Optional: Max digits in seconds. Default: 2.
      * @return Depends on output parameter (Object or a String).
@@ -1091,6 +1091,31 @@
 
         return cc.ddToUtm(dd.latitude, dd.longitude, output, zone);
     };
+
+//---------------------------- MGRS to ----------------------------
+
+    /*
+     * Converts MGRS to DD.
+     * MGRS: Military Grid Reference System.
+     * DD: Decimal Degree (latitude, longitude). 
+     * 
+     * This function can either return a formatted string or an object.
+     * 
+     * If string is specified, it will look like this: 41, 12.
+     * 
+     * If object is chosen, it will have two properties, latitude and longitude.
+     * 
+     * @param MGRSZone- Grid zone designator eg. 18L
+     * @param MGRSgridLetters- square Identifier, eg. 4000000.0
+     * @param MGRSlocation- northing-m (numeric), eg. 432001.8  
+     * @param output- String representing return type (object or string).
+     * @param precision - Optional decimal precision. Default 2.
+     * @return Depends on output parameter (Object or a String).
+     */
+    cc.mgrsToDd = function(MGRSZone, MGRSgridLetters, MGRSlocation, output, precision){
+
+    };
+
 
   	// AMD registration happens at the end for compatibility with AMD loaders
   	// that may not enforce next-turn semantics on modules. Even though general
