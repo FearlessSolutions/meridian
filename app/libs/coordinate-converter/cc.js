@@ -984,6 +984,7 @@
         }
 
         if (typeof output === 'string' && output === 'object'){
+            dd = {};
             dd.latitude = lat;
             dd.longitude = lon;
         }else if (typeof output === 'string' && output === 'string'){
@@ -995,6 +996,58 @@
         return dd;
     };
 
+    /*
+     * Converts DMS to MGRS.
+     * DMS: Degrees, Minutes, Seconds.
+     * MGRS: Military Grid Reference System.
+     *
+     * If Object is chosen it will contain 5 properties:
+     * - easting: Float
+     * - northing: Float
+     * - zoneNumber: Integer
+     * - zoneLetter: String
+     * - gridLetters: String
+     *
+     * If String is selected it will look like this: 
+     * zoneNumber+zoneLetter gridLetters easting+northing
+     * i.e: 33P AA 123456789
+     * 
+     * @param lat- latitude (float or string representing a float)
+     * @param lon- longitude (float or string representing a float)
+     * @param output- String representing return type (object or string).
+     * @param precision - Optional decimal precision. Default 5.
+     * @return Depends on output parameter (Object or a String).
+     */
+    cc.dmsToMgrs = function(lat, lon, output, precision){
+        var north = lat.match(/^\d{6,7}(\.\d+)?N/),
+            south = lat.match(/^\d{6,7}(\.\d+)?S/),
+            west = lon.match(/^\d{6,7}(\.\d+)?W$/),
+            east = lon.match(/^\d{6,7}(\.\d+)?E$/),
+            dd;
+
+        if(typeof lat === 'undefined' || typeof lon === 'undefined' || typeof output === 'undefined'){
+            throw new Error('dmsToMgrs(): Missing arguments. Required: lat,lon,output.');
+        }
+        if(typeof north === 'undefined' && typeof south === 'undefined'){
+             throw new Error('dmsToMgrs(): Missing N or S direction in lat param.');
+        }
+        if(typeof west === 'undefined' && typeof east === 'undefined'){
+             throw new Error('dmsToMgrs(): Missing W or E direction in lon param.');
+        }
+        if (typeof precision === 'string') {
+            precision = parseInt(precision, 10);
+        }
+
+        precision = precision ? precision: 5;
+
+        dd = cc.dmsToDd(lat, lon, 'object', 2);
+
+        return cc.ddToMgrs(dd.latitude, dd.longitude, output, precision);
+
+
+    };
+
+   
 
   	// AMD registration happens at the end for compatibility with AMD loaders
   	// that may not enforce next-turn semantics on modules. Even though general
