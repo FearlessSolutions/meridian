@@ -62,6 +62,9 @@ define([
                      //should be: 47F NE 7850538553
                     console.debug('dmsToMgrs(501200S, 1000600E): ' + cc.dmsToMgrs('501200S', '1000600E','string'));
 
+                    //should be: 47F 578505 4438553
+                    console.debug('dmsToUtm(501200S, 1000600E): ' + cc.dmsToUtm('501200S', '1000600E','string'));
+
 
                 }else if('lat' in selectedLocation) { //It is coordinates
                     exposed.markLocation(selectedLocation);

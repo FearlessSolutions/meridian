@@ -1067,11 +1067,29 @@
      * @param lat- latitude (string representing a float)
      * @param lon- longitude (string representing a float)
      * @param output- String representing return type (object or string).
-     * @param precision - Optional decimal precision. Default 5.
+     * @param zone- Optional: Force coordinates to be computed in a particular zone.
      * @return Depends on output parameter (Object or a String).
      */
-    cc.dmsToUtm = function(lat, lon, output, precision){
+    cc.dmsToUtm = function(lat, lon, output, zone){
+        var north = lat.match(/^\d{6,7}(\.\d+)?N/),
+            south = lat.match(/^\d{6,7}(\.\d+)?S/),
+            west = lon.match(/^\d{6,7}(\.\d+)?W$/),
+            east = lon.match(/^\d{6,7}(\.\d+)?E$/),
+            dd;
 
+        if(typeof lat === 'undefined' || typeof lon === 'undefined' || typeof output === 'undefined'){
+            throw new Error('dmsToMgrs(): Missing arguments. Required: lat,lon,output.');
+        }
+        if(typeof north === 'undefined' && typeof south === 'undefined'){
+             throw new Error('dmsToMgrs(): Missing N or S direction in lat param.');
+        }
+        if(typeof west === 'undefined' && typeof east === 'undefined'){
+             throw new Error('dmsToMgrs(): Missing W or E direction in lon param.');
+        }
+
+        dd = cc.dmsToDd(lat, lon, 'object', 2);
+
+        return cc.ddToUtm(dd.latitude, dd.longitude, output, zone);
     };
 
   	// AMD registration happens at the end for compatibility with AMD loaders
