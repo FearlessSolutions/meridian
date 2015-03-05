@@ -66,6 +66,10 @@ define([
                     console.debug('dmsToUtm(501200S, 1000600E): ' + cc.dmsToUtm('501200S', '1000600E','string'));
 
 
+                    console.debug('mgrsToUtm(14F, MK, 2149538553):: ' + cc.mgrsToUtm('14F', 'MK', 2149538553, 'string'));
+                    
+
+
                 }else if('lat' in selectedLocation) { //It is coordinates
                     exposed.markLocation(selectedLocation);
                 }else {

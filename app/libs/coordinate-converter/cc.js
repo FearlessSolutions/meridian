@@ -1037,6 +1037,9 @@
         if (typeof precision === 'string') {
             precision = parseInt(precision, 10);
         }
+        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
+            throw new Error("dmsToMgrs(): Incorrect output type specified. Required: string or object.");
+        }
 
         precision = precision ? precision: 5;
 
@@ -1078,13 +1081,16 @@
             dd;
 
         if(typeof lat === 'undefined' || typeof lon === 'undefined' || typeof output === 'undefined'){
-            throw new Error('dmsToMgrs(): Missing arguments. Required: lat,lon,output.');
+            throw new Error('dmsToUtm(): Missing arguments. Required: lat,lon,output.');
         }
         if(typeof north === 'undefined' && typeof south === 'undefined'){
-             throw new Error('dmsToMgrs(): Missing N or S direction in lat param.');
+             throw new Error('dmsToUtm(): Missing N or S direction in lat param.');
         }
         if(typeof west === 'undefined' && typeof east === 'undefined'){
-             throw new Error('dmsToMgrs(): Missing W or E direction in lon param.');
+             throw new Error('dmsToUtm(): Missing W or E direction in lon param.');
+        }
+        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
+            throw new Error("dmsToUtm(): Incorrect output type specified. Required: string or object.");
         }
 
         dd = cc.dmsToDd(lat, lon, 'object', 2);
@@ -1095,7 +1101,7 @@
 //---------------------------- MGRS to ----------------------------
 
     /*
-     * Converts MGRS to DD.
+     * Converts MGRS to UTM.
      * MGRS: Military Grid Reference System.
      * DD: Decimal Degree (latitude, longitude). 
      * 
@@ -1106,13 +1112,99 @@
      * If object is chosen, it will have two properties, latitude and longitude.
      * 
      * @param MGRSZone- Grid zone designator (String), eg. 18L
-     * @param MGRSgridLetters- square Identifier (String or Numeric), eg. 4000000.0
-     * @param MGRSlocation- northing-m (String or Numeric), eg. 432001.8  
+     * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. 4000000.0
+     * @param MGRSlocation- Northing-m (String or Numeric), eg. 432001.8  
      * @param output- String representing return type (Object or String).
-     * @param precision - Optional decimal precision, (String or Numeric). Default 2.
+     * @param zone- Optional (String or Numeric): Force coordinates to be computed in a particular zone.
      * @return Depends on output parameter (Object or a String).
      */
-    cc.mgrsToDd = function(MGRSZone, MGRSgridLetters, MGRSlocation, output, precision){
+    cc.mgrsToUtm = function(MGRSZone, MGRSgridLetters, MGRSnumbers, output, precision){
+        var zoneBase,
+            segBase,
+            eSqrs,
+            appxEast,
+            appxNorth,
+            letNorth,
+            nSqrs,
+            zoneStart,
+            USNGSqEast = "ABCDEFGHJKLMNPQRSTUVWXYZ",
+            zoneNumber,
+            zoneLetter,
+            gridLetter1,
+            gridLetter2,
+            utm = {},
+            mgrsPrecision,
+            east,
+            north;
+
+        if(typeof MGRSZone === 'undefined' ||
+           typeof MGRSgridLetters === 'undefined' ||
+           typeof MGRSnumbers === 'undefined' ||
+           typeof output === 'undefined'){
+            throw new Error('mgrsToDd(): Missing arguments. Required: '
+                +'MGRSZone, MGRSgridLetters, MGRSnumbers and output.');
+        }
+        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
+            throw new Error("mgrsToDd(): Incorrect output type specified. Required: string or object.");
+        }
+        //MGRS location numbers are never odd.
+        if(MGRSnumbers.length %2 === 0){
+            throw new Error("mgrsToDd(): The number of digits in the numerical location must be even");
+        }
+        if(MGRSgridLetters.length < 2){
+            throw new Error("mgrsToDd(): Incorrect Grid Square Id. Must be two letters.");
+        }
+
+        zoneLetter = MGRSZone.charAt(MGRSZone.length - 1);
+        zoneNumber = MGRSZone.split(zoneLetter);
+        zoneNumber = parseInt(zoneNumber[0], 10);
+        gridLetter1 = MGRSgridLetters.charAt(0);
+        gridLetter2 = MGRSgridLetters.charAt(1);
+
+        mgrsPrecision = MGRSnumbers.length / 2;
+
+        east = parseInt(MGRSnumbers.toString().substring(0, mgrsPrecision), 10);
+        north = parseInt(MGRSnumbers.toString().substring(mgrsPrecision), 10);
+
+        //Starts (southern edge) of N-S zones in millons of meters
+        zoneBase = [
+            1.1, 2.0, 2.8, 3.7, 4.6, 5.5, 6.4, 7.3, 8.2, 9.1,
+            0, 0.8, 1.7, 2.6, 3.5, 4.4, 5.3, 6.2, 7.0, 7.9
+        ];
+
+        //Starts of 2 million meter segments, indexed by zone 
+        segBase = [
+            0, 2, 2, 2, 4, 4, 6, 6, 8, 8,
+            0, 0, 0, 2, 2, 4, 4, 6, 6, 6
+        ];
+
+        // convert easting to UTM
+        eSqrs = USNGSqEast.indexOf(gridLetter1);          
+        appxEast = 1 + eSqrs % 8; 
+
+        // convert northing to UTM
+        letNorth = "CDEFGHJKLMNPQRSTUVWX".indexOf(zoneLetter);
+        if (zoneNumber % 2) {
+            //odd number zone
+            nSqrs = "ABCDEFGHJKLMNPQRSTUV".indexOf(gridLetter2);
+        } else {
+            // even number zone
+            nSqrs = "FGHJKLMNPQRSTUVABCDE".indexOf(gridLetter2);
+        }
+
+        zoneStart = zoneBase[letNorth];
+        appxNorth = segBase[letNorth] + nSqrs / 10;
+        if (appxNorth < zoneStart) {
+            appxNorth += 2;
+        }
+
+        utm.northing = appxNorth * 1000000 + north * Math.pow(10, 5 - north.toString().length);
+        utm.easting = appxEast * 100000 + east * Math.pow(10, 5 - east.toString().length);
+        utm.zoneNumber = zoneNumber;
+        utm.zoneLetter = zoneLetter;
+
+        console.info('utm: ', utm);
+        return utm;
 
     };
 
