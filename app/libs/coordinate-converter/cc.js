@@ -1141,18 +1141,22 @@
            typeof MGRSgridLetters === 'undefined' ||
            typeof MGRSnumbers === 'undefined' ||
            typeof output === 'undefined'){
-            throw new Error('mgrsToDd(): Missing arguments. Required: '
+            throw new Error('mgrsToUtm(): Missing arguments. Required: '
                 +'MGRSZone, MGRSgridLetters, MGRSnumbers and output.');
         }
         if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
-            throw new Error("mgrsToDd(): Incorrect output type specified. Required: string or object.");
+            throw new Error("mgrsToUtm(): Incorrect output type specified. Required: string or object.");
+        }
+
+        if(typeof MGRSnumbers !== 'string'){
+            MGRSnumbers = MGRSnumbers.toString();
         }
         //MGRS location numbers are never odd.
-        if(MGRSnumbers.length %2 === 0){
-            throw new Error("mgrsToDd(): The number of digits in the numerical location must be even");
+        if(MGRSnumbers.length % 2 !== 0){
+            throw new Error("mgrsToUtm(): The number of digits in the numerical location must be even");
         }
         if(MGRSgridLetters.length < 2){
-            throw new Error("mgrsToDd(): Incorrect Grid Square Id. Must be two letters.");
+            throw new Error("mgrsToUtm(): Incorrect Grid Square Id. Must be two letters.");
         }
 
         zoneLetter = MGRSZone.charAt(MGRSZone.length - 1);
@@ -1163,8 +1167,8 @@
 
         mgrsPrecision = MGRSnumbers.length / 2;
 
-        east = parseInt(MGRSnumbers.toString().substring(0, mgrsPrecision), 10);
-        north = parseInt(MGRSnumbers.toString().substring(mgrsPrecision), 10);
+        east = parseInt(MGRSnumbers.substring(0, mgrsPrecision), 10);
+        north = parseInt(MGRSnumbers.substring(mgrsPrecision), 10);
 
         //Starts (southern edge) of N-S zones in millons of meters
         zoneBase = [
@@ -1197,6 +1201,7 @@
         if (appxNorth < zoneStart) {
             appxNorth += 2;
         }
+
 
         utm.northing = appxNorth * 1000000 + north * Math.pow(10, 5 - north.toString().length);
         utm.easting = appxEast * 100000 + east * Math.pow(10, 5 - east.toString().length);
