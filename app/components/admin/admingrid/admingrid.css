@@ -36,7 +36,7 @@ div[data-aura-component='admin/admingrid'] .slick-header-column {
 
 div[data-aura-component='admin/admingrid'] .slick-header-column:hover {
     cursor: pointer;
-/*    background-color: #2680CC;*/
+    background: linear-gradient(to bottom, #f7f7f7 0%,#f7f7f7 50%,#e7e7e7 51%,#e7e7e7 100%); /* W3C */
 }
 
 div[data-aura-component='admin/admingrid'] .slick-cell.selected {
