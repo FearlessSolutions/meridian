@@ -67,6 +67,9 @@ div[data-aura-component='displays/datagrid'] .slick-header-column {
             background: url(../../../libs/SlickGrid-master/images/sort-asc.gif);
         }
 
+div[data-aura-component='displays/datagrid'] .slick-row:hover {
+    background-color: #d9e8fb;
+}
 div[data-aura-component='displays/datagrid'] .slick-cell a {
     color: #428bca;
 }
