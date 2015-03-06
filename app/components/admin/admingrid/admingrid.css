@@ -1,9 +1,9 @@
-div[data-aura-component="displays/admingrid"] #admingridContainer {
+div[data-aura-component="admin/admingrid"] #admingridContainer {
 	visibility:hidden;
     margin:20px;
 }
 
-div[data-aura-component='displays/admingrid'] #header {
+div[data-aura-component='admin/admingrid'] #header {
     background-color: #F5F5F5;
     border-left: 1px solid #dddddd;
     border-right: 1px solid #dddddd;
@@ -13,35 +13,35 @@ div[data-aura-component='displays/admingrid'] #header {
     padding-top: 4px;
 }
 
-div[data-aura-component='displays/admingrid'] .close {
+div[data-aura-component='admin/admingrid'] .close {
     margin: 10px;
 }
 
-div[data-aura-component='displays/admingrid'] #admingridContainer #admingrid {
+div[data-aura-component='admin/admingrid'] #admingridContainer #admingrid {
     /* height value is determined by JavaScript -- w/o JS, grid breaks */
     width:100%; 
     border:1px solid #ddd; border-radius:4px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
 }
 
-div[data-aura-component='displays/admingrid'] .slick-header-column {
+div[data-aura-component='admin/admingrid'] .slick-header-column {
     -moz-box-sizing: content-box;
     box-sizing: content-box;
     color: black;
     height: 18px;
     }
-    div[data-aura-component='displays/admingrid'] .slick-sort-indicator {
+    div[data-aura-component='admin/admingrid'] .slick-sort-indicator {
         float:none;
     }
 
-div[data-aura-component='displays/admingrid'] .slick-header-column:hover {
+div[data-aura-component='admin/admingrid'] .slick-header-column:hover {
     cursor: pointer;
     background-color: #2680CC;
 }
 
-div[data-aura-component='displays/admingrid'] .slick-cell.selected {
+div[data-aura-component='admin/admingrid'] .slick-cell.selected {
     background-color: #D4F7FF;
 }
-div[data-aura-component='displays/admingrid'] .slick-row:hover {
+div[data-aura-component='admin/admingrid'] .slick-row:hover {
     background-color: #d9e8fb;
 }
