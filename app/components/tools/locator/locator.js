@@ -40,8 +40,8 @@ define([
                         messageText: 'No valid location selected. Please try again.'
                     });
                     console.debug("Actual Numbers: ");
-                    console.debug('ddToMgrs(12.5,14.7): ' + cc.ddToMgrs(12.5,14.7,'string'));
-                    console.debug('ddToUtm(12.5,14.7): ' + cc.ddToUtm(12.5,14.7,'string'));
+                    console.debug('ddToMgrs(12.5,14.7): ' + cc.ddToMgrs(12.5,14.7,'STRING'));
+                    console.debug('ddToUtm(12.5,14.7): ' + cc.ddToUtm(12.5,14.7,'STRING'));
                     console.debug('ddToDms(12.5,14.7): ' + cc.ddToDms('12.5',14.7,'string'));
 
                     //should be: -12.9, 32.3

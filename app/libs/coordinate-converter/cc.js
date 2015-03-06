@@ -197,6 +197,9 @@
         return lettersHelper(findSet(zoneNum), row, col);
     };
 
+    /*
+     * Retrieves the UTM letter designator based on a provided latitude.
+     */
     var utmLetterDesignator = function(lat){
       var letterDesignator;
 
@@ -248,47 +251,6 @@
         }
 
         return letterDesignator;
-    };
-
-    /*
-     * Verifies a coordinate object by following these steps:
-     * - converts string members (degrees, minutes, seconds) to numbers
-     *
-     * @param coord- object with at least degrees, minutes, and seconds
-     * @return New, cleaned object (doesn't have direction)
-     */
-    var dmsVerify = function(coord){
-       var newCoord = {};
-
-        if (typeof coord !== 'object' || !coord.degrees || !coord.minutes || !coord.seconds) {
-            return false;
-        }
-
-        if (typeof coord.degrees === 'string') {
-            newCoord.degrees = parseInt(coord.degrees, 10);
-        } else {
-            newCoord.degrees = coord.degrees;
-        }
-
-        if (coord.direction) {
-            if (coord.direction === 'S' || coord.direction === 'W') {
-                newCoord.degrees *= -Math.abs(newCoord.degrees);
-            } else {
-                newCoord.degrees *= Math.abs(newCoord.degrees);
-            }
-        }
-
-        if (typeof coord.minutes === 'string') {
-            newCoord.minutes = Math.abs(parseInt(coord.minutes, 10));
-        } else {
-            newCoord.minutes = Math.abs(coord.minutes);
-        }
-
-        if (typeof coord.seconds === 'string') {
-            newCoord.seconds = Math.abs(parseInt(coord.seconds, 10));
-        } else {
-            newCoord.seconds = Math.abs(coord.seconds);
-        }
     };
 
     var dmsToDecimal = function (coordinateString){
@@ -357,7 +319,13 @@
         return zoneNumber;    
     };
 
-    //@return String
+    /*
+     * Adds a trailing 0 if the provided number is less than 9.
+     * This makes sure that the values in dms conversions always have a 0.
+     *
+     * @param n- Number to verify.
+     * @return String value of the number provided.
+     */
     var alwaysTwoDigit = function(n){
         return n===0 || n<=9 ? '0'+n: ''+n; 
     }
@@ -409,7 +377,7 @@
         // its easier to pass an object to the utm functions.
         coords = cc.ddToUtm(lat, lon, 'object');
 
-        if(typeof output === 'string' && (output === 'object' || output === 'string')){
+        if(typeof output === 'string' && (output.toLowerCase() === 'object' || output.toLowerCase() === 'string')){
             mgrs = cc.utmToMgrs(coords.zoneNumber+coords.zoneLetter, coords.easting, coords.northing, output, precision);
         }else{
             throw new Error("ddToMgrs(): Incorrect output type specified. Required: string or object.");
@@ -524,14 +492,14 @@
         utmEasting = Math.round(utmEasting);
         utmNorthing = Math.round(utmNorthing);
 
-        if(typeof output === 'string' && output === 'object'){
+        if(typeof output === 'string' && output.toLowerCase() === 'object'){
             utmcoords = {};
             utmcoords.easting = utmEasting;
             utmcoords.northing = utmNorthing;
             utmcoords.zoneNumber = zoneNumber;
             utmcoords.zoneLetter = utmLetterDesignator(lat);
             utmcoords.hemisphere = lat < 0 ? 'S' : 'N';
-        } else if(typeof output === 'string' && output === 'string'){
+        } else if(typeof output === 'string' && output.toLowerCase() === 'string'){
             utmcoords = zoneNumber + utmLetterDesignator(lat) + ' ' + utmEasting + ' ' + utmNorthing;
         } else{
              throw new Error("ddToUtm(): Incorrect output type specified. Required: string or object.");
@@ -619,7 +587,7 @@
         lon -= lonMin / 60;
         lonSec = Math.round((lon * 3600) * magic) / magic;
 
-        if(typeof output === 'string' && output === 'object'){
+        if(typeof output === 'string' && output.toLowerCase() === 'object'){
            dms = {
                 "latitude": {
                     "degrees": latDeg,
@@ -634,7 +602,7 @@
                     "direction": lonDir
                 }
             };
-        } else if(typeof output === 'string' && output === 'string'){
+        } else if(typeof output === 'string' && output.toLowerCase() === 'string'){
             // dms = {
             //     latitude: latDeg + '°' + latMin + '\'' + latSec + '"' + latDir,
             //     longitude: lonDeg + '°' + lonMin + '\'' + lonSec + '"' + lonDir
@@ -731,14 +699,14 @@
         //       usngEasting + " " + usngNorthing;
         
         //mgrs is basically USNG without any space delimiters.
-        if (typeof output === 'string' && output === 'object'){
+        if (typeof output === 'string' && output.toLowerCase() === 'object'){
             mgrs = {};
             mgrs.zoneNumber = zoneNumber;
             mgrs.zoneLetter = zoneLetter;
             mgrs.gridLetters = letters;
             mgrs.easting = usngEasting;
             mgrs.northing = usngNorthing
-        } else if(typeof output === 'string' && output === 'string'){
+        } else if(typeof output === 'string' && output.toLowerCase() === 'string'){
             mgrs = zoneNumber + zoneLetter + ' ' + letters + ' ' + usngEasting + usngNorthing;
         } else{
              throw new Error("utmToMgrs(): Incorrect output type specified. Required: string or object.");
@@ -863,11 +831,11 @@
         lat = Math.round(lat*roundingNumber)/roundingNumber;
         lon = Math.round(lon*roundingNumber)/roundingNumber;
 
-        if (typeof output === 'string' && output === 'object'){
+        if (typeof output === 'string' && output.toLowerCase() === 'object'){
             dd = {};
             dd.latitude = lat;
             dd.longitude = lon;
-        }else if (typeof output === 'string' && output === 'string'){
+        }else if (typeof output === 'string' && output.toLowerCase() === 'string'){
             dd = lat + ', ' + lon;
         }else {
              throw new Error("utmToDd(): Incorrect output type specified. Required: string or object.");
@@ -908,7 +876,7 @@
             throw new Error('utmToDms(): Missing arguments. Required: UTMZone, UTMEasting, UTMNorthing, output.');
         }
 
-        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
+        if (typeof output !== 'string' || (output.toLowerCase() !== 'string' && output.toLowerCase() !== 'object')){
             throw new Error("utmToDms(): Incorrect output type specified. Required: string or object.");
         }
 
@@ -983,11 +951,11 @@
             lon = dmsToDecimal(west[0].substring(0, west[0].length - 1)) * (-1); //West is negative
         }
 
-        if (typeof output === 'string' && output === 'object'){
+        if (typeof output === 'string' && output.toLowerCase() === 'object'){
             dd = {};
             dd.latitude = lat;
             dd.longitude = lon;
-        }else if (typeof output === 'string' && output === 'string'){
+        }else if (typeof output === 'string' && output.toLowerCase() === 'string'){
             dd = lat + ', ' + lon;
         }else {
              throw new Error("dmsToDd(): Incorrect output type specified. Required: string or object.");
@@ -1037,7 +1005,7 @@
         if (typeof precision === 'string') {
             precision = parseInt(precision, 10);
         }
-        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
+        if (typeof output !== 'string' || (output.toLowerCase() !== 'string' && output.toLowerCase() !== 'object')){
             throw new Error("dmsToMgrs(): Incorrect output type specified. Required: string or object.");
         }
 
@@ -1089,7 +1057,7 @@
         if(typeof west === 'undefined' && typeof east === 'undefined'){
              throw new Error('dmsToUtm(): Missing W or E direction in lon param.');
         }
-        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
+        if (typeof output !== 'string' || (output.toLowerCase() !== 'string' && output.toLowerCase() !== 'object')){
             throw new Error("dmsToUtm(): Incorrect output type specified. Required: string or object.");
         }
 
@@ -1153,9 +1121,6 @@
             throw new Error('mgrsToUtm(): Missing arguments. Required: '
                 +'MGRSZone, MGRSgridLetters, MGRSnumbers and output.');
         }
-        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
-            throw new Error("mgrsToUtm(): Incorrect output type specified. Required: string or object.");
-        }
 
         if(typeof MGRSnumbers !== 'string'){
             MGRSnumbers = MGRSnumbers.toString();
@@ -1214,13 +1179,13 @@
         easting = appxEast * 100000 + east * Math.pow(10, 5 - east.toString().length);
         northing = appxNorth * 1000000 + north * Math.pow(10, 5 - north.toString().length);
 
-        if (typeof output === 'string' && output === 'object'){
+        if (typeof output === 'string' && output.toLowerCase() === 'object'){
             utm = {};
             utm.northing = northing
             utm.easting = easting
             utm.zoneNumber = zoneNumber;
             utm.zoneLetter = zoneLetter;
-        }else if (typeof output === 'string' && output === 'string'){
+        }else if (typeof output === 'string' && output.toLowerCase() === 'string'){
             utm = zoneNumber + zoneLetter + ' ' + easting + ' ' + northing;
         }else {
              throw new Error("mgrsToUtm(): Incorrect output type specified. Required: string or object.");
@@ -1257,7 +1222,7 @@
             throw new Error('mgrsToDd(): Missing arguments. Required: '
                 +'MGRSZone, MGRSgridLetters, MGRSnumbers and output.');
         }
-        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
+        if (typeof output !== 'string' || (output.toLowerCase() !== 'string' && output.toLowerCase() !== 'object')){
             throw new Error("mgrsToDd(): Incorrect output type specified. Required: string or object.");
         }
 
@@ -1303,7 +1268,7 @@
             throw new Error('mgrsToDms(): Missing arguments. Required: '
                 +'MGRSZone, MGRSgridLetters, MGRSnumbers and output.');
         }
-        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
+        if (typeof output !== 'string' || (output.toLowerCase() !== 'string' && output.toLowerCase() !== 'object')){
             throw new Error("mgrsToDms(): Incorrect output type specified. Required: string or object.");
         }
 
@@ -1329,5 +1294,4 @@
     	});
   	}
 
-  	console.info('CC has been loaded');
 }).call(this);
