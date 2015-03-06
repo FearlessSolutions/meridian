@@ -1103,22 +1103,29 @@
     /*
      * Converts MGRS to UTM.
      * MGRS: Military Grid Reference System.
-     * DD: Decimal Degree (latitude, longitude). 
+     * UTM: Universal Transverse Mercator Coordinate System.
+     *
+     * Converts lat/long to UTM coords.  
+     * Note- UTM northings are negative in the southern hemisphere.
      * 
-     * This function can either return a formatted string or an object.
-     * 
-     * If string is specified, it will look like this: 41, 12.
-     * 
-     * If object is chosen, it will have two properties, latitude and longitude.
+     * If Object is chosen it will contain 5 properties:
+     * - easting: Float
+     * - northing: Float
+     * - zoneNumber: Integer
+     * - zoneLetter: String
+     * - hemisphere: 'N' or 'S'
+     *
+     * If String is selected it will look like this: 
+     * zoneNumber+zoneLetter easting northing
+     * i.e: 33P 123456 12345678
      * 
      * @param MGRSZone- Grid zone designator (String), eg. 18L
      * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. 4000000.0
      * @param MGRSlocation- Northing-m (String or Numeric), eg. 432001.8  
      * @param output- String representing return type (Object or String).
-     * @param zone- Optional (String or Numeric): Force coordinates to be computed in a particular zone.
      * @return Depends on output parameter (Object or a String).
      */
-    cc.mgrsToUtm = function(MGRSZone, MGRSgridLetters, MGRSnumbers, output, precision){
+    cc.mgrsToUtm = function(MGRSZone, MGRSgridLetters, MGRSnumbers, output){
         var zoneBase,
             segBase,
             eSqrs,
@@ -1222,6 +1229,46 @@
         return utm;
     };
 
+
+    /*
+     * Converts MGRS to DD.
+     * MGRS: Military Grid Reference System.
+     * DD: Decimal Degree (latitude, longitude). 
+     *
+     * If string is specified, it will look like this: 41, 12.
+     *
+     * If object is chosen, it will have two properties, latitude and longitude.
+     *
+     * @param MGRSZone- Grid zone designator (String), eg. 18L
+     * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. 4000000.0
+     * @param MGRSlocation- Northing-m (String or Numeric), eg. 432001.8  
+     * @param output- String representing return type (Object or String).
+     * @param precision - Optional decimal precision, (String or Numeric). Default 2.
+     * @return Depends on output parameter (Object or a String).
+     */
+    cc.mgrsToDd = function(MGRSZone, MGRSgridLetters, MGRSnumbers, output, precision){
+        var dd,
+        utm;
+
+        if(typeof MGRSZone === 'undefined' ||
+           typeof MGRSgridLetters === 'undefined' ||
+           typeof MGRSnumbers === 'undefined' ||
+           typeof output === 'undefined'){
+            throw new Error('mgrsToDd(): Missing arguments. Required: '
+                +'MGRSZone, MGRSgridLetters, MGRSnumbers and output.');
+        }
+        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
+            throw new Error("mgrsToDd(): Incorrect output type specified. Required: string or object.");
+        }
+
+        if(typeof MGRSnumbers !== 'string'){
+            MGRSnumbers = MGRSnumbers.toString();
+        }
+
+        utm = cc.mgrsToUtm(MGRSZone, MGRSgridLetters, MGRSnumbers, 'object');
+
+        return cc.utmToDd(utm.zoneNumber+utm.zoneLetter, utm.easting, utm.northing, output, precision);
+    };
 
   	// AMD registration happens at the end for compatibility with AMD loaders
   	// that may not enforce next-turn semantics on modules. Even though general

@@ -65,8 +65,12 @@ define([
                     //should be: 47F 578505 4438553
                     console.debug('dmsToUtm(501200S, 1000600E): ' + cc.dmsToUtm('501200S', '1000600E','string'));
 
-
+                    //should be: 14F 421495 4438553
                     console.debug('mgrsToUtm(14F, MK, 2149538553): ' , cc.mgrsToUtm('14F', 'MK', 2149538553, 'string'));
+
+                    //should be: -50.2, -100.1
+                    console.debug('mgrsToDd(14F, MK, 2149538553): ' , cc.mgrsToDd('14F', 'MK', 2149538553, 'string'));
+                    
                     
 
 
