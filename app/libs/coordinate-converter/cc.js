@@ -1270,6 +1270,52 @@
         return cc.utmToDd(utm.zoneNumber+utm.zoneLetter, utm.easting, utm.northing, output, precision);
     };
 
+    /*
+     * Converts MGRS to DMS.
+     * MGRS: Military Grid Reference System.
+     * DMS: Degrees, Minutes, Seconds.
+     * 
+     * This function can either return a formatted string or an object.
+     * 
+     * If string or nothing is specified, it will look like this: 412501N, 123456E
+     * 
+     * If object is chosen, it will have two properties, latitude and longitude.
+     * Each will have these properties:
+     * - degrees: positive integer
+     * - minutes: positive integer
+     * - seconds: positive float
+     * - direction: N, S, E, or W
+     *
+     * @param MGRSZone- Grid zone designator (String), eg. 18L
+     * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. 4000000.0
+     * @param MGRSlocation- Northing-m (String or Numeric), eg. 432001.8  
+     * @param digits - Optional: Max digits in seconds, (String or Numeric). Default: 2.
+     * @return Depends on output parameter (Object or a String).
+     */
+    cc.mgrsToDms = function(MGRSZone, MGRSgridLetters, MGRSnumbers, output, digits){
+        var dms,
+            utm;
+
+        if(typeof MGRSZone === 'undefined' ||
+           typeof MGRSgridLetters === 'undefined' ||
+           typeof MGRSnumbers === 'undefined' ||
+           typeof output === 'undefined'){
+            throw new Error('mgrsToDms(): Missing arguments. Required: '
+                +'MGRSZone, MGRSgridLetters, MGRSnumbers and output.');
+        }
+        if (typeof output !== 'string' || (output !== 'string' && output !== 'object')){
+            throw new Error("mgrsToDms(): Incorrect output type specified. Required: string or object.");
+        }
+
+        if(typeof MGRSnumbers !== 'string'){
+            MGRSnumbers = MGRSnumbers.toString();
+        }
+
+        utm = cc.mgrsToUtm(MGRSZone, MGRSgridLetters, MGRSnumbers, 'object');
+
+        return cc.utmToDms(utm.zoneNumber+utm.zoneLetter, utm.easting, utm.northing, output, digits);
+    }
+
   	// AMD registration happens at the end for compatibility with AMD loaders
   	// that may not enforce next-turn semantics on modules. Even though general
   	// practice for AMD registration is to be anonymous, cc registers

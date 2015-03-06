@@ -70,6 +70,9 @@ define([
 
                     //should be: -50.2, -100.1
                     console.debug('mgrsToDd(14F, MK, 2149538553): ' , cc.mgrsToDd('14F', 'MK', 2149538553, 'string'));
+
+                    //should be: 50 12 00S, 100 06 00W
+                    console.debug('mgrsToDms(14F, MK, 2149538553): ' , cc.mgrsToDms('14F', 'MK', 2149538553, 'string'));
                     
                     
 
