@@ -1132,10 +1132,12 @@
             zoneLetter,
             gridLetter1,
             gridLetter2,
-            utm = {},
+            utm,
             mgrsPrecision,
             east,
-            north;
+            north,
+            easting,
+            northing;
 
         if(typeof MGRSZone === 'undefined' ||
            typeof MGRSgridLetters === 'undefined' ||
@@ -1202,15 +1204,22 @@
             appxNorth += 2;
         }
 
+        easting = appxEast * 100000 + east * Math.pow(10, 5 - east.toString().length);
+        northing = appxNorth * 1000000 + north * Math.pow(10, 5 - north.toString().length);
 
-        utm.northing = appxNorth * 1000000 + north * Math.pow(10, 5 - north.toString().length);
-        utm.easting = appxEast * 100000 + east * Math.pow(10, 5 - east.toString().length);
-        utm.zoneNumber = zoneNumber;
-        utm.zoneLetter = zoneLetter;
+        if (typeof output === 'string' && output === 'object'){
+            utm = {};
+            utm.northing = northing
+            utm.easting = easting
+            utm.zoneNumber = zoneNumber;
+            utm.zoneLetter = zoneLetter;
+        }else if (typeof output === 'string' && output === 'string'){
+            utm = zoneNumber + zoneLetter + ' ' + easting + ' ' + northing;
+        }else {
+             throw new Error("mgrsToUtm(): Incorrect output type specified. Required: string or object.");
+        }
 
-        console.info('utm: ', utm);
         return utm;
-
     };
 
 
