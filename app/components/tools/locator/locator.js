@@ -10,7 +10,8 @@ define([
         dataByName = {},
         $locator,
         $locatorButton,
-        $locatorInput;
+        $locatorInput,
+        regEx = /([0-9])/;//if it contains a number it is a coordinate.
 
     var exposed = {
         init: function(thisContext) {
@@ -30,56 +31,29 @@ define([
             });
 
             $locatorButton.on('click', function(event) {
-                var input = $locatorInput.val();
                 event.preventDefault();
 
-                if(selectedLocation === null || input === '') {/*Extra precaution, button should be disabled anyways.*/
+                if(selectedLocation === null) {
                     publisher.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Search',
-                        messageText: 'No valid location selected. Please try again.'
+                        messageText: 'No valid location selected. Please please click an option from the dropdown.'
                     });
-                    console.debug("Actual Numbers: ");
-                    console.debug('ddToMgrs(12.5,14.7): ' + cc.ddToMgrs(12.5,14.7,'STRING'));
-                    console.debug('ddToUtm(12.5,14.7): ' + cc.ddToUtm(12.5,14.7,'STRING'));
-                    console.debug('ddToDms(12.5,14.7): ' + cc.ddToDms('12.5',14.7,'string'));
-
-                    //should be: -12.9, 32.3
-                    console.debug('utmToDd(36L, 424059, 8573819): ' + cc.utmToDd('36L', 424059, 8573819,'string'));
-
-                    //should be: 125400S, 1000600W
-                    console.debug('utmToDms(36L, 424059, 8573819): ' , cc.utmToDms('36L', 424059, '8573819','string'));
-
-                    //should be: 36L VL 2405973819
-                    console.debug('utmToMgrs(36L, 424059, 8573819): ' + cc.utmToMgrs('36L', 424059, 8573819,'string'));
-
-                    //should be: -50.2, 100.1
-                    console.debug('dmsToDd(501200S, 1000600E): ' + cc.dmsToDd('501200S', '1000600E','string'));
-
-                     //should be: 12.5824389, 12
-                    console.debug('dmsToDd(123456.78N, 120000E): ' + cc.dmsToDd('123456.78N', '120000E','string'));
-
-                     //should be: 47F NE 7850538553
-                    console.debug('dmsToMgrs(501200S, 1000600E): ' + cc.dmsToMgrs('501200S', '1000600E','string'));
-
-                    //should be: 47F 578505 4438553
-                    console.debug('dmsToUtm(501200S, 1000600E): ' + cc.dmsToUtm('501200S', '1000600E','string'));
-
-                    //should be: 14F 421495 4438553
-                    console.debug('mgrsToUtm(14F, MK, 2149538553): ' , cc.mgrsToUtm('14F', 'MK', 2149538553, 'string'));
-
-                    //should be: -50.2, -100.1
-                    console.debug('mgrsToDd(14F, MK, 2149538553): ' , cc.mgrsToDd('14F', 'MK', 2149538553, 'string'));
-
-                    //should be: 50 12 00S, 100 06 00W
-                    console.debug('mgrsToDms(14F, MK, 2149538553): ' , cc.mgrsToDms('14F', 'MK', 2149538553, 'string'));
                     
                     
 
 
-                }else if('lat' in selectedLocation) { //It is coordinates
-                    exposed.markLocation(selectedLocation);
-                }else {
+                }else if(selectedLocation === 'error') { //It is coordinates error
+                    publisher.publishMessage({
+                        messageType: 'warning',
+                        messageTitle: 'Search',
+                        messageText: 'Incorrect or unsupported coordinate format.'
+                    });
+                }else if(selectedLocation.dd) {
+                    console.debug('zooming to: ', selectedLocation.dd);
+                    exposed.markLocation(selectedLocation.dd);
+                }
+                else{
                     exposed.goToLocation();
                 }
             });
@@ -101,27 +75,29 @@ define([
                  * change selectedLocation to null after evey key event and disable search button.
                  * To prevent the ajax call from happening after every new character, a
                  * timeout delay has been added.*/
+                 //query is always a string.
                 source: function(query,process) {
-                    selectedLocation = null;
-
-                    if(timeout) {
-                        clearTimeout(timeout);
-                    }
-                    timeout = setTimeout(function() {
-                        var content = $locatorInput.val().length || null;
-
-                        /*No need to query empty input*/
-                        if(content !== null) {
-
-                            //Handle both coordinates and places
-                            if(query.match(/^-?\d/)) {
-
-                            }else { 
+                    console.debug('query: ', query);
+                    //null when it doesnt match.
+                    //grab coordinate.input
+                    var coordinate = query.match(regEx);
+                    console.debug(coordinate);
+                    if(coordinate !== null){
+                        selectedLocation = context.sandbox.utils.convertCoordinate(coordinate.input);
+                        $locatorInput.typeahead('hide');//Manual typeahead hide.
+                    }else{
+                        if(timeout) {
+                            clearTimeout(timeout);
+                        }
+                        timeout = setTimeout(function() {
+                            /*No need to query empty input*/
+                            if(query !== null) {
                                 publisher.publishMessage({
                                     messageType: 'info',
                                     messageTitle: 'Looking up suggestions',
                                     messageText: 'Validating ...'
                                 });
+                                //get the name data.
                                 context.sandbox.locator.query(query, function(data){
                                    var formattedData = context.sandbox.locator.formatData(data);
                                     if(formattedData.names === []) {
@@ -134,11 +110,17 @@ define([
                                         dataByName = formattedData.data;
                                     }
                                     process(formattedData.names); 
-                                }); 
-                                
-                            }                            
-                        }
-                    }, 800);
+                                });
+                            }else{
+                                //as a precaution.
+                                //query is null, meaning there is nothing in the textArea.
+                                $locatorInput.typeahead('hide');//Manual typeahead hide.
+                            } 
+                        }, 800);
+
+                    }
+
+                    
                 },
                 /**
                  * Overwrite matcher function to always show values returned by the service.If the service 
@@ -170,10 +152,15 @@ define([
                 //timeout allows time for val() to get populated. Once populated,
                 //typeahead can work as expected. 
                 setTimeout(function () {
-                    $locatorInput.typeahead('lookup');//Manual typeahead look up.
+                     var input = $locatorInput.val(),
+                    coordinate = input.match(regEx);
+                    if(coordinate === null){
+                        $locatorInput.typeahead('lookup');//Manual typeahead look up.
+                    }
                 }, 10);
             });
         },
+        // Zooms to an area saved in selectedLocation based on the name provided in the locator tool.
         goToLocation: function() {
             publisher.zoomToLocation({
                 minLon: selectedLocation.minLon,
@@ -183,6 +170,9 @@ define([
             });
             $locatorInput.val('');
         },//end of goToLocation
+        /*
+         * Zooms and marks a location based on the coordintate provided.
+         */
         markLocation: function(coordinates) {
             publisher.markLocation({
                 layerId: 'static_geolocator',
