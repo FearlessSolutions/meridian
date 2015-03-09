@@ -216,9 +216,9 @@ define([
                     return results;
                 },
                 convertCoordinate: function(input){
-                    var dmsRegex = /\s*(\d{6,7}(\.\d+)?[NSns]),\s*(\d{6,7}(\.\d+)?[WEwe])/,
-                        ddRegex = /(\-)?(\d+)(\.\d+)?,(\-)?(\d+)(\.\d+)?$/,
-                        mgrsRegex = /\s*(\d+[a-zA-Z])\s*([a-zA-Z]{2})\s*(\d+)(\.\d+)?/,
+                    var dmsRegex = /\s*(\d{6,7}(\.\d+)?[NS]),\s*(\d{6,7}(\.\d+)?[WE])/,
+                        ddRegex = /\s*((\-?\d+)(\.\d+)?)\s*,\s*((\-?\d+)(\.\d+)?)\s*$/,
+                        mgrsRegex = /\s*(\d+[A-Z])\s*([A-Z]{2})\s*(\d+)(\.\d+)?/,
                         utmRegex = /\s*(\d+[a-zA-Z])\s*(\d{6})\s*(\d{6,7})/,
                         dd,
                         dms,
@@ -234,29 +234,35 @@ define([
                     utm = input.match(utmRegex);
                     console.debug('input: ', input);
                     if(dd !== null){
-                        dd = dd[0].split(",");
+                        //position 2,3 are lat whole and decimal parts of the number.
+                        //position 5,6 are lon whole and decimal parts of the number.
                         coordinates = {};
                         coordinates.dd = {
-                            "latitude": dd[0],
-                            "longitude": dd[1]
+                            "lat": dd[1],
+                            "lon": dd[4]
                         };
-                        coordinates.dms = cc.ddToDms(dd[0],dd[1],'object');
-                        coordinates.utm = cc.ddToUtm(dd[0],dd[1],'string');
-                        coordinates.mgrs = cc.ddToMgrs(dd[0],dd[1],'string');
+                        coordinates.dms = cc.ddToDms(dd[1],dd[4],'object');
+                        coordinates.utm = cc.ddToUtm(dd[1],dd[4],'string');
+                        coordinates.mgrs = cc.ddToMgrs(dd[1],dd[4],'string');
 
                     }else if(dms !== null){
-                        dms = dms[0].split(",");
-                        console.debug('dms: ', dms);
+                        //positions 2,4 are the decimal places only
                         coordinates = {};
-                        coordinates.dd = cc.dmsToDd(dms[0], dms[1], 'object');
-                        coordintaes.dms = dms;
-                        coordinates.utm = cc.dmsToUtm(dms[0], dms[1], 'string');
-                        coordinates.mgrs = cc.dmsToMgrs(dms[0], dms[1], 'string');
-                    }else if(utm !== null){
-                        console.debug('utm: ', utm);
+                        coordinates.dd = cc.dmsToDd(dms[1], dms[3], 'object');
+                        coordinates.dms = dms[0];
+                        coordinates.utm = cc.dmsToUtm(dms[1], dms[3], 'string');
+                        coordinates.mgrs = cc.dmsToMgrs(dms[1], dms[3], 'string');
 
+                    }else if(utm !== null){
+                        //position 1 is the zone, 2 is the easting, 3 the northing.
+                        coordinates = {};
+                        coordinates.dd = cc.utmToDd(utm[1], utm[2], utm[3], 'object');
+                        coordinates.dms = cc.utmToDms(utm[1], utm[2], utm[3], 'string');
+                        coordinates.utm = utm[0];
+                        coordinates.mgrs = cc.utmToMgrs(utm[1], utm[2], utm[3], 'string');
 
                     }else if(mgrs !== null){
+                        coordinates = {};
 
                     }
                     
