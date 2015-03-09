@@ -1,6 +1,7 @@
 define([
-    'jquery'
-], function($){
+    'jquery',
+    'coordinateConverter'
+], function($,cc){
 
     var exposed = {
         initialize: function(app) {
@@ -213,6 +214,55 @@ define([
                     }
 
                     return results;
+                },
+                convertCoordinate: function(input){
+                    var dmsRegex = /\s*(\d{6,7}(\.\d+)?[NSns]),\s*(\d{6,7}(\.\d+)?[WEwe])/,
+                        ddRegex = /(\-)?(\d+)(\.\d+)?,(\-)?(\d+)(\.\d+)?$/,
+                        mgrsRegex = /\s*(\d+[a-zA-Z])\s*([a-zA-Z]{2})\s*(\d+)(\.\d+)?/,
+                        utmRegex = /\s*(\d+[a-zA-Z])\s*(\d{6})\s*(\d{6,7})/,
+                        dd,
+                        dms,
+                        utm,
+                        mgrs,
+                        coordinates = 'error';
+
+                    //remove all spaces from the string, make all letter caps.
+                    input = input.replace(/\s/g, '');
+                    input = input.toUpperCase();
+                    dd = input.match(ddRegex);
+                    dms = input.match(dmsRegex);
+                    utm = input.match(utmRegex);
+                    console.debug('input: ', input);
+                    if(dd !== null){
+                        dd = dd[0].split(",");
+                        coordinates = {};
+                        coordinates.dd = {
+                            "latitude": dd[0],
+                            "longitude": dd[1]
+                        };
+                        coordinates.dms = cc.ddToDms(dd[0],dd[1],'object');
+                        coordinates.utm = cc.ddToUtm(dd[0],dd[1],'string');
+                        coordinates.mgrs = cc.ddToMgrs(dd[0],dd[1],'string');
+
+                    }else if(dms !== null){
+                        dms = dms[0].split(",");
+                        console.debug('dms: ', dms);
+                        coordinates = {};
+                        coordinates.dd = cc.dmsToDd(dms[0], dms[1], 'object');
+                        coordintaes.dms = dms;
+                        coordinates.utm = cc.dmsToUtm(dms[0], dms[1], 'string');
+                        coordinates.mgrs = cc.dmsToMgrs(dms[0], dms[1], 'string');
+                    }else if(utm !== null){
+                        console.debug('utm: ', utm);
+
+
+                    }else if(mgrs !== null){
+
+                    }
+                    
+                    console.debug("Coordinates: ", coordinates);
+                    return coordinates;
+
                 }
             };
 
