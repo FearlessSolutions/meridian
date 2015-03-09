@@ -30,28 +30,27 @@ define([
             });
 
             $locatorButton.on('click', function(event) {
-                var input = $locatorInput.val();
+                var input = $locatorInput.val(),
+                    locType = $locatorInput.val(),
+                    numCheck = /^([0-9-])/;
+
                 event.preventDefault();
-                var locType = $locatorInput.val();
-                var numCheck = /^([0-9-])/;
 
                 if (numCheck.test(locType)) {
                     context.sandbox.locator.queryCoordinates(locType, function(coordinates){
-                            selectedLocation = coordinates;
-                            if (selectedLocation === null) {
+                            if (coordinates === null) {
                                 publisher.publishMessage({
                                     messageType: 'warning',
                                     messageTitle: 'Search',
                                     messageText: 'The coordinate format is not a valid format. Please try again.'
                                 });
                             } else {
-                                exposed.markLocation(selectedLocation);
+                                exposed.markLocation(coordinates);
                                 $locatorInput.val('').blur();
                                 $locatorButton.prop('disabled',true);
                             };
                     });
                 } else {
-
                     if (selectedLocation === null || input === '') {/*Extra precaution, button should be disabled anyways.*/
                         publisher.publishMessage({
                             messageType: 'warning',
@@ -69,8 +68,10 @@ define([
 
             $locatorInput.on('keydown', function(e) {
                 if (e.keyCode === 13) {
-                    $locatorButton.click();
-                };
+                    if (!$('.typeahead').is(':visible')) {
+                        $locatorButton.click();
+                    }
+                }
             });
             $locatorInput.on('keyup', function() {
                 if ($locatorInput.val() == '') {
@@ -90,8 +91,8 @@ define([
                 source: function(query,process) {
                     selectedLocation = null;
 
-                    var locType = $locatorInput.val();
-                    var numCheck = /^([0-9-])/;
+                    var locType = $locatorInput.val(),
+                        numCheck = /^([0-9-])/;
 
                     if (numCheck.test(locType)) {
                         $locatorButton.prop('disabled', false);
