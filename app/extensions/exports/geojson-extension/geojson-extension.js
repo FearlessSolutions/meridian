@@ -8,7 +8,7 @@ define([
             context = app;
 
             if(!app.sandbox.export){
-                throw 'Requires export-utils extension to be loaded.'
+                throw 'Requires export-utils extension to be loaded.';
             }
 
             app.sandbox.export.utils.addExport({
@@ -22,11 +22,28 @@ define([
 	};//exposed
 
     function exportFunction(params){
+        var layerIds = params.layerIds;
+
         if(params.featureId){
             window.open(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + params.featureId, '_blank');
-        } else if(params.layerIds){
-            //Do nothing for now.
-        }
+        } else if(layerIds){
+            context.sandbox.export.utils.checkFileHead(layerIds, function(err, pass){
+                if(err) {
+                    params.callback({
+                        messageType: err.messageType,
+                        messageTitle: 'geoJSON export',
+                        messageText: err.messageText
+                    });
+                } else {
+                    params.callback({
+                        messageType: 'info',
+                        messageTitle: 'geoJSON export',
+                        messageText: 'geoJSON download started'
+                    });
+
+                    window.location.assign(context.sandbox.export.utils.getFileExportUrl(layerIds, 'geojson'));
+                }
+            });        }
     }
 
     function validate(params){
@@ -38,13 +55,10 @@ define([
                 [params.layerId] //Turn it into an array
             );
         } else if(params.layerIds){
-
-            //TODO don't support right now
-            valid = false;
-//            valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
-//                configuration.id,
-//                params.layerIds
-//            );
+            valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
+                configuration.id,
+                params.layerIds
+            );
         } else{
             valid = false;
         }

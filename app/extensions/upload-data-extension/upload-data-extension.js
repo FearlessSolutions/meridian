@@ -18,6 +18,7 @@ define([
                 app.sandbox.dataServices = {};
             }
             app.sandbox.dataServices[DATASOURCE_NAME] = {
+                DISPLAY_NAME: configuration.DISPLAY_NAME,
                 infoWinTemplate: {
                     buildInfoWinTemplate: function(attributes){
                         var html = template({

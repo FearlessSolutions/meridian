@@ -24,9 +24,10 @@ define([
             var aboutTemplate = Handlebars.compile(aboutHBS);
             var aboutHTML = aboutTemplate({
                 "version": this.sandbox.systemConfiguration.version,
-                "releaseDate": this.sandbox.systemConfiguration.releaseDate
+                "releaseDate": this.sandbox.systemConfiguration.releaseDate,
+                "cmapiVersion": this.sandbox.systemConfiguration.cmapiVersion,
             });
-            var html = supportHTML + aboutHTML
+            var html = supportHTML + aboutHTML;
 
             this.html(html);
 

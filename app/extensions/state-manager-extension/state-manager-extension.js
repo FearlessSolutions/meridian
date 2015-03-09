@@ -1,22 +1,36 @@
 define([], function(){
+    var readyCallbacks;
+
     var exposed = {
         initialize: function(app) {
+            readyCallbacks = [];
             var mapReadyCallbacks = [],
                 stateManager = {
-                    "map": {
-                        // "visualMode": "cluster" 
+                    map: {
+                        // visualMode: 'cluster' 
                         // Other properties that could be in Map.Status
-                        "status": {
-                            "ready": false
+                        status: {
+                            ready: false,
+                            setReady: function(newReady){
+                                stateManager.map.status.ready = true;
+                                runReadyCallbacks();
+                            },
+                            addReadyCallback: function(newCallback){
+                                if(stateManager.map.status.ready){
+                                    newCallback();
+                                } else{
+                                    readyCallbacks.push(newCallback);
+                                }
+                            }
                         },
-                        "extent": {}
+                        extent: {}
                     },
-                    "layers": {
-                        // "SomeLayer": {   
-                        //     "visible": false,
-                        //     "hiddenFeatures": ["featureId1", "featureId2", ..., "featureIdN"],
-                        //     "identifiedFeatures": ["featureId1", "featureId2", ..., "featureIdN"],
-                        //     "selectedFeatures": ["featureId1", "featureId2", ..., "featureIdN"]
+                    layers: {
+                        // SomeLayer: {   
+                        //     visible: false,
+                        //     hiddenFeatures: ['featureId1', 'featureId2', ..., 'featureIdN'],
+                        //     identifiedFeatures: ['featureId1', 'featureId2', ..., 'featureIdN'],
+                        //     selectedFeatures: ['featureId1', 'featureId2', ..., 'featureIdN']
                         // }
                     },
                     getMapState: function() {
@@ -26,7 +40,7 @@ define([], function(){
                         app.sandbox.utils.extend(true, stateManager.map, params.state);
                     },
                     triggerMapStatusReady: function(){
-                        stateManager.setMapState({"status": {"ready": true}});
+                        stateManager.setMapState({status: {ready: true}});
                         app.sandbox.utils.each(mapReadyCallbacks, function(index, callback) {
                             callback();
                         });
@@ -168,6 +182,14 @@ define([], function(){
 
         }
     };
+
+    function runReadyCallbacks(){
+        readyCallbacks.forEach(function(callback){
+            callback();
+        });
+
+        readyCallbacks = [];
+    }
 
     return exposed;
 

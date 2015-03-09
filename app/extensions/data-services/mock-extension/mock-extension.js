@@ -40,8 +40,8 @@ define([
                 DISPLAY_NAME: config.DISPLAY_NAME,
                 infoWinTemplate: {
                     buildInfoWinTemplate: function(attributes, fullFeature) {
-                        var mockTemplate = Handlebars.compile(infoWinHBS);
-                        var html;
+                        var mockTemplate = Handlebars.compile(infoWinHBS),
+                            html;
 
                         //Add the url
                         attributes.mapUrl = processMapUrl(attributes);
@@ -69,23 +69,19 @@ define([
                 },
                 validateForExport: function(option, callback){
                     if(app.sandbox.dataServices.mock.exports[option]){
-                        console.log("it was found");
                         callback({
-                            "result": true
-                        })
+                            result: true
+                        });
                     }
                     else{
-                        console.log('it was not found.');
                         callback({
-                            "result": false
+                            result: false
                         });
                     }
                 },
                 //See data-storage-extension for key variable descriptions
                 keys: config.keys,
                 processMapUrl: processMapUrl,
-                DATASOURCE_NAME: DATASOURCE_NAME,
-                DISPLAY_NAME: config.DISPLAY_NAME,
                 namespace: config.namespace
             };
 
