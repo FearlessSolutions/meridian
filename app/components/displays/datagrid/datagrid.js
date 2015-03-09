@@ -39,11 +39,12 @@ define([
         DEFAULT_GRID_OPTIONS = {
             enableCellNavigation: true,
             enableColumnReorder: true,
-            defaultColumnWidth: 150,
-            fullWidthRows: true,
+            //defaultColumnWidth: 150,
             autoEdit: false,
             editable:false,
+            forceFitColumns: true,
             syncColumnCellResize: true,
+            fullWidthRows: true,
             headerRowHeight:20,
             defaultFormatter: gridFormatter,
             multiSelect: false //TODO remove this for multiselect.
@@ -170,6 +171,10 @@ define([
                 if(key === ENTER_KEY){
                     context.$('#grid-search-btn').click();
                 }
+            });
+            $(window).resize(function(){
+                // redraws grid on browser resize
+                grid.resizeCanvas();
             });
         },
         toggleGrid: function() {
