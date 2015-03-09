@@ -39,7 +39,6 @@ define([
         DEFAULT_GRID_OPTIONS = {
             enableCellNavigation: true,
             enableColumnReorder: true,
-            //defaultColumnWidth: 150,
             autoEdit: false,
             editable:false,
             forceFitColumns: true,
