@@ -518,7 +518,7 @@
      * 
      * If string is specified, it will look like this: 412501N, 123456E
      * 
-     * If object is chosen, it will have two properties, latitude and longitude.
+     * If object is chosen, it will have two properties, lat and lon.
      * Each will have these properties:
      * - degrees: positive integer
      * - minutes: positive integer
@@ -589,13 +589,13 @@
 
         if(typeof output === 'string' && output.toLowerCase() === 'object'){
            dms = {
-                "latitude": {
+                "lat": {
                     "degrees": latDeg,
                     "minutes": latMin,
                     "seconds": latSec,
                     "direction": latDir
                 },
-                "longitude": {
+                "lon": {
                     "degrees": lonDeg,
                     "minutes": lonMin,
                     "seconds": lonSec,
@@ -727,7 +727,7 @@
      *
      * If string is specified, it will look like this: 41, 12.
      *
-     * If object is chosen, it will have two properties, latitude and longitude.
+     * If object is chosen, it will have two properties, lat and lon.
      *
      * @param UTMZone- 6-deg longitudinal zone and letter (String), eg. 18L
      * @param UTMEasting- easting-m (String or Numeric), eg. 4000000.0
@@ -833,8 +833,8 @@
 
         if (typeof output === 'string' && output.toLowerCase() === 'object'){
             dd = {};
-            dd.latitude = lat;
-            dd.longitude = lon;
+            dd.lat = lat;
+            dd.lon = lon;
         }else if (typeof output === 'string' && output.toLowerCase() === 'string'){
             dd = lat + ', ' + lon;
         }else {
@@ -853,7 +853,7 @@
      * 
      * If string or nothing is specified, it will look like this: 412501N, 123456E
      * 
-     * If object is chosen, it will have two properties, latitude and longitude.
+     * If object is chosen, it will have two properties, lat and lon.
      * Each will have these properties:
      * - degrees: positive integer
      * - minutes: positive integer
@@ -889,7 +889,7 @@
 
         var dd = cc.utmToDd(UTMZone, UTMEasting, UTMNorthing, 'object', 2);
 
-        return cc.ddToDms(dd.latitude, dd.longitude, output, digits);
+        return cc.ddToDms(dd.lat, dd.lon, output, digits);
     };
 
 
@@ -904,7 +904,7 @@
      * 
      * If string is specified, it will look like this: 41, 12.
      * 
-     * If object is chosen, it will have two properties, latitude and longitude.
+     * If object is chosen, it will have two properties, lat and lon.
      * 
      * @param lat- latitude (String representing a float)
      * @param lon- longitude (String representing a float)
@@ -913,10 +913,10 @@
      * @return Depends on output parameter (Object or a String).
      */
     cc.dmsToDd = function(lat, lon, output, precision){
-        var north = lat.match(/^\d{6,7}(\.\d+)?N/),
-            south = lat.match(/^\d{6,7}(\.\d+)?S/),
-            west = lon.match(/^\d{6,7}(\.\d+)?W$/),
-            east = lon.match(/^\d{6,7}(\.\d+)?E$/),
+        var north = lat.match(/^\d{6,7}(\.\d+)?[Nn]/),
+            south = lat.match(/^\d{6,7}(\.\d+)?[Ss]/),
+            west = lon.match(/^\d{6,7}(\.\d+)?[Ww]$/),
+            east = lon.match(/^\d{6,7}(\.\d+)?[Ee]$/),
             lat,
             lon,
             dd = null;
@@ -953,8 +953,8 @@
 
         if (typeof output === 'string' && output.toLowerCase() === 'object'){
             dd = {};
-            dd.latitude = lat;
-            dd.longitude = lon;
+            dd.lat = lat;
+            dd.lon = lon;
         }else if (typeof output === 'string' && output.toLowerCase() === 'string'){
             dd = lat + ', ' + lon;
         }else {
@@ -1013,7 +1013,7 @@
 
         dd = cc.dmsToDd(lat, lon, 'object', 2);
 
-        return cc.ddToMgrs(dd.latitude, dd.longitude, output, precision);
+        return cc.ddToMgrs(dd.lat, dd.lon, output, precision);
     };
 
     /*
@@ -1063,7 +1063,7 @@
 
         dd = cc.dmsToDd(lat, lon, 'object', 2);
 
-        return cc.ddToUtm(dd.latitude, dd.longitude, output, zone);
+        return cc.ddToUtm(dd.lat, dd.lon, output, zone);
     };
 
 //---------------------------- MGRS to ----------------------------
@@ -1202,7 +1202,7 @@
      *
      * If string is specified, it will look like this: 41, 12.
      *
-     * If object is chosen, it will have two properties, latitude and longitude.
+     * If object is chosen, it will have two properties, lat and lon.
      *
      * @param MGRSZone- Grid zone designator (String), eg. 18L
      * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. 4000000.0
@@ -1244,7 +1244,7 @@
      * 
      * If string or nothing is specified, it will look like this: 412501N, 123456E
      * 
-     * If object is chosen, it will have two properties, latitude and longitude.
+     * If object is chosen, it will have two properties, lat and lon.
      * Each will have these properties:
      * - degrees: positive integer
      * - minutes: positive integer
