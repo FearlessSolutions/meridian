@@ -30,7 +30,6 @@ define([
         $testArea,
         datagridVisible = false,
         GRID_CONTAINER_HEIGHT = 328,
-        MIN_COLUMN_WIDTH = 150,
         HIDDEN_CSS = 'hiddenFeature',
         HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN',
         DEFAULT_PAGE_SIZE = 10,
@@ -340,20 +339,18 @@ define([
         var columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
             columnHeaders = [];            //Set up headers. They should already be in the correct order.
             
-            var defaultColumnWidth = ($(window).width())/columnHeadersMetadata.length;
-            
         context.sandbox.utils.each(columnHeadersMetadata, function (columnHeaderIndex, columnHeaderMetadata) {
             var width;
 
             $testArea.html('<span>' + columnHeaderMetadata.displayName + '</span>'); //This is the only way to find text length. Is styled  the same as header
             width = $testArea.find('span').width() + 30;
+            if (width < 150) { width = 150 }
 
-            //console.log(width);
             columnHeaders.push({
                 id: columnHeaderMetadata.property + columnHeaderMetadata.displayName,
                 name: columnHeaderMetadata.displayName,
                 field: columnHeaderMetadata.property,
-                width: defaultColumnWidth,
+                minWidth: width,
                 sortable: true
             });
         });
