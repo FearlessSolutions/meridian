@@ -217,7 +217,7 @@ define([
                 convertCoordinate: function(input){
                     var dmsRegex = /\s*(\d{6,7}(\.\d+)?[NS]),\s*(\d{6,7}(\.\d+)?[WE])/,
                         ddRegex = /\s*((\-?\d+)(\.\d+)?)\s*,\s*((\-?\d+)(\.\d+)?)\s*$/,
-                        mgrsRegex = /\s*(\d+[A-Z])\s*([A-Z]{2})\s*(\d+)(\.\d+)?/,
+                        mgrsRegex = /\s*(\d+[A-Z])\s*([A-Z]{2})\s*(\d+)$/,
                         utmRegex = /\s*(\d+[a-zA-Z])\s*(\d{6})\s*(\d{6,7})/,
                         dd,
                         dms,
@@ -225,13 +225,13 @@ define([
                         mgrs,
                         coordinates = 'error';
 
-                    //remove all spaces from the string, make all letter caps.
+                    //remove all spaces from the string, make all letters caps.
                     input = input.replace(/\s/g, '');
                     input = input.toUpperCase();
                     dd = input.match(ddRegex);
                     dms = input.match(dmsRegex);
                     utm = input.match(utmRegex);
-                    console.debug('input: ', input);
+                    mgrs = input.match(mgrsRegex);
                     if(dd !== null){
                         //position 2,3 are lat whole and decimal parts of the number.
                         //position 5,6 are lon whole and decimal parts of the number.
@@ -261,13 +261,15 @@ define([
                         coordinates.mgrs = cc.utmToMgrs(utm[1], utm[2], utm[3], 'string');
 
                     }else if(mgrs !== null){
+                        //position 1 is the zone, 2 the gridLetters and 3 the numeric location.
                         coordinates = {};
-
+                        coordinates.dd = cc.mgrsToDd(mgrs[1], mgrs[2], mgrs[3], 'object');
+                        coordinates.dms = cc.mgrsToDms(mgrs[1], mgrs[2], mgrs[3], 'string');
+                        coordinates.utm = cc.mgrsToUtm(mgrs[1], mgrs[2], mgrs[3], 'string');
+                        coordinates.mgrs = mgrs[1] + mgrs[2] + mgrs[3];
                     }
                     
-                    console.debug("Coordinates: ", coordinates);
                     return coordinates;
-
                 }
             };
 
