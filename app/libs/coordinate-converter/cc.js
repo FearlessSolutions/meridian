@@ -328,7 +328,18 @@
      */
     var alwaysTwoDigit = function(n){
         return n===0 || n<=9 ? '0'+n: ''+n; 
-    }
+    };
+
+    //Make sure the MGRS numbers dont contain a fractional part, are an even number of digits.
+    var validateMgrsLocationNumbers = function(functionName, mgrsNumbers){
+        if(mgrsNumbers.split('.').length > 1){
+            throw new Error(functionName + "(): The numerical location value cannot contain fractional parts.");
+        }
+        //MGRS location numbers are never odd.
+        if(mgrsNumbers.length % 2 !== 0){
+            throw new Error(functionName + "(): The number of digits in the numerical location must be even");
+        }
+    };
 
 //---------------------------- FUNCTIONS ----------------------------
 //
@@ -1088,8 +1099,8 @@
      * i.e: 33P 123456 12345678
      * 
      * @param MGRSZone- Grid zone designator (String), eg. 18L
-     * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. 4000000.0
-     * @param MGRSlocation- Northing-m (String or Numeric), eg. 432001.8  
+     * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. NE
+     * @param MGRSlocation- Northing-m (String or Numeric), eg. 432001 
      * @param output- String representing return type (Object or String).
      * @return Depends on output parameter (Object or a String).
      */
@@ -1125,12 +1136,11 @@
         if(typeof MGRSnumbers !== 'string'){
             MGRSnumbers = MGRSnumbers.toString();
         }
-        //MGRS location numbers are never odd.
-        if(MGRSnumbers.length % 2 !== 0){
-            throw new Error("mgrsToUtm(): The number of digits in the numerical location must be even");
-        }
-        if(MGRSgridLetters.length < 2){
-            throw new Error("mgrsToUtm(): Incorrect Grid Square Id. Must be two letters.");
+
+        validateMgrsLocationNumbers('mgrsToUtm', MGRSnumbers);
+
+        if(MGRSgridLetters.length < 2 || MGRSgridLetters.length > 2){
+            throw new Error('mgrsToUtm(): Incorrect Grid Square Id. Must be two letters.');
         }
 
         zoneLetter = MGRSZone.charAt(MGRSZone.length - 1);
@@ -1205,8 +1215,8 @@
      * If object is chosen, it will have two properties, lat and lon.
      *
      * @param MGRSZone- Grid zone designator (String), eg. 18L
-     * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. 4000000.0
-     * @param MGRSlocation- Northing-m (String or Numeric), eg. 432001.8  
+     * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. NE
+     * @param MGRSlocation- Northing-m (String or Numeric), eg. 432001  
      * @param output- String representing return type (Object or String).
      * @param precision - Optional decimal precision, (String or Numeric). Default 2.
      * @return Depends on output parameter (Object or a String).
@@ -1228,6 +1238,12 @@
 
         if(typeof MGRSnumbers !== 'string'){
             MGRSnumbers = MGRSnumbers.toString();
+        }
+
+        validateMgrsLocationNumbers('mgrsToDd', MGRSnumbers);
+
+        if(MGRSgridLetters.length < 2 || MGRSgridLetters.length > 2){
+            throw new Error('mgrsToDd(): Incorrect Grid Square Id. Must be two letters.');
         }
 
         utm = cc.mgrsToUtm(MGRSZone, MGRSgridLetters, MGRSnumbers, 'object');
@@ -1252,8 +1268,8 @@
      * - direction: N, S, E, or W
      *
      * @param MGRSZone- Grid zone designator (String), eg. 18L
-     * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. 4000000.0
-     * @param MGRSlocation- Northing-m (String or Numeric), eg. 432001.8  
+     * @param MGRSgridLetters- Square Identifier (String or Numeric), eg. NE
+     * @param MGRSlocation- Northing-m (String or Numeric), eg. 432001 
      * @param digits - Optional: Max digits in seconds, (String or Numeric). Default: 2.
      * @return Depends on output parameter (Object or a String).
      */
@@ -1274,6 +1290,12 @@
 
         if(typeof MGRSnumbers !== 'string'){
             MGRSnumbers = MGRSnumbers.toString();
+        }
+
+        validateMgrsLocationNumbers('mgrsToDms', MGRSnumbers);
+
+        if(MGRSgridLetters.length < 2 || MGRSgridLetters.length > 2){
+            throw new Error('mgrsToDms(): Incorrect Grid Square Id. Must be two letters.');
         }
 
         utm = cc.mgrsToUtm(MGRSZone, MGRSgridLetters, MGRSnumbers, 'object');
