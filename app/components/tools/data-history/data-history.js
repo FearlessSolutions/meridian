@@ -97,8 +97,7 @@ define([
                     rawDataObject: data.rawQuery || 'N/A'
                 };
 
-                rawDataObjectString = context.sandbox.utils.isEmptyObject(tempData.rawDataObject)
-                    ? '' : JSON.stringify(tempData.rawDataObject, null,  ' ');
+                rawDataObjectString = context.sandbox.utils.isEmptyObject(tempData.rawDataObject) ? '' : JSON.stringify(tempData.rawDataObject, null,  ' ');
                 tempData.rawDataObject = rawDataObjectString;
 
                 dataHistoryDetailView = dataHistoryDetailViewTemplate(tempData);

@@ -11,7 +11,7 @@ define([
         $locator,
         $locatorButton,
         $locatorInput,
-        regEx = /([0-9])/;//if it contains a number it is a coordinate.
+        regEx = /([0-9])/;
 
     var exposed = {
         init: function(thisContext) {
@@ -39,18 +39,13 @@ define([
                         messageTitle: 'Search',
                         messageText: 'No valid location selected. Please please click an option from the dropdown.'
                     });
-                    
-                    
-
-
-                }else if(selectedLocation === 'error') { //It is coordinates error
+                }else if(selectedLocation === 'error') { //It is a coordinate error
                     publisher.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Search',
                         messageText: 'Incorrect or unsupported coordinate format.'
                     });
                 }else if(selectedLocation.dd) {
-                    console.debug('zooming to: ', selectedLocation.dd);
                     exposed.markLocation(selectedLocation.dd);
                 }
                 else{
@@ -70,22 +65,22 @@ define([
             $locatorInput.attr('data-provide', 'typeahead');
             $locatorInput.typeahead({
                 items: 15,
-
-                /* Source occurs after a new character is added. Defaults to 1.
-                 * change selectedLocation to null after evey key event and disable search button.
-                 * To prevent the ajax call from happening after every new character, a
-                 * timeout delay has been added.*/
+                 //Source occurs after a new character is added. Defaults to 1.
+                 //change selectedLocation to null after evey key event and disable search button.
+                 //To prevent the ajax call from happening after every new character, a
+                 //timeout delay has been added.
                  //query is always a string.
                 source: function(query,process) {
-                    console.debug('query: ', query);
                     //null when it doesnt match.
-                    //grab coordinate.input
+                    //if input has a single number, it will be considered a coordinate.
                     var coordinate = query.match(regEx);
-                    console.debug(coordinate);
                     if(coordinate !== null){
+                        //selectedLocation comes back as an object containing all
+                        //possible conversions of the coordinate provided.
                         selectedLocation = context.sandbox.utils.convertCoordinate(coordinate.input);
-                        $locatorInput.typeahead('hide');//Manual typeahead hide.
+                        $locatorInput.typeahead('hide');//Precautionary typeahead hide.
                     }else{
+                        //query has no numbers. A place look up is assumed.
                         if(timeout) {
                             clearTimeout(timeout);
                         }
@@ -119,8 +114,6 @@ define([
                         }, 800);
 
                     }
-
-                    
                 },
                 /**
                  * Overwrite matcher function to always show values returned by the service.If the service 
@@ -151,8 +144,9 @@ define([
             $locatorInput.on('paste', function(event){
                 //timeout allows time for val() to get populated. Once populated,
                 //typeahead can work as expected. 
+                //textbox works normally, so no need to excecute typeahead for coordinates.
                 setTimeout(function () {
-                     var input = $locatorInput.val(),
+                    var input = $locatorInput.val(),
                     coordinate = input.match(regEx);
                     if(coordinate === null){
                         $locatorInput.typeahead('lookup');//Manual typeahead look up.
@@ -170,15 +164,15 @@ define([
             });
             $locatorInput.val('');
         },//end of goToLocation
-        /*
-         * Zooms and marks a location based on the coordintate provided.
-         */
+        
+        //Zooms and marks a location based on the coordintate provided.
         markLocation: function(coordinates) {
             publisher.markLocation({
                 layerId: 'static_geolocator',
                 data: [context.sandbox.utils.createGeoJson(coordinates)]
             });
             publisher.setMapCenter(coordinates);
+            $locatorInput.val('');
         },
         clear: function() {
             clearTimeout(timeout);

@@ -8,7 +8,7 @@ define([
             context = app;
 
             if(!app.sandbox.export){
-                throw 'Requires export-utils extension to be loaded.'
+                throw 'Requires export-utils extension to be loaded.';
             }
 
             app.sandbox.export.utils.addExport({
@@ -28,7 +28,7 @@ define([
         function(data){
             var lon = data.geometry.coordinates[1],
                 lat = data.geometry.coordinates[0];
-            window.open('https://www.google.com/maps/place/' + lat + ',' + lon, '_blank')
+            window.open('https://www.google.com/maps/place/' + lat + ',' + lon, '_blank');
 
         });
     }

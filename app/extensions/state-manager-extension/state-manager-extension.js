@@ -17,7 +17,7 @@ define([], function(){
                             },
                             addReadyCallback: function(newCallback){
                                 if(stateManager.map.status.ready){
-                                    newCallback()
+                                    newCallback();
                                 } else{
                                     readyCallbacks.push(newCallback);
                                 }

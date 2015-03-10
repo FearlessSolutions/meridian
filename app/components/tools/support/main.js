@@ -27,7 +27,7 @@ define([
                 "releaseDate": this.sandbox.systemConfiguration.releaseDate,
                 "cmapiVersion": this.sandbox.systemConfiguration.cmapiVersion,
             });
-            var html = supportHTML + aboutHTML
+            var html = supportHTML + aboutHTML;
 
             this.html(html);
 
