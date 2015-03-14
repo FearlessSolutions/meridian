@@ -1,13 +1,21 @@
 define([
     './bookmark-publisher',
-    'bootstrap'
+    //'bootstrap'
+    'slickcore',
+    'slickgrid',
+    'slickdataview',
+    'slickRowSelectionModel',
+    'slickpager',
+    'moment'
 ], function (publisher) {
 
     var context,
-        contentLoaded = false,
         $bookmarkModal,
         $bookmarkModalBody,
-        $bookmarkCloseButton;
+        $bookmarkCloseButton
+        grid,
+        data,
+        dataView, columns, options;
 
     var exposed = {
         init: function(thisContext) {
@@ -17,7 +25,6 @@ define([
             $bookmarkModalBody = context.$('#bookmark-modal .modal-body');
             $bookmarkCloseButton = context.$('#bookmark-modal.modal button.close');
 
-
             $bookmarkModal.modal({
                 "backdrop": true,
                 "keyboard": true,
@@ -26,7 +33,6 @@ define([
                 publisher.closeBookmark();
              });
 
-
             $bookmarkCloseButton.on('click', function(event) {
                 event.preventDefault();
                 publisher.closeBookmark();
@@ -34,7 +40,6 @@ define([
 
         },
         openBookmark: function() {
-            //publisher.publishOpening({"componentOpening": SUPPORT_DESIGNATION});
             $bookmarkModal.modal('show');
         },
         closeBookmark: function() {
@@ -43,7 +48,6 @@ define([
 
         clear: function() {
             $bookmarkModal.modal('hide');
-            //$aboutModal.modal('hide');
         }
     };
 
