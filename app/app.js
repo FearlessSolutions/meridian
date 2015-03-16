@@ -26,7 +26,8 @@ require.config({
         slickdataview: 'libs/SlickGrid-master/slick.dataview',
         slickRowSelectionModel: 'libs/SlickGrid-master/plugins/slick.rowselectionmodel',
         slickpager: 'libs/SlickGrid-master/controls/slick.pager',
-        moment: 'libs/momentjs-2.8.3/moment.min'
+        moment: 'libs/momentjs-2.8.3/moment.min',
+        coordinateConverter: 'libs/coordinate-converter/cc'
     },
     shim:{
         aura: {
