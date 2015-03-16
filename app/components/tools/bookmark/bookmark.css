@@ -15,7 +15,7 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-backdrop.in {
 }
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-dialog {
     margin: 5% auto;
-    width: 700px;
+    width: 500px;
 }
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-footer {
     text-align:center;
@@ -25,7 +25,7 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal {
 }
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body {
     /*max-height: 280px;*/
-    height: 450px;
+    height: 300px;
     padding: 10px;
 }
 
@@ -44,15 +44,8 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body .data-hist
     padding-bottom: 1em;
 }
 
-div[data-aura-component='tools/bookmark'] #bookmark-modal .data-history-modal-back-to-list {
-    padding-right: .5em;
-}
-div[data-aura-component='tools/bookmark'] #bookmark-modal .data-history-modal-back-to-list:hover {
-    cursor: pointer;
-}
-
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body div.data-history-list-container {
-    max-height: 210px;
+    max-height: 245px;
     overflow: auto;
 }
 
@@ -82,26 +75,10 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .dat
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-source {
-    width: 110px;
-    text-align: left;
-    max-width: 110px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-date {
-    width: 140px;
-    text-align: left;
-}
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-record-count {
-    width: 100px;
-    text-align: right;
+    cursor:default;
 }
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions {
-    width: 125px;
-    text-align: center;
+    width: 60px;
 }
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions button {
@@ -113,35 +90,6 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .dat
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body .expiration span.glyphicon-time {
     color: #bd362f;
-}
-
-/* More Details View */
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body .data-history-detail-view .left-container {
-    width: 300px;
-    max-width: 300px;
-    min-width: 300px;
-    float: left;
-}
-
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body .data-history-detail-view .left-container .meta {
-    max-width: 300px;
-    max-height: 210px;
-    overflow: auto;
-}
-
-div[data-aura-component='tools/bookmark'] #bookmark-modal .data-history-detail-view .data-actions {
-    margin-top: 10px;
-    text-align: center;
-}
-div[data-aura-component='tools/bookmark'] #bookmark-modal .data-history-detail-view .data-actions button {
-    padding-top: 8px;
-    padding-right: 12px;
-    padding-bottom: 12px;
-    padding-left: 12px;
-}
-
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body .data-history-detail-view .right-container {
-    float: right;
 }
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body textarea.form-control {
