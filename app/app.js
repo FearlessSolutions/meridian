@@ -6,6 +6,7 @@ require.config({
         underscore: 'bower_components/underscore/underscore',
         jquery: 'bower_components/jquery/dist/jquery',
         bootstrap: 'libs/bootstrap-3.2.0/bootstrap',
+        daterangepicker: 'libs/bootstrap-daterangepicker-master/daterangepicker',
         toastr: 'libs/toastr-2.0.1/toastr',
 //        jqueryDrag: 'libs/jquery-drag-0.1.0/jquery-drag',
         jqueryDrag: 'libs/SlickGrid-master/lib/jquery.event.drag-2.2',
@@ -39,6 +40,9 @@ require.config({
         bootstro: {
             deps: ['jquery','bootstrap'],
             exports: 'bootstro'
+        },
+        daterangepicker: {
+            deps:[ 'jquery', 'bootstrap', 'moment']
         },
         typeahead: {
             deps: ['jquery'],

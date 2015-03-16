@@ -153,6 +153,51 @@ exports.getMetadataBySessionId = function(userId, sessionId, callback){
     getJSONByQuery(null, config.index.metadata, null, query, callback);
 };
 
+exports.getMetadataByTerm = function(queryTerms, callback){
+    var terms = [],
+    x,
+    key,    
+    term;
+
+    for ( key in queryTerms) {
+        if(key === 'createdOn'){
+            terms.push({ 
+                range: { 
+                    createdOn: {
+                        gt: queryTerms.createdOn.dateStartValue,
+                        lt: queryTerms.createdOn.dateEndValue                       
+                    }
+                } 
+            });
+        } else if(key === 'expireOn'){
+            terms.push({ 
+                range: { 
+                    expireOn: {
+                        gt: queryTerms.expireOn.dateStartValue,
+                        lt: queryTerms.expireOn.dateEndValue                       
+                    }
+                } 
+            });
+        } else {
+             x = {
+              term: {}
+            };
+            x.term[key] = queryTerms[key]; //--> x.term.userId = queryTerms.userId
+            terms.push(x);
+        }
+    }
+
+    var query = {
+        query:{
+            bool:{
+                must: terms            
+            }
+        }
+    };
+    console.log(JSON.stringify(query, null, "  "));
+    getJSONByQuery(null, config.index.metadata, null, query, callback);    
+};
+
 exports.getMetadataByUserId = function(userId, callback){
     var query = {
         query:{
