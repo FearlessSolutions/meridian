@@ -37,7 +37,7 @@ define([
                     publisher.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Search',
-                        messageText: 'No valid location selected. Please please click an option from the dropdown.'
+                        messageText: 'No valid location selected. Please select an option from the dropdown.'
                     });
                 }else if(selectedLocation === 'error') { //It is a coordinate error
                     publisher.publishMessage({
