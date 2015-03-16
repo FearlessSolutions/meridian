@@ -115,6 +115,11 @@ define([
                     deleteDataset(tempData.datasetId, tempData.dataSessionId);
                     exposed.hideDetailedInfo();
                 });
+                context.$('.data-history-detail-view .data-action-requery').on('click', function(event) {
+                    // Open up query dialog 
+                    requeryDataset(tempData.datasetId);
+                    publisher.closeDataHistory();
+                });
 
                 $modalBody.addClass('finiteHeight');
                 context.$('.data-history-summary-list-container').addClass('hidden');
@@ -203,6 +208,10 @@ define([
             deleteDataset(context.$(this).parent().parent().data('datasetid'), 
                 context.$(this).parent().parent().data('datasessionid'));
         });
+        context.$('.data-history-list .data-action-requery').on('click', function(event) {
+            requeryDataset(context.$(this).parent().parent().data('datasetid'));
+            publisher.closeDataHistory();
+        });
     }
 
     function generateDataHistoryEntryRow(dataHistoryEntryObject) {
@@ -260,6 +269,27 @@ define([
                 messageText: 'Dataset successfully removed'
             });
         });
+    }
+
+    function requeryDataset(datasetId) {
+
+        var newAJAX = context.sandbox.utils.ajax({
+                type: 'GET',
+                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + datasetId,
+                xhrFields: {
+                    withCredentials: true
+                }
+            })
+            .done(function(data) {
+               //close data history table
+               publisher.closeDataHistory();
+
+               //publish query data to be requeried
+               publisher.requeryDataset({
+                    queryName: data.rawQuery.queryName,
+                    queryData: data.rawQuery
+                });
+            });
     }
 
     return exposed;
