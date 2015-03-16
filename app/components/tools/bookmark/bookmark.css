@@ -27,5 +27,43 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body {
     /*max-height: 280px;*/
     height: 450px;
     padding: 10px;
+}
 
+div[data-aura-component='tools/bookmark'] #bmgrid {
+    /* height value is determined by JavaScript -- w/o JS, grid breaks */
+    /*width:100%;*/
+    border:1px solid #ddd; border-radius:4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+}
+div[data-aura-component='tools/bookmark'] .slick-header-column {
+    background: linear-gradient(to bottom, #fdfdfd 0%,#fdfdfd 50%,#f6f6f6 51%,#fafafa 100%); /* W3C */
+    height: 18px;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    color: black;
+}
+div[data-aura-component='tools/bookmark'] .slick-header-column:hover {
+    cursor: pointer;
+    background: linear-gradient(to bottom, #f7f7f7 0%,#f7f7f7 50%,#e7e7e7 51%,#f1f1f1 100%); /* W3C */
+}
+div[data-aura-component='tools/bookmark'] .slick-cell.selected {
+    background-color: #D4F7FF;
+}
+
+div[data-aura-component='tools/bookmark'] button {
+    height:15px; width:15px;
+    margin:0px; padding:0px;
+    background-color:#fff;
+    border:1px solid #3276B1;
+    border-radius:4px;
+    margin-left:5px;
+    }
+    div[data-aura-component='tools/bookmark'] button:hover {
+        background-color:#eee;
+    }
+div[data-aura-component='tools/bookmark'] .bm1 {
+
+}
+div[data-aura-component='tools/bookmark'] .bm3 {
+    /*background-color:red;*/
 }
