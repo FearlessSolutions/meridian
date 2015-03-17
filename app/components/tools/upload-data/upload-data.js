@@ -14,6 +14,7 @@ define([
         $file,
         $dummyFile,
         $submit,
+        $zoom,
         RESTORE_PAGE_SIZE = 500;
 
     var exposed = {
@@ -23,6 +24,7 @@ define([
             $file = context.$('#file');
             $dummyFile = context.$('#dummy-file');
             $submit = context.$('#upload-submit');
+            $zoom = context.$('#zoomOnUpload');
 
             $submit.attr('disabled', true); //Start with submit disabled until a file is added
 
@@ -139,6 +141,7 @@ define([
                                 shouldZoom: shouldZoom
                             }, 0);
                             $dummyFile.val('');
+                            $zoom.prop("checked", false);
                         }, function(status, jqXHR){ //Error callback
                             markQueryError(queryId, queryName, status);
                         }
