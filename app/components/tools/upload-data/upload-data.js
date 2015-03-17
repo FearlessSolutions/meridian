@@ -138,6 +138,7 @@ define([
                                 sessionId: context.sandbox.sessionId,
                                 shouldZoom: shouldZoom
                             }, 0);
+                            $dummyFile.val('');
                         }, function(status, jqXHR){ //Error callback
                             markQueryError(queryId, queryName, status);
                         }
