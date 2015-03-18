@@ -19,6 +19,7 @@ define([
             context.sandbox.on('data.error', timeline.markError);
             context.sandbox.on('timeline.playback.start', timeline.timelinePlaybackStart);
             context.sandbox.on('timeline.playback.stop', timeline.timelinePlaybackStop);
+            context.sandbox.on('timeline.menu.bookmark.save', timeline.saveLayertoBookmark);
             context.sandbox.on('timeline.menu.layer.hide', timeline.hideSnapshotLayerGroup);
             context.sandbox.on('timeline.menu.layer.show', timeline.showSnapshotLayerGroup);
             context.sandbox.on('timeline.menu.layer.delete', timeline.deleteSnapshotLayerGroup);

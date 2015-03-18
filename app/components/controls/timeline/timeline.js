@@ -327,6 +327,13 @@ define([
                 });
             }
         },
+        saveLayertoBookmark: function(params) {
+            console.log('test');
+            exposed.deleteAOILayer({
+                "layerId": params.layerId
+            });
+
+        },
         showSnapshotLayerGroup: function(params) {
             exposed.showDataLayer({
                 "layerId": params.layerId
