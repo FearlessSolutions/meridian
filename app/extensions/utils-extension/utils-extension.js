@@ -1,6 +1,7 @@
 define([
-    'jquery'
-], function($){
+    'jquery',
+    'coordinateConverter'
+], function($,cc){
 
     var exposed = {
         initialize: function(app) {
@@ -212,6 +213,63 @@ define([
                     }
 
                     return results;
+                },
+                convertCoordinate: function(input){
+                    var dmsRegex = /\s*(\d{6,7}(\.\d+)?[NS]),\s*(\d{6,7}(\.\d+)?[WE])/,
+                        ddRegex = /\s*((\-?\d+)(\.\d+)?)\s*,\s*((\-?\d+)(\.\d+)?)\s*$/,
+                        mgrsRegex = /\s*(\d+[A-Z])\s*([A-Z]{2})\s*(\d+)$/,
+                        utmRegex = /\s*(\d+[a-zA-Z])\s*(\d{6})\s*(\d{6,7})/,
+                        dd,
+                        dms,
+                        utm,
+                        mgrs,
+                        coordinates = 'error';
+
+                    //remove all spaces from the string, make all letters caps.
+                    input = input.replace(/\s/g, '');
+                    input = input.toUpperCase();
+                    dd = input.match(ddRegex);
+                    dms = input.match(dmsRegex);
+                    utm = input.match(utmRegex);
+                    mgrs = input.match(mgrsRegex);
+                    if(dd !== null){
+                        //position 2,3 are lat whole and decimal parts of the number.
+                        //position 5,6 are lon whole and decimal parts of the number.
+                        coordinates = {};
+                        coordinates.dd = {
+                            "lat": dd[1],
+                            "lon": dd[4]
+                        };
+                        coordinates.dms = cc.ddToDms(dd[1],dd[4],'object');
+                        coordinates.utm = cc.ddToUtm(dd[1],dd[4],'string');
+                        coordinates.mgrs = cc.ddToMgrs(dd[1],dd[4],'string');
+
+                    }else if(dms !== null){
+                        //positions 2,4 are the decimal places only
+                        coordinates = {};
+                        coordinates.dd = cc.dmsToDd(dms[1], dms[3], 'object');
+                        coordinates.dms = dms[0];
+                        coordinates.utm = cc.dmsToUtm(dms[1], dms[3], 'string');
+                        coordinates.mgrs = cc.dmsToMgrs(dms[1], dms[3], 'string');
+
+                    }else if(utm !== null){
+                        //position 1 is the zone, 2 is the easting, 3 the northing.
+                        coordinates = {};
+                        coordinates.dd = cc.utmToDd(utm[1], utm[2], utm[3], 'object');
+                        coordinates.dms = cc.utmToDms(utm[1], utm[2], utm[3], 'string');
+                        coordinates.utm = utm[0];
+                        coordinates.mgrs = cc.utmToMgrs(utm[1], utm[2], utm[3], 'string');
+
+                    }else if(mgrs !== null){
+                        //position 1 is the zone, 2 the gridLetters and 3 the numeric location.
+                        coordinates = {};
+                        coordinates.dd = cc.mgrsToDd(mgrs[1], mgrs[2], mgrs[3], 'object');
+                        coordinates.dms = cc.mgrsToDms(mgrs[1], mgrs[2], mgrs[3], 'string');
+                        coordinates.utm = cc.mgrsToUtm(mgrs[1], mgrs[2], mgrs[3], 'string');
+                        coordinates.mgrs = mgrs[1] + mgrs[2] + mgrs[3];
+                    }
+                    
+                    return coordinates;
                 }
             };
 
