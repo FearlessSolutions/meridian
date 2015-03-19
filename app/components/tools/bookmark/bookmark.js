@@ -125,9 +125,7 @@ define([
             publisher.closeBookmark();
         });
         context.$('.data-history-list .data-action-edit').on('click', function(event) {
-            //exposed.showDetailedInfo({
-            //    datasetId: context.$(this).parent().parent().data('datasetid')
-            //});
+
             var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
             //context.sandbox.utils.each(bmData,function(obj, name) {
             //    var tempObj = {};
@@ -138,13 +136,10 @@ define([
             //    tempObj.minLon = bmData.minLon;
             //});
 
-                //var bmObj = [];
-                //bmObj.push(JSON.parse(localStorage.getItem('storedBookmarks')));
-                //localStorage.setItem('storedBookmarks', JSON.stringify(bmObj));
-                //alert('');
-            console.log(localStorage);
 
-            //console.log(bmData);
+            //console.log(localStorage);
+
+            console.log(bmData);
         });
         context.$('.data-history-list .data-action-delete').on('click', function(event) {
             // Delete the dataset

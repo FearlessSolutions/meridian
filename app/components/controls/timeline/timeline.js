@@ -328,7 +328,7 @@ define([
             }
         },
         exportAOIid: function(params) {
-            //console.log(localStorage);
+
             if (localStorage.getItem("storedBookmarks") === null) {
 
                 var dummybmObj = [];
@@ -339,9 +339,11 @@ define([
                     "maxLon": "somevalue",
                     "minLon": "somevalue"
                 };
-                dummybmObj.push(JSON.parse(localStorage.getItem("storedBookmarks")));
+                //dummybmObj.push(JSON.parse(localStorage.getItem("storedBookmarks")));
+                dummybmObj.push(dummySaved);
                 localStorage.setItem("storedBookmarks", JSON.stringify(dummybmObj));
-                alert('===');
+
+                console.log(localStorage);
             } else {
 
                 var bmObj = [];
