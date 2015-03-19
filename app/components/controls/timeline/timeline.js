@@ -342,10 +342,7 @@ define([
                 //dummybmObj.push(JSON.parse(localStorage.getItem("storedBookmarks")));
                 dummybmObj.push(dummySaved);
                 localStorage.setItem("storedBookmarks", JSON.stringify(dummybmObj));
-
-                console.log(localStorage);
             } else {
-
                 var bmObj = [];
                 bmObj = JSON.parse(localStorage.getItem("storedBookmarks"));
                 var newSaved = {
@@ -357,7 +354,6 @@ define([
                 };
                 bmObj.push(newSaved);
                 localStorage.setItem("storedBookmarks", JSON.stringify(bmObj));
-                console.log(localStorage);
             }
 
         },
