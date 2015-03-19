@@ -50,6 +50,7 @@ define([
         openBookmark: function() {
             // Populate Data History table
             exposed.updateDataHistory();
+            exposed.testfromTimeline();
             $bookmarkModal.modal('show');
         },
         closeBookmark: function() {
@@ -59,13 +60,16 @@ define([
         clear: function() {
             $bookmarkModal.modal('hide');
         },
+        testfromTimeline: function(dataObject) {
+
+        },
         updateDataHistory: function() {
             var newAJAX = context.sandbox.utils.ajax({
-                type: 'GET',
-                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/user',
-                xhrFields: {
-                    withCredentials: true
-                }
+                    type: 'GET',
+                    url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/user',
+                    xhrFields: {
+                        withCredentials: true
+                    }
             })
             .done(function(data) {
                 currentDataSet = {};
@@ -89,13 +93,10 @@ define([
                     currentDataSet[dataEntry.queryId] = dataEntry;
                     currentDataArray.push({
                         datasetId: dataEntry.queryId,
-                        dataSessionId: dataEntry.sessionId,
-                        dataSource: context.sandbox.dataServices[dataEntry.dataSource].DISPLAY_NAME,
                         dataName: dataEntry.queryName,
                         dataDate: dataDate.fromNow(),
                         rawDate: dataEntry.createdOn,
-                        disableRestore: disableRestore,
-                        dataRecordCount: dataEntry.numRecords
+                        disableRestore: disableRestore
                     });
                 });
 
@@ -127,8 +128,23 @@ define([
             //exposed.showDetailedInfo({
             //    datasetId: context.$(this).parent().parent().data('datasetid')
             //});
-            console.log(context.$(this).parent().parent().data('datasetid'));
-            console.log(context.$(this).parent().parent().data('datasessionid'));
+            var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
+            //context.sandbox.utils.each(bmData,function(obj, name) {
+            //    var tempObj = {};
+            //    tempObj.name = bmData.name;
+            //    tempObj.maxLat = bmData.maxLat;
+            //    tempObj.minLat = bmData.minLat;
+            //    tempObj.maxLon = bmData.maxLon;
+            //    tempObj.minLon = bmData.minLon;
+            //});
+
+                //var bmObj = [];
+                //bmObj.push(JSON.parse(localStorage.getItem('storedBookmarks')));
+                //localStorage.setItem('storedBookmarks', JSON.stringify(bmObj));
+                //alert('');
+            console.log(localStorage);
+
+            //console.log(bmData);
         });
         context.$('.data-history-list .data-action-delete').on('click', function(event) {
             // Delete the dataset

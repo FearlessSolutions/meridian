@@ -39,6 +39,9 @@ define([
         },
         publishMessage: function(params) {
             context.sandbox.emit('message.publish', params); 
+        },
+        exportSnapshot: function(params) {
+            context.sandbox.emit('timeline.snapshot.export', params);
         }
     };
 

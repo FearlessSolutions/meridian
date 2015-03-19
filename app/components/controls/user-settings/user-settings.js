@@ -227,6 +227,13 @@ define([
                         },
                         "cursorLocation": {
                             "defaultDisplay": showCursorLocationDefault
+                        },
+                        "storedBookmarks": {
+                            "name": "dummyBookmark",
+                            "maxLat": "defaultVal",
+                            "minLat": "defaultVal",
+                            "maxLon": "defaultVal",
+                            "minLon": "defaultVal"
                         }
                     });
 

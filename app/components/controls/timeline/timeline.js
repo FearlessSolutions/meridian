@@ -327,11 +327,36 @@ define([
                 });
             }
         },
-        saveLayertoBookmark: function(params) {
-            console.log('test');
-            exposed.deleteAOILayer({
-                "layerId": params.layerId
-            });
+        exportAOIid: function(params) {
+            //console.log(localStorage);
+            if (localStorage.getItem("storedBookmarks") === null) {
+
+                var dummybmObj = [];
+                var dummySaved = {
+                    "name": "bookMark_" + params.layerId,
+                    "maxLat": "somevalue",
+                    "minLat": "somevalue",
+                    "maxLon": "somevalue",
+                    "minLon": "somevalue"
+                };
+                dummybmObj.push(JSON.parse(localStorage.getItem("storedBookmarks")));
+                localStorage.setItem("storedBookmarks", JSON.stringify(dummybmObj));
+                alert('===');
+            } else {
+
+                var bmObj = [];
+                bmObj = JSON.parse(localStorage.getItem("storedBookmarks"));
+                var newSaved = {
+                    "name": "bookMark_" + params.layerId,
+                    "maxLat": "somevalue",
+                    "minLat": "somevalue",
+                    "maxLon": "somevalue",
+                    "minLon": "somevalue"
+                };
+                bmObj.push(newSaved);
+                localStorage.setItem("storedBookmarks", JSON.stringify(bmObj));
+                console.log(localStorage);
+            }
 
         },
         showSnapshotLayerGroup: function(params) {
