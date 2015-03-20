@@ -1,6 +1,6 @@
 define([
     './bookmark-publisher',
-    'text!./data-history-entry.hbs',
+    'text!./bookmark-entry.hbs',
     'bootstrap',
     'handlebars',
     'moment'
@@ -76,82 +76,45 @@ define([
 
         },
         updateDataHistory: function() {
-            var newAJAX = context.sandbox.utils.ajax({
-                    type: 'GET',
-                    url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/user',
-                    xhrFields: {
-                        withCredentials: true
-                    }
-            })
-            .done(function(data) {
-                currentDataSet = {};
-                currentDataArray = [];
+                var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
 
-                context.sandbox.utils.each(data, function(index, dataEntry) {
-                    var now = moment(), //This needs to be done now to prevent race condition later
-                        dataDate = moment.unix(dataEntry.createdOn),
-                        expireDate = moment.unix(dataEntry.expireOn),
-                        disableRestore = expireDate.isBefore(now); // Use isExpired as default
-
-                    if(!context.sandbox.dataServices[dataEntry.dataSource]){
-                        console.debug('No datasource for', dataEntry);
-                        return;
-                    }
-
-                    if(context.sandbox.stateManager.layers[dataEntry.queryId]){
-                        disableRestore = true;
-                    }
-
-                    currentDataSet[dataEntry.queryId] = dataEntry;
-                    currentDataArray.push({
-                        datasetId: dataEntry.queryId,
-                        dataName: dataEntry.queryName,
-                        dataDate: dataDate.fromNow(),
-                        rawDate: dataEntry.createdOn,
-                        disableRestore: disableRestore
-                    });
+                $dataHistoryListTable.empty();
+                context.sandbox.utils.each(storedBookmarks, function(index, tempDataEntry) {
+                    var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);
+                    $dataHistoryListTable.append(dataHistoryEntry);
                 });
 
-                currentDataArray.sort(dynamicSort('-rawDate'));
+                if($dataHistoryListTable.children().length === 0) {
+                    $noDataLabel.removeClass('hide');
+                } else {
+                    $noDataLabel.addClass('hide');
+                }
 
-                populateDataHistoryTable();
-                    $dataHistoryListTable.empty();
-                    context.sandbox.utils.each(currentDataArray, function(index, tempDataEntry) {
-                        var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);
-                        $dataHistoryListTable.append(dataHistoryEntry);
-                    });
+                context.$('.data-history-list .data-action-restore').on('click', function(event) {
+                    publisher.restoreDataset(currentDataSet[context.$(this).parent().parent().data('datasetid')]);
+                    publisher.closeBookmark();
+                });
+                context.$('.data-history-list .data-action-edit').on('click', function(event) {
 
-                    if($dataHistoryListTable.children().length === 0) {
-                        $noDataLabel.removeClass('hide');
-                    } else {
-                        $noDataLabel.addClass('hide');
-                    }
+                    var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
+                    //context.sandbox.utils.each(bmData,function(obj, name) {
+                    //    var tempObj = {};
+                    //    tempObj.name = bmData.name;
+                    //    tempObj.maxLat = bmData.maxLat;
+                    //    tempObj.minLat = bmData.minLat;
+                    //    tempObj.maxLon = bmData.maxLon;
+                    //    tempObj.minLon = bmData.minLon;
+                    //});
 
-                    context.$('.data-history-list .data-action-restore').on('click', function(event) {
-                        publisher.restoreDataset(currentDataSet[context.$(this).parent().parent().data('datasetid')]);
-                        publisher.closeBookmark();
-                    });
-                    context.$('.data-history-list .data-action-edit').on('click', function(event) {
+                    //console.log(localStorage);
+                    console.log(bmData);
+                });
+                context.$('.data-history-list .data-action-delete').on('click', function(event) {
+                    // Delete the dataset
+                    deleteDataset(context.$(this).parent().parent().data('datasetid'),
+                        context.$(this).parent().parent().data('datasessionid'));
+                });
 
-                        var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
-                        //context.sandbox.utils.each(bmData,function(obj, name) {
-                        //    var tempObj = {};
-                        //    tempObj.name = bmData.name;
-                        //    tempObj.maxLat = bmData.maxLat;
-                        //    tempObj.minLat = bmData.minLat;
-                        //    tempObj.maxLon = bmData.maxLon;
-                        //    tempObj.minLon = bmData.minLon;
-                        //});
-
-                        //console.log(localStorage);
-                        console.log(bmData);
-                    });
-                    context.$('.data-history-list .data-action-delete').on('click', function(event) {
-                        // Delete the dataset
-                        deleteDataset(context.$(this).parent().parent().data('datasetid'),
-                            context.$(this).parent().parent().data('datasessionid'));
-                    });
-            });
         }
     };
 
