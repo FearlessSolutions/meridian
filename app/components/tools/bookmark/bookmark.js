@@ -8,12 +8,10 @@ define([
 
     var context,
         dataHistoryEntryTemplate,
-        //dataHistoryDetailViewTemplate,
         $bookmarkModal,
         $bookmarkModalBody,
         $bookmarkCloseButton,
         $dataHistoryListTable,
-        $dataHistoryDetailView,
         $noDataLabel,
         currentDataArray = [],
         currentDataSet = {};
@@ -23,14 +21,12 @@ define([
             context = thisContext;
 
             dataHistoryEntryTemplate = Handlebars.compile(dataHistoryEntryHBS);
-            //dataHistoryDetailViewTemplate = Handlebars.compile(dataHistoryDetailViewHBS);
 
             $bookmarkModal = context.$('#bookmark-modal');
             $bookmarkModalBody = context.$('#bookmark-modal .modal-body');
             $bookmarkCloseButton = context.$('#bookmark-modal.modal button.close');
 
             $dataHistoryListTable = context.$('#bookmark-modal.modal .data-history-list');
-            //$dataHistoryDetailView = context.$('#bookmark-modal.modal .data-history-detail-view');
             $noDataLabel = context.$('#bookmark-modal.modal p.noDataLabel');
 
             $bookmarkModal.modal({
@@ -50,7 +46,6 @@ define([
         openBookmark: function() {
             // Populate Data History table
             exposed.updateDataHistory();
-            exposed.testfromTimeline();
             $bookmarkModal.modal('show');
         },
         closeBookmark: function() {
@@ -60,7 +55,34 @@ define([
         clear: function() {
             $bookmarkModal.modal('hide');
         },
-        testfromTimeline: function(dataObject) {
+        saveBMtoLS: function(bookmarkId) {
+            if (localStorage.getItem("storedBookmarks") === null) {
+
+                var dummybmObj = [];
+                var dummySaved = {
+                    "name": "bookMark_" + bookmarkId,
+                    "maxLat": "somevalue",
+                    "minLat": "somevalue",
+                    "maxLon": "somevalue",
+                    "minLon": "somevalue"
+                };
+                //dummybmObj.push(JSON.parse(localStorage.getItem("storedBookmarks")));
+                dummybmObj.push(dummySaved);
+                localStorage.setItem("storedBookmarks", JSON.stringify(dummybmObj));
+            } else {
+                var bmObj = [];
+                bmObj = JSON.parse(localStorage.getItem("storedBookmarks"));
+                var newSaved = {
+                    "name": "bookMark_" + bookmarkId,
+                    "maxLat": "somevalue",
+                    "minLat": "somevalue",
+                    "maxLon": "somevalue",
+                    "minLon": "somevalue"
+                };
+                bmObj.push(newSaved);
+                localStorage.setItem("storedBookmarks", JSON.stringify(bmObj));
+            }
+            console.log(localStorage);
 
         },
         updateDataHistory: function() {
@@ -136,9 +158,7 @@ define([
             //    tempObj.minLon = bmData.minLon;
             //});
 
-
             //console.log(localStorage);
-
             console.log(bmData);
         });
         context.$('.data-history-list .data-action-delete').on('click', function(event) {

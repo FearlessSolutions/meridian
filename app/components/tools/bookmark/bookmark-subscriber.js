@@ -10,6 +10,7 @@ define([
             context.sandbox.on('bookmark.close', bookmark.closeBookmark);
             context.sandbox.on('bookmark.open', bookmark.openBookmark);
             context.sandbox.on('data.clear.all', bookmark.clear);
+            context.sandbox.on('timeline.snapshot.export', bookmark.saveBMtoLS);
         }
     };	
 
