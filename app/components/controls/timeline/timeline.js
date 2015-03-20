@@ -327,11 +327,11 @@ define([
                 });
             }
         },
-        exportLayerId: function(params) {
-            publisher.exportSnapshot(params.layerId);
-            console.log(params.layerId);
-
-        },
+        //exportLayerId: function(params) {
+        //    publisher.exportSnapshot(params.layerId);
+        //    console.log(params.layerId);
+        //
+        //},
         showSnapshotLayerGroup: function(params) {
             exposed.showDataLayer({
                 "layerId": params.layerId

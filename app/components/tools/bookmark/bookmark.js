@@ -55,33 +55,23 @@ define([
         clear: function() {
             $bookmarkModal.modal('hide');
         },
-        saveBMtoLS: function(bookmarkId) {
-            if (localStorage.getItem("storedBookmarks") === null) {
+        saveBMtoLS: function(params) {
+            var bookmarkId = params.layerId,
+                storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
 
-                var dummybmObj = [];
-                var dummySaved = {
-                    "name": "bookMark_" + bookmarkId,
-                    "maxLat": "somevalue",
-                    "minLat": "somevalue",
-                    "maxLon": "somevalue",
-                    "minLon": "somevalue"
-                };
-                //dummybmObj.push(JSON.parse(localStorage.getItem("storedBookmarks")));
-                dummybmObj.push(dummySaved);
-                localStorage.setItem("storedBookmarks", JSON.stringify(dummybmObj));
-            } else {
-                var bmObj = [];
-                bmObj = JSON.parse(localStorage.getItem("storedBookmarks"));
-                var newSaved = {
-                    "name": "bookMark_" + bookmarkId,
-                    "maxLat": "somevalue",
-                    "minLat": "somevalue",
-                    "maxLon": "somevalue",
-                    "minLon": "somevalue"
-                };
-                bmObj.push(newSaved);
-                localStorage.setItem("storedBookmarks", JSON.stringify(bmObj));
+            if(!storedBookmarks){
+                storedBookmarks = {};
             }
+
+            storedBookmarks[bookmarkId] = {
+                name: bookmarkId,
+                maxLat: "somevalue",
+                minLat: "somevalue",
+                maxLon: "somevalue",
+                minLon: "somevalue"
+            };
+
+            context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
             console.log(localStorage);
 
         },
@@ -125,48 +115,45 @@ define([
                 currentDataArray.sort(dynamicSort('-rawDate'));
 
                 populateDataHistoryTable();
+                    $dataHistoryListTable.empty();
+                    context.sandbox.utils.each(currentDataArray, function(index, tempDataEntry) {
+                        var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);
+                        $dataHistoryListTable.append(dataHistoryEntry);
+                    });
+
+                    if($dataHistoryListTable.children().length === 0) {
+                        $noDataLabel.removeClass('hide');
+                    } else {
+                        $noDataLabel.addClass('hide');
+                    }
+
+                    context.$('.data-history-list .data-action-restore').on('click', function(event) {
+                        publisher.restoreDataset(currentDataSet[context.$(this).parent().parent().data('datasetid')]);
+                        publisher.closeBookmark();
+                    });
+                    context.$('.data-history-list .data-action-edit').on('click', function(event) {
+
+                        var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
+                        //context.sandbox.utils.each(bmData,function(obj, name) {
+                        //    var tempObj = {};
+                        //    tempObj.name = bmData.name;
+                        //    tempObj.maxLat = bmData.maxLat;
+                        //    tempObj.minLat = bmData.minLat;
+                        //    tempObj.maxLon = bmData.maxLon;
+                        //    tempObj.minLon = bmData.minLon;
+                        //});
+
+                        //console.log(localStorage);
+                        console.log(bmData);
+                    });
+                    context.$('.data-history-list .data-action-delete').on('click', function(event) {
+                        // Delete the dataset
+                        deleteDataset(context.$(this).parent().parent().data('datasetid'),
+                            context.$(this).parent().parent().data('datasessionid'));
+                    });
             });
         }
     };
-
-    function populateDataHistoryTable() {
-        $dataHistoryListTable.empty();
-        context.sandbox.utils.each(currentDataArray, function(index, tempDataEntry) {
-            var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);
-            $dataHistoryListTable.append(dataHistoryEntry);
-        });
-
-        if($dataHistoryListTable.children().length === 0) {
-            $noDataLabel.removeClass('hide');
-        } else {
-            $noDataLabel.addClass('hide');
-        }
-
-        context.$('.data-history-list .data-action-restore').on('click', function(event) {
-            publisher.restoreDataset(currentDataSet[context.$(this).parent().parent().data('datasetid')]);
-            publisher.closeBookmark();
-        });
-        context.$('.data-history-list .data-action-edit').on('click', function(event) {
-
-            var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
-            //context.sandbox.utils.each(bmData,function(obj, name) {
-            //    var tempObj = {};
-            //    tempObj.name = bmData.name;
-            //    tempObj.maxLat = bmData.maxLat;
-            //    tempObj.minLat = bmData.minLat;
-            //    tempObj.maxLon = bmData.maxLon;
-            //    tempObj.minLon = bmData.minLon;
-            //});
-
-            //console.log(localStorage);
-            console.log(bmData);
-        });
-        context.$('.data-history-list .data-action-delete').on('click', function(event) {
-            // Delete the dataset
-            deleteDataset(context.$(this).parent().parent().data('datasetid'),
-                context.$(this).parent().parent().data('datasessionid'));
-        });
-    }
 
     function generateDataHistoryEntryRow(dataHistoryEntryObject) {
         return dataHistoryEntryTemplate({
@@ -217,7 +204,7 @@ define([
                 }
             });
             currentDataArray = newDataArray;
-            populateDataHistoryTable();
+
             publisher.publishMessage( {
                 messageType: 'success',
                 messageTitle: 'Bookmarks',
