@@ -35,35 +35,35 @@ define([
          * message.bounds{maxLat:INT, maxLon:INT, minLat:INT, minLon:INT} - The AOI box to be created with the layer (optional)
          */
 		"map.overlay.create": function(message) {
+            var layerId =  message.overlayId || defaultLayerId;
+
 			if(message === '') {
 				message = {
-					"layerId": defaultLayerId,
-                    "selectable": DEFAULT_SELECTABLE
+                    selectable: DEFAULT_SELECTABLE
 				};
 			} else {
-                message.layerId = message.overlayId || defaultLayerId; //Ensure that there is a layerId
                 if(!('selectable' in message)) {
                     message.selectable = DEFAULT_SELECTABLE;
                 }
             }
 
-            if(context.sandbox.dataStorage.datasets[message.layerId]) {
+            if(context.sandbox.dataStorage.datasets[layerId]) {
                 sendError('map.overlay.create', message, 'Layer already made');
                 return; //Layer already made; ignore this request
             } else {
-                context.sandbox.dataStorage.datasets[message.layerId] = new Backbone.Collection();
-                context.sandbox.dataStorage.datasets[message.layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
-                context.sandbox.dataStorage.datasets[message.layerId].layerName = message.name || message.layerId;
+                context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
+                context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
+                context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
 
 
                 publisher.publishCreateLayer({
-                    "layerId": message.layerId,
-                    "name": message.name,
-                    "selectable": message.selectable,
-                    "coords": message.coords,
+                    layerId: layerId,
+                    name: message.name,
+                    selectable: message.selectable,
+                    coords: message.coords,
                     // Temporary overwrite of symbolizers
-                    "symbolizers": message.symbolizers,
-                    "styleMap": message.styleMap
+                    symbolizers: message.symbolizers,
+                    styleMap: message.styleMap
                 });
 
                 publisher.publishMessage({
@@ -80,10 +80,12 @@ define([
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
 		"map.overlay.remove": function(message) {
+            var layerId =  message.overlayId || defaultLayerId;
+
             publisher.publishRemoveLayer({
-                "layerId": message.overlayId || defaultLayerId
+                layerId: layerId
             });
-		},
+        },
         /**
          * Hides overlay with the given id.
          * If no such layer exists, the call is ignored
@@ -91,9 +93,11 @@ define([
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
 		"map.overlay.hide": function(message) {
-            context.sandbox.stateManager.layers[message.overlayId].visible = false;
+            var layerId =  message.overlayId || defaultLayerId;
+
+            context.sandbox.stateManager.layers[layerId].visible = false;
 			publisher.publishHideLayer({
-                "layerId": message.overlayId || defaultLayerId
+                layerId: layerId
             });
 		},
         /**
@@ -103,9 +107,11 @@ define([
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
 		"map.overlay.show": function(message) {
-            context.sandbox.stateManager.layers[message.overlayId].visible = true;
+            var layerId =  message.overlayId || defaultLayerId;
+
+            context.sandbox.stateManager.layers[layerId].visible = true;
 			publisher.publishShowLayer({
-                "layerId": message.overlayId || defaultLayerId
+                layerId: layerId
             });
 		},
         /**
