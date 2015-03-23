@@ -11,6 +11,7 @@ define([
             context.sandbox.on('map.draw.stop', queryTool.bboxAdded);
             context.sandbox.on('data.clear.all', queryTool.clear);
             context.sandbox.on('menu.opening', queryTool.handleMenuOpening);
+            context.sandbox.on('data.requery', queryTool.populateQueryFromParams);
         }
     };	
 
