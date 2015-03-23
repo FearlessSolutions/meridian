@@ -344,7 +344,7 @@ define([
 
             $testArea.html('<span>' + columnHeaderMetadata.displayName + '</span>'); //This is the only way to find text length. Is styled  the same as header
             width = $testArea.find('span').width() + 30;
-            if (width < 150) { width = 150 }
+            width = width < 150 ? 150 : width;
 
             columnHeaders.push({
                 id: columnHeaderMetadata.property + columnHeaderMetadata.displayName,
