@@ -150,6 +150,7 @@ define([
                     var now = moment(), //This needs to be done now to prevent race condition later
                         dataDate = moment.unix(dataEntry.createdOn),
                         expireDate = moment.unix(dataEntry.expireOn),
+                        disableRequery = false,
                         disableRestore = expireDate.isBefore(now); // Use isExpired as default
 
                     if(!context.sandbox.dataServices[dataEntry.dataSource]){
@@ -161,6 +162,10 @@ define([
                         disableRestore = true;
                     }
 
+                    if(context.sandbox.utils.isEmptyObject(dataEntry.queryBbox)){
+                        disableRequery = true;
+                    }
+
                     currentDataSet[dataEntry.queryId] = dataEntry;
                     currentDataArray.push({
                         datasetId: dataEntry.queryId,
@@ -170,6 +175,7 @@ define([
                         dataDate: dataDate.fromNow(),
                         rawDate: dataEntry.createdOn,
                         disableRestore: disableRestore,
+                        disableRequery: disableRequery,
                         dataRecordCount: dataEntry.numRecords
                     });
                 });
@@ -221,6 +227,7 @@ define([
             dataSource: dataHistoryEntryObject.dataSource,
             dataName: dataHistoryEntryObject.dataName,
             disableRestore: dataHistoryEntryObject.disableRestore,
+            disableRequery: dataHistoryEntryObject.disableRequery,
             dataDate: dataHistoryEntryObject.dataDate,
             dataRecordCount: dataHistoryEntryObject.dataRecordCount
         });
