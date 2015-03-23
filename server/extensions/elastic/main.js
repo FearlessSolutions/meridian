@@ -176,6 +176,14 @@ exports.init = function(context){
         );
        
     });
+    // meta / terms
+    app.get('/metadata/term', auth.verifyUser, function(req, res){
+        metadata.getMetadataByTerm(req.query, function(err, results){
+            res.status(err ? 500 : 200);
+            res.send(err ? err : results);
+        });
+    });
+
 
     app.get('/metadata/user', auth.verifyUser, function(req, res){
         metadata.getMetadataByUserId(res.get('Parsed-User'), function(err, results){

@@ -153,7 +153,7 @@ define([
             });
 
             context.$('#grid-search-btn').on('click', function(e){
-                var searchString = $searchTextBox.val();
+                var searchString = $searchTextBox.val().toLowerCase();
                 Slick.GlobalEditorLock.cancelCurrentEdit(); //Stop any edits taking place
 
                 dataView.setFilterArgs({

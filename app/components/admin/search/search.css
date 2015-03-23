@@ -1,0 +1,87 @@
+div[data-aura-component='admin/search'] .navbar-form {
+	padding-top:0px; padding-left:0px; padding-right:0px;
+    width:100%;
+}
+
+div[data-aura-component='admin/search'] .form-control {
+	margin-bottom:5px;
+	color:#555;
+	}
+    div[data-aura-component='admin/search'] .form-control:hover {
+    background-color: rgba(238,238,238,0.8);
+        border-color: rgba(173,173,173,1);
+    }
+	div[data-aura-component='admin/search'] input[type="text"].form-control {
+		background-color: rgba(238,238,238,0.5);
+	}
+	div[data-aura-component='admin/search'] #searchAdmin_searchDateType,
+	div[data-aura-component='admin/search'] #searchAdmin_datasource, div[data-aura-component='admin/search'] #searchAdmin_sdate, 
+	div[data-aura-component='admin/search'] #searchAdmin_edate { display:none; }
+	div[data-aura-component='admin/search'] select:focus, div[data-aura-component='admin/search'] input[type="text"]:focus {
+		background-color: rgba(255,255,255,1);
+		color:#000;
+	}
+
+div[data-aura-component='admin/search'] .btn { margin-top:-3px;}
+
+div[data-aura-component='admin/search'] #container-searchmsg {
+	display:none;
+	height:auto; width:auto;
+	white-space: nowrap;
+	}
+	div[data-aura-component='admin/search'] .alert {
+		padding:7px;
+        margin-bottom:0px;
+	}
+
+@media (max-width:850px) {
+    .daterangepicker.dropdown-menu { max-width:255px;}
+    .daterangepicker.show-calendar .calendar { display:none; }
+}
+
+@media (max-width: 767px) {
+    div[data-aura-component='admin/search']  .navbar-form {
+        padding:0px; margin-left:0px; margin-right:0px;
+        box-shadow: none;
+    }
+    div[data-aura-component='admin/search']  .form-group {
+        display:inline-block;
+        margin-bottom:0px;
+        vertical-align: middle;
+    }
+    div[data-aura-component='admin/search'] .form-control {
+        display:inline-block;
+        width:auto;
+        vertical-align:middle;
+    }
+}
+@media (max-width: 560px) {
+
+    div[data-aura-component='admin/search'] .form-group {
+        width:100%;
+    }
+    div[data-aura-component='admin/search'] .form-control {
+        width:100%;
+    }
+    div[data-aura-component='admin/search'] .btn {
+        margin-top:1px;
+    }
+    div[data-aura-component='admin/search'] .alert {
+        margin-top:5px;
+    }
+}
+@media (max-width: 375px) {
+    div[data-aura-component='admin/search'] #container-searchmsg {
+        white-space: normal;
+    }
+}
+
+div[data-aura-component='admin/search'] .form-control.warning:-moz-placeholder { /* Firefox 18- */
+   color: red;
+}
+div[data-aura-component='admin/search'] .form-control.warning::-moz-placeholder {  /* Firefox 19+ */
+   color: red;
+}
+div[data-aura-component='admin/search'] .form-control.warning::-webkit-input-placeholder {  /* chrome */
+   color: red;
+}

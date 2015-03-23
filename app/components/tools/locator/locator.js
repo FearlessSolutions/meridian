@@ -1,15 +1,17 @@
 define([
     './locator-publisher',
+    'coordinateConverter',
     'typeahead',
     'bootstrap'
-], function (publisher) {
+], function (publisher,cc) {
     var context,
         timeout,
         selectedLocation = null,
         dataByName = {},
         $locator,
         $locatorButton,
-        $locatorInput;
+        $locatorInput,
+        regEx = /([0-9])/;
 
     var exposed = {
         init: function(thisContext) {
@@ -17,7 +19,6 @@ define([
             $locator = context.$('#locator');
             $locatorButton = context.$('#locator .btn');
             $locatorInput = context.$('#locator input');
-            $locatorButton.attr('disabled', true);      /*Valid location must be selected before button is enabled.*/
 
             //Activate bootstrap tooltip. 
             //No need to specify container to make the tooltip appear in one line. 
@@ -30,19 +31,24 @@ define([
             });
 
             $locatorButton.on('click', function(event) {
-                var input = $locatorInput.val();
                 event.preventDefault();
 
-                if(selectedLocation === null || input === '') {/*Extra precaution, button should be disabled anyways.*/
+                if(selectedLocation === null) {
                     publisher.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Search',
-                        messageText: 'No valid location selected. Please try again.'
+                        messageText: 'No valid location selected. Please select an option from the dropdown.'
                     });
-                    $locatorButton.attr('disabled', true); 
-                }else if('lat' in selectedLocation) { //It is coordinates
-                    exposed.markLocation(selectedLocation);
-                }else {
+                }else if(selectedLocation === 'error') { //It is a coordinate error
+                    publisher.publishMessage({
+                        messageType: 'warning',
+                        messageTitle: 'Search',
+                        messageText: 'Incorrect or unsupported coordinate format.'
+                    });
+                }else if(selectedLocation.dd) {
+                    exposed.markLocation(selectedLocation.dd);
+                }
+                else{
                     exposed.goToLocation();
                 }
             });
@@ -59,38 +65,34 @@ define([
             $locatorInput.attr('data-provide', 'typeahead');
             $locatorInput.typeahead({
                 items: 15,
-
-                /* Source occurs after a new character is added. Defaults to 1.
-                 * change selectedLocation to null after evey key event and disable search button.
-                 * To prevent the ajax call from happening after every new character, a
-                 * timeout delay has been added.*/
+                 //Source occurs after a new character is added. Defaults to 1.
+                 //change selectedLocation to null after evey key event and disable search button.
+                 //To prevent the ajax call from happening after every new character, a
+                 //timeout delay has been added.
+                 //query is always a string.
                 source: function(query,process) {
-                    selectedLocation = null;
-                    $locatorButton.attr('disabled', true);
-
-                    if(timeout) {
-                        clearTimeout(timeout);
-                    }
-                    timeout = setTimeout(function() {
-                        var content = $locatorInput.val().length || null;
-
-                        /*No need to query empty input*/
-                        if(content !== null) {
-
-                            //Handle both coordinates and places
-                            if(query.match(/^-?\d/)) {
-                                context.sandbox.locator.queryCoordinates(query, function(coordinates){
-                                    if(coordinates){
-                                        selectedLocation = coordinates;
-                                        $locatorButton.attr('disabled', false);
-                                    }
-                                });
-                            }else { 
+                    //null when it doesnt match.
+                    //if input has a single number, it will be considered a coordinate.
+                    var coordinate = query.match(regEx);
+                    if(coordinate !== null){
+                        //selectedLocation comes back as an object containing all
+                        //possible conversions of the coordinate provided.
+                        selectedLocation = context.sandbox.utils.convertCoordinate(coordinate.input);
+                        $locatorInput.typeahead('hide');//Precautionary typeahead hide.
+                    }else{
+                        //query has no numbers. A place look up is assumed.
+                        if(timeout) {
+                            clearTimeout(timeout);
+                        }
+                        timeout = setTimeout(function() {
+                            /*No need to query empty input*/
+                            if(query !== null) {
                                 publisher.publishMessage({
                                     messageType: 'info',
                                     messageTitle: 'Looking up suggestions',
                                     messageText: 'Validating ...'
                                 });
+                                //get the name data.
                                 context.sandbox.locator.query(query, function(data){
                                    var formattedData = context.sandbox.locator.formatData(data);
                                     if(formattedData.names === []) {
@@ -103,11 +105,15 @@ define([
                                         dataByName = formattedData.data;
                                     }
                                     process(formattedData.names); 
-                                }); 
-                                
-                            }                            
-                        }
-                    }, 800);
+                                });
+                            }else{
+                                //as a precaution.
+                                //query is null, meaning there is nothing in the textArea.
+                                $locatorInput.typeahead('hide');//Manual typeahead hide.
+                            } 
+                        }, 800);
+
+                    }
                 },
                 /**
                  * Overwrite matcher function to always show values returned by the service.If the service 
@@ -131,7 +137,6 @@ define([
                         messageText: 'Valid location selected.'
                     });
 
-                    $locatorButton.attr('disabled', false);
                     return item;
                 }
             });
@@ -139,11 +144,17 @@ define([
             $locatorInput.on('paste', function(event){
                 //timeout allows time for val() to get populated. Once populated,
                 //typeahead can work as expected. 
+                //textbox works normally, so no need to excecute typeahead for coordinates.
                 setTimeout(function () {
-                    $locatorInput.typeahead('lookup');//Manual typeahead look up.
+                    var input = $locatorInput.val(),
+                    coordinate = input.match(regEx);
+                    if(coordinate === null){
+                        $locatorInput.typeahead('lookup');//Manual typeahead look up.
+                    }
                 }, 10);
             });
         },
+        // Zooms to an area saved in selectedLocation based on the name provided in the locator tool.
         goToLocation: function() {
             publisher.zoomToLocation({
                 minLon: selectedLocation.minLon,
@@ -152,14 +163,16 @@ define([
                 maxLat: selectedLocation.maxLat
             });
             $locatorInput.val('');
-            $locatorButton.attr('disabled',true);
         },//end of goToLocation
+        
+        //Zooms and marks a location based on the coordintate provided.
         markLocation: function(coordinates) {
             publisher.markLocation({
                 layerId: 'static_geolocator',
                 data: [context.sandbox.utils.createGeoJson(coordinates)]
             });
             publisher.setMapCenter(coordinates);
+            $locatorInput.val('');
         },
         clear: function() {
             clearTimeout(timeout);
