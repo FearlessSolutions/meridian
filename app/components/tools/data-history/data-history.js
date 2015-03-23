@@ -290,11 +290,13 @@ define([
             .done(function(data) {
                //close data history table
                publisher.closeDataHistory();
+               console.log(data);
 
                //publish query data to be requeried
                publisher.requeryDataset({
                     queryName: data.rawQuery.queryName,
-                    queryData: data.rawQuery
+                    queryData: data.rawQuery,
+                    querySource: data.dataSource
                 });
             });
     }
