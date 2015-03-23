@@ -141,7 +141,7 @@ define([
                                 shouldZoom: shouldZoom
                             }, 0);
                             $dummyFile.val('');
-                            $zoom.prop("checked", false);
+                            $zoom.prop('checked', false);
                         }, function(status, jqXHR){ //Error callback
                             markQueryError(queryId, queryName, status);
                         }
