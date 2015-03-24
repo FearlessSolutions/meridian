@@ -4,29 +4,27 @@ define([
     'bootstrap',
     'handlebars',
     'moment'
-], function (publisher, dataHistoryEntryHBS) {
+], function (publisher, bookmarkEntryHBS) {
 
     var context,
-        dataHistoryEntryTemplate,
+        bookmarkEntryTemplate,
         $bookmarkModal,
         $bookmarkModalBody,
         $bookmarkCloseButton,
-        $dataHistoryListTable,
-        $noDataLabel,
-        currentDataArray = [],
-        currentDataSet = {};
+        $bookmarkListTable,
+        $noDataLabel;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
 
-            dataHistoryEntryTemplate = Handlebars.compile(dataHistoryEntryHBS);
+            bookmarkEntryTemplate = Handlebars.compile(bookmarkEntryHBS);
 
             $bookmarkModal = context.$('#bookmark-modal');
             $bookmarkModalBody = context.$('#bookmark-modal .modal-body');
             $bookmarkCloseButton = context.$('#bookmark-modal.modal button.close');
 
-            $dataHistoryListTable = context.$('#bookmark-modal.modal .data-history-list');
+            $bookmarkListTable = context.$('#bookmark-modal.modal .data-history-list');
             $noDataLabel = context.$('#bookmark-modal.modal p.noDataLabel');
 
             $bookmarkModal.modal({
@@ -44,8 +42,8 @@ define([
 
         },
         openBookmark: function() {
-            // Populate Data History table
-            exposed.updateDataHistory();
+            // Populate Bookmark table
+            exposed.updateBookmarks();
             $bookmarkModal.modal('show');
         },
         closeBookmark: function() {
@@ -58,121 +56,73 @@ define([
         saveBMtoLS: function(params) {
             var bookmarkId = params.layerId,
                 storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
-
             if(!storedBookmarks){
                 storedBookmarks = {};
-            }
-
-            storedBookmarks[bookmarkId] = {
-                name: bookmarkId,
-                maxLat: "somevalue",
-                minLat: "somevalue",
-                maxLon: "somevalue",
-                minLon: "somevalue"
             };
-
+            storedBookmarks[bookmarkId] = {
+                bmId: bookmarkId,
+                // For now, the bookmark name is the same as the Query Name
+                bmName: context.sandbox.dataStorage.datasets[params.layerId].layerName,
+                maxLat: 'somevalue',
+                minLat: 'somevalue',
+                maxLon: 'somevalue',
+                minLon: 'somevalue'
+            };
             context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
             console.log(localStorage);
-
         },
-        updateDataHistory: function() {
-                var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
+        updateBookmarks: function() {
+            var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
+            $bookmarkListTable.empty();
 
-                $dataHistoryListTable.empty();
-                context.sandbox.utils.each(storedBookmarks, function(index, tempDataEntry) {
-                    var dataHistoryEntry = generateDataHistoryEntryRow(tempDataEntry);
-                    $dataHistoryListTable.append(dataHistoryEntry);
+            if ( bmData === null  || Object.keys(bmData).length == 0 )  {
+                $noDataLabel.removeClass('hide');
+            } else {
+                context.sandbox.utils.each(bmData, function (index, tempDataEntry) {
+                    var bookmarkEntry = generateDataHistoryEntryRow(tempDataEntry);
+                    $bookmarkListTable.append(bookmarkEntry);
                 });
+                $noDataLabel.addClass('hide');
+            }
 
-                if($dataHistoryListTable.children().length === 0) {
-                    $noDataLabel.removeClass('hide');
-                } else {
-                    $noDataLabel.addClass('hide');
-                }
+            context.$('.data-history-list .data-action-restore').on('click', function(event) {
+                publisher.restoreDataset(something[context.$(this).parent().parent().data('datasetid')]);
+                publisher.closeBookmark();
+            });
+            context.$('.data-history-list .data-action-edit').on('click', function(event) {
 
-                context.$('.data-history-list .data-action-restore').on('click', function(event) {
-                    publisher.restoreDataset(currentDataSet[context.$(this).parent().parent().data('datasetid')]);
-                    publisher.closeBookmark();
-                });
-                context.$('.data-history-list .data-action-edit').on('click', function(event) {
+                var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
 
-                    var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
-                    //context.sandbox.utils.each(bmData,function(obj, name) {
-                    //    var tempObj = {};
-                    //    tempObj.name = bmData.name;
-                    //    tempObj.maxLat = bmData.maxLat;
-                    //    tempObj.minLat = bmData.minLat;
-                    //    tempObj.maxLon = bmData.maxLon;
-                    //    tempObj.minLon = bmData.minLon;
-                    //});
-
-                    //console.log(localStorage);
-                    console.log(bmData);
-                });
-                context.$('.data-history-list .data-action-delete').on('click', function(event) {
-                    // Delete the dataset
-                    deleteDataset(context.$(this).parent().parent().data('datasetid'),
-                        context.$(this).parent().parent().data('datasessionid'));
-                });
+                console.log(bmData);
+            });
+            context.$('.data-history-list .data-action-delete').on('click', function(event) {
+                // Delete the bookmark
+                deleteDataset(context.$(this).parent().parent().data('bmid'));
+                $(this).parent().parent('tr').remove();
+            });
 
         }
     };
 
-    function generateDataHistoryEntryRow(dataHistoryEntryObject) {
-        return dataHistoryEntryTemplate({
-            datasetId: dataHistoryEntryObject.datasetId,
-            dataSessionId: dataHistoryEntryObject.dataSessionId,
-            dataSource: dataHistoryEntryObject.dataSource,
-            dataName: dataHistoryEntryObject.dataName,
-            disableRestore: dataHistoryEntryObject.disableRestore,
-            dataDate: dataHistoryEntryObject.dataDate,
-            dataRecordCount: dataHistoryEntryObject.dataRecordCount
+    function generateDataHistoryEntryRow(bookmarkEntryObject) {
+        return bookmarkEntryTemplate({
+            bmId: bookmarkEntryObject.bmId,
+            name: bookmarkEntryObject.bmName,
+            maxLat: bookmarkEntryObject.maxLat
         });
     }
 
-    function dynamicSort(property) {
-        var sortOrder = 1;
-        if(property[0] === '-') {
-            sortOrder = -1;
-            property = property.substr(1);
-        }
-        return function (a,b) {
-            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-            return result * sortOrder;
-        };
-    }
+    function deleteDataset(bookmarkId) {
+        var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
+        delete storedBookmarks[bookmarkId];
+        context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
 
+        console.log(localStorage);
 
-    function deleteDataset(datasetId, dataSessionId) {
-
-        //If the layer already exists on the map, delete it
-        if(context.sandbox.stateManager.layers[datasetId]){
-            publisher.deleteDataset({
-                layerId: datasetId
-            });
-        }
-
-        //Call the server to delete the features and query
-        //NOTE: this is a GET because DELETE causes problems on the server
-        context.sandbox.utils.ajax({
-            type: 'GET',
-            url: '/clear/' + datasetId + '/' + dataSessionId
-        }).done(function() {
-            var newDataArray = [];
-            context.sandbox.utils.each(currentDataArray, function(index, tempDataEntry) {
-                if(tempDataEntry.datasetId !== datasetId) {
-                    newDataArray.push(tempDataEntry);
-                } else {
-                    delete currentDataSet[datasetId];
-                }
-            });
-            currentDataArray = newDataArray;
-
-            publisher.publishMessage( {
-                messageType: 'success',
-                messageTitle: 'Bookmarks',
-                messageText: 'Dataset successfully removed'
-            });
+        publisher.publishMessage( {
+            messageType: 'success',
+            messageTitle: 'Bookmarks',
+            messageText: 'Bookmark successfully removed'
         });
     }
 
