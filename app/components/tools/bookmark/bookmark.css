@@ -34,17 +34,7 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .finiteHeight {
     height: 280px;
 }
 
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body .data-history-detail-view  span {
-    display: block;
-}
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body .data-history-detail-view  span.data-actions {
-    text-align: center;
-}
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body .data-history-detail-view  img {
-    padding-bottom: 1em;
-}
-
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body div.data-history-list-container {
+div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body div.bookmark-list-container {
     max-height: 245px;
     overflow: auto;
 }
@@ -64,21 +54,18 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table td {
     border-bottom: 1px solid #dddddd;
 }
 
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .expiration {
-    width: 25px;
-    text-align: right;
-}
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-name {
     width: 160px;
-    text-align: left;
     max-width: 160px;
+    padding-left:10px; padding-top:5px;
+    text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor:default;
 }
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions {
-    width: 60px;
+    width: 63px;
 }
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions button {
