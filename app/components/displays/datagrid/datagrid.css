@@ -48,24 +48,35 @@ div[data-aura-component='displays/datagrid'] #pager {
 }
 
 div[data-aura-component='displays/datagrid'] .slick-header-column {
+    height: 18px;
+    background: linear-gradient(to bottom, #fdfdfd 0%,#fdfdfd 50%,#f6f6f6 51%,#fafafa 100%); /* W3C */
     box-sizing: content-box; /** Keeps column re-sizing the same for headers/rows **/
     -moz-box-sizing: content-box;
-    background: #f0f0f0;
     color: black;
-    height: 18px;
-}
+    }
+    div[data-aura-component='displays/datagrid'] .slick-header-column:hover {
+        cursor: pointer;
+        background: linear-gradient(to bottom, #f7f7f7 0%,#f7f7f7 50%,#e7e7e7 51%,#f1f1f1 100%); /* W3C */
+    }
+    div[data-aura-component='displays/datagrid'] .slick-sort-indicator {
+        float:none;
+        }
+        div[data-aura-component='displays/datagrid'] .slick-sort-indicator-desc {
+            background: url(../../../libs/SlickGrid-master/images/sort-desc.gif);
+        }
+        div[data-aura-component='displays/datagrid'] .slick-sort-indicator-asc {
+            background: url(../../../libs/SlickGrid-master/images/sort-asc.gif);
+        }
 
-div[data-aura-component='displays/datagrid'] .slick-header-column:hover {
-    cursor: pointer;
-    background-color: #E0E0E0;
+div[data-aura-component='displays/datagrid'] .slick-row:hover {
+    background-color: #DEF2FF;
 }
-
 div[data-aura-component='displays/datagrid'] .slick-cell a {
     color: #428bca;
 }
 
 div[data-aura-component='displays/datagrid'] .slick-cell.selected {
-    background-color: #D4F7FF;
+    background-color: #a6d5ff;
 }
 
 div[data-aura-component='displays/datagrid'] .hiddenFeature {

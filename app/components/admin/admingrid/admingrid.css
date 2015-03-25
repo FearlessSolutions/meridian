@@ -1,0 +1,55 @@
+div[data-aura-component="admin/admingrid"] #admingridContainer {
+	visibility:hidden;
+    margin:20px;
+}
+
+div[data-aura-component='admin/admingrid'] #header {
+    background-color: #F5F5F5;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+    text-align: center;
+    width: 100%;
+    height: 42px;
+    padding-top: 4px;
+}
+
+div[data-aura-component='admin/admingrid'] .close {
+    margin: 10px;
+}
+
+div[data-aura-component='admin/admingrid'] #admingridContainer #admingrid {
+    /* height value is determined by JavaScript -- w/o JS, grid breaks */
+    width:100%; 
+    border:1px solid #ddd; border-radius:4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+div[data-aura-component='admin/admingrid'] .slick-header-column {
+    background: linear-gradient(to bottom, #fdfdfd 0%,#fdfdfd 50%,#f6f6f6 51%,#fafafa 100%); /* W3C */
+    height: 18px;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    color: black;
+    }
+    div[data-aura-component='admin/admingrid'] .slick-sort-indicator {
+        float:none;
+        }
+        div[data-aura-component='admin/admingrid'] .slick-sort-indicator-desc {
+            background: url(../../../libs/SlickGrid-master/images/sort-desc.gif);
+        }
+        div[data-aura-component='admin/admingrid'] .slick-sort-indicator-asc {
+            background: url(../../../libs/SlickGrid-master/images/sort-asc.gif);
+        }
+
+
+div[data-aura-component='admin/admingrid'] .slick-header-column:hover {
+    cursor: pointer;
+    background: linear-gradient(to bottom, #f7f7f7 0%,#f7f7f7 50%,#e7e7e7 51%,#f1f1f1 100%); /* W3C */
+}
+
+div[data-aura-component='admin/admingrid'] .slick-cell.selected {
+    background-color: #D4F7FF;
+}
+div[data-aura-component='admin/admingrid'] .slick-row:hover {
+    background-color: #DEF2FF;
+}

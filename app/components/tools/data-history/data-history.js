@@ -115,6 +115,11 @@ define([
                     deleteDataset(tempData.datasetId, tempData.dataSessionId);
                     exposed.hideDetailedInfo();
                 });
+                context.$('.data-history-detail-view .data-action-requery').on('click', function(event) {
+                    // Open up query dialog 
+                    requeryDataset(tempData.datasetId);
+                    publisher.closeDataHistory();
+                });
 
                 $modalBody.addClass('finiteHeight');
                 context.$('.data-history-summary-list-container').addClass('hidden');
@@ -145,6 +150,7 @@ define([
                     var now = moment(), //This needs to be done now to prevent race condition later
                         dataDate = moment.unix(dataEntry.createdOn),
                         expireDate = moment.unix(dataEntry.expireOn),
+                        disableRequery = false,
                         disableRestore = expireDate.isBefore(now); // Use isExpired as default
 
                     if(!context.sandbox.dataServices[dataEntry.dataSource]){
@@ -156,6 +162,10 @@ define([
                         disableRestore = true;
                     }
 
+                    if(context.sandbox.utils.isEmptyObject(dataEntry.queryBbox)){
+                        disableRequery = true;
+                    }
+
                     currentDataSet[dataEntry.queryId] = dataEntry;
                     currentDataArray.push({
                         datasetId: dataEntry.queryId,
@@ -165,6 +175,7 @@ define([
                         dataDate: dataDate.fromNow(),
                         rawDate: dataEntry.createdOn,
                         disableRestore: disableRestore,
+                        disableRequery: disableRequery,
                         dataRecordCount: dataEntry.numRecords
                     });
                 });
@@ -203,6 +214,10 @@ define([
             deleteDataset(context.$(this).parent().parent().data('datasetid'), 
                 context.$(this).parent().parent().data('datasessionid'));
         });
+        context.$('.data-history-list .data-action-requery').on('click', function(event) {
+            requeryDataset(context.$(this).parent().parent().data('datasetid'));
+            publisher.closeDataHistory();
+        });
     }
 
     function generateDataHistoryEntryRow(dataHistoryEntryObject) {
@@ -212,6 +227,7 @@ define([
             dataSource: dataHistoryEntryObject.dataSource,
             dataName: dataHistoryEntryObject.dataName,
             disableRestore: dataHistoryEntryObject.disableRestore,
+            disableRequery: dataHistoryEntryObject.disableRequery,
             dataDate: dataHistoryEntryObject.dataDate,
             dataRecordCount: dataHistoryEntryObject.dataRecordCount
         });
@@ -260,6 +276,29 @@ define([
                 messageText: 'Dataset successfully removed'
             });
         });
+    }
+
+    function requeryDataset(datasetId) {
+
+        var newAJAX = context.sandbox.utils.ajax({
+                type: 'GET',
+                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + datasetId,
+                xhrFields: {
+                    withCredentials: true
+                }
+            })
+            .done(function(data) {
+               //close data history table
+               publisher.closeDataHistory();
+               console.log(data);
+
+               //publish query data to be requeried
+               publisher.requeryDataset({
+                    queryName: data.rawQuery.queryName,
+                    queryData: data.rawQuery,
+                    querySource: data.dataSource
+                });
+            });
     }
 
     return exposed;

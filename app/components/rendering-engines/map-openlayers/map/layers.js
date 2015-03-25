@@ -236,9 +236,6 @@ define([
                 layerId: layerId
             });
 
-            mapClustering.update({
-                map: map
-            });
             mapHeatmap.update({
                 map: map
             });
