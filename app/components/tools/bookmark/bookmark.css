@@ -29,11 +29,6 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body {
     padding: 10px;
 }
 
-
-div[data-aura-component='tools/bookmark'] #bookmark-modal .finiteHeight {
-    height: 280px;
-}
-
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body div.bookmark-list-container {
     max-height: 245px;
     overflow: auto;
@@ -70,25 +65,8 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .dat
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions button {
     padding-top: 2px;
-    padding-right: 5px;
+    padding-left:5px; padding-right:5px;
     padding-bottom: 0.5px;
-    padding-left: 5.5px;
-}
-
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body .expiration span.glyphicon-time {
-    color: #bd362f;
-}
-
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body textarea.form-control {
-    width: 350px;
-    max-width: 350px;
-    min-width: 350px;
-    height: 246px;
-    max-height: 246px;
-    min-height: 246px;
-}
-div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body textarea.form-control {
-    cursor: default;
 }
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .indent {
