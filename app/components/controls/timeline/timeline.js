@@ -402,18 +402,19 @@ define([
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
             $querySnapshot.find('.btn-on').addClass('btn-primary');
             $querySnapshot.find('.btn-off').removeClass('btn-primary');
+
             snapshotMenu.disableOption({
-                    "layerId": params.layerId,
-                    "channel": "timeline.menu.layer.show"
-                });
+                "layerId": params.layerId,
+                "channel": "timeline.menu.layer.show"
+            });
             snapshotMenu.enableOption({
-                    "layerId": params.layerId,
-                    "channel": "timeline.menu.layer.hide"
-                });
+                "layerId": params.layerId,
+                "channel": "timeline.menu.layer.hide"
+            });
             snapshotMenu.enableOption({
-                    "layerId": params.layerId,
-                    "channel": "map.zoom.toLayer"
-                });
+                "layerId": params.layerId,
+                "channel": "map.zoom.toLayer"
+            });
         },
         layerToggleOff: function(params) {
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
@@ -459,6 +460,13 @@ define([
                 exposed.hideTimeline();
                 publisher.closeTimeline();
             }
+        },
+        timelineBookmarkCreate: function() {
+            publisher.publishMessage({
+                "messageType": "success",
+                "messageTitle": "Bookmarks",
+                "messageText": "Bookmark successfully created"
+            });
         }
     };
 

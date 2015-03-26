@@ -17,6 +17,7 @@ define([
             context.sandbox.on('data.finished', timeline.markFinished);  
             context.sandbox.on('query.stop', timeline.markStopped);
             context.sandbox.on('data.error', timeline.markError);
+            context.sandbox.on('bookmark.create', timeline.timelineBookmarkCreate);
             context.sandbox.on('timeline.playback.start', timeline.timelinePlaybackStart);
             context.sandbox.on('timeline.playback.stop', timeline.timelinePlaybackStop);
             context.sandbox.on('timeline.menu.layer.hide', timeline.hideSnapshotLayerGroup);

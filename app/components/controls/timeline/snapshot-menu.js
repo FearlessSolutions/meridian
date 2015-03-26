@@ -10,6 +10,7 @@ define([
             context = thisContext;
         },
         createMenu: function(params){
+            console.log(params);
             var layerId = params.layerId,
                 $currentMenu,
                 snapshotMenuTemplate = Handlebars.compile(snapshotMenuHBS);
@@ -28,6 +29,7 @@ define([
             })
             .done(function(data) {
                 if (data.dataSource == 'upload') {
+                    console.log('ithitasupload');
                     context.$('#snapshot-' + layerId + '-settings-menu a[data-channel="bookmark.create"]').parent('li').addClass('disabled');
                 }
             });
