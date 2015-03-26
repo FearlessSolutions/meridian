@@ -12,7 +12,8 @@ define([
         $bookmarkModalBody,
         $bookmarkCloseButton,
         $bookmarkListTable,
-        $noDataLabel;
+        $noDataLabel,
+        bmData;
 
     var exposed = {
         init: function(thisContext) {
@@ -38,11 +39,24 @@ define([
                 publisher.closeBookmark();
             });
 
+
         },
         openBookmark: function() {
-            // Populate Bookmark table
-            exposed.updateBookmarks();
-            $bookmarkModal.modal('show');
+            bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
+            if(!context.sandbox.utils.isEmptyObject(bmData)) {
+                // Populate Bookmark table
+                exposed.updateBookmarks();
+                $bookmarkModal.modal('show');
+            } else {
+                console.log('wouldbeempty');
+                publisher.publishMessage( {
+                    messageType: 'warning',
+                    messageTitle: 'Bookmarks',
+                    messageText: 'No data to display in table'
+                });
+            }
+
+
         },
         closeBookmark: function() {
             $bookmarkModal.modal('hide');
@@ -57,21 +71,31 @@ define([
             if(!storedBookmarks){
                 storedBookmarks = {};
             };
-            storedBookmarks[bookmarkId] = {
-                bmId: bookmarkId,
-                // For now, the bookmark name is the same as the Query Name
-                bmName: context.sandbox.dataStorage.datasets[params.layerId].layerName,
-                maxLat: 'somevalue',
-                minLat: 'somevalue',
-                maxLon: 'somevalue',
-                minLon: 'somevalue'
-            };
-            context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
+            context.sandbox.utils.ajax({
+                type: "GET",
+                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + params.layerId
+            })
+            .done(function(data) {
+                storedBookmarks[bookmarkId] = {
+                    bmId: bookmarkId,
+                    // For now, the bookmark name is the same as the Query Name
+                    bmName: data.queryName,
+                    maxLat: data.rawQuery.maxLat,
+                    minLat: data.rawQuery.minLat,
+                    maxLon: data.rawQuery.maxLon,
+                    minLon: data.rawQuery.minLon
+                };
+                context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
+            });
         },
         updateBookmarks: function() {
-            var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
+            bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
             $bookmarkListTable.empty();
-            checkStored(bmData);
+            if ( bmData === null  || Object.keys(bmData).length == 0 )  {
+                $noDataLabel.removeClass('hide');
+            } else {
+                $noDataLabel.addClass('hide');
+            };
 
             context.sandbox.utils.each(bmData, function (index, tempDataEntry) {
                 var bookmarkEntry = generateBookmarkEntryRow(tempDataEntry);
@@ -79,7 +103,14 @@ define([
             });
 
             context.$('.bookmark-list .data-action-restore').on('click', function(event) {
-                publisher.restoreDataset(something[context.$(this).parent().parent().data('datasetid')]);
+                var selectedBMId = context.$(this).parent().parent().data('bmid');
+                var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
+                publisher.jumpToBookmark({
+                    minLon: storedBookmarks[selectedBMId].minLon,
+                    minLat: storedBookmarks[selectedBMId].minLat,
+                    maxLon: storedBookmarks[selectedBMId].maxLon,
+                    maxLat: storedBookmarks[selectedBMId].maxLat
+                });
                 publisher.closeBookmark();
             });
             context.$('.bookmark-list .data-action-edit').on('click', function(event) {
@@ -102,19 +133,10 @@ define([
         });
     }
 
-    function checkStored(bmData) {
-        if ( bmData === null  || Object.keys(bmData).length == 0 )  {
-            $noDataLabel.removeClass('hide');
-        } else {
-            $noDataLabel.addClass('hide');
-        };
-    }
-
     function deleteBookmark(bookmarkId, rowToDelete) {
         var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
         delete storedBookmarks[bookmarkId];
         context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
-        rowToDelete.remove();
 
         publisher.publishMessage( {
             messageType: 'success',

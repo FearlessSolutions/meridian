@@ -12,14 +12,8 @@ define([
         openBookmark: function() {
             context.sandbox.emit('bookmark.open');
         },
-        publishOpening: function(params){
-            context.sandbox.emit('menu.opening', params);
-        },
-        restoreDataset: function(params) {
-            context.sandbox.emit('data.restore', params);
-        },
-        deleteDataset: function(params) {
-            context.sandbox.emit('map.layer.delete', params);
+        jumpToBookmark: function(params){
+            context.sandbox.emit('map.zoom.toLocation', params);
         },
         publishMessage: function(params) {
             context.sandbox.emit('message.publish', params);

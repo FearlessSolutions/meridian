@@ -15,7 +15,7 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-backdrop.in {
 }
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-dialog {
     margin: 5% auto;
-    width: 500px;
+    width: 425px;
 }
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-footer {
     text-align:center;
@@ -52,15 +52,16 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table td {
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-name {
     width: 160px;
     max-width: 160px;
-    padding-left:10px; padding-top:5px;
+    padding-left:10px;
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor:default;
+    vertical-align:bottom;
 }
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions {
-    width: 63px;
+    width: 69px;
 }
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions button {
