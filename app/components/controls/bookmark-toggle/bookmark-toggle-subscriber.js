@@ -8,7 +8,7 @@ define([
             context = thisContext;
             context.sandbox.on('bookmark.close', bookmarkToggle.removeActive);
             context.sandbox.on('bookmark.open', bookmarkToggle.setActive);
-            //context.sandbox.on('data.clear.all', supportToggle.clear);
+            context.sandbox.on('data.clear.all', bookmarkToggle.clear);
         }
     };	
 

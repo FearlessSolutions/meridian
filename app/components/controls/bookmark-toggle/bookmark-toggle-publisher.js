@@ -8,10 +8,10 @@ define([
             context = thisContext;
         },
         closeBookmark: function(params) {
-            context.sandbox.emit('bookmark.close', params);
+            context.sandbox.emit('bookmark.close');
         },
         openBookmark: function(params) {
-            context.sandbox.emit('bookmark.open', params);
+            context.sandbox.emit('bookmark.open');
         }
     };
 

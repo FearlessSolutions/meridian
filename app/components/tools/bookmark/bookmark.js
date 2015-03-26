@@ -48,7 +48,7 @@ define([
                 exposed.updateBookmarks();
                 $bookmarkModal.modal('show');
             } else {
-                console.log('wouldbeempty');
+                publisher.closeBookmark();
                 publisher.publishMessage( {
                     messageType: 'warning',
                     messageTitle: 'Bookmarks',
@@ -128,8 +128,7 @@ define([
     function generateBookmarkEntryRow(bookmarkEntryObject) {
         return bookmarkEntryTemplate({
             bmId: bookmarkEntryObject.bmId,
-            name: bookmarkEntryObject.bmName,
-            maxLat: bookmarkEntryObject.maxLat
+            name: bookmarkEntryObject.bmName
         });
     }
 
