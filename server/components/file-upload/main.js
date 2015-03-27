@@ -24,7 +24,9 @@ exports.init = function(thisContext){
     mimetypeToTransformFunctionMap = {
         "text/csv": ogrTransform.fromCSV,
         "text/comma-seperated-values": ogrTransform.fromCSV,
+        "application/vnd.ms-excel": ogrTransform.fromGeoJSON,
         "application/octet-stream": ogrTransform.fromGeoJSON,
+        "application/json": ogrTransform.fromGeoJSON,
         "application/vnd.google-earth.kml+xml": ogrTransform.fromKML
     };
 
