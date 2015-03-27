@@ -62,21 +62,21 @@ define([
                     } else {
                         // feature is likely in a cluster
                         context.sandbox.utils.each(layer.features, function(k1, v1) {
-                        if(v1.cluster) {
-                            context.sandbox.utils.each(v1.cluster, function(k2, singleFeature) {
-                                if(singleFeature.featureId === featureId) {
-                                    featureExtent = singleFeature.geometry.getBounds();
-                                    bounds.extend(featureExtent);
-                                    featuresFound = true;
-                                }
-                            });
-                        }
-                    });
+                            if(v1.cluster) {
+                                context.sandbox.utils.each(v1.cluster, function(k2, singleFeature) {
+                                    if(singleFeature.featureId === featureId) {
+                                        featureExtent = singleFeature.geometry.getBounds();
+                                        bounds.extend(featureExtent);
+                                        featuresFound = true;
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
 
                 if(featuresFound) {
-                   params.map.zoomToExtent(bounds);
+                    params.map.zoomToExtent(bounds);
                 } else {
                     publisher.publishMessage({
                         messageType: 'warning',
@@ -105,6 +105,6 @@ define([
             params.map.setCenter(centerPoint.transform(params.map.projectionWGS84, params.map.projection), 8);
         }
     };
-    
+
     return exposed;
 });
