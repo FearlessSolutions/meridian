@@ -63,8 +63,8 @@ define([
                                 messageText: 'Error creating location marker.'
                             });
                         } else {
-                            markLocation(selectedLocation);
-                            goToLocation(selectedLocation);
+                            markLocation(locationGeoJSON);
+                            goToLocation(locationGeoJSON);
                         }
                         $locatorButton.attr('disabled', false);
                     });
@@ -144,8 +144,8 @@ define([
                 /* Called by bootstrap once the user selects an item.
                  * Must return item.
                  * Item is added to the input box.*/
-                updater:function(item) {
-                    selectedLocation = dataByName[item];
+                updater:function(name) {
+                    selectedLocation = dataByName[name];
                     publisher.publishMessage({
                         messageType: 'success',
                         messageTitle: 'Search',
@@ -153,7 +153,7 @@ define([
                     });
 
                     $locatorButton.attr('disabled', false);
-                    return item;
+                    return name;
                 }
             });
 

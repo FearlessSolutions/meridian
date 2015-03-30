@@ -18,7 +18,8 @@ define([
          * @param params
          */
         createStaticLayers: function(params) {
-            var geolocatorParams,
+            var geolocatorStyle,
+                geolocatorParams,
                 geolocatorLayer,
                 drawParams,
                 drawLayer,
@@ -27,20 +28,24 @@ define([
                 map = params.map;
 
             //Create geolocator layer options
+            geolocatorStyle = {
+                externalGraphic: '${icon}',
+                graphicHeight: '${height}',
+                graphicWidth:  '${width}',
+                graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0,
+                graphicOpacity: 1,
+                fillOpacity: 0.1,
+                fillColor: 'rgb(255, 173, 51)',
+                strokeOpacity: 1,
+                strokeColor: 'rgb(255, 173, 51)'
+            };
             geolocatorParams = {
                 map: map,
                 layerId: 'static_geolocator',
                 static: true,
                 styleMap: {
-                    externalGraphic: '${icon}',
-                    graphicHeight: '${height}',
-                    graphicWidth:  '${width}',
-                    graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0,
-                    graphicOpacity: 1,
-                    fillOpacity: 0.1,
-                    fillColor: 'rgb(255, 173, 51)',
-                    strokeOpacity: 1,
-                    strokeColor: 'rgb(255, 173, 51)'
+                    default: geolocatorStyle,
+                    selected: geolocatorStyle
                 }
             };
             geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
@@ -486,7 +491,8 @@ define([
                                         formattedAttributes[key] = value;
                                     }
                             });
-                            popup = new OpenLayers.Popup.FramedCloud('popup',
+                            popup = new OpenLayers.Popup.FramedCloud(
+                                'popup',
                                 OpenLayers.LonLat.fromString(feature.geometry.getCentroid().toShortString()),
                                 null,
                                 headerHTML + infoWinTemplateRef.buildInfoWinTemplate(
@@ -572,9 +578,16 @@ define([
                 });
             },
             featureunselected: function(evt) {
-                mapBase.clearMapPopups({
-                    map: map
-                });
+//                mapBase.clearMapPopups({
+//                    map: map
+//                });
+                var feature = evt.feature;
+
+                if(feature.popup){
+                    map.removePopup(feature.popup);
+                    feature.popup.destroy();
+                    feature.popup = null;
+                }
             }    
         });
     }

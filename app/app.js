@@ -113,7 +113,6 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/support-configuration-extension/support-configuration-extension')
     .use('extensions/icon-extension/icon-extension')
     .use('extensions/locator-extension/locator-query-extension')
-    .use('extensions/locator-extension/locator-formatData-extension')
     .use('extensions/exports/export-utils/export-utils')
     .use('extensions/exports/geojson-extension/geojson-extension')
     .use('extensions/exports/csv-extension/csv-extension')

@@ -160,7 +160,7 @@ define([
                 'popup',
                 OpenLayers.LonLat.fromString(feature.geometry.getCentroid().toShortString()),
                 null,
-                params.buildInfoWinTemplate,
+                params.buildInfoWinTemplate(feature),
                 anchor,
                 true,
                 function() {
@@ -173,20 +173,18 @@ define([
                 }
             );
 
-            feature.popup = popup;
-            params.map.addPopup(popup);
-
             bounds = feature.geometry.getBounds();
             map.setCenter(bounds.getCenterLonLat());
 
             feature.popup = popup;
+            map.addPopup(popup);
+
+            params.postRenderingAction(feature);
 
             context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
                 layerId: feature.layer.layerId,
-                featureId:[feature.featureId]
+                featureIds:[feature.featureId]
             });
-
-            params.postRenderingAction(feature);
         },
         setVisualMode: function(params) {
             if(params && params.mode) {

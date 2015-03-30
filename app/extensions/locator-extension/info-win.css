@@ -3,6 +3,10 @@
     overflow: hidden;
 }
 
+.location.info-win-dialog .infoDiv{
+    float: left;
+}
+
 .location.info-win-dialog .hide-location{
     width: auto;
     height: auto;
@@ -33,7 +37,7 @@
 .location.info-win-dialog .content{
     position: relative;
     margin-left: 15px;
-    width: 500px;
+    width: 480px;
     height: 135px;
 }
 
