@@ -29,7 +29,7 @@ define([
             })
             .done(function(data) {
                 if (data.dataSource == 'upload') {
-                    console.log('ithitasupload');
+                    console.log('upload');
                     context.$('#snapshot-' + layerId + '-settings-menu a[data-channel="bookmark.create"]').parent('li').addClass('disabled');
                 }
             });
