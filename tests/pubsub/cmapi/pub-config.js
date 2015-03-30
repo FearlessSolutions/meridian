@@ -106,7 +106,7 @@ define([
                                     "coordinates": [0.0, 10.0]
                                 },
                                 "properties": {
-                                    "featureId": "f1"
+                                    "p1": "pp1"
                                 },
                                 "style": {
                                     "height": 24,

@@ -35,7 +35,7 @@ define([
             });
 
             //layer starts off showing points. Show layer option in the menu should start out disabled.
-            context.$('#snapshot-' + layerId + '-settings-menu a[data-channel="timeline.menu.layer.show"]').parent('li').addClass('disabled');
+            context.$('#snapshot-' + layerId + '-settings-menu a[data-channel="map.layer.show"]').parent('li').addClass('disabled');
 
             context.$('#snapshot-' + layerId + '-settings').on("click", function (e) {
                 var $settingsButton = context.$(this);

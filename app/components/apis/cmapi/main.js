@@ -60,7 +60,9 @@ define([
 
             try {
                 if(message !== '') {
-                    message = JSON.parse(message);
+                    if(typeof message === 'string'){
+                        message = JSON.parse(message);
+                    }
                     if(!message.origin) {
                         message.origin = context.sandbox.cmapi.defaultLayerId;
                     }

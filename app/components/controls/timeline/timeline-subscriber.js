@@ -20,9 +20,6 @@ define([
             context.sandbox.on('bookmark.create', timeline.timelineBookmarkCreate);
             context.sandbox.on('timeline.playback.start', timeline.timelinePlaybackStart);
             context.sandbox.on('timeline.playback.stop', timeline.timelinePlaybackStop);
-            context.sandbox.on('timeline.menu.layer.hide', timeline.hideSnapshotLayerGroup);
-            context.sandbox.on('timeline.menu.layer.show', timeline.showSnapshotLayerGroup);
-            context.sandbox.on('timeline.menu.layer.delete', timeline.deleteSnapshotLayerGroup);
             context.sandbox.on('timeline.open', timeline.showTimeline);
             context.sandbox.on('timeline.close', timeline.hideTimeline);
         }
