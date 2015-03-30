@@ -75,7 +75,7 @@ define([
                     featureIds: featureIds
                 });
 
-                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                if(context.sandbox.stateManager.map.visualMode === 'cluster' && layer.recluster) {
                     layer.recluster();
                 }
 

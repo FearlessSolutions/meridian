@@ -23,58 +23,64 @@ define([
                 drawParams,
                 drawLayer,
                 heatmapParams,
-                heatmapLayer;
+                heatmapLayer,
+                map = params.map;
 
             //Create geolocator layer options
             geolocatorParams = {
-                "map": params.map,
-                "layerId": "static_geolocator",
-                "static": true,
-                "styleMap": {
-                    "externalGraphic": "${icon}",
-                    "graphicHeight": "${height}",
-                    "graphicWidth":  "${width}",
-                    "graphicYOffset": context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
+                map: map,
+                layerId: 'static_geolocator',
+                static: true,
+                styleMap: {
+                    externalGraphic: '${icon}',
+                    graphicHeight: '${height}',
+                    graphicWidth:  '${width}',
+                    graphicYOffset: context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0,
+                    graphicOpacity: 1,
+                    fillOpacity: 0.1,
+                    fillColor: 'rgb(255, 173, 51)',
+                    strokeOpacity: 1,
+                    strokeColor: 'rgb(255, 173, 51)'
                 }
             };
             geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
             addGeoLocatorListeners({
-                "map": params.map,
-                "layer": geolocatorLayer
+                map: map,
+                layer: geolocatorLayer
             });
 
             //Create draw layer options
             drawParams = {
-                "map": params.map,
-                "layerId": "static_draw",
-                "static": true,
-                "styleMap": {
-                    "default": {
-                        "fillOpacity": 0.05,
-                        "strokeOpacity": 1
+                map: map,
+                layerId: 'static_draw',
+                static: true,
+                styleMap: {
+                    default: {
+                        fillOpacity: 0.05,
+                        strokeOpacity: 1
                     }
                 }
             };
             drawLayer = exposed.createVectorLayer(drawParams);
             addDrawListeners({
-                "map": params.map,
-                "layer": drawLayer
+                map: map,
+                layer: drawLayer
             });
 
             //Create heatmap layer options
             heatmapParams = {
-                "map": params.map,
-                "layerId": "static_heatmap",
-                "renderers": ['Heatmap'],
-                "static": true,
-                "styleMap": {
-                    "default": new OpenLayers.Style({
-                        "pointRadius": 10,
+                map: map,
+                layerId: 'static_heatmap',
+                renderers: ['Heatmap'],
+                static: true,
+                styleMap: {
+                    default: new OpenLayers.Style({
+                        pointRadius: 10,
                         // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer.
                         // The weight is calcluated by the context.weight function below.
-                        "weight": "${weight}"
+                        weight: '${weight}'
                     }, {
-                        "context": {
+                        context: {
                             weight: function() {
                                 var visibleDataRecordCount = 0;
                                 // Build the visibleDataRecordCount by adding all records from datasets that are visible
@@ -94,10 +100,10 @@ define([
             };
             heatmapLayer = exposed.createVectorLayer(heatmapParams);
 
-            params.map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]);
+            map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]);
             mapBase.addLayerToSelector({
-                "map": params.map,
-                "layer": geolocatorLayer
+                map: map,
+                layer: geolocatorLayer
             });
 
         },
@@ -544,39 +550,30 @@ define([
      * @param params
      */
     function addGeoLocatorListeners(params) {
+        var map = params.map;
+
         params.layer.events.on({
             beforefeatureselected: function(evt) {
                 mapBase.clearMapSelection({
-                    "map": params.map
+                    map: map
                 });
                 mapBase.clearMapPopups({
-                    "map": params.map
+                    map: map
                 });
             },
             featureselected: function(evt) {
-                var projectedPoint,
-                    latLonString;
-
-                projectedPoint = evt.feature.geometry.clone().transform(params.map.projection, params.map.projectionWGS84);
-
-                var htmlTemplate =
-                    '<div class="locator info-win-dialog">'+
-                        '<p class="title">Geocoded Location</p>'+
-                        '<div class="content">'+
-                            '<div>Lat: '+projectedPoint.y+'</div>'+
-                            '<div>Lon: '+projectedPoint.x+'</div>'+
-                        '</div>'+
-                    '</div>';
+                var feature = evt.feature;
 
                 mapBase.identifyFeature({
-                    "map": params.map,
-                    "feature": evt.feature,
-                    "content": htmlTemplate
+                    map: map,
+                    feature: feature,
+                    buildInfoWinTemplate: context.sandbox.locator.buildInfoWinTemplate,
+                    postRenderingAction: context.sandbox.locator.postRenderingAction
                 });
             },
             featureunselected: function(evt) {
                 mapBase.clearMapPopups({
-                    "map": params.map
+                    map: map
                 });
             }    
         });
