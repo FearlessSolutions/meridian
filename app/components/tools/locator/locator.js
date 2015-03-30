@@ -32,7 +32,6 @@ define([
             $locatorButton.on('click', function(event) {
                 var coorindatesGeoJSON;
                 event.preventDefault();
-                $locatorButton.attr('disabled', true);
 
                 if(selectedLocation === null) {
                     publisher.publishMessage({
@@ -40,15 +39,13 @@ define([
                         messageTitle: 'Search',
                         messageText: 'No valid location selected. Please select an option from the dropdown.'
                     });
-                    $locatorButton.attr('disabled', false);
-
                 }else if(selectedLocation === 'error') { //It is a coordinate error
                     publisher.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Search',
                         messageText: 'Incorrect or unsupported coordinate format.'
                     });
-                    $locatorButton.attr('disabled', false);
+                    selectedLocation = null;
                 }else if(selectedLocation.dd) {
                     coorindatesGeoJSON = context.sandbox.locator.createCoordinatesGeoJSON(selectedLocation);
                     markLocation(coorindatesGeoJSON);
@@ -66,7 +63,7 @@ define([
                             markLocation(locationGeoJSON);
                             goToLocation(locationGeoJSON);
                         }
-                        $locatorButton.attr('disabled', false);
+                        selectedLocation = null;
                     });
                 }
             });
@@ -96,7 +93,6 @@ define([
                     if(timeout){
                         clearTimeout(timeout);
                     }
-
 
                     if(coordinates){
                         //selectedLocation comes back as an object containing all
@@ -152,7 +148,6 @@ define([
                         messageText: 'Valid location selected.'
                     });
 
-                    $locatorButton.attr('disabled', false);
                     return name;
                 }
             });

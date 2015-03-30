@@ -235,12 +235,14 @@ define([
                     if(dd !== null){
                         //position 2,3 are lat whole and decimal parts of the number.
                         //position 5,6 are lon whole and decimal parts of the number.
+                        dd[1] = parseFloat(dd[1]);
+                        dd[4] = parseFloat(dd[4]);
                         coordinates = {};
                         coordinates.dd = {
-                            "lat": dd[1],
-                            "lon": dd[4]
+                            lat: dd[1],
+                            lon: dd[4]
                         };
-                        coordinates.dms = cc.ddToDms(dd[1],dd[4],'object');
+                        coordinates.dms = cc.ddToDms(dd[1],dd[4],'string');
                         coordinates.utm = cc.ddToUtm(dd[1],dd[4],'string');
                         coordinates.mgrs = cc.ddToMgrs(dd[1],dd[4],'string');
 

@@ -72,9 +72,8 @@ define([
 
     function createCoordinatesGeoJSON(coordinates){
         var featureId = context.sandbox.utils.UUID(),
-            lat = parseFloat(coordinates.dd.lat),
-            lon = parseFloat(coordinates.dd.lon),
-            dmsString = '', //TODO finish up this as needed, based on Jorges changes
+            lat = coordinates.dd.lat,
+            lon = coordinates.dd.lon,
             geoJSON;
 
         geoJSON = {
@@ -90,8 +89,8 @@ define([
             },
             type: 'feature',
             properties: {
-                dd: '' + lon + ', ' + lat,
-                dms: dmsString, //TODO
+                dd: '' + lat + ', ' + lon,
+                dms: coordinates.dms,
                 MGRS: coordinates.mgrs,
                 UTM: coordinates.utm
             },
@@ -150,7 +149,7 @@ define([
 
         return infoWinTemplate({
             attributes: attributes,
-            title: ''//'TODO' //TODO
+            title: ''
         });
     }
 
