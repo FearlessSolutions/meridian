@@ -97,9 +97,7 @@ define([
                 
                 if(errorFree){
                     publisher.closeQueryTool();
-
                     publisher.executeQuery(queryObject);
-
                     exposed.clearQueryForm();
                 } else {
                     publisher.publishMessage({
@@ -188,6 +186,11 @@ define([
            exposed.populateCoordinates(params.queryData);
            context.$('#query-name').val(params.queryName);
            context.$('#query-source').val(params.querySource);
+        },
+        validateBookmark: function(params) {
+            if (context.$('#saveAsBookmark').is(":checked")) {
+                publisher.createBookmark(params);
+            }
         }
     };
 

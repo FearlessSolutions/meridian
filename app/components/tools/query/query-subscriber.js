@@ -12,6 +12,7 @@ define([
             context.sandbox.on('data.clear.all', queryTool.clear);
             context.sandbox.on('menu.opening', queryTool.handleMenuOpening);
             context.sandbox.on('data.requery', queryTool.populateQueryFromParams);
+            //context.sandbox.on('data.finished', queryTool.validateBookmark);
         }
     };	
 

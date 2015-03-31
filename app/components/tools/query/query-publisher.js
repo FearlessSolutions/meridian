@@ -29,6 +29,9 @@ define([
         },
         openQueryTool: function(params) {
             context.sandbox.emit('query.tool.open');
+        },
+        createBookmark: function(params) {
+            context.sandbox.emit('bookmark.create', params);
         }
     };
 
