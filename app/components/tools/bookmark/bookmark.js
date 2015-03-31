@@ -106,7 +106,7 @@ define([
                 $bookmarkListTable.append(bookmarkEntry);
             });
 
-            context.$('.bookmark-list .data-action-restore').on('click', function(event) {
+            context.$('.bookmark-list .data-action-jump').on('click', function(event) {
                 var selectedBMId = context.$(this).parent().parent().data('bmid');
                 var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
                 publisher.jumpToBookmark({
@@ -118,12 +118,40 @@ define([
                 publisher.closeBookmark();
             });
             context.$('.bookmark-list .data-action-edit').on('click', function(event) {
-                var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
+                var $origName = context.$(this).parent().parent().children('.data-name').children('input').val();
+                context.$(this).parent().parent().children('.data-name').children('label').hide();
+                context.$(this).parent().parent().children('.data-name').children('input').val('').show().focus().val($origName);
+                context.$(this).parent().parent().children('.data-actions').children('button').hide();
+                context.$(this).parent().parent().children('.data-actions').children('.pull-right').show();
             });
             context.$('.bookmark-list .data-action-delete').on('click', function(event) {
                 // Delete the bookmark
                 deleteBookmark(context.$(this).parent().parent().data('bmid'));
                 exposed.updateBookmarks();
+            });
+            context.$('.bookmark-list button[type="submit"]').on('click', function(event) {
+                var renameBMId = context.$(this).parent().parent().data('bmid');
+                var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
+                var newBMName = context.$(this).parent().parent().children('.data-name').children('input').val();
+                storedBookmarks[renameBMId] = {
+                    bmId: storedBookmarks[renameBMId].bmId,
+                    bmName: newBMName,
+                    maxLat: storedBookmarks[renameBMId].maxLat,
+                    minLat: storedBookmarks[renameBMId].minLat,
+                    maxLon: storedBookmarks[renameBMId].maxLon,
+                    minLon: storedBookmarks[renameBMId].minLon
+                }
+                context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
+                context.$(this).parent().parent().children('.data-name').children('label').text(newBMName).show();
+                context.$(this).parent().parent().children('.data-name').children('input').hide();
+                context.$(this).parent().parent().children('.data-actions').children('button').hide();
+                context.$(this).parent().parent().children('.data-actions').children('.btn-default-icon').show();
+            });
+            context.$('.bookmark-list button[type="cancel"]').on('click', function(event) {
+                context.$(this).parent().parent().children('.data-name').children('label').show();
+                context.$(this).parent().parent().children('.data-name').children('input').hide();
+                context.$(this).parent().parent().children('.data-actions').children('button').hide();
+                context.$(this).parent().parent().children('.data-actions').children('.btn-default-icon').show();
             });
         }
     };

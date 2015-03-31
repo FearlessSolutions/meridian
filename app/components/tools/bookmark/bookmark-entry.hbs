@@ -1,14 +1,20 @@
 <tr data-bmid="{{bmId}}">
-    <td class="data-name" title="{{{name}}}">{{{name}}}</td>
+    <td class="data-name" title="{{{name}}}">
+        <label>{{{name}}}</label>
+        <input type="text" class="form-control" value="{{{name}}}" />
+    </td>
     <td class="data-actions">
-        <button type="button" title="Jump to Bookmark" class="btn btn-default-icon data-action-restore" {{#if disableRestore}}disabled{{/if}}>
+        <button type="button" class="btn btn-default-icon data-action-jump" title="Jump to Bookmark">
             <span class="glyphicon iconM-jump"></span>
         </button>
-        <!--<button type="button" class="btn btn-default-icon data-action-edit" title="Edit Bookmark">
+        <button type="button" class="btn btn-default-icon data-action-edit" title="Edit Bookmark Name">
             <span class="glyphicon glyphicon-edit"></span>
-        </button>-->
+        </button>
         <button type="button" class="btn btn-default-icon data-action-delete" title="Delete Bookmark">
             <span class="glyphicon glyphicon-trash"></span>
         </button>
+        <button type="cancel" class="btn btn-default-secondary pull-right">Cancel</button>
+        <button type="submit" class="btn btn-primary pull-right">Save</button>
+
     </td>
 </tr>

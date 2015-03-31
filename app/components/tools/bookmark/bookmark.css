@@ -59,11 +59,24 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .dat
     text-overflow: ellipsis;
     cursor:default;
     vertical-align:bottom;
-}
+    }
+    div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-name label {
+        padding-top:3px;
+        font-weight:normal;
+    }
+
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions {
-    width: 69px;
+    width: 80px;
     text-align: center;
-}
+    }
+    div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-name input,
+    div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions button[type="submit"],
+    div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions button[type="cancel"] {
+        display:none;
+    }
+div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions .pull-right {
+        margin-right:3px;
+    }
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions button {
     padding-top: 2px;
