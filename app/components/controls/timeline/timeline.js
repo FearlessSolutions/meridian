@@ -427,12 +427,13 @@ define([
                 publisher.closeTimeline();
             }
         },
-        timelineBookmarkCreate: function() {
-            publisher.publishMessage({
-                "messageType": "success",
-                "messageTitle": "Bookmarks",
-                "messageText": "Bookmark successfully created"
-            });
+        validateBookmark: function(params){
+            if (context.sandbox.dataStorage.datasets[params.layerId].dataService == 'upload'){
+                snapshotMenu.disableOption({
+                    layerId: params.layerId,
+                    channel: 'bookmark.create'
+                });
+            };
         }
     };
 

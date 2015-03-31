@@ -10,7 +10,6 @@ define([
             context = thisContext;
         },
         createMenu: function(params){
-            console.log(params);
             var layerId = params.layerId,
                 $currentMenu,
                 snapshotMenuTemplate = Handlebars.compile(snapshotMenuHBS);
@@ -21,18 +20,6 @@ define([
             context.$('#timeline').after(snapshotMenuHTML);
 
             $currentMenu = context.$('#snapshot-' + layerId + '-settings-menu');
-
-            // disable saving bookmark option if data source is upload
-            context.sandbox.utils.ajax({
-                type: "GET",
-                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + params.layerId
-            })
-            .done(function(data) {
-                if (data.dataSource == 'upload') {
-                    console.log('upload');
-                    context.$('#snapshot-' + layerId + '-settings-menu a[data-channel="bookmark.create"]').parent('li').addClass('disabled');
-                }
-            });
 
             //layer starts off showing points. Show layer option in the menu should start out disabled.
             context.$('#snapshot-' + layerId + '-settings-menu a[data-channel="map.layer.show"]').parent('li').addClass('disabled');
@@ -58,6 +45,7 @@ define([
                     //add click listener on menu
                     contextMenuClickHandler('#snapshot-' + layerId + '-settings-menu');
                 }
+
                 e.preventDefault();
             });
 

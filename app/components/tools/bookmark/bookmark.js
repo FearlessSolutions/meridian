@@ -55,8 +55,6 @@ define([
                     messageText: 'No data to display in table'
                 });
             }
-
-
         },
         closeBookmark: function() {
             $bookmarkModal.modal('hide');
@@ -86,6 +84,12 @@ define([
                     minLon: data.rawQuery.minLon
                 };
                 context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
+
+                publisher.publishMessage({
+                    "messageType": "success",
+                    "messageTitle": "Bookmarks",
+                    "messageText": "Bookmark successfully created"
+                });
             });
         },
         updateBookmarks: function() {
@@ -115,11 +119,10 @@ define([
             });
             context.$('.bookmark-list .data-action-edit').on('click', function(event) {
                 var bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
-                console.log(bmData);
             });
             context.$('.bookmark-list .data-action-delete').on('click', function(event) {
                 // Delete the bookmark
-                deleteBookmark(context.$(this).parent().parent().data('bmid'), context.$(this).parent().parent('tr'));
+                deleteBookmark(context.$(this).parent().parent().data('bmid'));
                 exposed.updateBookmarks();
             });
         }
@@ -132,7 +135,7 @@ define([
         });
     }
 
-    function deleteBookmark(bookmarkId, rowToDelete) {
+    function deleteBookmark(bookmarkId) {
         var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
         delete storedBookmarks[bookmarkId];
         context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
