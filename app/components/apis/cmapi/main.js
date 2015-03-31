@@ -8,8 +8,9 @@ define([
     './overlay/cmapi-overlay',
     './feature/cmapi-feature',
     './status/cmapi-status',
-    './clear/cmapi-clear'
-], function(basemap, view, overlay, feature, status, clear) {
+    './clear/cmapi-clear',
+    './cmapi-subscriber',
+], function(basemap, view, overlay, feature, status, clear, subscriber) {
     var context,
         processing = {};
 
@@ -26,6 +27,8 @@ define([
             status.init(context, sendError, emit);
             view.init(context, sendError);
             clear.init(context, sendError);
+
+            subscriber.init(context);
 
             context.sandbox.external.onPostMessage(receive);
 

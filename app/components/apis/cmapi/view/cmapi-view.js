@@ -1,6 +1,7 @@
 define([
-	'./cmapi-view-publisher'
-], function (publisher) {
+	'./cmapi-view-publisher',
+    './cmapi-view-subscriber'
+], function (publisher, subscriber) {
 	var context,
         sendError,
         defaultLayerId;
@@ -11,14 +12,32 @@ define([
             sendError = errorChannel;
             defaultLayerId = context.sandbox.cmapi.defaultLayerId;
             publisher.init(context);
+            subscriber.init(context);
         },
         receive: function(channel, message) {
-            if(receiveChannels[channel]) {
-                receiveChannels[ context.sandbox.cmapi.utils.createChannelNameFunction(channel)](message);
+            var chName  = context.sandbox.cmapi.utils.createChannelNameFunction(channel)
+            if(receiveChannels[chName]) {
+                receiveChannels[chName](message);
             } else {
                 sendError(channel, message, 'Channel not supported');
             }
-        }
+        },
+        mapClick: function(message){
+            var payload;
+            
+            if('lat' in message && 'lon' in message) {
+                payload = {
+                    'lat': message.lat,
+                    'lon': message.lon,
+                    'button': 'left', //only supporting left click - TODO: need to revisit 
+                    'type': 'single' //only supporting single click - TODO: need to revisit 
+                };
+            } 
+            context.sandbox.external.postMessageToParent({
+                'channel': 'map.view.clicked',
+                'message': payload
+            });
+        } 
     };
 
     var receiveChannels= {
@@ -72,15 +91,13 @@ define([
                 }
             });
 
-            context.sandbox.ajax.addActiveAJAX({
-                "newAJAX": newAJAX, 
-                "layerId": layerId
+            context.sandbox.ajax.addActiveAJAJOnX({
+                 'newAJAX': newAJAX, 
+                 'layerId': layerId
             }); //keep track of current AJAX calls
 		},
-		maViewCenterLocation: function(message) {
-			if('location' in message &&
-				'lat' in message.location &&
-				'lon' in message.location){
+		mapViewCenterLocation: function(message) {
+			if('location' in message && 'lat' in message.location && 'lon' in message.location){
 				publisher.setCenter(message.location);
 			} else {
                 sendError('map.view.center.location', message, 'Requires "location":{"lat", "lon"}');
@@ -103,13 +120,13 @@ define([
             }
 
             bounds = {
-                "minLon": message.bounds.southWest.lon,
-                "minLat": message.bounds.southWest.lat,
-                "maxLon": message.bounds.northEast.lon,
-                "maxLat": message.bounds.northEast.lat
+                'minLon': message.bounds.southWest.lon,
+                'minLat': message.bounds.southWest.lat,
+                'maxLon': message.bounds.northEast.lon,
+                'maxLat': message.bounds.northEast.lat
             };
 
-            publisher.publishCenterOnBounds(bounds);
+            publisher.centerOnBounds(bounds);
 		},
         mapViewCenterData: function(message){
             var extent,
@@ -130,16 +147,13 @@ define([
             maxLatDelta = Math.abs(extent.maxLat) * 0.25;
             maxLonDelta = Math.abs(extent.maxLon) * 0.25;
 
-            publisher.publishCenterOnBounds({
-                "minLat": extent.minLat - minLatDelta,
-                "minLon": extent.minLon - minLonDelta,
-                "maxLat": extent.maxLat + maxLatDelta,
-                "maxLon": extent.maxLon + maxLonDelta
+            publisher.centerOnBounds({
+                'minLat': extent.minLat - minLatDelta,
+                'minLon': extent.minLon - minLonDelta,
+                'maxLat': extent.maxLat + maxLatDelta,
+                'maxLon': extent.maxLon + maxLonDelta
             });
-        },
-		mapViewClicked: function(message){
-            sendError('map.view.clicked', message, 'channel not supported');
-        } 
+        }
     };
 
     return exposed;
