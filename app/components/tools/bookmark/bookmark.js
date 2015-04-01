@@ -69,28 +69,37 @@ define([
             if(!storedBookmarks){
                 storedBookmarks = {};
             };
-            context.sandbox.utils.ajax({
-                type: "GET",
-                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + params.layerId
-            })
-            .done(function(data) {
-                storedBookmarks[bookmarkId] = {
-                    bmId: bookmarkId,
-                    // For now, the bookmark name is the same as the Query Name
-                    bmName: data.queryName,
-                    maxLat: data.rawQuery.maxLat,
-                    minLat: data.rawQuery.minLat,
-                    maxLon: data.rawQuery.maxLon,
-                    minLon: data.rawQuery.minLon
-                };
-                context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
-
+            if(bookmarkId in storedBookmarks) {
                 publisher.publishMessage({
-                    "messageType": "success",
+                    "messageType": "warning",
                     "messageTitle": "Bookmarks",
-                    "messageText": "Bookmark successfully created"
+                    "messageText": "Bookmark already exists"
                 });
-            });
+            } else {
+                // saves to bookmarks
+                context.sandbox.utils.ajax({
+                    type: "GET",
+                    url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + params.layerId
+                })
+                .done(function(data) {
+                    storedBookmarks[bookmarkId] = {
+                        bmId: bookmarkId,
+                        // For now, the bookmark name is the same as the Query Name
+                        bmName: data.queryName,
+                        maxLat: data.rawQuery.maxLat,
+                        minLat: data.rawQuery.minLat,
+                        maxLon: data.rawQuery.maxLon,
+                        minLon: data.rawQuery.minLon
+                    };
+                    context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
+
+                    publisher.publishMessage({
+                        "messageType": "success",
+                        "messageTitle": "Bookmarks",
+                        "messageText": "Bookmark successfully created"
+                    });
+                });
+            }
         },
         updateBookmarks: function() {
             bmData = JSON.parse(localStorage.getItem("storedBookmarks"));

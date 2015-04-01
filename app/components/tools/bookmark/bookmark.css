@@ -64,9 +64,12 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .dat
         padding-top:3px;
         font-weight:normal;
     }
+    div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-name input {
+        height:26px;
+    }
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions {
-    width: 80px;
+    width: 84px;
     text-align: center;
     }
     div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-name input,
@@ -76,12 +79,13 @@ div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .dat
     }
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions .pull-right {
         margin-right:3px;
+        /*padding-top:6px; padding-bottom:6px;*/
     }
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .modal-body table .data-actions button {
     padding-top: 2px;
     padding-left:5px; padding-right:5px;
-    padding-bottom: 0.5px;
+    padding-bottom: 2px;
 }
 
 div[data-aura-component='tools/bookmark'] #bookmark-modal .indent {
