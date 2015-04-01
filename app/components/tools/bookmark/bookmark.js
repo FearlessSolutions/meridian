@@ -139,22 +139,6 @@ define([
                 exposed.updateBookmarks();
             });
             context.$('.bookmark-list button[type="submit"]').on('click', function(event) {
-                //var renameBMId = context.$(this).parent().parent().data('bmid');
-                //var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
-                //var newBMName = context.$(this).parent().parent().children('.data-name').children('input').val();
-                //storedBookmarks[renameBMId] = {
-                //    bmId: storedBookmarks[renameBMId].bmId,
-                //    bmName: newBMName,
-                //    maxLat: storedBookmarks[renameBMId].maxLat,
-                //    minLat: storedBookmarks[renameBMId].minLat,
-                //    maxLon: storedBookmarks[renameBMId].maxLon,
-                //    minLon: storedBookmarks[renameBMId].minLon
-                //}
-                //context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
-                //context.$(this).parent().parent().children('.data-name').children('label').text(newBMName).show();
-                //context.$(this).parent().parent().children('.data-name').children('input').hide();
-                //context.$(this).parent().parent().children('.data-actions').children('button').hide();
-                //context.$(this).parent().parent().children('.data-actions').children('.btn-default-icon').show();
                 saveEditBM(context.$(this));
             });
             // the input inside a row when editing the nane
