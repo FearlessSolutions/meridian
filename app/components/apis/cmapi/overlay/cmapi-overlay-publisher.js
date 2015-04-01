@@ -6,7 +6,7 @@ define([
         init: function(thisContext) {
             context = thisContext;
         },
-        publishCreateLayer: function(args) {
+        createLayer: function(args) {
             context.sandbox.emit('map.layer.create', args); 
         },
         publishRemoveLayer: function(args) {
