@@ -38,8 +38,6 @@ define([
                 event.preventDefault();
                 publisher.closeBookmark();
             });
-
-
         },
         openBookmark: function() {
             bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
