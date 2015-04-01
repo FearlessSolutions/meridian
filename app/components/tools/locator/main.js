@@ -5,18 +5,18 @@ define([
     './locator-publisher',
     './locator-subscriber',
     'handlebars'
-], function (locatorToolCSS, locatorToolHBS, locatorTool, locatorToolPublisher, locatorToolSubscriber) {
+], function (componentCSS, componentHBS, component, publisher, subscriber) {
     return {
         initialize: function() {
-            this.sandbox.utils.addCSS(locatorToolCSS, 'tool-locator-component-style');
+            var locatorToolTemplate = Handlebars.compile(componentHBS),
+                html = locatorToolTemplate();
+            this.sandbox.utils.addCSS(componentCSS, 'tool-locator-component-style');
 
-            var locatorToolTemplate = Handlebars.compile(locatorToolHBS);
-            var html = locatorToolTemplate();
             this.html(html);
 
-            locatorToolPublisher.init(this);
-            locatorToolSubscriber.init(this);
-            locatorTool.init(this);
+            publisher.init(this);
+            subscriber.init(this);
+            component.init(this);
         }
     };                
 });
