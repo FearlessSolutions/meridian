@@ -139,22 +139,38 @@ define([
                 exposed.updateBookmarks();
             });
             context.$('.bookmark-list button[type="submit"]').on('click', function(event) {
-                var renameBMId = context.$(this).parent().parent().data('bmid');
-                var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
-                var newBMName = context.$(this).parent().parent().children('.data-name').children('input').val();
-                storedBookmarks[renameBMId] = {
-                    bmId: storedBookmarks[renameBMId].bmId,
-                    bmName: newBMName,
-                    maxLat: storedBookmarks[renameBMId].maxLat,
-                    minLat: storedBookmarks[renameBMId].minLat,
-                    maxLon: storedBookmarks[renameBMId].maxLon,
-                    minLon: storedBookmarks[renameBMId].minLon
+                //var renameBMId = context.$(this).parent().parent().data('bmid');
+                //var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
+                //var newBMName = context.$(this).parent().parent().children('.data-name').children('input').val();
+                //storedBookmarks[renameBMId] = {
+                //    bmId: storedBookmarks[renameBMId].bmId,
+                //    bmName: newBMName,
+                //    maxLat: storedBookmarks[renameBMId].maxLat,
+                //    minLat: storedBookmarks[renameBMId].minLat,
+                //    maxLon: storedBookmarks[renameBMId].maxLon,
+                //    minLon: storedBookmarks[renameBMId].minLon
+                //}
+                //context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
+                //context.$(this).parent().parent().children('.data-name').children('label').text(newBMName).show();
+                //context.$(this).parent().parent().children('.data-name').children('input').hide();
+                //context.$(this).parent().parent().children('.data-actions').children('button').hide();
+                //context.$(this).parent().parent().children('.data-actions').children('.btn-default-icon').show();
+                saveEditBM(context.$(this));
+            });
+            // the input inside a row when editing the nane
+            context.$('.bookmark-list input').on('keydown', function(e) {
+                if (e.keyCode === 13) {
+                    if (context.$(this).val() == '') {
+                        // add error class to input here later
+                        publisher.publishMessage( {
+                            messageType: 'error',
+                            messageTitle: 'Bookmarks',
+                            messageText: 'Bookmark name must have at least one character'
+                        });
+                    } else {
+                        saveEditBM(context.$(this));
+                    }
                 }
-                context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
-                context.$(this).parent().parent().children('.data-name').children('label').text(newBMName).show();
-                context.$(this).parent().parent().children('.data-name').children('input').hide();
-                context.$(this).parent().parent().children('.data-actions').children('button').hide();
-                context.$(this).parent().parent().children('.data-actions').children('.btn-default-icon').show();
             });
             context.$('.bookmark-list button[type="cancel"]').on('click', function(event) {
                 context.$(this).parent().parent().children('.data-name').children('label').show();
@@ -170,6 +186,24 @@ define([
             bmId: bookmarkEntryObject.bmId,
             name: bookmarkEntryObject.bmName
         });
+    }
+    function saveEditBM(submitOrigin) {
+        var renameBMId = $(submitOrigin).parent().parent().data('bmid');
+        var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
+        var newBMName = $(submitOrigin).parent().parent().children('.data-name').children('input').val();
+        storedBookmarks[renameBMId] = {
+            bmId: storedBookmarks[renameBMId].bmId,
+            bmName: newBMName,
+            maxLat: storedBookmarks[renameBMId].maxLat,
+            minLat: storedBookmarks[renameBMId].minLat,
+            maxLon: storedBookmarks[renameBMId].maxLon,
+            minLon: storedBookmarks[renameBMId].minLon
+        }
+        context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
+        $(submitOrigin).parent().parent().children('.data-name').children('label').text(newBMName).show();
+        $(submitOrigin).parent().parent().children('.data-name').children('input').hide();
+        $(submitOrigin).parent().parent().children('.data-actions').children('button').hide();
+        $(submitOrigin).parent().parent().children('.data-actions').children('.btn-default-icon').show();
     }
 
     function deleteBookmark(bookmarkId) {
