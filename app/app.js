@@ -14,10 +14,8 @@ require.config({
         bootstro: 'libs/bootstro/bootstro',
         typeahead: 'libs/bootstrap3-typeahead-3.0.3/bootstrap3-typeahead',
         backbone: 'libs/backbone-1.1.2/backbone',
-        boostrapMultiselect: 'libs/bootstrap-multiselect-0.9.4/bootstrap-multiselect',
         kml2geojson: 'libs/kml2geojson/kml2geojson',
         paginator: 'libs/bootstrap-paginator/bootstrap-paginator.min',
-        datatable: 'libs/dynamic-bootstrap-table/dynamic-bootstrap-table',
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
 //        jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min', // Custom build, check file's header to see what it includes
@@ -51,14 +49,8 @@ require.config({
         jqueryCssWatch: {
             deps: ['jquery']
         },
-        boostrapMultiselect: {
-            deps: ['jquery','bootstrap']
-        },
         paginator:{
             deps: ['jquery','bootstrap']
-        },
-        datatable:{
-            deps: ['jquery','bootstrap', 'paginator']
         },
         jqueryUI: {
             deps: ['jquery']

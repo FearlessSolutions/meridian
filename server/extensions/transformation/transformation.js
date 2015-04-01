@@ -62,9 +62,7 @@ exports.execute = function(params) {
                 .exec(params.callback);
         }
         catch(err) {
-            if(params.callback){
-                callback(null);
-            }
+            console.log(err); //The above callback is still being called on error, and this is causing it to be called twice
         }
     }
 };
@@ -101,4 +99,3 @@ exports.fromGeoJSON = function(file, callback){
         callback(er, data);
     });
 };
-

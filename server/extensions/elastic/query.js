@@ -68,11 +68,6 @@ exports.getResultsByQueryId = function(userName, sessionId, queryId, from, size,
                     },
                     {
                         term: {
-                            sessionId: sessionId
-                        }
-                    },
-                    {
-                        term: {
                             queryId: queryId
                         }
                     }
@@ -217,14 +212,21 @@ exports.getMetadataByUserId = function(userId, callback){
 
 var getJSONByQuery = function(routing, index, type, query, callback){
 
-    var searchObj = {};
-    searchObj.index = index;
-    if (routing) { searchObj.routing = routing; }
+    var searchObj = {
+        index: index
+    };
+    if (routing) {
+        searchObj.routing = routing;
+    }
 
     // spines - This is a hacky fix, take the time to re-analyze usage of this method and
     //          future functions should be designed with pagination in mind
-    if (!query.from) { query.from = 0; }
-    if (!query.size) { query.size = 1000; }
+    if (!query.from) {
+        query.from = 0;
+    }
+    if (!query.size) {
+        query.size = 1000;
+    }
 
     searchObj.body = query;
 
@@ -243,7 +245,9 @@ var getJSONById = function(routing, index, type, id, callback){
         id: id
     };
 
-    if (routing){ req.routing = routing; }
+    if (routing){
+        req.routing = routing;
+    }
 
     client.get(req).then(function(resp){
         callback(null, resp);
@@ -264,7 +268,9 @@ exports.getCountByQuery = function(routing, index, type, body, callback){
         body: body
     };
 
-    if (routing){ req.routing = routing; }
+    if (routing){
+        req.routing = routing;
+    }
 
     client.count(req).then(function(resp){
         callback(null, resp);
