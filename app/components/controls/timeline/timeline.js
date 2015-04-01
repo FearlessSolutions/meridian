@@ -384,17 +384,17 @@ define([
             $querySnapshot.find('.btn-on').addClass('btn-primary');
             $querySnapshot.find('.btn-off').removeClass('btn-primary');
             snapshotMenu.disableOption({
-                    layerId: params.layerId,
-                    channel: 'maplayer.show'
-                });
+                layerId: params.layerId,
+                channel: 'map.layer.show'
+            });
             snapshotMenu.enableOption({
-                    layerId: params.layerId,
-                    channel: 'map.layer.hide'
-                });
+                layerId: params.layerId,
+                channel: 'map.layer.hide'
+            });
             snapshotMenu.enableOption({
-                    layerId: params.layerId,
-                    channel: 'map.zoom.toLayer'
-                });
+                "layerId": params.layerId,
+                "channel": "map.zoom.toLayer"
+            });
         },
         layerToggleOff: function(params) {
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
@@ -426,6 +426,14 @@ define([
                 exposed.hideTimeline();
                 publisher.closeTimeline();
             }
+        },
+        validateBookmark: function(params){
+            if (context.sandbox.dataStorage.datasets[params.layerId].dataService == 'upload'){
+                snapshotMenu.disableOption({
+                    layerId: params.layerId,
+                    channel: 'bookmark.create'
+                });
+            };
         }
     };
 

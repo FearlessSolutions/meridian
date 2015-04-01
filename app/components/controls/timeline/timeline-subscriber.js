@@ -14,7 +14,8 @@ define([
             context.sandbox.on('map.heat.off', timeline.showTimeline);    
             context.sandbox.on('data.clear.all', timeline.clear);
             context.sandbox.on('map.features.plot', timeline.updateCount);
-            context.sandbox.on('data.finished', timeline.markFinished);  
+            context.sandbox.on('data.finished', timeline.markFinished);
+            context.sandbox.on('data.finished', timeline.validateBookmark);
             context.sandbox.on('query.stop', timeline.markStopped);
             context.sandbox.on('data.error', timeline.markError);
             context.sandbox.on('timeline.playback.start', timeline.timelinePlaybackStart);
