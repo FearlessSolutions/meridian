@@ -34,31 +34,43 @@ define([
          * message.bounds{maxLat:INT, maxLon:INT, minLat:INT, minLon:INT} - The AOI box to be created with the layer (optional)
          */
 		"map.overlay.create": function(message) {
-            var layerId =  message.overlayId || defaultLayerId;
-
+            var layerId =  message.overlayId || defaultLayerId, selectable, symbolizers, styleMap;
+            
             if(context.sandbox.dataStorage.datasets[layerId]) {
                 sendError('map.overlay.create', message, 'Layer' +  layerId + ' has already been created');
                 return;
             } else {
                 context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
-                context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
+                context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME; //deafults dataservice name to CMAPI
                 context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
 
-                publisher.publishCreateLayer({
-                    layerId: layerId,
-                    name: message.name,
-                    selectable: message.selectable,
-                    coords: message.coords,
-                    // Temporary overwrite of symbolizers
-                    symbolizers: message.symbolizers,
-                    styleMap: message.styleMap
-                });
+                //grab additional properties for layer creation
+                if(message.properties){
+                    if(message.properties.selectable){ selectable = message.properties.selectable; }
+                    if(message.properties.symbolizers){ symbolizers = message.properties.symbolizers; }
+                    if(message.properties.styleMap){ styleMap = message.properties.styleMap; }
+                }
+                try{
+                    publisher.publishCreateLayer({
+                        layerId: layerId,
+                        name: message.name,
+                        selectable: selectable || false,
+                        symbolizers: symbolizers || null,
+                        styleMap: styleMap || null;
+                    });
 
-                publisher.publishMessage({
-                    messageType: 'success',
-                    messageTitle: 'Layer Management',
-                    messageText: 'A new layer has been created.'
-                });
+                    publisher.publishMessage({
+                        messageType: 'success',
+                        messageTitle: 'Layer Management',
+                        messageText: 'A new layer has been created.'
+                    });
+                } catch (parseE) {
+                    publisher.publishMessage({
+                        messageType: 'error',
+                        messageTitle: 'Layer Management',
+                        messageText: 'Failed to create layer with ID: ' +  layerId;
+                    });
+                }
             }
 		},
         /**
