@@ -219,7 +219,6 @@ define([
 
             delete context.sandbox.stateManager.layers[layerId];
 
-
             context.sandbox.utils.each(layers, function(layerIndex, layer) {
                 if(layer.layerId === layerId) {
                     layers.splice(layerIndex, 1);
@@ -255,20 +254,6 @@ define([
                 }
 
             });
-
-
-
-
-//            context.sandbox.utils.each(allIdentifiedFeatures, function(identifiedFeatureLayerId, identifiedFeatureLayerArray){
-//                context.sandbox.utils.each(identifiedFeatureLayerArray, function(identifiedFeatureIndex, identifiedFeatureId){
-//                    exposed.identifyFeature({
-//                        featureId: identifiedFeatureId,
-//                        layerId: identifiedFeatureLayerId,
-//                        map: map
-//                    });
-//                });
-//            });
-
         },
         /**
          * Remove all of the features from a layer, but leave the layer

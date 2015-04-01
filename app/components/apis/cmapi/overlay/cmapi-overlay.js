@@ -30,8 +30,7 @@ define([
          * @param message
          * message.overlayId - The layerId for the new layer (optional)(default: 'cmapi')
          * message.name - The displayed name of the new layer (optional)(default: '')
-         * message.selectable - If the features in the layer should be selectable (optional)(default: true)
-         * message.bounds{maxLat:INT, maxLon:INT, minLat:INT, minLon:INT} - The AOI box to be created with the layer (optional)
+         * message.properties - Includes selectable, symbolizers, and styleMap properties
          */
 		"map.overlay.create": function(message) {
             var layerId =  message.overlayId || defaultLayerId, selectable, symbolizers, styleMap;
@@ -70,6 +69,8 @@ define([
                         messageTitle: 'Layer Management',
                         messageText: 'Failed to create layer with ID: ' +  layerId;
                     });
+
+                    //TODO add subcriber listener at CMAPI level for failed layer creation
                 }
             }
 		},
@@ -82,7 +83,7 @@ define([
 		"map.overlay.remove": function(message) {
             var layerId =  message.overlayId || defaultLayerId;
 
-            publisher.publishRemoveLayer({
+            publisher.removeLayer({
                 layerId: layerId
             });
         },
@@ -96,7 +97,7 @@ define([
             var layerId =  message.overlayId || defaultLayerId;
 
             context.sandbox.stateManager.layers[layerId].visible = false;
-			publisher.publishHideLayer({
+			publisher.hideLayer({
                 layerId: layerId
             });
 		},
@@ -110,7 +111,7 @@ define([
             var layerId =  message.overlayId || defaultLayerId;
 
             context.sandbox.stateManager.layers[layerId].visible = true;
-			publisher.publishShowLayer({
+			publisher.showLayer({
                 layerId: layerId
             });
 		},

@@ -9,13 +9,13 @@ define([
         createLayer: function(args) {
             context.sandbox.emit('map.layer.create', args); 
         },
-        publishRemoveLayer: function(args) {
+        removeLayer: function(args) {
             context.sandbox.emit('map.layer.delete', args);
         },
-        publishHideLayer: function(args) {
+        hideLayer: function(args) {
             context.sandbox.emit('map.layer.hide', args); 
         },
-        publishShowLayer: function(args) {
+        showLayer: function(args) {
             context.sandbox.emit('map.layer.show', args); 
         },
         publishMessage: function(params) {
