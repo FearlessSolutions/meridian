@@ -76,7 +76,7 @@ define([
                             var domParser=new DOMParser(); //putting KML in DOM for proper parsing by togeojson
                             var kmlDoc=domParser.parseFromString(message.feature,"text/xml");
                             message.feature = toGeoJSON.kml(kmlDoc);
-                        }catch(){
+                        }catch(parseKMLerror){
                             console.debug(parseKMLerror);
                             sendError(channel, message, 'Failure parsing geoJSON message');
                         }

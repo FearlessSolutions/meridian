@@ -24,7 +24,7 @@ require.config({
         slickRowSelectionModel: 'libs/SlickGrid-master/plugins/slick.rowselectionmodel',
         slickpager: 'libs/SlickGrid-master/controls/slick.pager',
         moment: 'libs/momentjs-2.8.3/moment.min',
-        togeojson: 'libs/togeojson/togeojson'
+        togeojson: 'libs/togeojson/togeojson',
         coordinateConverter: 'libs/coordinate-converter/cc'
     },
     shim:{
