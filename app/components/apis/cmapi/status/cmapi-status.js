@@ -31,23 +31,19 @@ define([
         emit: function(channel, message) {
             emit(channel, message);
         },
-        emitViewStatus: function(params) {
-            // TODO: get status from State Manager
-            // var message = {
-            //     bounds:{
-            //         southWest:{
-            //             lat: params.bottom,
-            //             lon: params.left
-            //         },
-            //         northEast:{
-            //             lat: params.top,
-            //             lon: params.right
-            //         }
-            //     },
-            //     center: params.center,
-            //     range: 0 //meters
-            // };
-            // emit('map.status.view', message);
+        statusAbout: function(params) {
+             var message = {
+               'version': this.sandbox.systemConfiguration.version,
+               'type': this.sandbox.systemConfiguration.mapType,
+               'cmapi version': context.sandbox.systemConfiguration.cmapiVersion,
+               'widgetName': context.sandbox.systemConfiguration.appName,
+               'extensions': []
+           };
+
+            context.sandbox.external.postMessageToParent({
+                'channel': 'map.view.clicked',
+                'message': payload
+            });
         }
     };
 
@@ -79,15 +75,6 @@ define([
                 formats: ['geojson']
             };
             emit('map.status.format', message);
-        },
-        "map.status.about": function() {
-           var message = {
-               "version": "2.0",
-               "type": "2-D",
-               "widgetName": context.sandbox.systemConfiguration.appName,
-               "extensions": []
-           };
-           emit('map.status.about', message);
         },
         "map.status.selected": function() {
            // var message = {

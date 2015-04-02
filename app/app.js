@@ -89,7 +89,8 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
         mediator: {maxListeners: 50},
         version: '1.0.0',
         releaseDate: '02/27/2015',
-        cmapiVersion: '1.2.0'
+        cmapiVersion: '1.2.0',
+        mapType: '2D'
     })
     .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')
