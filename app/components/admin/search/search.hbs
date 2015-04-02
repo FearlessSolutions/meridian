@@ -1,0 +1,22 @@
+ <div class="panel panel-default">
+    <div class="panel-body">
+        <h4 class="page-header">Enter Search Criteria</h4>
+        <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+                <select id="searchAdmin_toggleType" class="form-control">
+                    <option value="input1val">User ID</option>
+                    <option value="input2val">Data Source</option>
+                    <option value="input3val">Query Date</option>
+                    <option value="input4val">Expiration Date</option>
+                </select>
+                <input id="searchAdmin_searchDateType" class="form-control" placeholder="Select your Search Type" />
+                <input type="text" class="form-control" placeholder="Enter User ID" id="searchAdmin_userid">
+                <input type="text" class="form-control" placeholder="Enter Datasource" id="searchAdmin_datasource">
+                <input type="text" class="form-control" placeholder="Enter Query Date" id="searchAdmin_sdate">
+                <input type="text" class="form-control" placeholder="Enter Expiration Date" id="searchAdmin_edate">
+            </div>
+            <button type="submit" class="btn btn-primary" id="searchAdmin_submit">Submit</button>
+            <button type="button" class="btn btn-primary" id="searchAdmin_clear">Clear</button>
+            <div id="container-searchmsg" class="alert alert-warning"></div>
+    </div>
+</div>

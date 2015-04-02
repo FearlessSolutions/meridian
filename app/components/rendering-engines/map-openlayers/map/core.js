@@ -74,7 +74,7 @@ define([
             
             context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
             
-            context.sandbox.stateManager.triggerMapStatusReady();
+            context.sandbox.stateManager.map.status.setReady(true);
         },
         /**
          * Zoom In
@@ -107,6 +107,14 @@ define([
                 "minLat": params.minLat,
                 "maxLon": params.maxLon,
                 "maxLat": params.maxLat
+            });
+        },
+        /**
+         * Zoom to Max Extent
+         */
+        zoomToMaxExtent: function() {
+            mapNavigation.zoomToMaxExtent({
+                "map": map
             });
         },
         /**

@@ -9,8 +9,9 @@ define([
     './feature/cmapi-feature',
     './status/cmapi-status',
     './clear/cmapi-clear',
-    'togeojson',
-], function(basemap, view, overlay, feature, status, clear) {
+    './cmapi-subscriber',
+    'togeojson'
+], function(basemap, view, overlay, feature, status, clear, subscriber) {
     var context,
         processing = {};
 
@@ -27,6 +28,8 @@ define([
             status.init(context, sendError, emit);
             view.init(context, sendError);
             clear.init(context, sendError);
+
+            subscriber.init(context);
 
             context.sandbox.external.onPostMessage(receive);
 
@@ -57,9 +60,12 @@ define([
             if(!message || message.widgetName === context.sandbox.systemConfiguration.appName){
                 return;
             }
+
             try {
                 if(message !== '') {
-                    message = JSON.parse(message);
+                    if(typeof message === 'string'){
+                        message = JSON.parse(message);
+                    }
                     if(!message.origin) {
                         message.origin = context.sandbox.cmapi.defaultLayerId;
                     }
@@ -79,8 +85,7 @@ define([
             }catch(parseJSONError) {
                 console.debug(parseJSONError);
                 sendError(channel, message, 'Failure parsing geoJSON message');
-            }
-
+            }            
             if(processing[category]) {
                 processing[category].receive(channel, message);
             } else {
@@ -114,7 +119,6 @@ define([
         };
         emit('map.error', payload);
     }
-
 
     return exposed;
 });

@@ -16,17 +16,20 @@ define([
 ) {
     return {
         initialize: function() {
+            var supportToolTemplate = Handlebars.compile(supportToolHBS),
+                supportHTML = supportToolTemplate(),
+                aboutTemplate = Handlebars.compile(aboutHBS),
+                aboutHTML,
+                html;
+
             this.sandbox.utils.addCSS(supportToolCSS, 'tools-support-component-style');
 
-            var supportToolTemplate = Handlebars.compile(supportToolHBS);
-            var supportHTML = supportToolTemplate();
-            
-            var aboutTemplate = Handlebars.compile(aboutHBS);
-            var aboutHTML = aboutTemplate({
-                "version": this.sandbox.systemConfiguration.version,
-                "releaseDate": this.sandbox.systemConfiguration.releaseDate
+            aboutHTML = aboutTemplate({
+                version: this.sandbox.systemConfiguration.version,
+                releaseDate: this.sandbox.systemConfiguration.releaseDate,
+                cmapiVersion: this.sandbox.systemConfiguration.cmapiVersion
             });
-            var html = supportHTML + aboutHTML
+            html = supportHTML + aboutHTML;
 
             this.html(html);
 

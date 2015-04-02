@@ -1,23 +1,20 @@
-var query = require('./query');
-var save = require('./save');
-var download = require('./download');
-var mapping = require('./mapping');
-var client = require('./client');
-var stream = require('./stream');
-var purge = require('./purge');
-var metadata = require('./metadata');
+var query = require('./query'),
+    save = require('./save'),
+    mapping = require('./mapping'),
+    client = require('./client'),
+    stream = require('./stream'),
+    purge = require('./purge'),
+    metadata = require('./metadata'),
 
-var uuid = require('node-uuid');
+    uuid = require('node-uuid');
 
 exports.init = function(context){
 
-    var app = context.app,
-        config = context.sandbox.config.getConfig();
+    var app = context.app;
 
     context.sandbox.elastic = {
         query: query,
         save: save,
-        download: download,
         mapping: mapping,
         client: client,
         stream: stream,
@@ -38,8 +35,8 @@ exports.init = function(context){
 
     // See public/test.html for examples
     app.get('/feature', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-        var userName = res.get('Parsed-User');
-        var sessionId = res.get('Parsed-SessionId');
+        var userName = res.get('Parsed-User'),
+            sessionId = res.get('Parsed-SessionId');
         query.executeQuery(userName, sessionId, JSON.parse(req.query.q), function(err, response){
             if (err){
                 res.status(500);
@@ -67,9 +64,9 @@ exports.init = function(context){
     });
 
     app.get('/feature/query/:queryId', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-        var userName = res.get('Parsed-User');
-        var sessionId = res.get('Parsed-SessionId');
-        var queryId = req.params.queryId;
+        var userName = res.get('Parsed-User'),
+            sessionId = res.get('Parsed-SessionId'),
+            queryId = req.params.queryId;
 
         query.getResultsByQueryId(userName, sessionId, queryId, function(err, results){
             if (err){
@@ -83,9 +80,9 @@ exports.init = function(context){
     });
 
     app.get('/feature/query/:queryId/session/:sessionId', auth.verifyUser, function(req, res){
-        var userName = res.get('Parsed-User');
-        var sessionId = req.params.sessionId;
-        var queryId = req.params.queryId;
+        var userName = res.get('Parsed-User'),
+            sessionId = req.params.sessionId,
+            queryId = req.params.queryId;
 
         query.getResultsByQueryId(userName, sessionId, queryId,
             req.query.start, req.query.size, function(err, results){
@@ -122,10 +119,10 @@ exports.init = function(context){
      * TODO: Allow the user to pass in a queryId
      */
     app.post('/feature', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-        var geoJSON = req.body.data;
-        var userName = res.get('Parsed-User');
-        var sessionId = res.get('Parsed-SessionId');
-        var queryId = req.body.queryId || uuid.v4();
+        var geoJSON = req.body.data,
+            userName = res.get('Parsed-User'),
+            sessionId = res.get('Parsed-SessionId'),
+            queryId = req.body.queryId || uuid.v4();
         save.writeGeoJSON(
             userName,
             sessionId,
@@ -142,28 +139,6 @@ exports.init = function(context){
                 }
             }
         );
-    });
-
-//    app.get('/results.csv', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-//        download.pipeCSVToResponse(res.get('Parsed-User'), res.get('Parsed-SessionId'), res);
-//    });
-
-    app.head('/results.csv', auth.verifyUser, function(req, res){
-        var idArray = req.query.ids.split(",");
-        query.getCountByQuery(null, config.index.data, null, {query:{"terms":{"queryId":idArray}}}, function(err, results){
-            if (err){
-                res.status(500);
-                res.send(err);
-            } else {
-                res.status(results.count === 0 ? 204 : 200); // 204 = No Content
-                res.send();
-            }
-        });
-
-    });
-
-    app.get('/results.csv', auth.verifyUser, function(req, res){
-        download.pipeCSVToResponseForQuery(res.get('Parsed-User'), req.query.ids.split(","), res);
     });
 
     app.get('/clear', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
@@ -200,6 +175,14 @@ exports.init = function(context){
         );
        
     });
+    // meta / terms
+    app.get('/metadata/term', auth.verifyUser, function(req, res){
+        metadata.getMetadataByTerm(req.query, function(err, results){
+            res.status(err ? 500 : 200);
+            res.send(err ? err : results);
+        });
+    });
+
 
     app.get('/metadata/user', auth.verifyUser, function(req, res){
         metadata.getMetadataByUserId(res.get('Parsed-User'), function(err, results){

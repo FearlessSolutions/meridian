@@ -7,7 +7,7 @@ define([
         MENU_DESIGNATION = 'clear',
         $modal,
         $cancelButton,
-        $clearConfirm;
+        $clearButton;
 
     var exposed = {
         init: function(thisContext) {

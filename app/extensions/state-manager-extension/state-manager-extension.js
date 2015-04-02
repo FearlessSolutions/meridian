@@ -1,22 +1,36 @@
 define([], function(){
+    var readyCallbacks;
+
     var exposed = {
         initialize: function(app) {
+            readyCallbacks = [];
             var mapReadyCallbacks = [],
                 stateManager = {
-                    "map": {
-                        // "visualMode": "cluster" 
+                    map: {
+                        // visualMode: 'cluster' 
                         // Other properties that could be in Map.Status
-                        "status": {
-                            "ready": false
+                        status: {
+                            ready: false,
+                            setReady: function(newReady){
+                                stateManager.map.status.ready = true;
+                                runReadyCallbacks();
+                            },
+                            addReadyCallback: function(newCallback){
+                                if(stateManager.map.status.ready){
+                                    newCallback();
+                                } else{
+                                    readyCallbacks.push(newCallback);
+                                }
+                            }
                         },
-                        "extent": {}
+                        extent: {}
                     },
-                    "layers": {
-                        // "SomeLayer": {   
-                        //     "visible": false,
-                        //     "hiddenFeatures": ["featureId1", "featureId2", ..., "featureIdN"],
-                        //     "identifiedFeatures": ["featureId1", "featureId2", ..., "featureIdN"],
-                        //     "selectedFeatures": ["featureId1", "featureId2", ..., "featureIdN"]
+                    layers: {
+                        // SomeLayer: {   
+                        //     visible: false,
+                        //     hiddenFeatures: ['featureId1', 'featureId2', ..., 'featureIdN'],
+                        //     identifiedFeatures: ['featureId1', 'featureId2', ..., 'featureIdN'],
+                        //     selectedFeatures: ['featureId1', 'featureId2', ..., 'featureIdN']
                         // }
                     },
                     getMapState: function() {
@@ -24,20 +38,6 @@ define([], function(){
                     },
                     setMapState: function(params) {
                         app.sandbox.utils.extend(true, stateManager.map, params.state);
-                    },
-                    triggerMapStatusReady: function(){
-                        stateManager.setMapState({"status": {"ready": true}});
-                        app.sandbox.utils.each(mapReadyCallbacks, function(index, callback) {
-                            callback();
-                        });
-                        mapReadyCallbacks = [];
-                    },
-                    addMapReadyCallback: function(newCallback) {
-                        if(stateManager.getMapState().status.ready) {
-                            newCallback();
-                        } else {
-                            mapReadyCallbacks.push(newCallback);
-                        }
                     },
                     getMapExtent: function() {
                         return stateManager.map.extent;
@@ -65,11 +65,7 @@ define([], function(){
                     },
                     getFeatureVisibility: function(params) {
                         if(stateManager.layers[params.layerId]) {
-                            if(stateManager.layers[params.layerId].hiddenFeatures.indexOf(params.featureId) === -1) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+                            return stateManager.layers[params.layerId].hiddenFeatures.indexOf(params.featureId) === -1;
                         }
                     },
                     getHiddenFeaturesByLayerId: function(params) {
@@ -168,6 +164,14 @@ define([], function(){
 
         }
     };
+
+    function runReadyCallbacks(){
+        readyCallbacks.forEach(function(callback){
+            callback();
+        });
+
+        readyCallbacks = [];
+    }
 
     return exposed;
 

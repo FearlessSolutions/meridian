@@ -26,10 +26,10 @@ define([
         dataView,
         pager,
         $datagridContainer,
+        $searchTextBox,
         $testArea,
         datagridVisible = false,
         GRID_CONTAINER_HEIGHT = 328,
-        MIN_COLUMN_WIDTH = 150,
         HIDDEN_CSS = 'hiddenFeature',
         HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN',
         DEFAULT_PAGE_SIZE = 10,
@@ -38,11 +38,11 @@ define([
         DEFAULT_GRID_OPTIONS = {
             enableCellNavigation: true,
             enableColumnReorder: true,
-            defaultColumnWidth: 150,
-            fullWidthRows: true,
             autoEdit: false,
             editable:false,
+            forceFitColumns: true,
             syncColumnCellResize: true,
+            fullWidthRows: true,
             headerRowHeight:20,
             defaultFormatter: gridFormatter,
             multiSelect: false //TODO remove this for multiselect.
@@ -61,6 +61,7 @@ define([
             datagridContextMenu.init(context);
             $datagridContainer = context.$('#datagridContainer');
             $testArea = context.$('#test-area');
+            $searchTextBox = context.$('#grid-search-text');
 
             context.$('.close').on('click', function(){
                 publisher.closeDatagrid();
@@ -88,7 +89,7 @@ define([
                 context.sandbox.utils.each(selectedIdsByLayer, function(layerId, selectedFeatures){
                     context.sandbox.utils.each(selectedFeatures, function(index, selectedFeatureId){
                         var rowIndex = dataView.getRowById(selectedFeatureId);
-                        if(rowIndex != undefined){ //If the row is not showing, this will be undefined
+                        if(rowIndex !== undefined){ //If the row is not showing, this will be undefined
                             newSelectedRows.push(rowIndex);
                         }
                     });
@@ -152,7 +153,7 @@ define([
             });
 
             context.$('#grid-search-btn').on('click', function(e){
-                var searchString = context.$('#grid-search-text').val();
+                var searchString = $searchTextBox.val().toLowerCase();
                 Slick.GlobalEditorLock.cancelCurrentEdit(); //Stop any edits taking place
 
                 dataView.setFilterArgs({
@@ -162,12 +163,16 @@ define([
             });
 
             //If the user hits 'enter' while entering a search, run the search
-            context.$('#grid-search-text').on('keydown', function(e){
+            $searchTextBox.on('keydown', function(e){
                 var key = e.keyCode;
 
                 if(key === ENTER_KEY){
                     context.$('#grid-search-btn').click();
                 }
+            });
+            $(window).resize(function(){
+                // redraws grid on browser resize
+                grid.resizeCanvas();
             });
         },
         toggleGrid: function() {
@@ -201,8 +206,12 @@ define([
             datagridVisible = false;
         },
         clear: function() {
-            grid.setItems([]);
-            grid.setColumns([]);
+            grid.setColumns([]); //Update columns
+            dataView.setItems([]); //Update rows
+            $searchTextBox.val('');
+            dataView.setFilterArgs({
+                searchString: ''
+            });
 
             exposed.close();
         },
@@ -308,11 +317,7 @@ define([
                     var featureId = feature.attributes.featureId,
                         item = dataView.getItemById(featureId);
 
-                    if(layerState.hiddenFeatures.indexOf(featureId) === -1){ //Not in the hidden feature array
-                        item[HIDDEN_PROPERTY] = false;
-                    }else{
-                        item[HIDDEN_PROPERTY] = true; //The layer isn't hidden, but the feature still is.
-                    }
+                    item[HIDDEN_PROPERTY] = layerState.hiddenFeatures.indexOf(featureId) !== -1;
 
                     dataView.updateItem(featureId, item);
                 });
@@ -330,20 +335,18 @@ define([
         var columnHeadersMetadata = context.sandbox.dataStorage.getColumns(),
             columnHeaders = [];            //Set up headers. They should already be in the correct order.
             
-            var defaultColumnWidth = ($(window).width())/columnHeadersMetadata.length;
-            
         context.sandbox.utils.each(columnHeadersMetadata, function (columnHeaderIndex, columnHeaderMetadata) {
             var width;
 
             $testArea.html('<span>' + columnHeaderMetadata.displayName + '</span>'); //This is the only way to find text length. Is styled  the same as header
             width = $testArea.find('span').width() + 30;
+            width = width < 150 ? 150 : width;
 
-            //console.log(width);
             columnHeaders.push({
                 id: columnHeaderMetadata.property + columnHeaderMetadata.displayName,
                 name: columnHeaderMetadata.displayName,
                 field: columnHeaderMetadata.property,
-                width: defaultColumnWidth,
+                minWidth: width,
                 sortable: true
             });
         });
@@ -432,7 +435,7 @@ define([
                 cssClasses: HIDDEN_CSS
             };
         }else{
-            return {}
+            return {};
         }
     }
 
@@ -444,13 +447,11 @@ define([
             found = false;
 
         context.sandbox.utils.each(item, function(field, value){
-            if (typeof value !== 'undefined' && value != null
-                && value.toString().toLowerCase().indexOf(searchString) != -1) {
+            if (typeof value !== 'undefined' && value !== null && value.toString().toLowerCase().indexOf(searchString) != -1) {
                 found = true;
                 return false; //this breaks the $.each loop
             }
         });
-
 
         return found;
     }

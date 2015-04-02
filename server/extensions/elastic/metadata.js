@@ -26,6 +26,19 @@ exports.getMetadataBySessionId = function(userId, sessionId, callback){
         }
     });
 };
+exports.getMetadataByTerm = function(userId, callback){
+    query.getMetadataByTerm(userId, function(err, meta){
+        if (err) {
+            callback(err);
+        } else {
+            var ret = {};
+            meta.hits.hits.forEach(function(ele){
+                ret[ele._source.queryId] = new MetadataBuilder(ele._source);
+            });
+            callback(null, ret);
+        }
+    });
+};
 
 exports.getMetadataByUserId = function(userId, callback){
     query.getMetadataByUserId(userId, function(err, meta){
@@ -43,7 +56,7 @@ exports.getMetadataByUserId = function(userId, callback){
 
 function saveMetadata(userName, sessionId, queryId, metadata, callback){
     save.writeMetadata(userName, sessionId, queryId, metadata, callback);
-};
+}
 
 
 // TODO: ExpireAt should be calculated from a config and that config should
@@ -62,10 +75,10 @@ exports.create = function(userName, sessionId, queryId){
         queryName: "",
         rawQuery: {},
         dataSource: ""
-    }
+    };
 
     return new MetadataBuilder(seedMeta);
-}
+};
 
 var MetadataBuilder = function(seedMeta){
     var meta = seedMeta;

@@ -17,9 +17,9 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-dialog 
     margin: 15% auto;
     width: 700px;
 }
-div[data-aura-component='tools/data-history'] #data-history-modal .modal-footer {
+/*div[data-aura-component='tools/data-history'] #data-history-modal .modal-footer {
     text-align:center;
-}
+}*/
 div[data-aura-component='tools/data-history'] #data-history-modal {
     overflow-y: hidden;
 }
@@ -98,7 +98,7 @@ div[data-aura-component='tools/data-history'] #data-history-modal .modal-body ta
   text-align: right;
 }
 div[data-aura-component='tools/data-history'] #data-history-modal .modal-body table .data-actions {
-  width: 125px;
+  width: 145px;
   text-align: center;
 }
 

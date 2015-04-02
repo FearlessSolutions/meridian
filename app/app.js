@@ -6,20 +6,17 @@ require.config({
         underscore: 'bower_components/underscore/underscore',
         jquery: 'bower_components/jquery/dist/jquery',
         bootstrap: 'libs/bootstrap-3.2.0/bootstrap',
+        daterangepicker: 'libs/bootstrap-daterangepicker-master/daterangepicker',
         toastr: 'libs/toastr-2.0.1/toastr',
-//        jqueryDrag: 'libs/jquery-drag-0.1.0/jquery-drag',
         jqueryDrag: 'libs/SlickGrid-master/lib/jquery.event.drag-2.2',
         jqueryDrop: 'libs/SlickGrid-master/lib/jquery.event.drop-2.2',
         bootstro: 'libs/bootstro/bootstro',
         typeahead: 'libs/bootstrap3-typeahead-3.0.3/bootstrap3-typeahead',
         backbone: 'libs/backbone-1.1.2/backbone',
-        boostrapMultiselect: 'libs/bootstrap-multiselect-0.9.4/bootstrap-multiselect',
         kml2geojson: 'libs/kml2geojson/kml2geojson',
         paginator: 'libs/bootstrap-paginator/bootstrap-paginator.min',
-        datatable: 'libs/dynamic-bootstrap-table/dynamic-bootstrap-table',
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
-//        jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min', // Custom build, check file's header to see what it includes
         jqueryUI: 'libs/jquery-ui-1.11.2.custom/jquery-ui.min', // Custom build, check file's header to see what it includes
         slickcore: 'libs/SlickGrid-master/slick.core',
         slickgrid: 'libs/SlickGrid-master/slick.grid',
@@ -28,6 +25,7 @@ require.config({
         slickpager: 'libs/SlickGrid-master/controls/slick.pager',
         moment: 'libs/momentjs-2.8.3/moment.min',
         togeojson: 'libs/togeojson/togeojson'
+        coordinateConverter: 'libs/coordinate-converter/cc'
     },
     shim:{
         aura: {
@@ -40,6 +38,9 @@ require.config({
             deps: ['jquery','bootstrap'],
             exports: 'bootstro'
         },
+        daterangepicker: {
+            deps:[ 'jquery', 'bootstrap', 'moment']
+        },
         typeahead: {
             deps: ['jquery'],
             exports: 'typeahead'
@@ -47,14 +48,8 @@ require.config({
         jqueryCssWatch: {
             deps: ['jquery']
         },
-        boostrapMultiselect: {
-            deps: ['jquery','bootstrap']
-        },
         paginator:{
             deps: ['jquery','bootstrap']
-        },
-        datatable:{
-            deps: ['jquery','bootstrap', 'paginator']
         },
         jqueryUI: {
             deps: ['jquery']
@@ -76,7 +71,7 @@ require.config({
         },
         togeojson: {
             deps: ['jquery']
-        },
+        }
     }
 });
 
@@ -90,12 +85,13 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     });
     
     Aura({
-        "debug": true,
-        "appName": "Meridian",
-        "sources": {"default": "components"},
-        "mediator": {"maxListeners": 50},
-        "version": "0.5.4",
-        "releaseDate": "01/13/2015"
+        debug: true,
+        appName: 'Meridian',
+        sources: {default: 'components'},
+        mediator: {maxListeners: 50},
+        version: '1.0.0',
+        releaseDate: '02/27/2015',
+        cmapiVersion: '1.2.0'
     })
     .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')
@@ -111,13 +107,17 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/support-configuration-extension/support-configuration-extension')
     .use('extensions/icon-extension/icon-extension')
     .use('extensions/locator-extension/locator-query-extension')
-    .use('extensions/locator-extension/locator-formatData-extension')
+    .use('extensions/exports/export-utils/export-utils')
+    .use('extensions/exports/geojson-extension/geojson-extension')
+    .use('extensions/exports/csv-extension/csv-extension')
+    .use('extensions/exports/kml-extension/kml-extension')
+    .use('extensions/exports/googlemaps-extension/googlemaps-extension')
     .use('extensions/data-services/mock-extension/mock-extension')
     .use('extensions/data-services/fake-extension/fake-extension')
-    .use('extensions/exports/export-file-extension/export-file-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
     .use('extensions/upload-data-extension/upload-data-extension')
-    .start({ "components": "body" })
+
+    .start({ components: 'body' })
     .then(function(){
         $('#left-side-menu').css('display','table').animate({
             left: "0px"

@@ -9,7 +9,8 @@ define([
         dataByName = {},
         $locator,
         $locatorButton,
-        $locatorInput;
+        $locatorInput,
+        regEx = /([0-9])/;
 
     var exposed = {
         init: function(thisContext) {
@@ -17,7 +18,6 @@ define([
             $locator = context.$('#locator');
             $locatorButton = context.$('#locator .btn');
             $locatorInput = context.$('#locator input');
-            $locatorButton.attr('disabled', true);      /*Valid location must be selected before button is enabled.*/
 
             //Activate bootstrap tooltip. 
             //No need to specify container to make the tooltip appear in one line. 
@@ -30,26 +30,49 @@ define([
             });
 
             $locatorButton.on('click', function(event) {
-                var input = $locatorInput.val();
+                var coorindatesGeoJSON;
                 event.preventDefault();
 
-                if(selectedLocation === null || input === '') {/*Extra precaution, button should be disabled anyways.*/
+                if(selectedLocation === null) {
                     publisher.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Search',
-                        messageText: 'No valid location selected. Please try again.'
+                        messageText: 'No valid location selected. Please select an option from the dropdown.'
                     });
-                    $locatorButton.attr('disabled', true); 
-                }else if('lat' in selectedLocation) { //It is coordinates
-                    exposed.markLocation(selectedLocation);
-                }else {
-                    exposed.goToLocation();
+                }else if(selectedLocation === 'error') { //It is a coordinate error
+                    publisher.publishMessage({
+                        messageType: 'warning',
+                        messageTitle: 'Search',
+                        messageText: 'Incorrect or unsupported coordinate format.'
+                    });
+                    selectedLocation = null;
+                }else if(selectedLocation.dd) {
+                    coorindatesGeoJSON = context.sandbox.locator.createCoordinatesGeoJSON(selectedLocation);
+                    markLocation(coorindatesGeoJSON);
+                    goToLocation(coorindatesGeoJSON);
+                    $locatorButton.attr('disabled', false);
+                } else{
+                    context.sandbox.locator.createLocationGeoJSON(selectedLocation, function(error, locationGeoJSON){
+                        if(error){
+                            publisher.publishMessage({
+                                messageType: 'error',
+                                messageTitle: 'Search',
+                                messageText: 'Error creating location marker.'
+                            });
+                        } else {
+                            markLocation(locationGeoJSON);
+                            goToLocation(locationGeoJSON);
+                        }
+                        selectedLocation = null;
+                    });
                 }
             });
 
             $locatorInput.on('keydown', function(e) {
                 if (e.keyCode === 13) {
-                    $locatorButton.click();
+                    if (!$('.typeahead').is(':visible')) {
+                        $locatorButton.click();
+                    }
                 }
             });
 
@@ -57,62 +80,58 @@ define([
             $locatorInput.attr('data-provide', 'typeahead');
             $locatorInput.typeahead({
                 items: 15,
-
-                /* Source occurs after a new character is added. Defaults to 1.
-                 * change selectedLocation to null after evey key event and disable search button.
-                 * To prevent the ajax call from happening after every new character, a
-                 * timeout delay has been added.*/
+                //Source occurs after a new character is added. Defaults to 1.
+                //change selectedLocation to null after evey key event and disable search button.
+                //To prevent the ajax call from happening after every new character, a
+                //timeout delay has been added.
+                //query is always a string.
                 source: function(query,process) {
+                    //null when it doesnt match.
+                    //if input has a single number, it will be considered a coordinate.
+                    var coordinates = query.match(regEx);
                     selectedLocation = null;
-                    $locatorButton.attr('disabled', true);
-
-                    if(timeout) {
+                    if(timeout){
                         clearTimeout(timeout);
                     }
-                    timeout = setTimeout(function() {
-                        var content = $locatorInput.val().length || null;
 
-                        /*No need to query empty input*/
-                        if(content !== null) {
-
-                            //Handle both coordinates and places
-                            if(query.match(/^-?\d/)) {
-                                context.sandbox.locator.queryCoordinates(query, function(coordinates){
-                                    if(coordinates){
-                                        selectedLocation = coordinates;
-                                        $locatorButton.attr('disabled', false);
-                                    }
-                                });
-                            }else { 
+                    if(coordinates){
+                        //selectedLocation comes back as an object containing all
+                        //possible conversions of the coordinate provided.
+                        selectedLocation = context.sandbox.utils.convertCoordinate(coordinates.input);
+                        $locatorInput.typeahead('hide');//Precautionary typeahead hide.
+                    } else if(query !== ''){
+                        //query has no numbers. A place look up is assumed.
+                        timeout = setTimeout(function() {
+                            /*No need to query empty input*/
+                            if(query) {
                                 publisher.publishMessage({
                                     messageType: 'info',
                                     messageTitle: 'Looking up suggestions',
                                     messageText: 'Validating ...'
                                 });
+                                //get the name data.
                                 context.sandbox.locator.query(query, function(data){
-                                   var formattedData = context.sandbox.locator.formatData(data);
-                                    if(formattedData.names === []) {
+                                    if(data.names === []) {
                                         publisher.publishMessage({
                                             messageType: 'warning',
                                             messageTitle: 'Search Results',
                                             messageText: 'No results/suggestions found.'
                                         });
                                     } else {
-                                        dataByName = formattedData.data;
+                                        dataByName = data.data;
                                     }
-                                    process(formattedData.names); 
-                                }); 
-                                
-                            }                            
-                        }
-                    }, 800);
+                                    process(data.names);
+                                });
+                            }
+                        }, 800);
+                    }
                 },
                 /**
-                 * Overwrite matcher function to always show values returned by the service.If the service 
-                 * returned a value, show it to the user. Content array is built with values returned by the server, 
-                 * no need to filter results more than once. 
+                 * Overwrite matcher function to always show values returned by the service.If the service
+                 * returned a value, show it to the user. Content array is built with values returned by the server,
+                 * no need to filter results more than once.
                  * @param  {String} item Value the user writes in the text area.
-                 * @return {Boolean}      Tells typeahead if there is a value in our array that matches.   
+                 * @return {Boolean}      Tells typeahead if there is a value in our array that matches.
                  */
                 matcher: function(item){
                     return true;
@@ -121,16 +140,15 @@ define([
                 /* Called by bootstrap once the user selects an item.
                  * Must return item.
                  * Item is added to the input box.*/
-                updater:function(item) {
-                    selectedLocation = dataByName[item];
+                updater:function(name) {
+                    selectedLocation = dataByName[name];
                     publisher.publishMessage({
                         messageType: 'success',
                         messageTitle: 'Search',
                         messageText: 'Valid location selected.'
                     });
 
-                    $locatorButton.attr('disabled', false);
-                    return item;
+                    return name;
                 }
             });
 
@@ -142,28 +160,36 @@ define([
                 }, 10);
             });
         },
-        goToLocation: function() {
-            publisher.zoomToLocation({
-                minLon: selectedLocation.minLon,
-                minLat: selectedLocation.minLat,
-                maxLon: selectedLocation.maxLon,
-                maxLat: selectedLocation.maxLat
-            });
-            $locatorInput.val('');
-            $locatorButton.attr('disabled',true);
-        },//end of goToLocation
-        markLocation: function(coordinates) {
-            publisher.markLocation({
-                layerId: 'static_geolocator',
-                data: [context.sandbox.utils.createGeoJson(coordinates)]
-            });
-            publisher.setMapCenter(coordinates);
-        },
         clear: function() {
             clearTimeout(timeout);
             $locatorInput.val('');
         }
     };
+
+    function goToLocation(locationGeoJSON){
+        if(locationGeoJSON.bbox){
+            publisher.zoomToLocation(locationGeoJSON.bbox);
+        } else if(locationGeoJSON.geometry.type === 'Point') {
+            publisher.setMapCenter({
+                lat: locationGeoJSON.geometry.coordinates[1],
+                lon: locationGeoJSON.geometry.coordinates[0]
+            });
+        } else {
+            publisher.zoomToFeature({
+                layerId: 'static_geolocator',
+                featureIds: [locationGeoJSON.featureId]
+            });
+        }
+
+        $locatorInput.val('');
+    }
+
+    function markLocation(locationGeoJSON){
+        publisher.markLocation({
+            layerId: 'static_geolocator',
+            data: [locationGeoJSON]
+        });
+    }
 
     return exposed;
 });

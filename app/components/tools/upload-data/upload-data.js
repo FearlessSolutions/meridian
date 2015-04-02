@@ -14,6 +14,7 @@ define([
         $file,
         $dummyFile,
         $submit,
+        $zoom,
         RESTORE_PAGE_SIZE = 500;
 
     var exposed = {
@@ -23,8 +24,9 @@ define([
             $file = context.$('#file');
             $dummyFile = context.$('#dummy-file');
             $submit = context.$('#upload-submit');
+            $zoom = context.$('#zoomOnUpload');
 
-            $submit.attr('disabled', true); //Start with submit disabled until a file is added
+            $submit.prop('disabled', true); //Start with submit disabled until a file is added
 
             $modal.modal({
                 backdrop: true,
@@ -51,7 +53,7 @@ define([
                 if(file){
                     if(file.size > FILE_SIZE_LIMIT){
                         $dummyFile.parent().addClass('has-error');
-                        $submit.attr('disabled', true);
+                        $submit.prop('disabled', true);
                         publisher.publishMessage({
                             messageType: 'error',
                             messageTitle: 'Data Upload',
@@ -68,15 +70,15 @@ define([
 
                         if(isValidFileExtension){
                             removeFileError();
-                            $submit.attr('disabled', false);
+                            $submit.prop('disabled', false);
                         }else{
                             setFileError();
-                            $submit.attr('disabled', true);
+                            $submit.prop('disabled', true);
                         }
                     }
                 }else{
                     removeFileError(); //'no file' is valid, or at least not an error
-                    $submit.attr('disabled', true);
+                    $submit.prop('disabled', true);
                 }
             });
             
@@ -103,6 +105,7 @@ define([
                     //Create a new collection for the data
                     context.sandbox.dataStorage.datasets[queryId] = new Backbone.Collection();
                     context.sandbox.dataStorage.datasets[queryId].dataService = DATASOURCE_NAME;
+                    context.sandbox.dataStorage.datasets[queryId].layerName = queryName;
 
                     createLayer({
                         queryId: queryId,
@@ -137,6 +140,9 @@ define([
                                 sessionId: context.sandbox.sessionId,
                                 shouldZoom: shouldZoom
                             }, 0);
+                            $dummyFile.val('');
+                            $submit.prop('disabled', true);
+                            $zoom.prop('checked', false);
                         }, function(status, jqXHR){ //Error callback
                             markQueryError(queryId, queryName, status);
                         }
@@ -202,7 +208,7 @@ define([
         clear: function() {
             var queryId;
             $dummyFile.val('');
-            $submit.attr('disabled', true);
+            $submit.prop('disabled', true);
 
             for(queryId in context.sandbox.dataStorage.datasets){
                 if(context.sandbox.dataStorage.datasets[queryId].dataService === DATASOURCE_NAME){
@@ -388,6 +394,7 @@ define([
     function createLayer(params){
         context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
         context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
+        context.sandbox.dataStorage.datasets[params.queryId].layerName = params.queryName;
 
         publisher.createLayer({
             layerId: params.queryId,

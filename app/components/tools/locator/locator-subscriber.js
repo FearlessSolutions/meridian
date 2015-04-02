@@ -1,12 +1,12 @@
 define([
 	'./locator'
-], function (locatorTool) {
+], function (component) {
     var context;
 
 	var exposed = {
         init: function(thisContext){
             context = thisContext;
-            context.sandbox.on('data.clear.all', locatorTool.clear);
+            context.sandbox.on('data.clear.all', component.clear);
         }
     };	
 

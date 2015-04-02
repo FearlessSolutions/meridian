@@ -1,7 +1,6 @@
 define([
 	'./cmapi-feature-publisher',	
-	'./cmapi-feature-subscriber',
-    'togeojson'
+	'./cmapi-feature-subscriber'
 ], function (publisher, subscriber) {
 	var context,
 		defaultLayerId,
@@ -34,8 +33,7 @@ define([
 		"map.feature.plot": function(channel, message) { // TODO: if featureId already exists, remove it and replot
             if(message === '') {
                 sendError(channel, message, 'No message payload supplied');
-            } else {
-                //plot all features in payload
+            }else{
                 plotFeatures(message);
             }
 		},
@@ -128,21 +126,14 @@ define([
             layerId: message.overlayId,
             data: message.feature.features
         });    
-        
+
         //zoom to feature if specified in payload
         if(message.zoom) {
             publisher.zoomToFeatures({
                 "layerId": message.overlayId,
             });
         }
-    }
 
-    function plotFeaturesByURL(message) {
-        
-    }
-
-    function unplotFeatures(message) {
-        
     }
 
     return exposed;

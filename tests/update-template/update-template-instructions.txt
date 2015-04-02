@@ -1,0 +1,69 @@
+To delete all mock metadata:
+
+DELETE http://localhost:9200/metadata/_query
+{
+  "query": {
+    "term": {
+      "dataSource": "mock"
+    }
+  }
+}
+
+To delete all mock feautures:
+
+DELETE http://localhost:9200/features/mock/
+
+TESTING:
+
+1. Wipe out and restart your elastic
+2. Install HEAD
+3. Open up some other branch
+4. Run both mock and fake queries
+5. Look at HEAD's overview tab
+5.a. select features index's info dropdown --> 'Index Metadata'
+5.b. Looking at the mock entry, you should see several fields with 'type: string', but no "index": "not_analyzed" (there are some with it, and some with other types)
+6. Look at the browser tab
+6.a There should be some metadata entries with dataSource = mock
+6.b There should be some entries with mock as the datasource
+7. In HEAD's Any Request tab
+7.a. change the url to http://localhost:9200/metadata/
+7.b. Put _query in the box under the url
+7.c. Change the dropdown to DELETE
+7.d. Put
+{
+  "query": {
+    "term": {
+      "dataSource": "mock"
+    }
+  }
+}
+ in the big text box
+7.a.5 Hit Request
+8. In the Browser tab, there should not be any more metadata entries with mock as the dataSource
+9. Go back to the Any Request tab
+9.a. Change the url to  http://localhost:9200/features/mock/
+9.b. Clear out the smaller box where you put '_query' last time
+9.c. change the dropdown to DELETE
+9.d. Hit Request
+10. Go back to the Overview tab.
+11. Hit refresh
+12. select features index's info dropdown --> 'Index Metadata'
+13. Notice that mock is not in there at all
+14. Go to the browser tab
+15. There should not be any features with mock as the datasource
+16. Re-start node
+17. Go back to the overview tab
+18. Hit refresh
+19. select features index's info dropdown --> 'Index Metadata'
+20.a. Mock should be in there, but only with limited fields. (no classification)
+20.b Mock should also have a property called 'dynamic_templates'
+21. Run a mock query in meridian
+22. In the overview tab, hit refresh
+23. select features index's info dropdown --> 'Index Metadata'
+24. All string fields for mock should have "index": "not_analyzed"
+
+Please make sure to follow these instructions exactly, and to hit refesh a lot.
+
+
+
+

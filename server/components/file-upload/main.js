@@ -1,16 +1,13 @@
 // Standard NodeJS Libraries
-var fs = require('fs');
+var fs = require('fs'),
 
 // NPM Libraries
-var _ = require('underscore');
-var uuid = require('node-uuid');
-var path = require('path');
-var os = require('os');
-
-
-
-var DATASOURCE_NAME = 'upload';
-var context;
+     _ = require('underscore'),
+    uuid = require('node-uuid'),
+    path = require('path'),
+    os = require('os'),
+    DATASOURCE_NAME = 'upload',
+    context;
 /**
  * Entry point for initialized the application
  *
@@ -22,12 +19,12 @@ exports.init = function(thisContext){
         auth = context.sandbox.auth,
         save = context.sandbox.elastic.save, //TODO save
         ogrTransform = context.sandbox.transform,
-        mimetypeToTransformFunctionMap;
+        fileTypeToTransformFunctionMap;
 
-    mimetypeToTransformFunctionMap = {
-        "text/csv": ogrTransform.fromCSV,
-        "application/octet-stream": ogrTransform.fromGeoJSON,
-        "application/vnd.google-earth.kml+xml": ogrTransform.fromKML
+    fileTypeToTransformFunctionMap = {
+        csv: ogrTransform.fromCSV,
+        geojson: ogrTransform.fromGeoJSON,
+        kml: ogrTransform.fromKML
     };
 
     /**
@@ -58,18 +55,17 @@ exports.init = function(thisContext){
             queryName = req.param('queryName'),
             classification = req.param('classification');
 
-
         //Set up busboy listeners. The piping is required to give the listeners something to listen to.
         //The req.busboy property is added by the connect-busboy middleware
         req.pipe(req.busboy);
         req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
             //Run the correct function for the mimetype to convert fine to geoJSON
-            var mimeTypeTransformFunction = mimetypeToTransformFunctionMap[mimetype];
-            if(mimeTypeTransformFunction) {
-                    mimeTypeTransformFunction(file, function (er, data) {
+            var fileTypeToTransformFunction = fileTypeToTransformFunctionMap[filetype];
+            if(fileTypeToTransformFunction) {
+                fileTypeToTransformFunction(file, function (er, data) {
 
                         if (er) {
-                            console.log("error in parser", er)
+                            console.log("error in parser", er);
                             res.status(500);
                             res.send(er);
                         } else {
@@ -82,7 +78,7 @@ exports.init = function(thisContext){
                                         saveRecursive;
 
                                     _.each(data.features, function (feature, index) {
-                                        var featureId = feature.properties.featureId || feature.properties.id || uuid.v4();
+                                        var featureId = uuid.v4();
 
                                         feature.featureId = featureId;
                                         feature.properties.featureId = featureId;
@@ -107,8 +103,6 @@ exports.init = function(thisContext){
                                         save.writeGeoJSON(userName, sessionId, queryId, DATASOURCE_NAME, chunk, function (err) {
                                             if (err) {
                                                 callback(err);
-
-                                                return;
                                             } else {
                                                 saveRecursive(chunkIndex + CHUNK_SIZE, featuresToProcess, callback);
                                             }
@@ -138,9 +132,9 @@ exports.init = function(thisContext){
                         }
                     });
             }else {
-                console.log('error: Mimetype ' + mimetype + ' not supported');
+                console.log('Error: Filetype ' + filetype + ' not supported');
                 res.status(500);
-                res.send('error: Mimetype ' + mimetype + ' not supported');
+                res.send('Error: Filetype ' + filetype + ' not supported');
             }
         });
     });

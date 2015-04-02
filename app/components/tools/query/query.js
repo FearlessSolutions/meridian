@@ -182,6 +182,12 @@ define([
             }else{
                 closeMenu();
             }
+        },
+        populateQueryFromParams: function(params){
+           $modal.modal('toggle');
+           exposed.populateCoordinates(params.queryData);
+           context.$('#query-name').val(params.queryName);
+           context.$('#query-source').val(params.querySource);
         }
     };
 

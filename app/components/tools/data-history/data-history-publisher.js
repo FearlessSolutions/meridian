@@ -24,6 +24,9 @@ define([
         },
         publishMessage: function(params) {
             context.sandbox.emit('message.publish', params); 
+        },
+        requeryDataset: function(params) {
+            context.sandbox.emit('data.requery', params); 
         }
     };
 

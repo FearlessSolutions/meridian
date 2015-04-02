@@ -1,137 +1,164 @@
 define([
-	'./locator-configuration'
-], function(locatorConfiguration){
-
-    var COORDINATE_SYSYEMS = [
-        {
-            "Name": "Decimal Degrees(DD)",
-            "convert": function(input){
-                var coordinates = input.replace(/\s/g, '').split(',');
-
-                return {
-                    "lon": parseFloat(coordinates[locatorConfiguration.lonIndex], 10),
-                    "lat": parseFloat(coordinates[locatorConfiguration.latIndex], 10)
-                };
-            },
-            "regex": /(^-?)\d+(\.\d+)?,[\s-]*-?\d+(\.\d+)?\s*$/
-        },
-        {
-            "Name": "DegreesMinutes.Seconds (DMS)",
-            "convert": function(input){
-                var north = input.match(/^\d{6}(\.\d+)?N/),
-                    south = input.match(/^\d{6}(\.\d+)?S/),
-                    west = input.match(/\d{6,7}(\.\d+)?W$/),
-                    east = input.match(/\d{6,7}(\.\d+)?E$/);
-
-                if((north || south) && (west || east)){
-                    var coordinates = {
-                        "lat": 0,
-                        "lon" : 0
-                    };
-
-                    if(north){
-                        coordinates.lat = parseCoordinate(north[0]);
-                    }else{ //south
-                        coordinates.lat = parseCoordinate(south[0]) * (-1); //South is negative
-                    }
-
-                    if(east){
-                        coordinates.lon = parseCoordinate(east[0]);
-                    }else{ //West
-                        coordinates.lon = parseCoordinate(west[0]) * (-1); //West is negative
-                    }
-
-                    return coordinates;
-                }else{
-                    return null;
-                }
-
-                /**
-                 * Parses a part of DegreeMinutes.Seconds
-                 * @param coordinate The part that was parsed
-                 */
-                function parseCoordinate(coordinateString){
-                    var splitAtDecimal = coordinateString.split('.'),
-                        integerStringArray = splitAtDecimal[0].split(''),
-                        degrees,
-                        minutes,
-                        seconds,
-                        coordinate;
-
-                    //Split the coordinate as String/Array
-                    seconds = integerStringArray.splice(-2).concat(['.'], splitAtDecimal[1].split(''));
-                    seconds = parseFloat(seconds.join(''));
-                    minutes = integerStringArray.splice(-2);
-                    minutes = parseFloat(minutes.join(''));
-                    degrees = parseFloat(integerStringArray.join(''));
-
-                    coordinate = degrees + (minutes/60) + (seconds/3600);
-                    return coordinate;
-                }
-            },
-            "regex": /(^-?)\d+(\.\d+)?[NSEW],[\s-]*-?\d+(\.\d+)?[NSEW]\s*$/
-        }
-    ];
+    'text!./info-win.hbs',
+    'text!./info-win.css',
+	'./locator-configuration',
+    'handlebars'
+], function(infoWinHBS, infoWinCSS, configuration){
+    var context,
+        infoWinTemplate,
+        LAYER_ID = 'static_geolocator';
 
     var exposed = {
-        "initialize": function(app) {
+        initialize: function(app) {
+            context = app;
+            infoWinTemplate = Handlebars.compile(infoWinHBS);
+            app.sandbox.utils.addCSS(infoWinCSS, 'locator-info-window-style');
 
-            if (!app.sandbox.locator) {
-                app.sandbox.locator = {};
-            }
-
-            if (!app.sandbox.locator.query) {
-                app.sandbox.locator.query = {};
-            }
-
-            app.sandbox.locator.queryCoordinates = queryCoordinates;
-
-            /**
-             * [query description]
-             * @param  {[type]}   param    [description]
-             * @param  {Function} callback [description]
-             * @return {[type]}            [description]
-             */
-            app.sandbox.locator.query = function(param, callback) {
-
-                var data = {
-                    "address": param,
-                    "sensor": false
-                };
-                app.sandbox.utils.ajax({
-                    "type": "GET",
-                    "url": app.sandbox.utils.getCurrentNodeJSEndpoint() + locatorConfiguration.url,
-                    "data": data,
-                    "dataType": locatorConfiguration.dataType,
-                    "timeout": locatorConfiguration.timeout,
-                    "error": function(xhr, status, errorThrown) {
-                        app.sandbox.emit("message.publish", {
-                            "messageType": 'error',
-                            "messageTitle": 'Location Service',
-                            "messageText": errorThrown
-                        }); 
-                    },
-                    "success": function(data) {
-                        //return the exact same data value.
-                        callback(data);
-                    }
-
-                });
+            app.sandbox.locator = {
+                query: query,
+                createCoordinatesGeoJSON: createCoordinatesGeoJSON,
+                createLocationGeoJSON: createLocationGeoJSON,
+                buildInfoWinTemplate: buildInfoWinTemplate,
+                postRenderingAction: postRenderingAction
             };
-
         }
     };
 
     return exposed;
 
-    function queryCoordinates(input, callback){
-        var coordinates = null;
-        COORDINATE_SYSYEMS.forEach(function(coordinateSystem){
-            if(input.match(coordinateSystem.regex)){
-                coordinates = coordinateSystem.convert(input);
+    function query(params, callback){
+        var data = {
+            address: params,
+            sensor: false
+        };
+        context.sandbox.utils.ajax({
+            type: 'GET',
+            url: context.sandbox.utils.getCurrentNodeJSEndpoint() + configuration.url,
+            data: data,
+            dataType: configuration.dataType,
+            timeout: configuration.timeout,
+            error: function(xhr, status, errorThrown) {
+                context.sandbox.emit('message.publish', {
+                    messageType: 'error',
+                    messageTitle: 'Location Service',
+                    messageText: errorThrown
+                });
+            },
+            success: function(data) {
+                var formatted = {
+                    names: [],
+                    data: {}
+                };
+
+                if(!data){
+                    return formatted;
+                }
+
+                data.results.forEach(function(result){
+                    var name = result.formatted_address;
+
+                    if(!formatted.data[name]){
+                        formatted.names.push(name);
+                        formatted.data[name] = result;
+                    }
+
+                });
+
+                callback(formatted);
             }
+
+        });
+    }
+
+    function createCoordinatesGeoJSON(coordinates){
+        var featureId = context.sandbox.utils.UUID(),
+            lat = coordinates.dd.lat,
+            lon = coordinates.dd.lon,
+            geoJSON;
+
+        geoJSON = {
+            id: featureId,
+            featureId: featureId,
+            layerId: LAYER_ID,
+            geometry: {
+                type: 'Point',
+                coordinates: [
+                    lon,
+                    lat
+                ]
+            },
+            type: 'feature',
+            properties: {
+                dd: '' + lat + ', ' + lon,
+                dms: coordinates.dms,
+                MGRS: coordinates.mgrs,
+                UTM: coordinates.utm
+            },
+            bbox: {
+                minLat: lat - 20,
+                minLon: lon - 20,
+                maxLat: lat + 20,
+                maxLon: lon + 20
+            }
+        };
+
+        return geoJSON;
+    }
+
+    function createLocationGeoJSON(data, callback){
+        var featureId = context.sandbox.utils.UUID(),
+            geoJSON,
+            geometry = data.geometry;
+
+        geoJSON = {
+            id: featureId,
+            featureId: featureId,
+            layerId: LAYER_ID,
+            geometry: {
+                type: 'Point',
+                coordinates: [
+                    geometry.location.lng,
+                    geometry.location.lat
+                ]
+            },
+            properties: data,
+            bbox: {
+                minLat: geometry.viewport.southwest.lat,
+                minLon: geometry.viewport.southwest.lng,
+                maxLat: geometry.viewport.northeast.lat,
+                maxLon: geometry.viewport.northeast.lng
+
+            }
+        };
+
+        callback(null, geoJSON);
+    }
+
+    function buildInfoWinTemplate(feature){
+        //Do a deep copy to prevent deletion of feature properties.
+        var attributes = {};
+        context.sandbox.util.each(feature.attributes, function(attribute, value){
+            attributes[attribute] = value;
         });
 
-        callback(coordinates);
+        //Remove properties that we don't want shown
+        delete attributes.dataService;
+        delete attributes.icon;
+        delete attributes.height;
+        delete attributes.width;
+
+        return infoWinTemplate({
+            attributes: attributes,
+            title: ''
+        });
+    }
+
+    function postRenderingAction(feature){
+        $('.location .infoDiv .hide-location .btn').on('click', function(){
+            context.sandbox.emit('map.features.hide', {
+                featureIds: [feature.featureId],
+                layerId: LAYER_ID
+            });
+        });
     }
 });

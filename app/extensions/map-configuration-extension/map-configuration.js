@@ -47,10 +47,10 @@ define([
     ],
     "markerIcons" : {
       "default" : {
-        "icon": "/extensions/map-configuration-extension/images/markerIcons/marker.png",
-        "iconLarge": "/extensions/map-configuration-extension/images/markerIcons/marker-2x-80x80.png",
+        "icon": "/extensions/map-configuration-extension/images/markerIcons/marker_24x24.png",
+        "iconLarge": "/extensions/map-configuration-extension/images/markerIcons/marker_128x128.png",
         "height": 24,
-        "width": 15,
+        "width": 24,
         "graphicYOffset": -24
       }
     },

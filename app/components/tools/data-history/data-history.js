@@ -97,8 +97,7 @@ define([
                     rawDataObject: data.rawQuery || 'N/A'
                 };
 
-                rawDataObjectString = context.sandbox.utils.isEmptyObject(tempData.rawDataObject)
-                    ? '' : JSON.stringify(tempData.rawDataObject, null,  ' ');
+                rawDataObjectString = context.sandbox.utils.isEmptyObject(tempData.rawDataObject) ? '' : JSON.stringify(tempData.rawDataObject, null,  ' ');
                 tempData.rawDataObject = rawDataObjectString;
 
                 dataHistoryDetailView = dataHistoryDetailViewTemplate(tempData);
@@ -115,6 +114,11 @@ define([
                     // Delete the dataset
                     deleteDataset(tempData.datasetId, tempData.dataSessionId);
                     exposed.hideDetailedInfo();
+                });
+                context.$('.data-history-detail-view .data-action-requery').on('click', function(event) {
+                    // Open up query dialog 
+                    requeryDataset(tempData.datasetId);
+                    publisher.closeDataHistory();
                 });
 
                 $modalBody.addClass('finiteHeight');
@@ -142,19 +146,28 @@ define([
                 currentDataSet = {};
                 currentDataArray = [];
 
-
                 context.sandbox.utils.each(data, function(index, dataEntry) {
                     var now = moment(), //This needs to be done now to prevent race condition later
                         dataDate = moment.unix(dataEntry.createdOn),
                         expireDate = moment.unix(dataEntry.expireOn),
-                        disableRestore = expireDate.isBefore(now), // Use isExpired as default
-                        tempDataEntry;
+                        disableRequery = false,
+                        disableRestore = expireDate.isBefore(now); // Use isExpired as default
+
+                    if(!context.sandbox.dataServices[dataEntry.dataSource]){
+                        console.debug('No datasource for', dataEntry);
+                        return;
+                    }
 
                     if(context.sandbox.stateManager.layers[dataEntry.queryId]){
                         disableRestore = true;
                     }
 
-                    tempDataEntry = {
+                    if(context.sandbox.utils.isEmptyObject(dataEntry.queryBbox)){
+                        disableRequery = true;
+                    }
+
+                    currentDataSet[dataEntry.queryId] = dataEntry;
+                    currentDataArray.push({
                         datasetId: dataEntry.queryId,
                         dataSessionId: dataEntry.sessionId,
                         dataSource: context.sandbox.dataServices[dataEntry.dataSource].DISPLAY_NAME,
@@ -162,13 +175,9 @@ define([
                         dataDate: dataDate.fromNow(),
                         rawDate: dataEntry.createdOn,
                         disableRestore: disableRestore,
+                        disableRequery: disableRequery,
                         dataRecordCount: dataEntry.numRecords
-                    };
-                    
-                    if(tempDataEntry.dataSource !== ""){
-                        currentDataArray.push(tempDataEntry);
-                        currentDataSet[dataEntry.queryId] = dataEntry;    
-                    }
+                    });
                 });
 
                 currentDataArray.sort(dynamicSort('-rawDate'));
@@ -205,6 +214,10 @@ define([
             deleteDataset(context.$(this).parent().parent().data('datasetid'), 
                 context.$(this).parent().parent().data('datasessionid'));
         });
+        context.$('.data-history-list .data-action-requery').on('click', function(event) {
+            requeryDataset(context.$(this).parent().parent().data('datasetid'));
+            publisher.closeDataHistory();
+        });
     }
 
     function generateDataHistoryEntryRow(dataHistoryEntryObject) {
@@ -214,6 +227,7 @@ define([
             dataSource: dataHistoryEntryObject.dataSource,
             dataName: dataHistoryEntryObject.dataName,
             disableRestore: dataHistoryEntryObject.disableRestore,
+            disableRequery: dataHistoryEntryObject.disableRequery,
             dataDate: dataHistoryEntryObject.dataDate,
             dataRecordCount: dataHistoryEntryObject.dataRecordCount
         });
@@ -262,6 +276,29 @@ define([
                 messageText: 'Dataset successfully removed'
             });
         });
+    }
+
+    function requeryDataset(datasetId) {
+
+        var newAJAX = context.sandbox.utils.ajax({
+                type: 'GET',
+                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + datasetId,
+                xhrFields: {
+                    withCredentials: true
+                }
+            })
+            .done(function(data) {
+               //close data history table
+               publisher.closeDataHistory();
+               console.log(data);
+
+               //publish query data to be requeried
+               publisher.requeryDataset({
+                    queryName: data.rawQuery.queryName,
+                    queryData: data.rawQuery,
+                    querySource: data.dataSource
+                });
+            });
     }
 
     return exposed;

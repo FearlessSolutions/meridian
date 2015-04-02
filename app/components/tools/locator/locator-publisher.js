@@ -1,6 +1,5 @@
 define([
 ], function () {
-
 	var context;
 
 	var exposed = {
@@ -16,11 +15,13 @@ define([
         setMapCenter: function(params) {
             context.sandbox.emit('map.center.set', params);
         },
+        zoomToFeature: function(params){
+            context.sandbox.emit('map.zoom.toFeatures',params);
+        },
         zoomToLocation: function(params){
             context.sandbox.emit('map.zoom.toLocation',params);
         }
     };
 
     return exposed;
-
 });

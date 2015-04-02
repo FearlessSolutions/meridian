@@ -1,0 +1,61 @@
+.location.info-win-dialog{
+    font-size: .8em;
+    overflow: hidden;
+}
+
+.location.info-win-dialog .infoDiv{
+    float: left;
+}
+
+.location.info-win-dialog .hide-location{
+    width: auto;
+    height: auto;
+    vertical-align: top;
+    text-align: center;
+}
+
+.location .hide-location select{
+    clear:left;
+    height: 30px;
+    width: 105px;
+    font-size: 12px;
+    margin-top: 5px;
+    color: #000000;
+}
+
+.location .hide-location .btn{
+    margin-top: 3px;
+}
+
+.location.info-win-dialog .title{
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    margin-left: 30px;
+}
+
+.location.info-win-dialog .content{
+    position: relative;
+    margin-left: 15px;
+    width: 480px;
+    height: 135px;
+}
+
+.location.info-win-dialog .tableDiv{
+    float: right;
+    vertical-align: top;
+    margin-left: 12px;
+    height: 133px;
+    width: 375px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 1px solid lightgray;
+}
+
+.location.info-win-dialog table.table{
+    margin-bottom: 0px;
+}
+
+.location.info-win-dialog table.table td{
+    padding: 5px;
+}
