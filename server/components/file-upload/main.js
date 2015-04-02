@@ -19,15 +19,12 @@ exports.init = function(thisContext){
         auth = context.sandbox.auth,
         save = context.sandbox.elastic.save, //TODO save
         ogrTransform = context.sandbox.transform,
-        mimetypeToTransformFunctionMap;
+        fileTypeToTransformFunctionMap;
 
-    mimetypeToTransformFunctionMap = {
-        "text/csv": ogrTransform.fromCSV,
-        "text/comma-seperated-values": ogrTransform.fromCSV,
-        "application/vnd.ms-excel": ogrTransform.fromGeoJSON,
-        "application/octet-stream": ogrTransform.fromGeoJSON,
-        "application/json": ogrTransform.fromGeoJSON,
-        "application/vnd.google-earth.kml+xml": ogrTransform.fromKML
+    fileTypeToTransformFunctionMap = {
+        csv: ogrTransform.fromCSV,
+        geojson: ogrTransform.fromGeoJSON,
+        kml: ogrTransform.fromKML
     };
 
     /**
@@ -63,9 +60,9 @@ exports.init = function(thisContext){
         req.pipe(req.busboy);
         req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
             //Run the correct function for the mimetype to convert fine to geoJSON
-            var mimeTypeTransformFunction = mimetypeToTransformFunctionMap[mimetype];
-            if(mimeTypeTransformFunction) {
-                    mimeTypeTransformFunction(file, function (er, data) {
+            var fileTypeToTransformFunction = fileTypeToTransformFunctionMap[filetype];
+            if(fileTypeToTransformFunction) {
+                fileTypeToTransformFunction(file, function (er, data) {
 
                         if (er) {
                             console.log("error in parser", er);
@@ -135,9 +132,9 @@ exports.init = function(thisContext){
                         }
                     });
             }else {
-                console.log('error: Mimetype ' + mimetype + ' not supported');
+                console.log('Error: Filetype ' + filetype + ' not supported');
                 res.status(500);
-                res.send('error: Mimetype ' + mimetype + ' not supported');
+                res.send('Error: Filetype ' + filetype + ' not supported');
             }
         });
     });

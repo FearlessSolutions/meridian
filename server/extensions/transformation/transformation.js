@@ -73,6 +73,7 @@ exports.execute = function(params) {
  * @param callback function(error, data) Should handle error or processed data (if error, no data)
  */
 exports.fromCSV = function(file, callback){
+    console.log("Import CSV file");
     ogr2ogr(file, 'csv').exec(function(er, data){
         callback(er, data);
     });
@@ -84,6 +85,7 @@ exports.fromCSV = function(file, callback){
  * @param callback function(error, data) Should handle error or processed data (if error, no data)
  */
 exports.fromKML = function(file, callback){
+    console.log("Import KML file");
     ogr2ogr(file, 'KML').exec(function(er, data){
         callback(er, data);
     });
@@ -95,6 +97,7 @@ exports.fromKML = function(file, callback){
  * @param callback function(error, data) Should handle error or processed data (if error, no data)
  */
 exports.fromGeoJSON = function(file, callback){
+    console.log("Import GeoJSON file");
     ogr2ogr(file, 'GeoJSON').exec(function(er, data){
         callback(er, data);
     });
