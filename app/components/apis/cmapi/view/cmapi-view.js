@@ -56,7 +56,7 @@ define([
         mapViewCenterOverlay: function(message) {
             var params = {};
             
-            if('range' in message) {
+            if(message.overlayId) {
                 params.layerId = message.overlayId;
             } else {
                 params.layerId = defaultLayerId;
