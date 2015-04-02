@@ -26,7 +26,7 @@ define([
             $submit = context.$('#upload-submit');
             $zoom = context.$('#zoomOnUpload');
 
-            $submit.attr('disabled', true); //Start with submit disabled until a file is added
+            $submit.prop('disabled', true); //Start with submit disabled until a file is added
 
             $modal.modal({
                 backdrop: true,
@@ -53,7 +53,7 @@ define([
                 if(file){
                     if(file.size > FILE_SIZE_LIMIT){
                         $dummyFile.parent().addClass('has-error');
-                        $submit.attr('disabled', true);
+                        $submit.prop('disabled', true);
                         publisher.publishMessage({
                             messageType: 'error',
                             messageTitle: 'Data Upload',
@@ -70,15 +70,15 @@ define([
 
                         if(isValidFileExtension){
                             removeFileError();
-                            $submit.attr('disabled', false);
+                            $submit.prop('disabled', false);
                         }else{
                             setFileError();
-                            $submit.attr('disabled', true);
+                            $submit.prop('disabled', true);
                         }
                     }
                 }else{
                     removeFileError(); //'no file' is valid, or at least not an error
-                    $submit.attr('disabled', true);
+                    $submit.prop('disabled', true);
                 }
             });
             
@@ -141,6 +141,7 @@ define([
                                 shouldZoom: shouldZoom
                             }, 0);
                             $dummyFile.val('');
+                            $submit.prop('disabled', true);
                             $zoom.prop('checked', false);
                         }, function(status, jqXHR){ //Error callback
                             markQueryError(queryId, queryName, status);
@@ -207,7 +208,7 @@ define([
         clear: function() {
             var queryId;
             $dummyFile.val('');
-            $submit.attr('disabled', true);
+            $submit.prop('disabled', true);
 
             for(queryId in context.sandbox.dataStorage.datasets){
                 if(context.sandbox.dataStorage.datasets[queryId].dataService === DATASOURCE_NAME){
