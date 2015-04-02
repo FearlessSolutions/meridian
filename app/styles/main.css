@@ -131,8 +131,11 @@ a {
 }
 .btn-default-secondary {
     background-color: #ccc;
-    border-color: #eee;
-}
+    border-color: #c0c0c0;
+    }
+    .btn-default-secondary:hover {
+        border-color: #999;
+    }
 .btn-default-inverse {
     background-color: #848586;
     border-color: #eee;
