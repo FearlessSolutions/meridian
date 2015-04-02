@@ -18,6 +18,9 @@ define([
         },
         updateEventCounter: function(params) {
             context.sandbox.emit('eventcounter.update', params);
+        },
+        publishMapClick: function(params){
+            context.sandbox.emit('map.click', params);
         }
     };
 

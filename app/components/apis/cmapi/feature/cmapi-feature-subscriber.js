@@ -21,7 +21,7 @@ define([
             exposed.subscribeOff();
         },
         subscribeOn: function() {
-         //   context.sandbox.on('map.features.plot', olMapRenderer.plotFeatures);
+            //context.sandbox.on('map.features.plot', olMapRenderer.plotFeatures);
         },
         subscribeOff: function() {
             //context.sandbox.off('map.features.plot', olMapRenderer.plotFeatures);           

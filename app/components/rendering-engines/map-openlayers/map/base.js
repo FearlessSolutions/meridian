@@ -46,6 +46,10 @@ define([
                 exposed.trackMousePosition({
                     "map": map
                 });
+
+                exposed.trackMapClick({
+                    "map": map
+                });
             }
 
             // Set initial value of map extent, in the state manager
@@ -130,6 +134,19 @@ define([
                     "position": position
                 });
                 publisher.publishMousePosition({
+                    "lat": latlon.lat,
+                    "lon": latlon.lon
+                });
+            });
+        },
+        trackMapClick: function(params) {
+            params.map.events.register('click', params.map, function(e) {
+                var position = this.events.getMousePosition(e);
+                var latlon = exposed.getMouseLocation({
+                    "map": params.map,
+                    "position": position
+                });
+                publisher.publishMapClick({
                     "lat": latlon.lat,
                     "lon": latlon.lon
                 });

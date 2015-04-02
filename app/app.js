@@ -69,6 +69,9 @@ require.config({
         },
         slickpager: {
             deps: ['slickgrid']
+        },
+        togeojson: {
+            deps: ['jquery']
         }
     }
 });

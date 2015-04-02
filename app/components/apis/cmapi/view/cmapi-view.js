@@ -1,6 +1,7 @@
 define([
-	'./cmapi-view-publisher'
-], function (publisher) {
+	'./cmapi-view-publisher',
+    './cmapi-view-subscriber'
+], function (publisher, subscriber) {
 	var context,
         sendError,
         defaultLayerId;
@@ -11,81 +12,108 @@ define([
             sendError = errorChannel;
             defaultLayerId = context.sandbox.cmapi.defaultLayerId;
             publisher.init(context);
+            subscriber.init(context);
         },
         receive: function(channel, message) {
-            if(receiveChannels[channel]) {
-                receiveChannels[channel](message);
+            var chName  = context.sandbox.cmapi.utils.createChannelNameFunction(channel)
+            if(receiveChannels[chName]) {
+                receiveChannels[chName](message);
             } else {
                 sendError(channel, message, 'Channel not supported');
             }
-        }
+        },
+        mapClick: function(message){
+            var payload;
+            
+            if('lat' in message && 'lon' in message) {
+                payload = {
+                    'lat': message.lat,
+                    'lon': message.lon,
+                    'button': 'left', //only supporting left click - TODO: need to revisit 
+                    'type': 'single' //only supporting single click - TODO: need to revisit 
+                };
+            } 
+            context.sandbox.external.postMessageToParent({
+                'channel': 'map.view.clicked',
+                'message': payload
+            });
+        } 
     };
 
     var receiveChannels= {
-		"map.view.zoom": function(message) { //TODO verify this is correct
-			if('range' in message) {
-				// publisher.publishZoom(message); // TODO: support for range in meters doesnt make sense in 2d mapping
-			} else if ('direction' in message) { //TODO should we support this?
-                if(message.direction === 'in') {
-                    //TODO
-                } else if (message.direction === 'out') {
-                    //TODO
-                }
-			} else {
-                sendError('map.view.zoom', message, 'Must include either "range" or "direction"');
-            }
+        mapViewZoom: function(message) {
+			sendError('map.view.zoom', message, 'channel not supported');
 		},
-		"map.view.center.overlay": function(message) {
+        mapViewZoomIn: function(message) {
+            publisher.zoomIn();
+        },
+        mapViewZoomOut: function(message) {
+            publisher.zoomOut();
+        },
+        mapViewZoomMaxExtent: function(message) {
+            publisher.zoomToMaxExtent();
+        },
+        mapViewCenterOverlay: function(message) {
             var params = {};
-
-            if(message === '') {
-                params = {
-                    "layerId": defaultLayerId
-                };
+            
+            if(message.overlayId) {
+                params.layerId = message.overlayId;
             } else {
-                params.layerId = message.overlayId || defaultLayerId;
-                params.zoom = null; // TODO: ensure supoort for zoom parameter to overlay (CMAPI calls for using meters or 'auto')
+                params.layerId = defaultLayerId;
             }
-            publisher.publishZoomToLayer(params);
+            
+            //defaulting auto zoom to null since we dont support zooming into a certain range
+            params.zoom = null; // 
+            publisher.zoomToLayer(params);
 		},
-		"map.view.center.feature": function(message) { // TODO: ensure supoort for zoom parameter to overlay (CMAPI calls for using meters or 'auto')
+		mapViewCenterFeature: function(message) {
             var newAJAX;
-            if(message === '' || !message.featureId) {
-                sendError('map.view.center.feature', message, 'Must include "featureId"');
-                return;
+            
+            //check for required fields (featureId)
+            if(message !== '' && message !== undefined) {
+                if(!('featureId' in message)) {
+                    sendError('map.view.center.feature', message, 'message must include a featureId');
+                    return;
+                }
             }
 
-            //Get feature from server, then go to it
-            newAJAX = context.sandbox.dataStorage.getFeatureById(message, function(data) {
-                var extent;
-
-                //If the feature is a point, set center; else, zoom to extent
-                if(data.geometry.type === "Point") {
-                    publisher.publishSetCenter({
-                        "lon": data.geometry.coordinates[1],
-                        "lat": data.geometry.coordinates[0]
-                    });
-                } else {
-                    extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
-                    publisher.publishCenterOnBounds(extent);
-                }
-            });
-
-            context.sandbox.ajax.addActiveAJAX({
-                "newAJAX": newAJAX, 
-                "layerId": layerId
-            }); //Keep track of current AJAX calls
+            try{
+                newAJAX = context.sandbox.dataStorage.getFeatureById(message, function(data) {
+                    var extent;
+                    //If the feature is a point, set center; else, zoom to extent
+                    if(data.geometry){
+                        if(data.geometry.type === "Point") {
+                            publisher.setCenter({
+                                "lon": data.geometry.coordinates[1],
+                                "lat": data.geometry.coordinates[0]
+                            });
+                        } else { //if feature is any other geometry 
+                            extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
+                            publisher.centerOnBounds(extent);
+                        }
+                    } else {
+                        context.sandbox.external.postMessageToParent({
+                            'channel': 'map.view.center.feature',
+                            'message': 'message failure - feature not found'
+                        });
+                    }
+                 });
+            } catch (error){
+                console.log(error);
+                context.sandbox.external.postMessageToParent({
+                    'channel': 'map.view.center.feature',
+                    'message': 'message failure - feature not found'
+                });
+            }           
 		},
-		"map.view.center.location": function(message) {
-			if('location' in message &&
-				'lat' in message.location &&
-				'lon' in message.location){
-				publisher.publishSetCenter(message.location);
+		mapViewCenterLocation: function(message) {
+			if('location' in message && 'lat' in message.location && 'lon' in message.location){
+				publisher.setCenter(message.location);
 			} else {
                 sendError('map.view.center.location', message, 'Requires "location":{"lat", "lon"}');
             }
 		},
-		"map.view.center.bounds": function(message){
+		mapViewCenterBounds: function(message){
             var bounds;
 
             if(
@@ -102,15 +130,15 @@ define([
             }
 
             bounds = {
-                "minLon": message.bounds.southWest.lon,
-                "minLat": message.bounds.southWest.lat,
-                "maxLon": message.bounds.northEast.lon,
-                "maxLat": message.bounds.northEast.lat
+                'minLon': message.bounds.southWest.lon,
+                'minLat': message.bounds.southWest.lat,
+                'maxLon': message.bounds.northEast.lon,
+                'maxLat': message.bounds.northEast.lat
             };
 
-            publisher.publishCenterOnBounds(bounds);
+            publisher.centerOnBounds(bounds);
 		},
-        "map.view.center.data": function(message){
+        mapViewCenterData: function(message){
             var extent,
                 minLatDelta,
                 minLonDelta,
@@ -122,22 +150,27 @@ define([
                     extent = context.sandbox.cmapi.getMaxExtent(feature.attributes.geometry.coordinates, extent);
                 });
             });
+            if(extent){
+                 //Add some padding
+                minLatDelta = Math.abs(extent.minLat) * 0.25;
+                minLonDelta = Math.abs(extent.minLon) * 0.25;
+                maxLatDelta = Math.abs(extent.maxLat) * 0.25;
+                maxLonDelta = Math.abs(extent.maxLon) * 0.25;
 
-            //Add some padding
-            minLatDelta = Math.abs(extent.minLat) * 0.25;
-            minLonDelta = Math.abs(extent.minLon) * 0.25;
-            maxLatDelta = Math.abs(extent.maxLat) * 0.25;
-            maxLonDelta = Math.abs(extent.maxLon) * 0.25;
-
-            publisher.publishCenterOnBounds({
-                "minLat": extent.minLat - minLatDelta,
-                "minLon": extent.minLon - minLonDelta,
-                "maxLat": extent.maxLat + maxLatDelta,
-                "maxLon": extent.maxLon + maxLonDelta
-            });
-        },
-		"map.view.clicked": function(message){
-        } //This is not supported
+                publisher.centerOnBounds({
+                    'minLat': extent.minLat - minLatDelta,
+                    'minLon': extent.minLon - minLonDelta,
+                    'maxLat': extent.maxLat + maxLatDelta,
+                    'maxLon': extent.maxLon + maxLonDelta
+                });
+            } else {
+                context.sandbox.external.postMessageToParent({
+                    'channel': 'map.view.center.data',
+                    'message': 'message failure - no data present'
+                });
+            }
+           
+        }
     };
 
     return exposed;
