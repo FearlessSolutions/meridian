@@ -141,8 +141,17 @@ define([
                     "zoom": false
                 }
             },
-            "map.view.zoom": {
-                valid: true
+            "map.view.zoom.in": {
+                valid: true,
+                sample: {}
+            },
+            "map.view.zoom.out": {
+                valid: true,
+                sample: {}
+            },
+            "map.view.zoom.max.extent": {
+                valid: true,
+                sample: {}
             },
             "map.view.center.overlay": {
                 valid: true,

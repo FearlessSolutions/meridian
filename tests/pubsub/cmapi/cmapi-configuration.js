@@ -38,7 +38,13 @@ define([
       // "map.feature.update":{
       //  "valid": false
       // },
-      "map.view.zoom":{
+      "map.view.zoom.in":{
+        "valid": true
+      },
+      "map.view.zoom.out":{
+        "valid": true
+      },
+      "map.view.zoom.max.extent":{
         "valid": true
       },
       "map.view.center.overlay":{

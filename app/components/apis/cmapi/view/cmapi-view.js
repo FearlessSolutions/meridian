@@ -51,7 +51,7 @@ define([
             publisher.zoomOut();
         },
         mapViewZoomMaxExtent: function(message) {
-            publisher.zoomMaxExtent();
+            publisher.zoomToMaxExtent();
         },
         mapViewCenterOverlay: function(message) {
             var params = {};
@@ -77,24 +77,34 @@ define([
                 }
             }
 
-            newAJAX = context.sandbox.dataStorage.getFeatureById(message, function(data) {
-                var extent;
-                //If the feature is a point, set center; else, zoom to extent
-               if(data.geometry.type === "Point") {
-                   publisher.setCenter({
-                        "lon": data.geometry.coordinates[1],
-                        "lat": data.geometry.coordinates[0]
-                    });
-                } else { //if feature is any other geometry 
-                    extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
-                    publisher.centerOnBounds(extent);
-                }
-            });
-
-            context.sandbox.ajax.addActiveAJAJOnX({
-                 'newAJAX': newAJAX, 
-                 'layerId': layerId
-            }); //keep track of current AJAX calls
+            try{
+                newAJAX = context.sandbox.dataStorage.getFeatureById(message, function(data) {
+                    var extent;
+                    //If the feature is a point, set center; else, zoom to extent
+                    if(data.geometry){
+                        if(data.geometry.type === "Point") {
+                            publisher.setCenter({
+                                "lon": data.geometry.coordinates[1],
+                                "lat": data.geometry.coordinates[0]
+                            });
+                        } else { //if feature is any other geometry 
+                            extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
+                            publisher.centerOnBounds(extent);
+                        }
+                    } else {
+                        context.sandbox.external.postMessageToParent({
+                            'channel': 'map.view.center.feature',
+                            'message': 'message failure - feature not found'
+                        });
+                    }
+                 });
+            } catch (error){
+                console.log(error);
+                context.sandbox.external.postMessageToParent({
+                    'channel': 'map.view.center.feature',
+                    'message': 'message failure - feature not found'
+                });
+            }           
 		},
 		mapViewCenterLocation: function(message) {
 			if('location' in message && 'lat' in message.location && 'lon' in message.location){
@@ -140,19 +150,26 @@ define([
                     extent = context.sandbox.cmapi.getMaxExtent(feature.attributes.geometry.coordinates, extent);
                 });
             });
+            if(extent){
+                 //Add some padding
+                minLatDelta = Math.abs(extent.minLat) * 0.25;
+                minLonDelta = Math.abs(extent.minLon) * 0.25;
+                maxLatDelta = Math.abs(extent.maxLat) * 0.25;
+                maxLonDelta = Math.abs(extent.maxLon) * 0.25;
 
-            //Add some padding
-            minLatDelta = Math.abs(extent.minLat) * 0.25;
-            minLonDelta = Math.abs(extent.minLon) * 0.25;
-            maxLatDelta = Math.abs(extent.maxLat) * 0.25;
-            maxLonDelta = Math.abs(extent.maxLon) * 0.25;
-
-            publisher.centerOnBounds({
-                'minLat': extent.minLat - minLatDelta,
-                'minLon': extent.minLon - minLonDelta,
-                'maxLat': extent.maxLat + maxLatDelta,
-                'maxLon': extent.maxLon + maxLonDelta
-            });
+                publisher.centerOnBounds({
+                    'minLat': extent.minLat - minLatDelta,
+                    'minLon': extent.minLon - minLonDelta,
+                    'maxLat': extent.maxLat + maxLatDelta,
+                    'maxLon': extent.maxLon + maxLonDelta
+                });
+            } else {
+                context.sandbox.external.postMessageToParent({
+                    'channel': 'map.view.center.data',
+                    'message': 'message failure - no data present'
+                });
+            }
+           
         }
     };
 
