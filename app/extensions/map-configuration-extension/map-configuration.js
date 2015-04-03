@@ -3,7 +3,7 @@ define([
 ], function() {
 
   var mapConfiguration = {
-    "defaultMapEngine" : "OpenLayers",
+    "defaultMapEngine" : "Leaflet",
     "defaultBaseMap": "landscape",//Must be a valid name in basemaps.
     "initialMinLat": -16.341225619207417,
     "initialMinLon": -31.640624999999773,
@@ -19,6 +19,7 @@ define([
         "basemap" : "landscape",
         "type" : "osm",
         "url" : "http://a.tile3.opencyclemap.org/landscape/${z}/${x}/${y}.png",
+        "leafUrl": "http://a.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png",
         "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/topographic.png",
         "label" : "OSM Landscape"
       },
@@ -26,6 +27,7 @@ define([
         "basemap" : "grey",
         "type" : "osm",
         "url" : "http://korona.geog.uni-heidelberg.de:8008/tms_rg.ashx?x=${x}&y=${y}&z=${z}",
+        "leafUrl" : "http://korona.geog.uni-heidelberg.de:8008/tms_rg.ashx?x={x}&y={y}&z={z}",
         "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/grey.png",
         "label" : "OSM Roads Grey"
       },
@@ -33,6 +35,7 @@ define([
         "basemap" : "basic",
         "type" : "osm",
         "url" : "http://korona.geog.uni-heidelberg.de:8001/tms_r.ashx?x=${x}&y=${y}&z=${z}",
+        "leafUrl" : "http://korona.geog.uni-heidelberg.de:8001/tms_r.ashx?x={x}&y={y}&z={z}",
         "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/basic.png",
         "label" : "OSM Roads"
       },

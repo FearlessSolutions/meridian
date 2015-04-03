@@ -9,7 +9,7 @@ define([], function (){
                 if(params.provider === 'Leaflet') {
                     requireStuff(this);
                 } else {
-                    // Destroy OL Map
+                    // Destroy other Map
                 }
             });
         }
@@ -18,30 +18,32 @@ define([], function (){
     function requireStuff(thisContext) {
         var context = thisContext;
         
-        //Require modules needed for OpenLayers
         require([
-            './components/rendering-engines/map-openlayers/map/core',
-            'text!./components/rendering-engines/map-openlayers/map-openlayers.css', 
-            'text!./components/rendering-engines/map-openlayers/map-openlayers.hbs',
-            './components/rendering-engines/map-openlayers/map-api-publisher',
-            './components/rendering-engines/map-openlayers/map-api-subscriber',
+            './components/rendering-engines/leaflet/map/core',
+            'text!./components/rendering-engines/leaflet/libs/leaflet.css', 
+            'text!./components/rendering-engines/leaflet/leaflet.css', 
+            'text!./components/rendering-engines/leaflet/leaflet.hbs',
+            './components/rendering-engines/leaflet/map-api-publisher',
+            './components/rendering-engines/leaflet/map-api-subscriber',
             'handlebars'
         ], function(
             mapCore,
-            olMapRendererCSS,
-            olMapRendererHBS,
-            olMapRendererPublisher,
-            olMapRendererSubscriber
+            leafComponentCSS,
+            leafMapRendererCSS,
+            leafMapRendererHBS,
+            leafMapRendererPublisher,
+            leafMapRendererSubscriber
         ){
-            context.sandbox.utils.addCSS(olMapRendererCSS, 'rendering-engines-map-openlayers-component-style');
+            context.sandbox.utils.addCSS(leafComponentCSS, 'leaflet-component-style');
+            context.sandbox.utils.addCSS(leafMapRendererCSS, 'rendering-engines-leaflet-component-style');
 
-            var olMapRendererTemplate = Handlebars.compile(olMapRendererHBS);
-            var html = olMapRendererTemplate();
+            var leafMapRendererTemplate = Handlebars.compile(leafMapRendererHBS);
+            var html = leafMapRendererTemplate();
             context.html(html);
 
             mapCore.init(context);
-            olMapRendererPublisher.init(context);
-            olMapRendererSubscriber.init(context);
+            leafMapRendererPublisher.init(context);
+            leafMapRendererSubscriber.init(context);
         });
     }
 
