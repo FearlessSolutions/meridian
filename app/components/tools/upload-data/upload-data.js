@@ -208,6 +208,7 @@ define([
         clear: function() {
             var queryId;
             $dummyFile.val('');
+            $zoom.prop('checked', false);
             $submit.prop('disabled', true);
 
             for(queryId in context.sandbox.dataStorage.datasets){
@@ -217,9 +218,6 @@ define([
             }
 
             context.sandbox.ajax.clear();
-        },
-        deleteDataset: function(params){
-
         },
         restoreDataset: function(params){
             var queryId = params.queryId,
