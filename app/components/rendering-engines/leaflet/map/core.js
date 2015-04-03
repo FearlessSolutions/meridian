@@ -140,7 +140,6 @@ define([
          * @param {string} params.basemapLayer - name of basemap layer
          */
         setBasemap: function(params) {
-            //map.addLayer(basemapLayers[params.basemap]);
             mapLayers.setBasemap({
                 "map": map,
                 "basemapLayer": basemapLayers[params.basemap]
