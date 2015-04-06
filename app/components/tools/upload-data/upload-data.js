@@ -207,9 +207,7 @@ define([
         },
         clear: function() {
             var queryId;
-            $dummyFile.val('');
-            $submit.prop('disabled', true);
-
+            exposed.resetFields();
             for(queryId in context.sandbox.dataStorage.datasets){
                 if(context.sandbox.dataStorage.datasets[queryId].dataService === DATASOURCE_NAME){
                     delete context.sandbox.dataStorage.datasets[queryId];
@@ -218,8 +216,10 @@ define([
 
             context.sandbox.ajax.clear();
         },
-        deleteDataset: function(params){
-
+        resetFields: function() {
+            $dummyFile.val('');
+            $zoom.prop('checked', false);
+            $submit.prop('disabled', true);
         },
         restoreDataset: function(params){
             var queryId = params.queryId,
