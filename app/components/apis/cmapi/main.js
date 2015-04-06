@@ -70,7 +70,7 @@ define([
                         message.origin = context.sandbox.cmapi.defaultLayerId;
                     }
 
-                    if(!message.format || message.format === 'kml'){ 
+                    if(message.format && message.format === 'kml'){ 
                         try{
                             //need to convert kml features of payload to geojson
                             var domParser=new DOMParser(); //putting KML in DOM for proper parsing by togeojson
