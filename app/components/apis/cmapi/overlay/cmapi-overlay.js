@@ -16,8 +16,9 @@ define([
             subscriber.init(context, exposed);
         },
         receive: function(channel, message) {
-            if(receiveChannels[channel]) {
-                receiveChannels[channel](message);
+            var chName  = context.sandbox.cmapi.utils.createChannelNameFunction(channel);
+            if(receiveChannels[chName]) {
+                receiveChannels[chName](message);
             } else {
                 sendError(channel, message, 'Channel not supported');
             }
@@ -34,7 +35,7 @@ define([
          * message.selectable - If the features in the layer should be selectable (optional)(default: true)
          * message.bounds{maxLat:INT, maxLon:INT, minLat:INT, minLon:INT} - The AOI box to be created with the layer (optional)
          */
-		"map.overlay.create": function(message) {
+		mapOverlayCreate: function(message) {
             var layerId =  message.overlayId || defaultLayerId;
 
 			if(message === '') {
@@ -79,7 +80,7 @@ define([
          * @param message
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
-		"map.overlay.remove": function(message) {
+		mapOverlayRemove: function(message) {
             var layerId =  message.overlayId || defaultLayerId;
 
             publisher.publishRemoveLayer({
@@ -92,7 +93,7 @@ define([
          * @param message
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
-		"map.overlay.hide": function(message) {
+		mapOverlayHide: function(message) {
             var layerId =  message.overlayId || defaultLayerId;
 
             context.sandbox.stateManager.layers[layerId].visible = false;
@@ -106,7 +107,7 @@ define([
          * @param message
          * message.overlayId - The layer id of the layer (optional)(default: 'cmapi')
          */
-		"map.overlay.show": function(message) {
+		mapOverlayShow: function(message) {
             var layerId =  message.overlayId || defaultLayerId;
 
             context.sandbox.stateManager.layers[layerId].visible = true;
@@ -118,7 +119,7 @@ define([
          * @notImplemented
          * @param message
          */
-		"map.overlay.update": function(message) {
+		mapOverlayUpdate: function(message) {
             sendError('map.overlay.update', message, 'Channel not supported');
         }
     };
