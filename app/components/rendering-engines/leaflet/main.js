@@ -22,6 +22,7 @@ define([], function (){
             './components/rendering-engines/leaflet/map/core',
             'text!./components/rendering-engines/leaflet/libs/leaflet.css', 
             'text!./components/rendering-engines/leaflet/leaflet.css', 
+            'text!./components/rendering-engines/leaflet/libs/draw/leaflet.draw.css',
             'text!./components/rendering-engines/leaflet/leaflet.hbs',
             './components/rendering-engines/leaflet/map-api-publisher',
             './components/rendering-engines/leaflet/map-api-subscriber',
@@ -30,11 +31,13 @@ define([], function (){
             mapCore,
             leafComponentCSS,
             leafMapRendererCSS,
+            leafDrawCSS,
             leafMapRendererHBS,
             leafMapRendererPublisher,
             leafMapRendererSubscriber
         ){
             context.sandbox.utils.addCSS(leafComponentCSS, 'leaflet-component-style');
+            context.sandbox.utils.addCSS(leafDrawCSS, 'leaflet-draw-component-style');
             context.sandbox.utils.addCSS(leafMapRendererCSS, 'rendering-engines-leaflet-component-style');
 
             var leafMapRendererTemplate = Handlebars.compile(leafMapRendererHBS);

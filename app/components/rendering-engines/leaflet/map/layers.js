@@ -6,11 +6,16 @@ define([
     './../libs/leaflet-src',
 ], function(publisher, mapBase, mapClustering) {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context;
+    var context, drawnItemsLayer;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+        },
+        createDrawingLayer: function(params){
+            drawnItemsLayer = new L.FeatureGroup();
+            params.map.addLayer(drawnItemsLayer);
+            return drawnItemsLayer;
         },
         /**
          * Create layers that are not accessible to the user, and that don't go away

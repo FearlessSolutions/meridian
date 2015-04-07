@@ -35,7 +35,7 @@ define([
 
             mapBase.init(context);
             // mapClustering.init(context);
-            // mapDraw.init(context);
+            mapDraw.init(context);
             // mapFeatures.init(context);
             // mapHeatmap.init(context);
             mapLayers.init(context);
@@ -76,6 +76,50 @@ define([
             context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
             
             context.sandbox.stateManager.map.status.setReady(true);
+
+            mapDraw.setDrawing({
+                "map": map
+            });
+
+            var someIcon = L.icon({
+                iconUrl: context.sandbox.mapConfiguration.markerIcons.default.icon,
+                iconSize: [context.sandbox.mapConfiguration.markerIcons.default.width, context.sandbox.mapConfiguration.markerIcons.default.height],
+                iconAnchor: [12,24],// offset from the top left corner.half the size of the width and then the entire value of the height to use the correct pin position.
+                popupAnchor: [0,-12]// make pop up originate elsewhere instead of the actual point.
+            });
+
+            // var myPopup = L.popup.extend({
+            //     initialize: function(){}
+            // });
+            
+            
+            var buttonStr = "<div class='exportFeature'><button type='submit' class='btn btn-primary'>Delete</button></div>";
+            
+           
+            var point1 = L.marker([5,5], {icon: someIcon}).bindPopup(buttonStr);
+            var point2 = L.marker([5,4]);
+            var point3 = L.marker([4,5]).bindPopup(buttonStr);;
+            var point4 = L.marker([4,4]);
+            var query1 = L.featureGroup([point1]);
+            var query2 = L.featureGroup([point2,point3,point4]);
+            
+            query1.addTo(map);
+            query2.addTo(map);
+
+            query2.on('click', function(marker){
+               query2.bringToBack(query2);
+            });
+
+            query1.on('click', function(marker){
+               var a = context.$('.exportFeature');
+               a.on('click', function(b){
+                console.debug('marker: ', marker);
+                
+                query1.removeLayer(marker.layer);
+               });
+                console.debug('query: ', query1);
+            });
+
         },
         /**
          * Zoom In
