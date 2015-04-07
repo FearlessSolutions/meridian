@@ -20,9 +20,6 @@ define([
       "map.feature.plot": {
           "valid": true
       },
-      "map.feature.plot": {
-          "valid": true
-      },
       // "map.feature.plot.url":{
       //  "valid": false
       // },
