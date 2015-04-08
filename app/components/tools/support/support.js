@@ -11,7 +11,9 @@ define([
         $supportModal,
         $aboutModal,
         $supportModalBody,
-        $supportCloseButton;
+        $supportCloseButton,
+        $supportButton,
+        $aboutCloseButton;
 
     var exposed = {
         init: function(thisContext) {
@@ -25,6 +27,7 @@ define([
             $aboutCloseButton = context.$('#about-modal.modal button.close');
 
             context.$('#tour').on('click', function(event) {
+                var bootstroStepCount;
                 publisher.closeSupport();
                 $supportButton.trigger('click');
 
@@ -62,17 +65,17 @@ define([
             });
 
             $supportModal.modal({
-                "backdrop": true,
-                "keyboard": true,
-                "show": false
+                backdrop: true,
+                keyboard: true,
+                show: false
              }).on('hidden.bs.modal', function() {
                 publisher.closeSupport();
              });
 
              $aboutModal.modal({
-                "backdrop": true,
-                "keyboard": true,
-                "show": false
+                backdrop: true,
+                keyboard: true,
+                show: false
              }).on('hidden.bs.modal', function() {
                 publisher.closeAbout();
              });
@@ -89,14 +92,14 @@ define([
            
         },
         openSupport: function() {
-            publisher.publishOpening({"componentOpening": SUPPORT_DESIGNATION});
+            publisher.publishOpening({componentOpening: SUPPORT_DESIGNATION});
             $supportModal.modal('show');
         },
         closeSupport: function() {
             $supportModal.modal('hide');
         },
         openAbout: function() {
-            publisher.publishOpening({"componentOpening": ABOUT_DESIGNATION});
+            publisher.publishOpening({componentOpening: ABOUT_DESIGNATION});
             $aboutModal.modal('show');
         },
         closeAbout: function() {

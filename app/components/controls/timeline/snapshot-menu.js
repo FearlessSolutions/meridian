@@ -45,6 +45,7 @@ define([
                     //add click listener on menu
                     contextMenuClickHandler('#snapshot-' + layerId + '-settings-menu');
                 }
+
                 e.preventDefault();
             });
 

@@ -1,0 +1,22 @@
+<div class="location info-win-dialog">
+    <p class="title">{{title}}</p>
+    <div class="content">
+        <div class="infoDiv">
+            <div class="hide-location">
+                <button type="submit" class="btn btn-primary active">Remove</button>
+            </div>
+        </div>
+        <div class="tableDiv">
+            <table class="table table-striped">
+                <tbody>
+                {{#each attributes}}
+                <tr>
+                    <td>{{@key}}</td>
+                    <td>{{{this}}}</td>
+                </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -10,7 +10,6 @@ define([
             sendError = errorChannel;
             publisher.init(context);
             subscriber.init(context, exposed);
-
         },
         receive: function(channel, message) {
             clear();

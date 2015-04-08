@@ -67,7 +67,7 @@ You have two options for getting up an running, with or without the Grunt suppor
 
 1. Change into the project directory: `cd meridian`.
 
-1. Run `npm install` to make sure everything is up to date. 
+1. Run `npm install -g` to make sure everything is up to date. 
 
   - **For windows users:** Make sure to use the `Windows SDK 7.1 Command Prompt` as Administrator and set the command prompt environment to x86 by running `setenv /x86`. The command prompt can be found in the Start Menu after the SDK has been installed.
 

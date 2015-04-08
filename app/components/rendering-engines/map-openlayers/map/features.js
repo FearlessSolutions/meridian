@@ -18,7 +18,8 @@ define([
                 data = params.data,
                 newFeatures = [],
                 layer = params.map.getLayersBy('layerId', layerId)[0],
-                geoJsonParser;
+                geoJsonParser,
+                iconData;
 
             // TODO: Need to address how geoJSON feature collections are handled
             geoJsonParser = new OpenLayers.Format.GeoJSON({
@@ -28,16 +29,16 @@ define([
             });
 
             if(layer) {
-                context.sandbox.utils.each(data, function(key, value) {
+                context.sandbox.utils.each(data, function(geoJSONIndex, geoJSONFeature) {
                     
-                    var currentFeature = geoJsonParser.parseFeature(value);
+                    var currentFeature = geoJsonParser.parseFeature(geoJSONFeature);
                     
-                    currentFeature.featureId = value.id || '';
-                    currentFeature.attributes.dataService = value.dataService || '';
+                    currentFeature.featureId = geoJSONFeature.id || '';
+                    currentFeature.attributes.dataService = geoJSONFeature.dataService || '';
 
                     // Handle default styles if none defined
                     if(!currentFeature.attributes.icon) {
-                        iconData = context.sandbox.icons.getIconForFeature(value);
+                        iconData = context.sandbox.icons.getIconForFeature(geoJSONFeature);
                         currentFeature.attributes.icon = iconData.icon;
                         currentFeature.attributes.height = iconData.height;
                         currentFeature.attributes.width = iconData.width;
@@ -75,7 +76,7 @@ define([
                     featureIds: featureIds
                 });
 
-                if(context.sandbox.stateManager.map.visualMode === 'cluster') {
+                if(context.sandbox.stateManager.map.visualMode === 'cluster' && layer.recluster) {
                     layer.recluster();
                 }
 
