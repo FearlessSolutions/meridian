@@ -38,39 +38,21 @@ define([
 		mapOverlayCreate: function(message) {
             var layerId =  message.overlayId || defaultLayerId;
 
-			if(message === '') {
-				message = {
-                    selectable: DEFAULT_SELECTABLE
-				};
-			} else {
-                if(!('selectable' in message)) {
-                    message.selectable = DEFAULT_SELECTABLE;
-                }
-            }
-
             if(context.sandbox.dataStorage.datasets[layerId]) {
-                sendError('map.overlay.create', message, 'Layer already made');
-                return; //Layer already made; ignore this request
+                sendError('map.overlay.create', message, 'Layer already created');
+                return;
             } else {
                 context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
                 context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
                 context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
-
 
                 publisher.publishCreateLayer({
                     layerId: layerId,
                     name: message.name,
                     selectable: message.selectable,
                     coords: message.coords,
-                    // Temporary overwrite of symbolizers
                     symbolizers: message.symbolizers,
                     styleMap: message.styleMap
-                });
-
-                publisher.publishMessage({
-                    messageType: 'success',
-                    messageTitle: 'Layer Management',
-                    messageText: 'A new layer has been created.'
                 });
             }
 		},
