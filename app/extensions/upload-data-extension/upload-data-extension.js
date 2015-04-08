@@ -6,7 +6,7 @@ define([
     'handlebars'
 ], function(configuration, uploadDataInfoWinHBS, uploadDataInfoWinCSS) {
     var template = Handlebars.compile(uploadDataInfoWinHBS),
-        DATASOURCE_NAME = 'upload',
+        DATASOURCE_NAME,
         context;
 
     var exposed = {
