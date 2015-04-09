@@ -215,7 +215,7 @@ define([
          */
         startDrawing: function() {
             mapDraw.startDrawing({
-                "map": map,
+                "map": map
             });
         },
         /**
@@ -223,7 +223,7 @@ define([
          */
         clearDrawing: function() {
             mapLayers.clearDrawing({
-                "map": map,
+                "map": map
             });
         },
         /**
