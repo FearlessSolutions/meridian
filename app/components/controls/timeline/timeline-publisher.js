@@ -39,6 +39,9 @@ define([
         },
         publishMessage: function(params) {
             context.sandbox.emit('message.publish', params); 
+        },
+        createAOI: function(params) {
+            context.sandbox.emit('map.layer.create.aoi', params);   
         }
 
     };

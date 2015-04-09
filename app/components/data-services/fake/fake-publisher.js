@@ -9,6 +9,9 @@ define([
         createLayer: function(params) {
             context.sandbox.emit('map.layer.create', params);
         },
+        createLayerAOI: function(params) {
+            context.sandbox.emit('map.layer.create.aoi', params);
+        },
         plotFeatures: function(params) {
             context.sandbox.emit('map.features.plot', params);
         },

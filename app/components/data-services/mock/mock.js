@@ -143,6 +143,20 @@ define([
         context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
         context.sandbox.dataStorage.datasets[params.queryId].layerName = params.name || paramns.queryId;
 
+        //first create the snapshot AOI
+        publisher.createLayerAOI({
+            layerId: params.queryId,
+            name: params.name,
+            selectable: true,
+            coords: {
+                minLat: params.minLat,
+                minLon: params.minLon,
+                maxLat: params.maxLat,
+                maxLon: params.maxLon
+            }
+        });
+
+        //then create teh actual data layer
         publisher.createLayer({
             layerId: params.queryId,
             name: params.name,

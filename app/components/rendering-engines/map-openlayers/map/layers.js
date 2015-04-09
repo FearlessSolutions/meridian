@@ -121,6 +121,60 @@ define([
          * }
          * @returns {OpenLayers.Layer.Vector}
          */
+        createAOILayer: function(params) {
+            var options,
+                newVectorLayer,
+                selector,
+                layers;
+
+            options = {
+                "layerId": params.layerId, // set as layerId, is not present its null
+                "styleMap": null  // set as null for default of not providing a stylemap
+            };
+
+            context.sandbox.utils.extend(options, params);
+            if(params.styleMap) {
+                options.styleMap = new OpenLayers.StyleMap(params.styleMap);
+            }
+
+            delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
+
+            newVectorLayer = new OpenLayers.Layer.Vector(
+                params.layerId,
+                options
+            );
+
+            if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
+                newVectorLayer.setVisibility(false);
+            }
+
+            params.map.addLayers([newVectorLayer]);
+
+            if(params.selectable) {
+                selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+                layers = selector.layers;
+                layers.push(newVectorLayer);
+                selector.setLayer(layers);
+            }
+
+            // Default state manager settings for a new layer
+            context.sandbox.stateManager.layers[params.layerId] = {
+                "visible": true,
+                "hiddenFeatures": [],
+                "identifiedFeatures": []
+            };
+
+            return newVectorLayer;
+        },
+        /**
+         * Create new vector layer
+         * @param params {
+         *      styleMap - Style map for just this layer
+         *      layerId - Id for this layer (must be unique).
+         *      selectable - If this layer's features should be interactive
+         * }
+         * @returns {OpenLayers.Layer.Vector}
+         */
         createVectorLayer: function(params) {
             var options,
                 newVectorLayer,

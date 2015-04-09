@@ -7,6 +7,7 @@ define([
     './draw',
     './../map/clustering',
     './heatmap',
+    './aoi',
     './../libs/openlayers-2.13.1/OpenLayers'
 ], function(
     publisher,
@@ -16,7 +17,8 @@ define([
     mapFeatures,
     mapDraw,
     mapClustering,
-    mapHeatmap
+    mapHeatmap,
+    mapAOI
 ){
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
@@ -212,7 +214,12 @@ define([
             if(params.selectable) {
                 layerOptions.selectable = params.selectable;
             }
-            newLayer = mapLayers.createVectorLayer(layerOptions);
+            if(layerId.indexOf("_aoi") !== -1) {
+                newLayer = mapLayers.createVectorLayer(layerOptions); 
+            }else{
+                newLayer = mapLayers.createAOILayer(layerOptions);
+            }
+            
             mapLayers.addEventListenersToLayer({
                 "map": map,
                 "layer": newLayer,
