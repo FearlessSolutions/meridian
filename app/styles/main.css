@@ -228,6 +228,10 @@ a {
     padding-left: 2px;
     color: #396A92;
     cursor: pointer;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select:none;
 }
 
 #feauxcator a {

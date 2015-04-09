@@ -2,8 +2,8 @@ div[data-aura-component='controls/querytype-toggle']  .submenu-button-group {
     position:absolute;
     top:50%;
     margin-top:-140px;
-    left:150px;
-    display:block;
+    left:80px;
+    display:none;
     width:40px;
     z-index:1030;
 }

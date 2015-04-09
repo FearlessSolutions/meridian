@@ -12,8 +12,8 @@ define([
         publishOpening: function(params){
             context.sandbox.emit('menu.opening', params);
         },
-        drawBBox: function() {
-            context.sandbox.emit('map.draw.start');
+        drawBBox: function(params) {
+            context.sandbox.emit('map.draw.start', params);
         },
         removeBBox: function() {
             context.sandbox.emit('map.draw.clear');

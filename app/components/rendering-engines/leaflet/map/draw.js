@@ -44,7 +44,7 @@ define([
          * @param {integer} params.sides the number of sides on the polygon
          * @param {boolean} params.irregular true if sides can be of differing length
          */
-        startDrawing: function(params) {
+        startDrawing: function(params, drawType) {
             
             // TODO: add switch for points and lines, along with the polygon support
             // var polygonSides,
@@ -81,16 +81,21 @@ define([
             //             }
             //         }
             // };
-            var a = new L.Draw.Rectangle(params.map, context.sandbox.mapConfiguration.shapeStyles.rectangle).enable();
+            if (drawType === 'square') {
+                var a = new L.Draw.Rectangle(params.map, context.sandbox.mapConfiguration.shapeStyles.rectangle).enable();
+            } else if (drawType === 'circle') {
+                var a = new L.Draw.Circle(params.map, context.sandbox.mapConfiguration.shapeStyles.circle).enable();
+            } else if (drawType === 'polygon') {
+                var a = new L.Draw.Polygon(params.map, context.sandbox.mapConfiguration.shapeStyles.polygon).enable();
+            }
             // params.map.on('draw:drawstop', function(e){
             //     alert('stopped drawing');
             //     console.debug(e);
             //     a.addTo(drawnItemsLayer);
             // });
-
-
-
-
+        },
+        startSquare: function(params) {
+            var a = new L.Draw.Rectangle(params.map, context.sandbox.mapConfiguration.shapeStyles.rectangle).enable();
         }
     };
     return exposed;

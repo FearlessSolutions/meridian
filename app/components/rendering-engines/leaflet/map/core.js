@@ -213,10 +213,10 @@ define([
         /**
          * Start Drawing on Static Drawing Layer
          */
-        startDrawing: function() {
+        startDrawing: function(params) {
             mapDraw.startDrawing({
                 "map": map
-            });
+            }, params);
         },
         /**
          * Clear Features on Static Drawing Layer

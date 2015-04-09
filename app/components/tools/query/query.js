@@ -131,6 +131,7 @@ define([
             });
         },
         open: function(params) {
+            console.log(params);
             var drawOnDefault = true;
             if(context.sandbox.queryConfiguration && 
                 typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
@@ -139,7 +140,13 @@ define([
 
             if(drawOnDefault) {
                 closeMenu();
-                publisher.drawBBox();
+                if (params == 1 ) {
+                    publisher.drawBBox('square');
+                } else if (params == 2) {
+                    publisher.drawBBox('circle');
+                } else if (params == 3) {
+                    publisher.drawBBox('polygon');
+                }
             } else {
                 //TODO Publish that the menu is opening (if it is)
                 $modal.modal('toggle');

@@ -6,9 +6,9 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            context.sandbox.on('query.tool.close', queryToggle.removeActive);
-            context.sandbox.on('querytype.open', queryTypeToggle.setActive);
-            context.sandbox.on('data.clear.all', queryToggle.clear);
+            context.sandbox.on('query.tool.close', queryTypeToggle.removeActive);
+            context.sandbox.on('querytype.open', queryTypeToggle.display);
+            context.sandbox.on('data.clear.all', queryTypeToggle.clear);
         }
     };	
 

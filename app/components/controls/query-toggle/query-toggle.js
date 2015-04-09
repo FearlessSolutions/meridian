@@ -24,12 +24,13 @@ define([
                 if($queryToolButton.hasClass('active')) {
                     publisher.closeQueryTool();
                 } else {
-                    publisher.openQueryTool();
+                    console.log($queryToolButton.children('span').text());
+                    publisher.openQueryTool($queryToolButton.children('span').text());
                 }
             });
             var timeoutId = 0;
             $queryToolButton.on('mousedown', function(event) {
-                timeoutId = setTimeout(queryTypeToggle, 500);
+                timeoutId = setTimeout(publisher.queryTypeToggle, 500);
             }).on('mouseup mouseleave', function(event) {
                 clearTimeout(timeoutId);
             });
