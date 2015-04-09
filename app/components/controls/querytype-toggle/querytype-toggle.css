@@ -1,0 +1,12 @@
+div[data-aura-component='controls/querytype-toggle']  .submenu-button-group {
+    position:absolute;
+    top:50%;
+    margin-top:-140px;
+    left:150px;
+    display:block;
+    width:40px;
+    z-index:1030;
+}
+div[data-aura-component='controls/querytype-toggle'] .submenu-button-group a:first-child {
+
+}

@@ -1,14 +1,20 @@
 define([
-    './query-toggle-publisher',
+    './querytype-toggle-publisher',
     'bootstrap'
 ], function (publisher) {
     var context,
-        $queryToolButton;
+        $queryTypeBtn,
+        $queryTypeSquare,
+        $queryTypeCircle,
+        $queryTypePolygon;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            $queryToolButton = context.$('#queryToggleButton');
+            $queryTypeBtn = context.$('.submenu-button-group .btn');
+            $queryTypeSquare = context.$('#queryType_square');
+            $queryTypeCircle = context.$('#queryType_circle');
+            $queryTypePolygon = context.$('#queryType_polygon');
 
             //Activate bootstrap tooltip. 
             //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
@@ -18,14 +24,12 @@ define([
                     "show": 500
                 }
             });
-
-            $queryToolButton.on('click', function(event) {
+            $queryTypeBtn.on('click', function(event) {
                 event.preventDefault();
-                if($queryToolButton.hasClass('active')) {
-                    publisher.closeQueryTool();
-                } else {
-                    publisher.openQueryTool();
-                }
+            });
+
+            $queryTypeSquare.on('click', function(event) {
+                publisher.openQueryTool();
             });
         },
         setActive: function() {

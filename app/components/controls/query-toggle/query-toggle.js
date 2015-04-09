@@ -27,6 +27,12 @@ define([
                     publisher.openQueryTool();
                 }
             });
+            var timeoutId = 0;
+            $queryToolButton.on('mousedown', function(event) {
+                timeoutId = setTimeout(queryTypeToggle, 500);
+            }).on('mouseup mouseleave', function(event) {
+                clearTimeout(timeoutId);
+            });
         },
         setActive: function() {
             $queryToolButton.addClass('active');

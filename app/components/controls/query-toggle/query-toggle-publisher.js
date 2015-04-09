@@ -12,6 +12,9 @@ define([
         },
         openQueryTool: function(params) {
             context.sandbox.emit('query.tool.open');
+        },
+        queryTypeToggle: function(params) {
+            context.sandbox.emit('querytype.open');
         }
     };
 
