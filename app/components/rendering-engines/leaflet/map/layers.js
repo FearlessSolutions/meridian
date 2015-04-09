@@ -6,7 +6,7 @@ define([
     './../libs/leaflet-src',
 ], function(publisher, mapBase, mapClustering) {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context, drawnItemsLayer;
+    var context, drawnItemsLayer, basemapLayers, dataLayers, clusterLayers;
 
     var exposed = {
         init: function(thisContext) {
@@ -16,6 +16,9 @@ define([
             drawnItemsLayer = new L.FeatureGroup();
             params.map.addLayer(drawnItemsLayer);
             return drawnItemsLayer;
+        },
+        clearDrawing: function(params){
+            drawnItemsLayer.clearLayers();
         },
         /**
          * Create layers that are not accessible to the user, and that don't go away
@@ -115,6 +118,31 @@ define([
          * @returns {OpenLayers.Layer.Vector}
          */
         createVectorLayer: function(params) {
+
+        //     publisher.createLayer({
+        //     layerId: params.queryId,
+        //     name: params.name,
+        //     selectable: true,
+        //     coords: {
+        //         minLat: params.minLat,
+        //         minLon: params.minLon,
+        //         maxLat: params.maxLat,
+        //         maxLon: params.maxLon
+        //     }
+        // });
+
+            var southWest = L.latLng([params.minLat, params.minLon]),
+                northEast = L.LatLng([params.maxLat, params.maxLon]),
+                bounds = L.latLngBounds(southWest, northEast);
+            //drawnItemsLayers has only shapes.
+            drawnItemsLayer.eachLayer(function(shapes){
+                if(shape.getBounds() === bounds){
+                    //shape is the same one in params.
+                    console.debug(shape);
+                    //params.map.removeLayer();
+                }
+            });
+
             var options,
                 newVectorLayer,
                 selector,
@@ -378,7 +406,7 @@ define([
          * @returns {{}}
          */
         loadBasemaps: function(params) {
-            var basemapLayers = {};
+            basemapLayers = {};
 
             context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(basemap) {
                 var baseLayer;
@@ -416,13 +444,13 @@ define([
                     basemapLayers[context.sandbox.mapConfiguration.basemaps[basemap].basemap] = baseLayer;
                 }
             });
-            return basemapLayers;
           
         },
         setBasemap: function(params) {
-            if(params.map.hasLayer(params.basemapLayer)){
+            var baseLayer = basemapLayers[params.basemap]
+            if(params.map.hasLayer(baseLayer)){
                 params.map.eachLayer(function (layer){
-                    if(layer._url === params.basemapLayer._url){
+                    if(layer._url === baseLayer._url){
                         layer.bringToFront();
                     }else{
                         params.map.removeLayer(layer);
@@ -430,7 +458,7 @@ define([
                 });
             }
             else{
-                params.map.addLayer(params.basemapLayer);
+                params.map.addLayer(baseLayer);
             }
         },
         /**

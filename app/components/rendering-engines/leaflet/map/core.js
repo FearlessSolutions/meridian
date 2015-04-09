@@ -23,7 +23,7 @@ define([
 
     // Set Full-Scope Variables
     var map,
-        basemapLayers = {};
+        drawnItemsLayer;
 
     var exposed = {
         /**
@@ -52,7 +52,7 @@ define([
 
             map = mapBase.createMap(params);
 
-            basemapLayers = mapLayers.loadBasemaps({
+            mapLayers.loadBasemaps({
                 "map": map
             });
 
@@ -69,16 +69,17 @@ define([
                 "basemap": context.sandbox.mapConfiguration.defaultBaseMap
             });
 
-            // // mapLayers.createStaticLayers({
-            // //     "map": map
-            // // });
+            drawnItemsLayer = mapLayers.createDrawingLayer({
+                "map": map
+            });
             
             context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
             
             context.sandbox.stateManager.map.status.setReady(true);
 
-            mapDraw.setDrawing({
-                "map": map
+            mapDraw.setDrawingActions({
+                "map": map,
+                "drawnItemsLayer": drawnItemsLayer
             });
 
             var someIcon = L.icon({
@@ -97,17 +98,22 @@ define([
             
            
             var point1 = L.marker([5,5], {icon: someIcon}).bindPopup(buttonStr);
-            var point2 = L.marker([5,4]);
-            var point3 = L.marker([4,5]).bindPopup(buttonStr);;
-            var point4 = L.marker([4,4]);
+            var point2 = L.marker([6,6]);
+            var point3 = L.marker([6,7]).bindPopup(buttonStr);;
+            var point4 = L.marker([7,7]);
+            var square = L.rectangle([[5.5,5.5],[7.5,7.5]], context.sandbox.mapConfiguration.shapeStyles.rectangle.shapeOptions);
             var query1 = L.featureGroup([point1]);
-            var query2 = L.featureGroup([point2,point3,point4]);
+            var query2 = L.featureGroup([point2,point3,point4,square]);
             
             query1.addTo(map);
             query2.addTo(map);
 
-            query2.on('click', function(marker){
-               query2.bringToBack(query2);
+            query2.on('click', function(obj){
+               console.debug(obj);
+               //query2.removeLayer(obj.layer._leaflet_id);//this works
+               //console.debug(query2._leaflet_id);
+               //map.removeLayer(query2._leaflet_id);
+               map.removeLayer(point1);
             });
 
             query1.on('click', function(marker){
@@ -119,6 +125,8 @@ define([
                });
                 console.debug('query: ', query1);
             });
+
+            //console.debug(map.getPanes());
 
         },
         /**
@@ -186,7 +194,7 @@ define([
         setBasemap: function(params) {
             mapLayers.setBasemap({
                 "map": map,
-                "basemapLayer": basemapLayers[params.basemap]
+                "basemap": params.basemap
             });
         },
         /**
@@ -208,16 +216,14 @@ define([
         startDrawing: function() {
             mapDraw.startDrawing({
                 "map": map,
-                "layerId": "static_draw"
             });
         },
         /**
          * Clear Features on Static Drawing Layer
          */
         clearDrawing: function() {
-            mapDraw.clearDrawing({
+            mapLayers.clearDrawing({
                 "map": map,
-                "layerId": "static_draw"
             });
         },
         /**
@@ -234,27 +240,27 @@ define([
                     "layerId": params.layerId
                 };
             layerOptions.map = map;
-            mapClustering.addClusteringToLayerOptions(layerOptions);
+            //mapClustering.addClusteringToLayerOptions(layerOptions);
 
             // If a symbolizers were provided, overwrite the default symbolizers from clustering
-            if(params.symbolizers) {
-                layerOptions.styleMap = mapClustering.applyCustomSymbolizers({
-                    "symbolizers": params.symbolizers
-                });
-            }
-            // If a styleMap was provided, overwrite the default style from clustering
-            if(params.styleMap) {
-                layerOptions.styleMap = params.styleMap;
-            }
-            if(params.selectable) {
-                layerOptions.selectable = params.selectable;
-            }
-            newLayer = mapLayers.createVectorLayer(layerOptions);
-            mapLayers.addEventListenersToLayer({
-                "map": map,
-                "layer": newLayer,
-                "eventListeners": params.events // Can pass in your own event listeners or take the default by not providing any
-            });
+            // if(params.symbolizers) {
+            //     layerOptions.styleMap = mapClustering.applyCustomSymbolizers({
+            //         "symbolizers": params.symbolizers
+            //     });
+            // }
+            // // If a styleMap was provided, overwrite the default style from clustering
+            // if(params.styleMap) {
+            //     layerOptions.styleMap = params.styleMap;
+            // }
+            // if(params.selectable) {
+            //     layerOptions.selectable = params.selectable;
+            // }
+            ////newLayer = mapLayers.createVectorLayer(layerOptions);
+            // mapLayers.addEventListenersToLayer({
+            //     "map": map,
+            //     "layer": newLayer,
+            //     "eventListeners": params.events // Can pass in your own event listeners or take the default by not providing any
+            // });
         },
         /**
          * Delete Layer
@@ -287,16 +293,16 @@ define([
          * @param {integer} params.layerIndex - index of layer
          */
         plotFeatures: function(params) {
-            mapFeatures.plotFeatures({
-                "map": map,
-                "layerId": params.layerId,
-                "data": params.data
-            });
-            if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
-                mapHeatmap.update({
-                    "map": map
-                });
-            }
+            // mapFeatures.plotFeatures({
+            //     "map": map,
+            //     "layerId": params.layerId,
+            //     "data": params.data
+            // });
+            // if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
+            //     mapHeatmap.update({
+            //         "map": map
+            //     });
+            // }
         },
         /**
          * Hide Features

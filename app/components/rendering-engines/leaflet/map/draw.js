@@ -1,9 +1,10 @@
 define([
+    './../map-api-publisher',
     'text!./../libs/draw/leaflet.draw.css',
     './layers',
     './../libs/leaflet-src',
     './../libs/draw/leaflet.draw-src'
-], function(leafDrawCSS, mapLayers) {
+], function(publisher, leafDrawCSS, mapLayers) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -19,21 +20,21 @@ define([
             context = thisContext;
             //context.sandbox.utils.addCSS(leafDrawCSS, 'rendering-engines-leaflet-draw-component-style');
         },
-        setDrawing: function(params){
+        setDrawingActions: function(params){
              // Initialise the FeatureGroup to store editable layers
             //var drawnItems = new L.FeatureGroup();
             //map.addLayer(drawnItems);
-            drawnItemsLayer = mapLayers.createDrawingLayer({
-                "map": params.map
+            
+            params.map.on('draw:created', function(e){
+                e.layer.addTo(params.drawnItemsLayer);
+                publisher.stopDrawing({
+                    "minLon": e.layer.getBounds().getWest(),
+                    "minLat": e.layer.getBounds().getSouth(),
+                    "maxLon": e.layer.getBounds().getEast(),
+                    "maxLat": e.layer.getBounds().getNorth()
+                });
             });
 
-            // Initialise the draw control and pass it the FeatureGroup of editable layers
-            var drawControl = new L.Control.Draw({
-                edit: {
-                    featureGroup: drawnItemsLayer
-                }
-            });
-            params.map.addControl(drawControl);
         },
         /**
          * Activate Drawing
@@ -70,25 +71,26 @@ define([
             
             // drawControl.activate();
 
-            // context.$('#map').css('cursor', 'crosshair');
-        },
-        /**
-         * Deactivate Drawing
-         * @param  {object} params Parameters JSON
-         * @param {object} params.map the map object
-         * @param {string} params.layerId the layerId
-         */
-        clearDrawing: function(params) {
-            var drawLayer;
+            // var options = {
+            //         rectangle:{
+            //             shapeOptions:{
+            //                 color: '#000000',
+            //                 fillColor: '#8b8a8a',
+            //                 clickable: false,
+            //                 weight: 1
+            //             }
+            //         }
+            // };
+            var a = new L.Draw.Rectangle(params.map, context.sandbox.mapConfiguration.shapeStyles.rectangle).enable();
+            // params.map.on('draw:drawstop', function(e){
+            //     alert('stopped drawing');
+            //     console.debug(e);
+            //     a.addTo(drawnItemsLayer);
+            // });
 
-            if(drawControl) {
-                drawLayer = params.map.getLayersBy('layerId', params.layerId)[0];
-                drawLayer.removeAllFeatures();
-                drawControl.deactivate();
-                drawControl = null;
-            }
 
-            context.$('#map').css('cursor', 'default');
+
+
         }
     };
     return exposed;

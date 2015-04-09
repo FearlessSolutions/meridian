@@ -48,6 +48,18 @@ define([
         "wrapDateLine": true
       }
     ],
+    "shapeStyles": {
+      "rectangle":{
+        "shapeOptions":{
+          "color": '#000000',
+          "fillColor": '#8b8a8a',
+          "fillOpacity": 0.3,
+          "clickable": false,
+          "weight": 1
+                        }
+      },
+      "circle":{}
+    },
     "markerIcons" : {
       "default" : {
         "icon": "/extensions/map-configuration-extension/images/markerIcons/marker_24x24.png",
