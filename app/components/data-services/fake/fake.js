@@ -21,8 +21,8 @@ define([
                     createLayer(params);
                 }
 
-                initiateQuery(params.name);
-                queryData(params);
+               // initiateQuery(params.name);
+                //queryData(params);
             }
         },
         stopQuery: function(params) {
