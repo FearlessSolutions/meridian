@@ -22,7 +22,7 @@ define([
             $queryToolButton.on('click', function(event) {
                 event.preventDefault();
                 if($queryToolButton.hasClass('active')) {
-                    publisher.closeQueryTool();
+                    // this needs to remove class and also stop drawing rectangle/circle/polygon here
                 } else {
                     console.log($queryToolButton.children('span').text());
                     publisher.openQueryTool($queryToolButton.children('span').text());
@@ -30,9 +30,17 @@ define([
             });
             var timeoutId = 0;
             $queryToolButton.on('mousedown', function(event) {
-                timeoutId = setTimeout(publisher.queryTypeToggle, 500);
-            }).on('mouseup mouseleave', function(event) {
+                if ($queryToolButton.hasClass('active')) {
+
+                } else {
+                    timeoutId = setTimeout(publisher.openQueryType, 500);
+                    $queryToolButton.blur();
+                };
+            }).on('mouseup', function(event) {
                 clearTimeout(timeoutId);
+                //publisher.closeQueryType; publisher does not work here!
+                $('.submenu-button-group').hide();
+
             });
         },
         setActive: function() {
@@ -43,6 +51,10 @@ define([
         },
         clear: function() {
             $queryToolButton.removeClass('active');
+        },
+        setClick: function() {
+            $queryToolButton.removeClass('active');
+            $queryToolButton.click();
         }
     };
 

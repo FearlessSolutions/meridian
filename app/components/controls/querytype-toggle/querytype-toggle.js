@@ -17,6 +17,8 @@ define([
             $queryTypeSquare = context.$('#queryType_square');
             $queryTypeCircle = context.$('#queryType_circle');
             $queryTypePolygon = context.$('#queryType_polygon');
+            // initial button set
+            exposed.initialSet();
 
             //Activate bootstrap tooltip. 
             //Specify container to make the tooltip appear in one line. (Buttons are small and long text is stacked.)
@@ -26,24 +28,25 @@ define([
                     "show": 500
                 }
             });
-            $queryTypeBtn.on('click', function(event) {
+            $queryTypeBtn.on('click mouseup', function(event) {
                 event.preventDefault();
+                $queryTypeBtn.removeClass('active');
+                context.$(this).addClass('active');
                 $queryTypeMenu.hide();
                 $('#queryToggleButton').children('span').text(context.$(this).children('span').text())
-            });
-
-            $queryTypeSquare.on('click', function(event) {
-                publisher.openQueryTool();
-            });
-            $queryTypeCircle.on('click', function(event) {
-                publisher.openQueryTool();
-            });
-            $queryTypePolygon.on('click', function(event) {
-                publisher.openQueryTool();
+                publisher.setClick();
             });
         },
-        display: function() {
+        initialSet: function() {
+            $('#queryToggleButton').children('span').text('1');
+            $queryTypeSquare.addClass('active');
+        },
+        open: function() {
             $queryTypeMenu.show();
+        },
+        close: function() {
+            $queryTypeMenu.hide();
+            alert('');
         },
         setActive: function() {
             //$queryToolButton.addClass('active');

@@ -9,6 +9,7 @@ define([
             context.sandbox.on('query.tool.close', queryToggle.removeActive);
             context.sandbox.on('query.tool.open', queryToggle.setActive);
             context.sandbox.on('data.clear.all', queryToggle.clear);
+            context.sandbox.on('querytype.setclick', queryToggle.setClick);
         }
     };	
 

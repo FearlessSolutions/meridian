@@ -209,6 +209,12 @@ a {
     border-radius: 0px;
     border-top: none;
 }
+#left-side-menu .menu-button-group {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select:none;
+}
 #left-side-menu .menu-button-group div:first-child .btn {
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;

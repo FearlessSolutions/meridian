@@ -13,8 +13,11 @@ define([
         openQueryTool: function(params) {
             context.sandbox.emit('query.tool.open', params);
         },
-        queryTypeToggle: function(params) {
+        openQueryType: function(params) {
             context.sandbox.emit('querytype.open');
+        },
+        closeQueryType:  function(params) {
+            context.sandbox.emit('querytype.close');
         }
     };
 
