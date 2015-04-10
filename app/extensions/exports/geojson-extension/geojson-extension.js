@@ -2,60 +2,73 @@ define([
     './geojson-configuration'
 ], function(configuration) {
 
-    var context;
-	var exposed = {
+    var context,
+        exportUtils;
+
+	return {
 		initialize: function(app) {
             context = app;
+            exportUtils = context.sandbox.export.utils;
 
             if(!app.sandbox.export){
                 throw 'Requires export-utils extension to be loaded.';
             }
 
-            app.sandbox.export.utils.addExport({
+            exportUtils.addExport({
                 id: configuration.id,
                 option: configuration,
                 export: exportFunction,
                 validate: validate
             });
 
-        }//end of initialize
-	};//exposed
+        }
+	};
 
     function exportFunction(params){
-        var layerIds = params.layerIds;
+        var layerIds = params.layerIds,
+            filename = params.options.filename;
 
         if(params.featureId){
             window.open(context.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + params.featureId, '_blank');
         } else if(layerIds){
-            context.sandbox.export.utils.checkFileHead(layerIds, function(err, pass){
-                if(err) {
-                    params.callback({
-                        messageType: err.messageType,
-                        messageTitle: 'geoJSON export',
-                        messageText: err.messageText
-                    });
-                } else {
-                    params.callback({
-                        messageType: 'info',
-                        messageTitle: 'geoJSON export',
-                        messageText: 'geoJSON download started'
-                    });
+            if(!exportUtils.validateFilename(filename)){
+                params.callback({
+                    messageType: 'error',
+                    messageTitle: 'geoJSON export',
+                    messageText: 'Filename contained one of: \\ / : * ? " < > | &'
+                });
+            }else {
+                exportUtils.checkFileHead(layerIds, function (err, pass) {
+                    if (err) {
+                        params.callback({
+                            messageType: err.messageType,
+                            messageTitle: 'geoJSON export',
+                            messageText: err.messageText
+                        });
+                    } else {
+                        params.callback({
+                            messageType: 'info',
+                            messageTitle: 'geoJSON export',
+                            messageText: 'geoJSON download started'
+                        });
 
-                    window.location.assign(context.sandbox.export.utils.getFileExportUrl(layerIds, 'geojson'));
-                }
-            });        }
+                        window.location.assign(exportUtils.getFileExportUrl(layerIds, filename, 'geojson'));
+                    }
+                });
+            }
+        }
     }
 
     function validate(params){
         var valid = false;
 
         if(params.featureId){
-            valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
+            valid = exportUtils.validateExportForLayerByDatasource(
                 configuration.id,
                 [params.layerId] //Turn it into an array
             );
         } else if(params.layerIds){
-            valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
+            valid = exportUtils.validateExportForLayerByDatasource(
                 configuration.id,
                 params.layerIds
             );
@@ -66,5 +79,4 @@ define([
         params.callback(valid);
     }
 
-	return exposed;
 });

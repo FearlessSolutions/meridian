@@ -2,16 +2,19 @@ define([
     './csv-configuration'
 ], function(configuration) {
 
-    var context;
-	var exposed = {
+    var context,
+        exportUtils;
+
+	return {
 		initialize: function(app) {
             context = app;
+            exportUtils = context.sandbox.export.utils;
 
             if(!app.sandbox.export){
                 throw 'Requires export-utils extension to be loaded.';
             }
 
-            app.sandbox.export.utils.addExport({
+            exportUtils.addExport({
                 id: configuration.id,
                 option: configuration,
                 export: exportFunction,
@@ -19,32 +22,41 @@ define([
             });
 
         }//end of initialize
-	};//exposed
+	};
 
     function exportFunction(params) {
-        var layerIds = params.layerIds;
+        var layerIds = params.layerIds,
+            filename = params.options.filename;
 
         if (params.featureId && params.layerId) { //Not done
 
         } else if (params.layerIds) {
-            if (context.sandbox.export.utils.verifyOnlyPointsInLayer(layerIds)) {
-                context.sandbox.export.utils.checkFileHead(layerIds, function(err, pass){
-                    if(err) {
-                        params.callback({
-                            messageType: err.messageType,
-                            messageTitle: 'CSV export',
-                            messageText: err.messageText
-                        });
-                    } else {
-                        params.callback({
-                            messageType: 'info',
-                            messageTitle: 'CSV export',
-                            messageText: 'CSV download started'
-                        });
+            if (exportUtils.verifyOnlyPointsInLayer(layerIds)) {
+                if(!exportUtils.validateFilename(filename)){
+                    params.callback({
+                        messageType: 'error',
+                        messageTitle: 'CSV export',
+                        messageText: 'Filename contained one of: \\ / : * ? " < > | &'
+                    });
+                }else {
+                    exportUtils.checkFileHead(layerIds, function(err, pass){
+                        if(err) {
+                            params.callback({
+                                messageType: err.messageType,
+                                messageTitle: 'CSV export',
+                                messageText: err.messageText
+                            });
+                        } else {
+                            params.callback({
+                                messageType: 'info',
+                                messageTitle: 'CSV export',
+                                messageText: 'CSV download started'
+                            });
 
-                        window.location.assign(context.sandbox.export.utils.getFileExportUrl(layerIds, 'csv'));
-                    }
-                });
+                            window.location.assign(exportUtils.getFileExportUrl(layerIds, filename, 'csv'));
+                        }
+                    });
+                }
             } else {
                 params.callback({
                     messageType: 'error',
@@ -61,7 +73,7 @@ define([
         if(params.featureId){
             valid = false;
         } else if(params.layerIds){
-            valid = context.sandbox.export.utils.validateExportForLayerByDatasource(
+            valid = exportUtils.validateExportForLayerByDatasource(
                 configuration.id,
                 params.layerIds
             );
@@ -72,5 +84,4 @@ define([
         params.callback(valid);
     }
 
-	return exposed;
 });
