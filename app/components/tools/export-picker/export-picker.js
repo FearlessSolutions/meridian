@@ -118,12 +118,10 @@ define([
             //Export radio buttons. These don't get removed, so can do up here.
             $exportContainer.find('input:radio[name=exportOption]').on('change', function(){
                 var $this = context.$(this),
-                    exportId = $this.val(),
-                    enabledExtraOptions;
+                    exportId = $this.val();
 
                 $exportContainer.find('.radio').removeClass('selected');
                 enableExtraOptions(exportId);
-
             });
 
             //Layercontainer click logic.
@@ -321,14 +319,27 @@ define([
 
     //verifies if the export option has additional options
     function enableExtraOptions(exportId){
-        var $exportPane = $extraContainer.find('#tab-' + exportId);
+        var $extraOptionTab = $extraContainer.find('#tab-' + exportId);
 
-        if($exportPane.length) { //Check if there is a pane for the export id
+        $extraContainer.find('.extra-export-tab').hide(); //Hide all extra option tabs
+        if($extraOptionTab.length) { //Check if there is a pane for the export id
             if($modalDialog.hasClass('singlePoint')){
                 stepTwoSinglePoint();
             }else{
                 showStepThree();
             }
+
+            //For each of the inputs for the extra tab, apply any defaults, then show the tab
+            $extraOptionTab.find('input').each(function(inputIndex, input){
+                var $this = $(this),
+                    defaultValue = $this.data('default');
+
+                if(defaultValue){
+                    $this.val(defaultValue);
+                }
+            });
+            $extraOptionTab.show(); //Show just this extra option tab
+
         }else{
             if($modalDialog.hasClass('singlePoint')){
                 stepOneSinglePoint();
