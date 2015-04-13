@@ -613,10 +613,7 @@ define([
                         "maxLon": splitBoundingBox[2],
                         "maxLat": splitBoundingBox[3]
                     };
-                    // if query it points to stopDrawing, if draw it points to stopDrawing Rectangle
-                    // not sure how to do the if condition here
-                    //publisher.stopDrawing(coords);
-                    publisher.stopDrawingRectangle(coords);
+                    publisher.stopDrawing(coords);
                 }
 
                 if(params.layer.features.length > 1) {

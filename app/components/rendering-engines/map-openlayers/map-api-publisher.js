@@ -13,10 +13,6 @@ define([
         stopDrawing: function(params) {
             context.sandbox.emit('map.draw.stop', params);
         },
-        stopDrawingRectangle: function(params) {
-            context.sandbox.emit('map.draw.stop.rectangle', params);
-            context.sandbox.emit('map.draw.deactivate');
-        },
         publishMousePosition: function(params) {
             context.sandbox.emit('mouse.position.change', params);
         },

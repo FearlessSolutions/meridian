@@ -8,7 +8,8 @@ define([
         $maxLon,
         $maxLat,
         $minLon,
-        $minLat;
+        $minLat,
+        isActive;
 
     var exposed = {
         init: function(thisContext) {
@@ -142,7 +143,7 @@ define([
                 publisher.drawBBox();
             } else {
                 //TODO Publish that the menu is opening (if it is)
-                //$modal.modal('toggle');
+                $modal.modal('toggle');
 
                 publisher.removeBBox();
                 exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
@@ -192,8 +193,8 @@ define([
     };
 
     function closeMenu(){
-        $modal.modal('hide');
-        //publisher.removeBBox();
+        //$modal.modal('hide');
+        publisher.removeBBox();
     }
 
     return exposed;

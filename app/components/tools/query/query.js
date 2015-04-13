@@ -8,11 +8,13 @@ define([
         $maxLon,
         $maxLat,
         $minLon,
-        $minLat;
+        $minLat,
+        isActive;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            isActive = false;
             $modal = context.$('#query-modal');
             $minLon = context.$('.query-form #query-location-minLon');
             $minLat = context.$('.query-form #query-location-minLat');
@@ -131,6 +133,8 @@ define([
             });
         },
         open: function(params) {
+            isActive = true;
+
             var drawOnDefault = true;
             if(context.sandbox.queryConfiguration && 
                 typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
@@ -149,10 +153,13 @@ define([
             }
         },
         close: function(params) {
+            isActive = false;
             closeMenu();
         },
         bboxAdded: function(params) {
-            $modal.modal('show');
+            if (isActive) {
+                $modal.modal('show');
+            };
             exposed.populateCoordinates(params);   
         },
         populateCoordinates: function(params) {
