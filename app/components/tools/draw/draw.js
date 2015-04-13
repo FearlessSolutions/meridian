@@ -193,7 +193,7 @@ define([
 
     function closeMenu(){
         $modal.modal('hide');
-        publisher.removeBBox();
+        //publisher.removeBBox();
     }
 
     return exposed;

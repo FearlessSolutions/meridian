@@ -594,6 +594,7 @@ define([
 
     // TODO: Split the control func into the drawing.js file and the boxLayer converts to more generic drawing func.
     function addDrawListeners(params) {
+        console.log(params);
         params.layer.events.on({
             featureadded: function(evt) {
                 var feature = evt.feature,
@@ -612,8 +613,10 @@ define([
                         "maxLon": splitBoundingBox[2],
                         "maxLat": splitBoundingBox[3]
                     };
-
-                    publisher.stopDrawing(coords);
+                    // if query it points to stopDrawing, if draw it points to stopDrawing Rectangle
+                    // not sure how to do the if condition here
+                    //publisher.stopDrawing(coords);
+                    publisher.stopDrawingRectangle(coords);
                 }
 
                 if(params.layer.features.length > 1) {

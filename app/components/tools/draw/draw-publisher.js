@@ -13,7 +13,7 @@ define([
             context.sandbox.emit('menu.opening', params);
         },
         drawBBox: function() {
-            context.sandbox.emit('map.draw.start');
+            context.sandbox.emit('map.draw.start.rectangle');
         },
         removeBBox: function() {
             context.sandbox.emit('map.draw.clear');
