@@ -142,7 +142,7 @@ define([
                 publisher.drawBBox();
             } else {
                 //TODO Publish that the menu is opening (if it is)
-                $modal.modal('toggle');
+                //$modal.modal('toggle');
 
                 publisher.removeBBox();
                 exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
@@ -152,7 +152,7 @@ define([
             closeMenu();
         },
         bboxAdded: function(params) {
-            $modal.modal('show');
+            //$modal.modal('show');
             exposed.populateCoordinates(params);   
         },
         populateCoordinates: function(params) {

@@ -8,10 +8,10 @@ define([
             context = thisContext;
         },
         closeQueryTool: function(params) {
-            context.sandbox.emit('query.tool.close');
+            context.sandbox.emit('draw.tool.close');
         },
         openQueryTool: function(params) {
-            context.sandbox.emit('query.tool.open');
+            context.sandbox.emit('draw.tool.open');
         }
     };
 
