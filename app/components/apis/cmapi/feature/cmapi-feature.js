@@ -16,8 +16,9 @@ define([
             subscriber.init(context, exposed);
         },
         receive: function(channel, message) {
-            if(receiveChannels[channel]) {
-                receiveChannels[channel](channel, message);
+            var chName  = context.sandbox.cmapi.utils.createChannelNameFunction(channel);
+            if(receiveChannels[chName]) {
+                receiveChannels[chName](message);
             } else {
                 sendError(channel, message, 'Channel not supported');
             }
@@ -29,21 +30,36 @@ define([
 
     //Map channels to functions, and error if a channel is not supported
     var receiveChannels= {
-		"map.feature.plot": function(channel, message) { // TODO: if featureId already exists, remove it and replot
+		mapFeaturePlot: function(message) { // TODO: if featureId already exists, remove it and replot
             if(message === '') {
-                sendError('map.feature.unplot', message, 'GeoJSON is the only supported format, for now.');
-                return;
+                sendError(channel, message, 'No message payload supplied');
             }else{
                 plotFeatures(message);
             }
 		},
-		"map.feature.plot.url": function(message) {
-            sendError('map.feature.plot.url', message, 'Channel not supported');
+        mapFeaturePlotBatch: function(message) {
+            if(message === '') {
+                sendError(channel, message, 'No message payload supplied');
+            } else {
+                //plot all features in payload
+                plotFeaturesByURL(message);
+            }
+        },
+		mapFeaturePlotUrl: function(message) {
+            if(message === '') {
+                sendError(channel, message, 'No message payload supplied');
+            } else {
+                sendError(channel, message, 'Channel not supported');
+            }
 		},
-		"map.feature.unplot": function(message) {
-            sendError('map.feature.unplot', message, 'Channel not supported');
+		mapFeatureUnplot: function(message) {
+            if(message === '') {
+                sendError(channel, message, 'No message payload supplied');
+            } else {
+                unplotFeatures(message);
+            }
 		},
-		"map.feature.hide": function(message) {
+		mapFeatureHide: function(message) {
             if(message === '') {
                 return;
             } else if(!message.format || message.format === 'geojson') {
@@ -61,7 +77,7 @@ define([
                 sendError('map.feature.unplot', message, 'GeoJSON is the only supported format, for now.');
             }
 		},
-		"map.feature.show": function(message) {
+		mapFeatureShow: function(message) {
             if(message === '') {
                 return;
             } else if(!message.format || message.format === 'geojson') {
@@ -86,13 +102,13 @@ define([
                 sendError('map.feature.unplot', message, 'GeoJSON is the only supported format, for now.');
             }
 		},
-		"map.feature.selected": function(message) {
+		mapFeatureSelected: function(message) {
             sendError('map.feature.selected', message, 'Channel not supported');
 		},
-		"map.feature.deselected": function(message) {
+		mapFeatureDeselected: function(message) {
             sendError('map.feature.deselected', message, 'Channel not supported');
 		},
-		"map.feature.update": function(message) {
+		mapFeatureUpdate: function(message) {
             sendError('map.feature.update', message, 'Channel not supported');
 		}
     };
@@ -117,7 +133,8 @@ define([
                 "layerId": message.overlayId,
             });
         }
-    }    
+
+    }
 
     return exposed;
 
