@@ -93,10 +93,5 @@ define([
         }
     };
 
-    function closeMenu(){
-        //$modal.modal('hide');
-        publisher.removeBBox();
-    }
-
     return exposed;
 });
