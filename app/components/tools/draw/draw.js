@@ -3,47 +3,21 @@ define([
     'bootstrap'
 ], function (publisher) {
     var context,
-        MENU_DESIGNATION = 'query-tool',
-        $modal,
-        $maxLon,
-        $maxLat,
-        $minLon,
-        $minLat,
         isActive;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
             isActive = false;
-            $modal = context.$('#query-modal');
-            $minLon = context.$('.query-form #query-location-minLon');
-            $minLat = context.$('.query-form #query-location-minLat');
-            $maxLon = context.$('.query-form #query-location-maxLon');
-            $maxLat = context.$('.query-form #query-location-maxLat');
-
         },
-        open: function(params) {
+        open: function() {
             isActive = true;
-            var drawOnDefault = true;
-            if(context.sandbox.queryConfiguration && 
-                typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
-                drawOnDefault = context.sandbox.queryConfiguration.queryDrawOnDefault; 
-            }
+            publisher.drawBBox();
 
-            if(drawOnDefault) {
-                closeMenu();
-                publisher.drawBBox();
-            } else {
-                //TODO Publish that the menu is opening (if it is)
-                $modal.modal('toggle');
-
-                publisher.removeBBox();
-                exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
-            }
         },
         close: function(params) {
             isActive = false;
-            closeMenu();
+            publisher.removeBBox();
         },
         bboxAdded: function(params) {
             if (isActive) {
@@ -107,24 +81,15 @@ define([
                     }]
                 });
                 //publisher.createShapeLayer(shapeObject);
-                publisher.deactivateDrawTool();
+                publisher.closeDrawTool();
+                exposed.close();
             }
         },
         populateCoordinates: function(params) {
-            $minLon.val(params.minLon);
-            $minLat.val(params.minLat);
-            $maxLon.val(params.maxLon);
-            $maxLat.val(params.maxLat);
-        },
-        clear: function(){
-            $modal.modal('hide');
-        },
-        handleMenuOpening: function(params){
-            if(params.componentOpening === MENU_DESIGNATION){
-                return;
-            }else{
-                closeMenu();
-            }
+            params.minLon;
+            params.minLat;
+            params.maxLon;
+            params.maxLat;
         }
     };
 

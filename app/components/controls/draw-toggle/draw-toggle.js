@@ -22,9 +22,9 @@ define([
             $drawToolButton.on('click', function(event) {
                 event.preventDefault();
                 if($drawToolButton.hasClass('active')) {
-                    publisher.closeQueryTool();
+                    publisher.closeDrawTool();
                 } else {
-                    publisher.openQueryTool();
+                    publisher.openDrawTool();
                 }
             });
         },
