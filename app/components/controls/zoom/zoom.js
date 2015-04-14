@@ -9,12 +9,12 @@ define([
 	var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            $zoomIn = context.$('#zoom .zoom-in');
-            $zoomOut = context.$('#zoom .zoom-out');
+            $zoomIn = context.$('.zoom-in');
+            $zoomOut = context.$('.zoom-out');
             $zoomIn.tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
+                container: 'body',
+                delay: {
+                    show: 500
                 }
             });
             $zoomIn.click(function(event){
@@ -24,9 +24,9 @@ define([
             });
             
             $zoomOut.tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
+                container: 'body',
+                delay: {
+                    show: 500
                 }
             });
             $zoomOut.click(function(event){
