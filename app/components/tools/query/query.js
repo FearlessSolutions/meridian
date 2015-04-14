@@ -185,9 +185,10 @@ define([
         },
         populateQueryFromParams: function(params){
            $modal.modal('toggle');
-           exposed.populateCoordinates(params.queryData);
+           exposed.populateCoordinates(params.queryBbox);
            context.$('#query-name').val(params.queryName);
-           context.$('#query-source').val(params.querySource);
+           context.$('#query-justification').val(params.justification);
+           context.$('#query-source').val(params.queryType);
         }
     };
 

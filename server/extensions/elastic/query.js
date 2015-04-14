@@ -1,7 +1,6 @@
-var stream = require('./stream');
-var _ = require('underscore');
-
-var config,
+var stream = require('./stream'),
+    _ = require('underscore'),
+    config,
     client;
 
 exports.init = function(context){

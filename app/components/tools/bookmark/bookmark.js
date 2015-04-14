@@ -75,19 +75,16 @@ define([
                 });
             } else {
                 // saves to bookmarks
-                context.sandbox.utils.ajax({
-                    type: "GET",
-                    url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + params.layerId
-                })
-                .done(function(data) {
+                context.sandbox.dataStorage.getMetadataById(bookmarkId, function(data) {
+                    var bbox = data.queryBbox;
                     storedBookmarks[bookmarkId] = {
                         bmId: bookmarkId,
                         // For now, the bookmark name is the same as the Query Name
                         bmName: data.queryName,
-                        maxLat: data.rawQuery.maxLat,
-                        minLat: data.rawQuery.minLat,
-                        maxLon: data.rawQuery.maxLon,
-                        minLon: data.rawQuery.minLon
+                        maxLat: bbox.maxLat,
+                        minLat: bbox.minLat,
+                        maxLon: bbox.maxLon,
+                        minLon: bbox.minLon
                     };
                     context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
 

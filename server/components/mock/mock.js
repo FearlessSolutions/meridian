@@ -1,18 +1,19 @@
-var csv = require('ya-csv');
-var generateUUID = require('node-uuid').v4;
+var csv = require('ya-csv'),
+    generateUUID = require('node-uuid').v4,
 
-var db = {};
-var LAT_INDEX = 0;
-var LON_INDEX = 1;
-var indexToKeyName = {};
+    db = {},
+    LAT_INDEX = 0,
+    LON_INDEX = 1,
+    indexToKeyName = {};
 
 function init(){
-    console.log("Loading mock data set");
-    var isFirstRow = true;
-    var records = 0;
-    var reader = csv.createCsvFileReader('server/components/mock/Random-Points-250k.csv');
+    console.log('Loading mock data set');
+    var isFirstRow = true,
+        records = 0,
+        reader = csv.createCsvFileReader('server/components/mock/Random-Points-250k.csv');
     reader.addListener('data', function(data) {
-        var i;
+        var i,
+            obj;
 
         if (isFirstRow){
             isFirstRow = !isFirstRow;
@@ -22,31 +23,30 @@ function init(){
             }
 
         } else {
-            var obj = {};
+            obj = {};
 
 
             // Convert data to GeoJSON
-            obj["type"] = "Feature";
-            obj["geometry"] = {
-                "type": "Point",
-                "coordinates": []
+            obj['type'] = 'Feature';
+            obj['geometry'] = {
+                type: 'Point',
+                coordinates: []
             };
-            obj["properties"] = {
-                "classification": "U"
+            obj['properties'] = {
+                classification: 'U'
             };
 
             for (i = 0; i < data.length; i++) {
                 // why am i doing this pls halp
-                if(indexToKeyName[i] === "count"){
+                if(indexToKeyName[i] === 'count'){
                    obj.properties[indexToKeyName[i]] = parseInt(data[i]);
-                } else if (indexToKeyName[i] === "lat" ||
-                    indexToKeyName[i] === "lon" ||
-                    indexToKeyName[i] === "percent"){
+                } else if (indexToKeyName[i] === 'lat' ||
+                    indexToKeyName[i] === 'lon' ||
+                    indexToKeyName[i] === 'percent'){
                     obj.properties[indexToKeyName[i]] = parseFloat(data[i]);
                 } else {
                     obj.properties[indexToKeyName[i]] = data[i];
                 }
-
             }
             obj.properties.featureId = generateUUID();
 
@@ -58,30 +58,34 @@ function init(){
         }
     });
     reader.addListener('end', function(){
-        console.log("Mock set loaded with " + records + " records");
+        console.log('Mock set loaded with ' + records + ' records');
     });
 }
 init();
 
 exports.query = function(minLat, maxLat, minLon, maxLon, start, pageSize, throttleMs, pageCallback){
-    var response = [];
-    var recordNum = 0;
+    var response = [],
+        recordNum = 0,
+        uuid,
+        lat,
+        lon,
+        tempRecord;
 
     var pageLagCallback = function(){
         pageCallback(response, true);
     };
 
-    for (var uuid in db){
+    for (uuid in db){
         if (db.hasOwnProperty(uuid)){
-            var lat = db[uuid].geometry.coordinates[1];
-            var lon = db[uuid].geometry.coordinates[0];
+            lat = db[uuid].geometry.coordinates[1];
+            lon = db[uuid].geometry.coordinates[0];
             if (minLat <= lat && lat <= maxLat &&
                 minLon <= lon && lon <= maxLon){
 
                 recordNum += 1;
                 // World's most efficient cursor right here folks
                 if (recordNum > start){
-                    var tempRecord = JSON.parse(JSON.stringify(db[uuid]));
+                    tempRecord = JSON.parse(JSON.stringify(db[uuid]));
                     tempRecord.properties.featureId = generateUUID(); // Per Query, ensure a unique featureIDs per record returned from the mock data service (overwrite featureID assigned to mock local DB)
                     response.push(tempRecord);
                 }

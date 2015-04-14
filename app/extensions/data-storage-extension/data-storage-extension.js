@@ -12,18 +12,18 @@ define([
             // weight How important the column is. Higher weight = more important = more to the left
             var columns = {
                 lat: [{
-                    property: "lat",
-                    displayName: "Lat",
+                    property: 'lat',
+                    displayName: 'Lat',
                     weight: 100
                 }],
                 lon:[{
-                    property: "lon",
-                    displayName: "Lon",
+                    property: 'lon',
+                    displayName: 'Lon',
                     weight: 100
                 }],
                 dataService: [{
-                    property: "dataService",
-                    displayName: "Data Service",
+                    property: 'dataService',
+                    displayName: 'Data Service',
                     weight: 5
                 }]
             };
@@ -56,8 +56,8 @@ define([
                     var featureId = params.featureId;
 
                     return $.ajax({
-                        type: "GET",
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/" + featureId
+                        type: 'GET',
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + featureId
                     }).done(function(data) {
                         callback(data);
                     }).error(function(error) {
@@ -65,14 +65,24 @@ define([
                     });
                 },
                 getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
-                    return $.ajax({
-                        type: "GET",
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + "/feature/query/" + queryId + "/session/" + sessionId +
-                            "?start=" + start + "&size=" + size
+                    return app.sandbox.utils.ajax({
+                        type: 'GET',
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/query/' + queryId + '/session/' + sessionId +
+                            '?start=' + start + '&size=' + size
                     }).done(function(data) {
                         callback(null, data);
                     }).error(function(error) {
                         callback(error, null);
+                    });
+                },
+                getMetadataById: function(queryId, callback){
+                    app.sandbox.utils.ajax({
+                        type: 'GET',
+                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + queryId,
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        success: callback
                     });
                 },
                 /**
