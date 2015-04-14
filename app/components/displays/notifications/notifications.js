@@ -30,7 +30,7 @@ define([
                 messageText = params.messageText;
                 
             // hardcoded value for the toastr container to prevent message overflow -- plan to submit ticket to huboard
-            $("#toast-container").height($(window).height() - 190);
+            $("#toast-container").height($(window).height() - 350);
             
             if(messageType === 'success') {
                 toastr.success(messageText, messageTitle);
