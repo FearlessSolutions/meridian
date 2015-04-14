@@ -93,6 +93,5 @@ exports.init = function(context){
                 }
             });
         });
-
     });
 };

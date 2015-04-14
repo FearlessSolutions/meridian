@@ -3,7 +3,7 @@ define([
     'backbone'
 ], function(){
 
-    var exposed = {
+    return {
         initialize: function(app) {
             var sortedPropertiesArray = [];
             //Default columns for the datagrid.
@@ -282,7 +282,6 @@ define([
                 //Didn't match anything already there
             };
 
-
             //Initialize sortedColumnsArray
             $.each(columns, function(property, propertyArray){
                 propertyArray.forEach(function(propertyEntry, index){
@@ -293,8 +292,5 @@ define([
             app.sandbox.dataStorage = dataStorage;
         }
     };
-
-
-    return exposed;
 
 });

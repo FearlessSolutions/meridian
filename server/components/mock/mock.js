@@ -69,9 +69,10 @@ exports.query = function(minLat, maxLat, minLon, maxLon, start, pageSize, thrott
         uuid,
         lat,
         lon,
-        tempRecord;
+        tempRecord,
+        pageLagCallback;
 
-    var pageLagCallback = function(){
+    pageLagCallback = function(){
         pageCallback(response, true);
     };
 

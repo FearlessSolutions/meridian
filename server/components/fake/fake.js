@@ -69,9 +69,10 @@ exports.query = function(minLat, maxLat, minLon, maxLon, start, pageSize, thrott
         uuid,
         lat,
         lon,
-        tempRecord;
+        tempRecord,
+        pageLagCallback;
 
-    var pageLagCallback = function(){
+    pageLagCallback = function(){
         pageCallback(response, true);
     };
 
@@ -89,7 +90,6 @@ exports.query = function(minLat, maxLat, minLon, maxLon, start, pageSize, thrott
                     tempRecord.properties.featureId = generateUUID(); // Per Query, ensure a unique featureIDs per record returned from the mock data service (overwrite featureID assigned to mock local DB)
                     response.push(tempRecord);
                 }
-
             }
         }
         if (response.length === pageSize){
