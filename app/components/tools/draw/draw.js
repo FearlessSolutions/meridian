@@ -15,34 +15,13 @@ define([
             publisher.drawBBox();
 
         },
-        close: function(params) {
+        close: function() {
             isActive = false;
             publisher.removeBBox();
         },
         bboxAdded: function(params) {
             if (isActive) {
-                exposed.populateCoordinates(params);
 
-                //$modal.modal('show');
-                //var shapeObject = {
-                //    layerId: 'test',
-                //    name: 'test',
-                //    dataSourceId: 'mock',
-                //    justification: 'justification',
-                //    minLat: params.minLat,
-                //    minLon: params.minLon,
-                //    maxLat: params.maxLat,
-                //    maxLon: params.maxLon,
-                //    coords: {
-                //        minLat: params.minLat,
-                //        minLon: params.minLon,
-                //        maxLat: params.maxLat,
-                //        maxLon: params.maxLon
-                //    },
-                //    selectable: true,
-                //    pageSize: 300
-                //};
-                //publisher.executeQuery(shapeObject);
                 publisher.createShapeLayer({
                     layerId: 'testaoi',
                     name: 'testaoi',
@@ -80,16 +59,29 @@ define([
                         type: 'Feature'
                     }]
                 });
-                //publisher.createShapeLayer(shapeObject);
                 publisher.closeDrawTool();
                 exposed.close();
+                // the coordinate emit for the channel here
+                // create dummy objec tiwht thefeatureid and messageid
+                var emitObject = {
+                    featureId: 'something',
+                    messageId: 'something',
+                    properties: { // properties is the CMAPI 1.3.0 spec
+                        coordinates: [[
+                            [params.minLon, params.maxLat],
+                            [params.maxLon, params.maxLat],
+                            [params.maxLon, params.minLat],
+                            [params.minLon, params.minLat]
+                        ]]
+                    }
+                }
+
+                publisher.publishCoords(JSON.stringify(emitObject));
+
             }
         },
-        populateCoordinates: function(params) {
-            params.minLon;
-            params.minLat;
-            params.maxLon;
-            params.maxLat;
+        test: function(params) {
+            console.log(params);
         }
     };
 

@@ -25,7 +25,6 @@ define([
             context.sandbox.emit('draw.tool.close');
         },
         createShapeLayer: function(params) {
-            console.log(params);
             context.sandbox.emit('map.layer.create', params);
         },
         plotFeatures: function(params) {
@@ -36,6 +35,9 @@ define([
         },
         deactivateDrawTool: function() {
             context.sandbox.emit('map.draw.deactivate');
+        },
+        publishCoords: function(params) {
+            context.sandbox.emit('map.feature.draw', params);
         }
     };
 

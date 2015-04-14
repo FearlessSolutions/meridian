@@ -58,6 +58,7 @@ define([
          * @param {string} params.layerId the layerId
          */
         deactivateDrawing: function(params) {
+
             drawControl.deactivate();
             context.$('#map').css('cursor', 'default');
         },

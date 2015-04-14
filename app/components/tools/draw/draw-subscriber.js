@@ -11,6 +11,7 @@ define([
             context.sandbox.on('draw.tool.close', drawPublisher.deactivateDrawTool);
             context.sandbox.on('draw.tool.open', drawTool.open);
             context.sandbox.on('map.draw.stop', drawTool.bboxAdded);
+            context.sandbox.on('map.feature.draw', drawTool.test, params);
         }
     };	
 
