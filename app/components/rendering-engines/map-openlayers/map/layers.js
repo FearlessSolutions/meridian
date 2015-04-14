@@ -594,10 +594,10 @@ define([
 
     // TODO: Split the control func into the drawing.js file and the boxLayer converts to more generic drawing func.
     function addDrawListeners(params) {
-        console.log(params);
         params.layer.events.on({
             featureadded: function(evt) {
                 var feature = evt.feature,
+                    boundingBox,
                     boundingBox,
                     splitBoundingBox,
                     coords;

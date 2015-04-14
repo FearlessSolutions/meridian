@@ -35,13 +35,13 @@ define([
                         name: name + '_aoi',
                         initialVisibility: true,
                         styleMap: {
-                            default: {
+
                                 strokeColor: '#000',
                                 strokeOpacity: 0.3,
                                 strokeWidth: 2,
                                 fillColor: 'gray',
                                 fillOpacity: 0.3
-                            }
+
                         }
                     });
 

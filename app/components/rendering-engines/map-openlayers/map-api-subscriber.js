@@ -1,7 +1,6 @@
 define([
-	'./map/core',
-    './map/draw'
-], function (mapCore, mapDraw) {
+	'./map/core'
+], function (mapCore) {
     var context;
 
 	var exposed = {
@@ -19,7 +18,7 @@ define([
             context.sandbox.on('map.basemap.change', mapCore.setBasemap);
             context.sandbox.on('map.center.set', mapCore.setCenter);
             context.sandbox.on('map.draw.clear', mapCore.clearDrawing);
-            context.sandbox.on('map.draw.deactivate', mapDraw.deactivateDrawing);
+            context.sandbox.on('map.draw.deactivate', mapCore.deactivateDrawing);
             context.sandbox.on('map.draw.start', mapCore.startDrawing);
             context.sandbox.on('map.layer.create', mapCore.createLayer);
             context.sandbox.on('map.layer.delete', mapCore.deleteLayer);

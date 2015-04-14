@@ -1,5 +1,5 @@
 define([
-	'./draw'
+	'./draw',
 ], function (drawTool) {
     var context;
 

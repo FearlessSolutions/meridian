@@ -29,6 +29,19 @@ define([
         },
         openQueryTool: function(params) {
             context.sandbox.emit('draw.tool.open');
+        },
+        createShapeLayer: function(params) {
+            console.log(params);
+            context.sandbox.emit('map.layer.create', params);
+        },
+        plotFeatures: function(params) {
+            context.sandbox.emit('map.features.plot', params);
+        },
+        setLayerIndex: function(params) {
+            context.sandbox.emit('map.layer.index.set', params);
+        },
+        deactivateDrawTool: function() {
+            context.sandbox.emit('map.draw.deactivate');
         }
     };
 

@@ -14,124 +14,16 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            isActive = false;
             $modal = context.$('#query-modal');
             $minLon = context.$('.query-form #query-location-minLon');
             $minLat = context.$('.query-form #query-location-minLat');
             $maxLon = context.$('.query-form #query-location-maxLon');
             $maxLat = context.$('.query-form #query-location-maxLat');
 
-            $modal.modal({
-                backdrop: 'static',
-                keyboard: false,
-                show: false
-            });
-
-            // $modal.on('shown.bs.dialog', function(){
-            //     publisher.publishOpening({componentOpening: MENU_DESIGNATION});
-            // });
-            
-            context.$('.query-form button[type="submit"]').on('click', function(event) {
-                event.preventDefault();                
-                var minLon = $minLon.val() || '',
-                    minLat = $minLat.val() || '',
-                    maxLon = $maxLon.val() || '',
-                    maxLat = $maxLat.val() || '',
-                    name = context.$('#query-name').val() || '',
-                    justification = context.$('#query-justification').val() || '',
-                    dataSource = context.$('#query-source').val() || '',
-                    errorFree = true;
-
-                var queryObject = {
-                        name: name,
-                        dataSourceId: dataSource,
-                        justification: justification,
-                        minLat: minLat,
-                        minLon: minLon,
-                        maxLat: maxLat,
-                        maxLon: maxLon,
-                        pageSize: 300
-                };   
-
-
-                if(minLon === '' || isNaN(minLon)) {
-                    $minLon.parent().addClass('has-error');
-                    errorFree = false;
-                } else {
-                    $minLon.parent().removeClass('has-error');
-                }
-                if(minLat === '' || isNaN(minLat)) {
-                    $minLat.parent().addClass('has-error');
-                    errorFree = false;
-                } else {
-                    $minLat.parent().removeClass('has-error');
-                }
-                if(maxLon === '' || isNaN(maxLon)) {
-                    $maxLon.parent().addClass('has-error');
-                    errorFree = false;
-                } else {
-                    $maxLon.parent().removeClass('has-error');
-                }
-                if(maxLat === '' || isNaN(maxLat)) {
-                    $maxLat.parent().addClass('has-error');
-                    errorFree = false;
-                } else {
-                    $maxLat.parent().removeClass('has-error');
-                }
-                if(name === '') {
-                    context.$('#query-name').parent().parent().addClass('has-error');
-                    errorFree = false;
-                } else {
-                    context.$('#query-name').parent().parent().removeClass('has-error');
-                }
-                if(justification === '') {
-                    context.$('#query-justification').parent().parent().addClass('has-error');
-                    errorFree = false;  
-                } else {
-                    context.$('#query-justification').parent().parent().removeClass('has-error');
-                }
-                if(dataSource === '') {
-                    context.$('#query-source').parent().parent().addClass('has-error');
-                    errorFree = false;
-                } else {
-                    context.$('#query-source').parent().parent().removeClass('has-error');
-                }
-                
-                if(errorFree){
-                    publisher.closeQueryTool();
-
-                    publisher.executeQuery(queryObject);
-
-                    exposed.clearQueryForm();
-                } else {
-                    publisher.publishMessage({
-                        messageType: 'error',
-                        messageTitle: 'Query Tool',
-                        messageText: 'Invalid query parameters.'
-                    });
-                }  
-
-                return false;
-            });
-
-            context.$('.query-form button[type="cancel"]').on('click', function(event) {
-                event.preventDefault();
-                exposed.clearQueryForm();
-                publisher.closeQueryTool();
-            });
-
-            context.$('.modal-header button[type="button"].close').on('click', function(event) {
-                event.preventDefault();
-                exposed.clearQueryForm();
-                publisher.closeQueryTool();
-            });
-
-            context.$('.query-form #drawBBoxButton').on('click', function(event) {
-                event.preventDefault();
-                closeMenu();
-                publisher.drawBBox();
-            });
         },
         open: function(params) {
+            isActive = true;
             var drawOnDefault = true;
             if(context.sandbox.queryConfiguration && 
                 typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
@@ -150,11 +42,73 @@ define([
             }
         },
         close: function(params) {
+            isActive = false;
             closeMenu();
         },
         bboxAdded: function(params) {
-            //$modal.modal('show');
-            exposed.populateCoordinates(params);   
+            if (isActive) {
+                exposed.populateCoordinates(params);
+
+                //$modal.modal('show');
+                //var shapeObject = {
+                //    layerId: 'test',
+                //    name: 'test',
+                //    dataSourceId: 'mock',
+                //    justification: 'justification',
+                //    minLat: params.minLat,
+                //    minLon: params.minLon,
+                //    maxLat: params.maxLat,
+                //    maxLon: params.maxLon,
+                //    coords: {
+                //        minLat: params.minLat,
+                //        minLon: params.minLon,
+                //        maxLat: params.maxLat,
+                //        maxLon: params.maxLon
+                //    },
+                //    selectable: true,
+                //    pageSize: 300
+                //};
+                //publisher.executeQuery(shapeObject);
+                publisher.createShapeLayer({
+                    layerId: 'testaoi',
+                    name: 'testaoi',
+                    initialVisibility: true,
+                    styleMap: {
+
+                        strokeColor: '#000',
+                        strokeOpacity: 0.3,
+                        strokeWidth: 2,
+                        fillColor: '#ffc600',
+                        fillOpacity: 0.3
+
+                    }
+                });
+                publisher.setLayerIndex({
+                    layerId: 'testaoi',
+                    layerIndex: 0
+                });
+                publisher.plotFeatures({
+                    layerId: 'testaoi',
+                    data: [{
+                        layerId: 'testaoi',
+                        featureId: '_aoi',
+                        dataService: '',
+                        id: '_aoi',
+                        geometry: {
+                            type: 'Polygon',
+                            coordinates: [[
+                                [params.minLon, params.maxLat],
+                                [params.maxLon, params.maxLat],
+                                [params.maxLon, params.minLat],
+                                [params.minLon, params.minLat]
+                            ]]
+                        },
+                        type: 'Feature'
+                    }]
+                });
+                //publisher.createShapeLayer(shapeObject);
+                publisher.deactivateDrawTool();
+            }
         },
         populateCoordinates: function(params) {
             $minLon.val(params.minLon);
@@ -162,19 +116,7 @@ define([
             $maxLon.val(params.maxLon);
             $maxLat.val(params.maxLat);
         },
-        clearQueryForm: function(params) {
-                $minLon.val('');
-                $minLat.val('');
-                $maxLon.val('');
-                $maxLat.val('');
-                context.$('#query-name').val('');
-                context.$('#query-justification').val('');
-                context.$('#query-source').val('mock');
-
-                context.$('.has-error').removeClass('has-error');            
-        },
         clear: function(){
-            exposed.clearQueryForm();
             $modal.modal('hide');
         },
         handleMenuOpening: function(params){
@@ -183,12 +125,6 @@ define([
             }else{
                 closeMenu();
             }
-        },
-        populateQueryFromParams: function(params){
-           $modal.modal('toggle');
-           exposed.populateCoordinates(params.queryData);
-           context.$('#query-name').val(params.queryName);
-           context.$('#query-source').val(params.querySource);
         }
     };
 
