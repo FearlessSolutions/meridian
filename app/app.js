@@ -8,7 +8,6 @@ require.config({
         bootstrap: 'libs/bootstrap-3.2.0/bootstrap',
         daterangepicker: 'libs/bootstrap-daterangepicker-master/daterangepicker',
         toastr: 'libs/toastr-2.0.1/toastr',
-//        jqueryDrag: 'libs/jquery-drag-0.1.0/jquery-drag',
         jqueryDrag: 'libs/SlickGrid-master/lib/jquery.event.drag-2.2',
         jqueryDrop: 'libs/SlickGrid-master/lib/jquery.event.drop-2.2',
         bootstro: 'libs/bootstro/bootstro',
@@ -18,7 +17,6 @@ require.config({
         paginator: 'libs/bootstrap-paginator/bootstrap-paginator.min',
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
-//        jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min', // Custom build, check file's header to see what it includes
         jqueryUI: 'libs/jquery-ui-1.11.2.custom/jquery-ui.min', // Custom build, check file's header to see what it includes
         slickcore: 'libs/SlickGrid-master/slick.core',
         slickgrid: 'libs/SlickGrid-master/slick.grid',
@@ -26,6 +24,7 @@ require.config({
         slickRowSelectionModel: 'libs/SlickGrid-master/plugins/slick.rowselectionmodel',
         slickpager: 'libs/SlickGrid-master/controls/slick.pager',
         moment: 'libs/momentjs-2.8.3/moment.min',
+        togeojson: 'libs/togeojson/togeojson',
         coordinateConverter: 'libs/coordinate-converter/cc'
     },
     shim:{

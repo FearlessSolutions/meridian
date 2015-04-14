@@ -10,6 +10,7 @@ define([
     './status/cmapi-status',
     './clear/cmapi-clear',
     './cmapi-subscriber',
+    'togeojson'
 ], function(basemap, view, overlay, feature, status, clear, subscriber) {
     var context,
         processing = {};
@@ -41,7 +42,6 @@ define([
         }
     };
 
-
     /**
      * Takes in the message and tries to parse it.
      * Passes that message to the correct module
@@ -53,14 +53,14 @@ define([
             message;
 
         if(channel && typeof channel === 'string') {
-            category = channel.split('.')[1]; //0 is always "map"
+            category = channel.split('.')[1]; //0 is always "messageap"
             message = e.data.message;
 
             //Check to see if we are the origin (we sent it, so it is already a JSON object)
             if(!message || message.widgetName === context.sandbox.systemConfiguration.appName){
                 return;
             }
-            //parse message to make sure its valid
+
             try {
                 if(message !== '') {
                     if(typeof message === 'string'){
@@ -69,12 +69,23 @@ define([
                     if(!message.origin) {
                         message.origin = context.sandbox.cmapi.defaultLayerId;
                     }
-                }            
-            } catch(parseE) {
-                console.debug(parseE);
-                sendError(channel, message, 'Failure processing message - parsing message error');
-            }
 
+                    if(message.format && message.format === 'kml'){ 
+                        try{
+                            //need to convert kml features of payload to geojson
+                            var domParser=new DOMParser(); //putting KML in DOM for proper parsing by togeojson
+                            var kmlDoc=domParser.parseFromString(message.feature,"text/xml");
+                            message.feature = toGeoJSON.kml(kmlDoc);
+                        }catch(parseKMLerror){
+                            console.debug(parseKMLerror);
+                            sendError(channel, message, 'Failure parsing geoJSON message');
+                        }
+                    }
+                }            
+            }catch(parseJSONError) {
+                console.debug(parseJSONError);
+                sendError(channel, message, 'Failure parsing geoJSON message');
+            }            
             if(processing[category]) {
                 processing[category].receive(channel, message);
             } else {
@@ -110,5 +121,4 @@ define([
     }
 
     return exposed;
-
 });
