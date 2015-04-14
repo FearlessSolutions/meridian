@@ -27,13 +27,13 @@ define([
                     name: 'testaoi',
                     initialVisibility: true,
                     styleMap: {
-
-                        strokeColor: '#000',
-                        strokeOpacity: 0.3,
-                        strokeWidth: 2,
-                        fillColor: '#ffc600',
-                        fillOpacity: 0.3
-
+                        default: {
+                            strokeColor: '#000',
+                            strokeOpacity: 0.3,
+                            strokeWidth: 2,
+                            fillColor: '#ffc600',
+                            fillOpacity: 0.3
+                        }
                     }
                 });
                 publisher.setLayerIndex({

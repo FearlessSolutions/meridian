@@ -15,9 +15,6 @@ define([
         removeBBox: function() {
             context.sandbox.emit('map.draw.clear');
         },
-        executeQuery: function(params) {
-            context.sandbox.emit('query.execute', params);
-        },
         clear: function(){
             context.sandbox.emit("data.clear.all");
         },
@@ -32,9 +29,6 @@ define([
         },
         setLayerIndex: function(params) {
             context.sandbox.emit('map.layer.index.set', params);
-        },
-        deactivateDrawTool: function() {
-            context.sandbox.emit('map.draw.deactivate');
         },
         publishCoords: function(params) {
             context.sandbox.emit('map.feature.draw', params);
