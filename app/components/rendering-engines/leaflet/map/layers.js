@@ -4,13 +4,69 @@ define([
     './clustering',
     './heatmap',
     './../libs/leaflet-src',
+    './../libs/markerCluster/leaflet.markercluster-src'
 ], function(publisher, mapBase, mapClustering) {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context, drawnItemsLayer, basemapLayers, dataLayers, clusterLayers;
+    var context, config, drawnItemsLayer, basemapLayers, singlePointLayer, clusterLayers, heatLayers;
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            drawnItemsLayer = {};
+            basemapLayers = {};
+            singlePointLayer = {};
+            clusterLayers = {};
+            heatLayers = {};
+            config = context.sandbox.mapConfiguration;
+
+        },
+        plotFeatures: function(params){
+            //clusterLayers[params.layerId]        
+            console.debug('params in plot: ', params);
+
+            context.sandbox.util.each(params.data, function(index, obj){
+                //geoJson objects
+                var geo = L.geoJson(obj,{
+                    onEachFeature: function (feature, layer){
+                        if(feature.geometry.type === 'Point'){
+                            layer.bindPopup('<div>' + feature.lat + '</div><div>' + feature.lon + '</div>');
+                            layer.setIcon(new L.icon({
+                                iconUrl: feature.properties.icon || config.markerIcons.default.icon,
+                                iconSize: [feature.properties.width, feature.properties.height] || [config.markerIcons.default.width, config.markerIcons.default.height],
+                                iconAnchor: [feature.properties.width/2, feature.properties.height] || config.markerIcons.default.iconAnchor,// offset from the top left corner.half the size of the width and then the entire value of the height to use the correct pin position.
+                                popupAnchor: [0, (feature.properties.height * -1)] || config.markerIcons.default.popupAnchor// make pop up originate elsewhere instead of the actual point.
+                            }));
+                        }
+                        
+                    },
+                    style: function(feature){
+                        return config.shapeStyles.rectangle.shapeOptions;
+                    }
+                });
+
+                if(context.sandbox.stateManager.map.visualMode === 'cluster'){
+                    if(clusterLayers[params.layerId] === 'undefined'){
+                        exposed.createVectorLayer({
+                            'map': params.map,
+                            'layerId': params.layerId
+                        });
+                    }
+                    clusterLayers[params.layerId].addLayer(geo);
+                }
+                else if(context.sandbox.stateManager.map.visualMode === 'heatmap'){//for heatmap
+
+                } else{//for single points
+                    if(singlePointLayer[params.layerId] === 'undefined'){
+                        exposed.createVectorLayer({
+                            'map': params.map,
+                            'layerId': params.layerId
+                        });
+                    }
+                    singlePointLayer[params.layerId].addLayer(geo);
+                }
+
+
+            });
         },
         createDrawingLayer: function(params){
             drawnItemsLayer = new L.FeatureGroup();
@@ -41,7 +97,7 @@ define([
                     "externalGraphic": "${icon}",
                     "graphicHeight": "${height}",
                     "graphicWidth":  "${width}",
-                    "graphicYOffset": context.sandbox.mapConfiguration.markerIcons.default.graphicYOffset || 0
+                    "graphicYOffset": config.markerIcons.default.graphicYOffset || 0
                 }
             };
             geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
@@ -119,73 +175,79 @@ define([
          */
         createVectorLayer: function(params) {
 
-        //     publisher.createLayer({
-        //     layerId: params.queryId,
-        //     name: params.name,
-        //     selectable: true,
-        //     coords: {
-        //         minLat: params.minLat,
-        //         minLon: params.minLon,
-        //         maxLat: params.maxLat,
-        //         maxLon: params.maxLon
-        //     }
-        // });
+            // var south = parseFloat(params.coords.minLat),
+            //     west = parseFloat(params.coords.minLon),
+            //     north =  parseFloat(params.coords.maxLat),
+            //     east = parseFloat(params.coords.maxLon),
+            //     southWest = L.latLng(south, west),
+            //     northEast = L.LatLng(north, east),
+            //     bounds = L.latLngBounds(southWest, northEast);
+              
+            //drawnItemsLayers is empty bc removeboundingbox is called when the query tool is closed.
 
-            var southWest = L.latLng([params.minLat, params.minLon]),
-                northEast = L.LatLng([params.maxLat, params.maxLon]),
-                bounds = L.latLngBounds(southWest, northEast);
-            //drawnItemsLayers has only shapes.
-            drawnItemsLayer.eachLayer(function(shapes){
-                if(shape.getBounds() === bounds){
-                    //shape is the same one in params.
-                    console.debug(shape);
-                    //params.map.removeLayer();
+            console.debug('params in createVectorLayer: ', params);
+
+
+
+            if(context.sandbox.stateManager.map.visualMode === 'cluster'){
+                if(clusterLayers[params.layerId] !== 'undefined'){
+                    clusterLayers[params.layerId] = new L.MarkerClusterGroup({
+                        maxClusterRadius: config.clustering.thresholds.clustering.distance
+                    }).addTo(params.map);
                 }
-            });
+
+            } else if( context.sandbox.stateManager.map.visualMode === 'heatmap'){
+                //heatLayers[params.layerId] = 
+            } else {
+                singlePointLayer[params.layerId] = new L.featureGroup().addTo(params.map);
+            }
 
             var options,
                 newVectorLayer,
                 selector,
                 layers;
 
-            options = {
-                "layerId": params.layerId, // set as layerId, is not present its null
-                "styleMap": null  // set as null for default of not providing a stylemap
-            };
+                console.debug('singlePointLayer: ', singlePointLayer);
+                console.debug('clusterlayers: ', clusterLayers);
 
-            context.sandbox.utils.extend(options, params);
-            if(params.styleMap) {
-                options.styleMap = new OpenLayers.StyleMap(params.styleMap);
-            }
+            // options = {
+            //     "layerId": params.layerId, // set as layerId, is not present its null
+            //     "styleMap": null  // set as null for default of not providing a stylemap
+            // };
 
-            delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
+            // context.sandbox.utils.extend(options, params);
+            // if(params.styleMap) {
+            //     options.styleMap = new OpenLayers.StyleMap(params.styleMap);
+            // }
 
-            newVectorLayer = new OpenLayers.Layer.Vector(
-                params.layerId,
-                options
-            );
+            // delete(options.map); // ensure that the map object is not on the options; delete it if it came across in the extend. (If present the layer creation has issues)
 
-            if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
-                newVectorLayer.setVisibility(false);
-            }
+            // newVectorLayer = new OpenLayers.Layer.Vector(
+            //     params.layerId,
+            //     options
+            // );
 
-            params.map.addLayers([newVectorLayer]);
+            // if(context.sandbox.dataStorage.datasets[params.layerId] && context.sandbox.stateManager.map.visualMode === 'heatmap') {
+            //     newVectorLayer.setVisibility(false);
+            // }
 
-            if(params.selectable) {
-                selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-                layers = selector.layers;
-                layers.push(newVectorLayer);
-                selector.setLayer(layers);
-            }
+            // params.map.addLayers([newVectorLayer]);
 
-            // Default state manager settings for a new layer
-            context.sandbox.stateManager.layers[params.layerId] = {
-                "visible": true,
-                "hiddenFeatures": [],
-                "identifiedFeatures": []
-            };
+            // if(params.selectable) {
+            //     selector = params.map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
+            //     layers = selector.layers;
+            //     layers.push(newVectorLayer);
+            //     selector.setLayer(layers);
+            // }
 
-            return newVectorLayer;
+            // // Default state manager settings for a new layer
+            // context.sandbox.stateManager.layers[params.layerId] = {
+            //     "visible": true,
+            //     "hiddenFeatures": [],
+            //     "identifiedFeatures": []
+            // };
+
+            // return newVectorLayer;
         },
         /**
          * Add base layer of OSM format
@@ -206,7 +268,7 @@ define([
         //         "name": params.name,
         //         "url": params.url,
         //         "style": params.style,
-        //         "matrixSet": params.matrixSet || context.sandbox.mapConfiguration.projection,
+        //         "matrixSet": params.matrixSet || config.projection,
         //         "matrixIds": params.matrixIds || null,
         //         "layer": params.layer || null,
         //         "requestEncoding": params.requestEncoding || 'KVP',
@@ -406,42 +468,40 @@ define([
          * @returns {{}}
          */
         loadBasemaps: function(params) {
-            basemapLayers = {};
-
-            context.sandbox.utils.each(context.sandbox.mapConfiguration.basemaps, function(basemap) {
+            context.sandbox.utils.each(config.basemaps, function(basemap) {
                 var baseLayer;
 
-                switch (context.sandbox.mapConfiguration.basemaps[basemap].type) {
+                switch (config.basemaps[basemap].type) {
                     case "osm":
                         baseLayer = exposed.createOSMLayer({
                             "map": params.map,
-                            "label": context.sandbox.mapConfiguration.basemaps[basemap].label,
-                            "url": context.sandbox.mapConfiguration.basemaps[basemap].leafUrl
+                            "label": config.basemaps[basemap].label,
+                            "url": config.basemaps[basemap].leafUrl
                         });
                         break;
                     // case "wmts":
                     //     baseLayer = exposed.createWMTSLayer({
                     //         "map": params.map,
-                    //         "name": context.sandbox.mapConfiguration.basemaps[basemap].name,
-                    //         "url": context.sandbox.mapConfiguration.basemaps[basemap].url,
-                    //         "style": context.sandbox.mapConfiguration.basemaps[basemap].style,
-                    //         "matrixSet": context.sandbox.mapConfiguration.basemaps[basemap].matrixSet || context.sandbox.mapConfiguration.projection,
-                    //         "matrixIds": context.sandbox.mapConfiguration.basemaps[basemap].matrixIds || null,
-                    //         "layer": context.sandbox.mapConfiguration.basemaps[basemap].layer || null,
-                    //         "requestEncoding": context.sandbox.mapConfiguration.basemaps[basemap].requestEncoding || 'KVP',
-                    //         "format": context.sandbox.mapConfiguration.basemaps[basemap].format || 'image/jpeg',
-                    //         "resolutions": context.sandbox.mapConfiguration.basemaps[basemap].resolutions || null,
-                    //         "wrapDateLine": ("wrapDateLine" in context.sandbox.mapConfiguration.basemaps[basemap]) ? context.sandbox.mapConfiguration.basemaps[basemap].wrapDateLine : true,
-                    //         "tileWidth": context.sandbox.mapConfiguration.basemaps[basemap].tileWidth || context.sandbox.mapConfiguration.defaultTileWidth,
-                    //         "tileHeight": context.sandbox.mapConfiguration.basemaps[basemap].tileHeight || context.sandbox.mapConfiguration.defaultTileHeight
+                    //         "name": config.basemaps[basemap].name,
+                    //         "url": config.basemaps[basemap].url,
+                    //         "style": config.basemaps[basemap].style,
+                    //         "matrixSet": config.basemaps[basemap].matrixSet || config.projection,
+                    //         "matrixIds": config.basemaps[basemap].matrixIds || null,
+                    //         "layer": config.basemaps[basemap].layer || null,
+                    //         "requestEncoding": config.basemaps[basemap].requestEncoding || 'KVP',
+                    //         "format": config.basemaps[basemap].format || 'image/jpeg',
+                    //         "resolutions": config.basemaps[basemap].resolutions || null,
+                    //         "wrapDateLine": ("wrapDateLine" in config.basemaps[basemap]) ? config.basemaps[basemap].wrapDateLine : true,
+                    //         "tileWidth": config.basemaps[basemap].tileWidth || config.defaultTileWidth,
+                    //         "tileHeight": config.basemaps[basemap].tileHeight || config.defaultTileHeight
                     //     });
                     //     break;
                     default:
-                        //context.sandbox.logger.error('Did not load basemap. No support for basemap type:', context.sandbox.mapConfiguration.basemaps[basemap].type);
+                        //context.sandbox.logger.error('Did not load basemap. No support for basemap type:', config.basemaps[basemap].type);
                         break;
                 }
                 if(baseLayer) {
-                    basemapLayers[context.sandbox.mapConfiguration.basemaps[basemap].basemap] = baseLayer;
+                    basemapLayers[config.basemaps[basemap].basemap] = baseLayer;
                 }
             });
           
@@ -732,7 +792,7 @@ define([
                         // as to what levels they have imagery for.
                         //
                         // Clicking a cluster should never zoom the user out.
-                        maxAuto = context.sandbox.mapConfiguration.maxAutoZoomLevel;
+                        maxAuto = config.maxAutoZoomLevel;
                         if(zoom > maxAuto) {
                             zoom = params.map.zoom > maxAuto ? params.map.zoom : maxAuto;
                             publisher.publishMessage({

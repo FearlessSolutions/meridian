@@ -23,6 +23,8 @@ define([], function (){
             'text!./components/rendering-engines/leaflet/libs/leaflet.css', 
             'text!./components/rendering-engines/leaflet/leaflet.css', 
             'text!./components/rendering-engines/leaflet/libs/draw/leaflet.draw.css',
+            'text!./components/rendering-engines/leaflet/libs/markerCluster/MarkerCluster.css',
+            'text!./components/rendering-engines/leaflet/libs/markerCluster/MarkerCluster.Default.css',
             'text!./components/rendering-engines/leaflet/leaflet.hbs',
             './components/rendering-engines/leaflet/map-api-publisher',
             './components/rendering-engines/leaflet/map-api-subscriber',
@@ -32,12 +34,16 @@ define([], function (){
             leafComponentCSS,
             leafMapRendererCSS,
             leafDrawCSS,
+            leafClusterCSS,
+            leafClusterDefaultCSS,
             leafMapRendererHBS,
             leafMapRendererPublisher,
             leafMapRendererSubscriber
         ){
             context.sandbox.utils.addCSS(leafComponentCSS, 'leaflet-component-style');
             context.sandbox.utils.addCSS(leafDrawCSS, 'leaflet-draw-component-style');
+            context.sandbox.utils.addCSS(leafClusterCSS, 'leaflet-cluster-component-style');
+            context.sandbox.utils.addCSS(leafClusterDefaultCSS, 'leaflet-clusterDefault-component-style');
             context.sandbox.utils.addCSS(leafMapRendererCSS, 'rendering-engines-leaflet-component-style');
 
             var leafMapRendererTemplate = Handlebars.compile(leafMapRendererHBS);

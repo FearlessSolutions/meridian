@@ -7,7 +7,8 @@ define([
     './draw',
     './../map/clustering',
     './heatmap',
-    './../libs/leaflet-src'
+    './../libs/leaflet-src',
+    './../libs/markerCluster/leaflet.markercluster-src'
 ], function(
     publisher,
     mapBase,
@@ -97,36 +98,137 @@ define([
             var buttonStr = "<div class='exportFeature'><button type='submit' class='btn btn-primary'>Delete</button></div>";
             
            
-            var point1 = L.marker([5,5], {icon: someIcon}).bindPopup(buttonStr);
-            var point2 = L.marker([6,6]);
-            var point3 = L.marker([6,7]).bindPopup(buttonStr);;
-            var point4 = L.marker([7,7]);
+            var point1 = L.marker([5,5], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
+            var point2 = L.marker([6,6], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
+            var point3 = L.marker([6,7], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
+            var point4 = L.marker([7,7], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
             var square = L.rectangle([[5.5,5.5],[7.5,7.5]], context.sandbox.mapConfiguration.shapeStyles.rectangle.shapeOptions);
             var query1 = L.featureGroup([point1]);
-            var query2 = L.featureGroup([point2,point3,point4,square]);
+            var query2 = new L.MarkerClusterGroup({
+                maxClusterRadius: context.sandbox.mapConfiguration.clustering.thresholds.clustering.distance,
+                iconCreateFunction: function(cluster){
+                    var childCount = cluster.getChildCount();
+                    //console.debug('a: ', cluster.__parent);
+
+                    var c = ' marker-cluster-';
+                    if (childCount < 10) {
+                        return new L.DivIcon({ html: '<div><span>' 
+                            + childCount + '</span></div>',
+                            className: 'marker-cluster' + ' marker-cluster-small',
+                            iconSize: new L.Point(40, 40) });
+                    } else if (childCount < 100) {
+                       return new L.DivIcon({ html: '<div><span>'+ childCount + '</span></div>',
+                        className: 'marker-cluster' + c + 'medium',
+                        iconSize: new L.Point(40, 40) });
+                    } else {
+                        return new L.DivIcon({ html: '<div><span>'+ childCount + '</span></div>',
+                            className: 'marker-cluster' + ' marker-cluster-large',
+                            iconSize: new L.Point(40, 40) });
+                    }
+                    
+                }
+            });
+            query2.addLayers([point2,point3,point4,square]);
+             query2.addLayer(new L.marker([7.5,7], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+              query2.addLayer(new L.marker([7.5,7], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+               query2.addLayer(new L.marker([7.5,7], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+            for (var i = 0; i <= 10; i++) {
+                query2.addLayer(new L.marker([7,7], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                query2.addLayer(new L.marker([6,6], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([8,8], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([9,9], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([10,10], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+                // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
+
+            };
             
             query1.addTo(map);
-            query2.addTo(map);
+            //query2.addTo(map);
+            map.addLayer(query2);
 
             query2.on('click', function(obj){
-               console.debug(obj);
+               //console.debug(obj);
+               obj.layer.openPopup();
                //query2.removeLayer(obj.layer._leaflet_id);//this works
                //console.debug(query2._leaflet_id);
                //map.removeLayer(query2._leaflet_id);
-               map.removeLayer(point1);
+               //map.removeLayer(point1);
             });
 
             query1.on('click', function(marker){
                var a = context.$('.exportFeature');
                a.on('click', function(b){
-                console.debug('marker: ', marker);
+                //console.debug('marker: ', marker);
                 
                 query1.removeLayer(marker.layer);
                });
-                console.debug('query: ', query1);
+                //console.debug('query: ', query1);
             });
 
-            //console.debug(map.getPanes());
+            //  context.$('.marker-cluster').css('background-color', 'black');
+
+
+
+            var geoJson = {
+    "features": [
+      { "type": "Feature",
+        "geometry": {"type": "Point", "coordinates": [9, 9]},
+        "properties": {"prop0": "value0"}
+        },
+      { "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [9, 9]
+          },
+        "properties": {
+          "prop0": "value0",
+          "prop1": 0.0
+          }
+        },
+      { "type": "Feature",
+         "geometry": {
+           "type": "Point",
+           "coordinates":[9, 9]
+         },
+         "properties": {
+           "prop0": "value0",
+           "prop1": {"this": "that"}
+            },
+        "style": {
+          "height": 24,
+          "width": 24,
+          "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+          "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+            }
+        }
+       ]
+     };
+
+
+        var geoLayer = L.geoJson(geoJson,{
+            onEachFeature: function(feature, layer){
+                //layer.bindPopup(feature.properties.prop0);
+                //console.debug('static feature',feature);
+                //console.debug('static layer', layer);
+            }
+        });
+        query2.addLayer(geoLayer);
+        //map.addLayer(geoLayer);
+        geoLayer.on('click', function(marker){
+            //marker.layer.openPopup();
+            //console.debug(marker);
+        })
 
         },
         /**
@@ -235,27 +337,36 @@ define([
          * @param {object} params.events - custom event listeners (optional)
          */
         createLayer: function(params) { // TODO: look into this more, it is currently always creating a Vector Layer. Channels may need to be more specific.
+           // console.debug('params in renderer: ', params);
             var newLayer,
                 layerOptions = {
-                    "layerId": params.layerId
+                    "layerId": params.layerId,
                 };
             layerOptions.map = map;
             //mapClustering.addClusteringToLayerOptions(layerOptions);
 
             // If a symbolizers were provided, overwrite the default symbolizers from clustering
-            // if(params.symbolizers) {
-            //     layerOptions.styleMap = mapClustering.applyCustomSymbolizers({
-            //         "symbolizers": params.symbolizers
-            //     });
-            // }
+            if(params.symbolizers) {
+                // layerOptions.styleMap = mapClustering.applyCustomSymbolizers({
+                //     "symbolizers": params.symbolizers
+                // });
+            }
             // // If a styleMap was provided, overwrite the default style from clustering
-            // if(params.styleMap) {
-            //     layerOptions.styleMap = params.styleMap;
-            // }
-            // if(params.selectable) {
-            //     layerOptions.selectable = params.selectable;
-            // }
-            ////newLayer = mapLayers.createVectorLayer(layerOptions);
+            if(params.styleMap) {
+                layerOptions.styleMap = params.styleMap;
+            }
+            if(params.selectable) {
+                layerOptions.selectable = params.selectable;
+            }
+           // console.debug(params.layerId);
+            //console.debug(params.layerId.indexOf("_aoi"));
+
+            if(params.layerId.indexOf("_aoi") !== -1){
+                //remove the _aoi at the end of the layerId
+                var tempStr = params.layerId.split('_aoi');
+                layerOptions.layerId = tempStr[0];
+            }
+            mapLayers.createVectorLayer(layerOptions);
             // mapLayers.addEventListenersToLayer({
             //     "map": map,
             //     "layer": newLayer,
@@ -280,11 +391,11 @@ define([
          * @param {integer} params.layerIndex - index of layer
          */
         setLayerIndex: function(params) {
-            mapLayers.setLayerIndex({
-                "map": map,
-                "layerId": params.layerId,
-                "layerIndex": params.layerIndex
-            });
+            // mapLayers.setLayerIndex({
+            //     "map": map,
+            //     "layerId": params.layerId,
+            //     "layerIndex": params.layerIndex
+            // });
         },
         /**
          * Plot Features
@@ -293,11 +404,23 @@ define([
          * @param {integer} params.layerIndex - index of layer
          */
         plotFeatures: function(params) {
-            // mapFeatures.plotFeatures({
-            //     "map": map,
-            //     "layerId": params.layerId,
-            //     "data": params.data
-            // });
+            if(params.layerId.indexOf("_aoi") === -1){
+                mapLayers.plotFeatures({
+                    "map": map,
+                    "layerId": params.layerId,
+                    "data": params.data
+                });
+            }
+            else{
+                //remove the _aoi at the end of the layerId
+                var tempStr = params.layerId.split('_aoi');
+                mapLayers.plotFeatures({
+                    "map": map,
+                    "layerId": tempStr[0],
+                    "data": params.data
+                });
+            }
+           
             // if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
             //     mapHeatmap.update({
             //         "map": map

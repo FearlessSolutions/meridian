@@ -66,7 +66,9 @@ define([
         "iconLarge": "/extensions/map-configuration-extension/images/markerIcons/marker_128x128.png",
         "height": 24,
         "width": 24,
-        "graphicYOffset": -24
+        "graphicYOffset": -24,
+        "iconAnchor": [12,24],/*Image is added using the top left corner. Ancho is half the width and the entire height*/
+        "popupAnchor": [0, -12]/*Popup appears on the exact point. Move it in relation to the */
       }
     },
     "clustering": {

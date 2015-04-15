@@ -1,10 +1,9 @@
 define([
     './../map-api-publisher',
-    'text!./../libs/draw/leaflet.draw.css',
     './layers',
     './../libs/leaflet-src',
     './../libs/draw/leaflet.draw-src'
-], function(publisher, leafDrawCSS, mapLayers) {
+], function(publisher, mapLayers) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -18,7 +17,6 @@ define([
          */
         init: function(thisContext) {
             context = thisContext;
-            //context.sandbox.utils.addCSS(leafDrawCSS, 'rendering-engines-leaflet-draw-component-style');
         },
         setDrawingActions: function(params){
              // Initialise the FeatureGroup to store editable layers
