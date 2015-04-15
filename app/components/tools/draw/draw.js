@@ -15,7 +15,7 @@ define([
             publisher.drawBBox();
 
         },
-        close: function() {
+        reset: function() {
             isActive = false;
             publisher.removeBBox();
         },
@@ -32,7 +32,7 @@ define([
                             strokeOpacity: 0.3,
                             strokeWidth: 2,
                             fillColor: '#FF358B',
-                            fillOpacity: 0.3
+                            fillOpacity: 0.2
                         }
                     }
                 });
@@ -60,7 +60,7 @@ define([
                     }]
                 });
                 publisher.closeDrawTool();
-                exposed.close();
+                exposed.reset();
                 // the coordinate emit for the channel here
                 var emitObject = {
                     featureId: 'something',
