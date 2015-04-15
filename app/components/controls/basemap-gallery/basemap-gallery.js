@@ -1,7 +1,7 @@
 define([
-    './basemap-gallery-publisher',
+    './basemap-gallery-mediator',
     'bootstrap'
-], function(publisher) {
+], function(mediator) {
     var context,
         dropdownMaxHeight, //In px
         defaultBasemapCSS,
@@ -35,7 +35,7 @@ define([
             $basemap.on('click', function(event) {
                 event.preventDefault();
                 var newBasemap = context.$(this).attr('data-basemap');
-                publisher.changeBasemap({basemap:newBasemap});
+                mediator.changeBasemap({basemap:newBasemap});
             });
 
             //On dropdown show or hide, change width

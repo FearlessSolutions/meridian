@@ -2,10 +2,9 @@ define([
     'text!./basemap-gallery.css', 
     'text!./basemap-gallery.hbs',
     './basemap-gallery',
-    './basemap-gallery-subscriber',
-    './basemap-gallery-publisher',
+    './basemap-gallery-mediator',
     'handlebars'
-], function(basemapGalleryCSS, basemapGalleryHBS, basemapGallery, basemapGallerySubscriber, basemapGalleryPublisher) {
+], function(basemapGalleryCSS, basemapGalleryHBS, basemapGallery, basemapGalleryMediator) {
 
     return {
         initialize: function() {
@@ -26,10 +25,10 @@ define([
                 "defaultBasemap": defaultBasemap
             });
             this.html(html);
-
-            basemapGallerySubscriber.init(this);
-            basemapGalleryPublisher.init(this);
+            
             basemapGallery.init(this);
+            basemapGalleryMediator.init(this);
+            
         }
     };
                 
