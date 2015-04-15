@@ -21,10 +21,12 @@ define([
         },
         bboxAdded: function(params) {
             if (isActive) {
+                var shapeId = context.sandbox.utils.UUID();
+                console.log(shapeId);
 
                 publisher.createShapeLayer({
-                    layerId: 'testaoi',
-                    name: 'testaoi',
+                    layerId: shapeId + '_aoi',
+                    name: shapeId + '_aoi',
                     initialVisibility: true,
                     styleMap: {
                         default: {
@@ -41,9 +43,9 @@ define([
                     layerIndex: 0
                 });
                 publisher.plotFeatures({
-                    layerId: 'testaoi',
+                    layerId: shapeId + '_aoi',
                     data: [{
-                        layerId: 'testaoi',
+                        layerId: shapeId + '_aoi',
                         featureId: '_aoi',
                         dataService: '',
                         id: '_aoi',
