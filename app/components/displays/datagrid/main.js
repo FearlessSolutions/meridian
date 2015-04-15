@@ -1,7 +1,7 @@
 define([
-	'text!../../../libs/SlickGrid-master/slick.grid.css',
-    'text!../../../libs/SlickGrid-master/slick-default-theme.css',
-    'text!../../../libs/SlickGrid-master/controls/slick.pager.css',
+	'text!/libs/SlickGrid-master/slick.grid.css',
+    'text!/libs/SlickGrid-master/slick-default-theme.css',
+    'text!/libs/SlickGrid-master/controls/slick.pager.css',
     'text!./datagrid.css',
     'text!./datagrid.hbs',
     './datagrid',

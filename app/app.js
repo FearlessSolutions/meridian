@@ -1,4 +1,5 @@
 require.config({
+    baseUrl: window.location.origin, //This makes it so that all modes start at the same place.
     waitSeconds: 30,
     paths: {
         aura: 'bower_components/aura/lib',
@@ -76,14 +77,13 @@ require.config({
 });
 
 require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
-
     // Listen to CSSWatch trigger (fired from datagrid/main.js)
     $(document).on('css-change', '#datagridContainer', function(event, change){
         $('#mapContainer').css('height', 'calc(100% - ' + change.height + ')');
         $('div[data-aura-component="rendering-engines/map-openlayers"], #map').css('height', '100%');
         window.dispatchEvent(new Event('resize')); // Trigger OpenLayers to redraw the map
     });
-    
+
     Aura({
         debug: true,
         appName: 'Meridian',
