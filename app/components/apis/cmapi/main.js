@@ -24,7 +24,7 @@ define([
             
             basemap.init(context, sendError, emit);
             feature.init(context, sendError);
-            overlay.init(context, sendError, emit);
+            overlay.init(context, sendError);
             status.init(context, sendError, emit);
             view.init(context, sendError);
             clear.init(context, sendError);

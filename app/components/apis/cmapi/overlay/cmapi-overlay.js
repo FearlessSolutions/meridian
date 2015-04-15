@@ -1,7 +1,6 @@
 define([
-	'./cmapi-overlay-publisher',	
-	'./cmapi-overlay-subscriber'
-], function (publisher, subscriber) {
+	'./cmapi-overlay-mediator',	
+], function (mediator) {
 	var context,
 		defaultLayerId,
         sendError,
@@ -12,8 +11,7 @@ define([
             context = thisContext;
             defaultLayerId = context.sandbox.cmapi.defaultLayerId;
             sendError = errorChannel;
-            publisher.init(context);
-            subscriber.init(context, exposed);
+            mediator.init(context, exposed);
         },
         receive: function(channel, message) {
             if(receiveChannels[channel]) {
@@ -56,7 +54,7 @@ define([
                 context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
 
 
-                publisher.publishCreateLayer({
+                mediator.publishCreateLayer({
                     layerId: layerId,
                     name: message.name,
                     selectable: message.selectable,
@@ -66,7 +64,7 @@ define([
                     styleMap: message.styleMap
                 });
 
-                publisher.publishMessage({
+                mediator.publishMessage({
                     messageType: 'success',
                     messageTitle: 'Layer Management',
                     messageText: 'A new layer has been created.'
@@ -82,7 +80,7 @@ define([
 		"map.overlay.remove": function(message) {
             var layerId =  message.overlayId || defaultLayerId;
 
-            publisher.publishRemoveLayer({
+            mediator.publishRemoveLayer({
                 layerId: layerId
             });
         },
@@ -96,7 +94,7 @@ define([
             var layerId =  message.overlayId || defaultLayerId;
 
             context.sandbox.stateManager.layers[layerId].visible = false;
-			publisher.publishHideLayer({
+			mediator.publishHideLayer({
                 layerId: layerId
             });
 		},
@@ -110,7 +108,7 @@ define([
             var layerId =  message.overlayId || defaultLayerId;
 
             context.sandbox.stateManager.layers[layerId].visible = true;
-			publisher.publishShowLayer({
+			mediator.publishShowLayer({
                 layerId: layerId
             });
 		},
