@@ -56,7 +56,7 @@ define([
           "fillOpacity": 0.3,
           "clickable": false,
           "weight": 1
-                        }
+        }
       },
       "circle":{}
     },

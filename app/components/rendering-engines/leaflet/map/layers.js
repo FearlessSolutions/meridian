@@ -1,11 +1,10 @@
 define([
     './../map-api-publisher',
     './base',
-    './clustering',
-    './heatmap',
     './../libs/leaflet-src',
-    './../libs/markerCluster/leaflet.markercluster-src'
-], function(publisher, mapBase, mapClustering) {
+    './../libs/markerCluster/leaflet.markercluster-src',
+    './../libs/wmts/leaflet-tilelayer-wmts-src.js'
+], function(publisher, mapBase) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context, config, drawnItemsLayer, basemapLayers, singlePointLayer, clusterLayers, heatLayers;
 
@@ -263,26 +262,34 @@ define([
          * @param params
          * @returns {OpenLayers.Layer.WMTS}
          */
-        // createWMTSLayer: function(params) {
-        //     var baseLayer = new OpenLayers.Layer.WMTS({
-        //         "name": params.name,
-        //         "url": params.url,
-        //         "style": params.style,
-        //         "matrixSet": params.matrixSet || config.projection,
-        //         "matrixIds": params.matrixIds || null,
-        //         "layer": params.layer || null,
-        //         "requestEncoding": params.requestEncoding || 'KVP',
-        //         "format": params.format || 'image/jpeg',
-        //         "resolutions": params.resolutions || null,
-        //         "wrapDateLine": ("wrapDateLine" in params) ? params.wrapDateLine : true,
-        //         "tileSize": new OpenLayers.Size(
-        //             params.tileWidth || 256,
-        //             params.tileHeight || 256
-        //         )
-        //     });
-        //     params.map.addLayer(baseLayer);
-        //     return baseLayer;
-        // },
+        createWMTSLayer: function(params) {
+            // var baseLayer = new OpenLayers.Layer.WMTS({
+            //     "name": params.name,
+            //     "url": params.url,
+            //     "style": params.style,
+            //     "matrixSet": params.matrixSet || config.projection,
+            //     "matrixIds": params.matrixIds || null,
+            //     "layer": params.layer || null,
+            //     "requestEncoding": params.requestEncoding || 'KVP',
+            //     "format": params.format || 'image/jpeg',
+            //     "resolutions": params.resolutions || null,
+            //     "wrapDateLine": ("wrapDateLine" in params) ? params.wrapDateLine : true,
+            //     "tileSize": new OpenLayers.Size(
+            //         params.tileWidth || 256,
+            //         params.tileHeight || 256
+            //     )
+            // });
+            //params.map.addLayer(baseLayer);
+            //
+            var baseLayer = new L.TileLayer.WMTS(params.url, {
+                                   layer: params.layer,
+                                   style: params.style,
+                                   tilematrixSet: params.matrixSet,
+                                   format: params.format,
+                                   tileSize: params.tileWidth//the plugin uses only one size for both width and height.
+                               });
+            return baseLayer;
+        },
         setLayerIndex: function(params) {
             params.map.setLayerIndex(params.map.getLayersBy('layerId', params.layerId)[0], params.layerIndex);
         },
@@ -348,9 +355,6 @@ define([
                 }
 
             });
-
-
-
 
 //            context.sandbox.utils.each(allIdentifiedFeatures, function(identifiedFeatureLayerId, identifiedFeatureLayerArray){
 //                context.sandbox.utils.each(identifiedFeatureLayerArray, function(identifiedFeatureIndex, identifiedFeatureId){
@@ -479,25 +483,25 @@ define([
                             "url": config.basemaps[basemap].leafUrl
                         });
                         break;
-                    // case "wmts":
-                    //     baseLayer = exposed.createWMTSLayer({
-                    //         "map": params.map,
-                    //         "name": config.basemaps[basemap].name,
-                    //         "url": config.basemaps[basemap].url,
-                    //         "style": config.basemaps[basemap].style,
-                    //         "matrixSet": config.basemaps[basemap].matrixSet || config.projection,
-                    //         "matrixIds": config.basemaps[basemap].matrixIds || null,
-                    //         "layer": config.basemaps[basemap].layer || null,
-                    //         "requestEncoding": config.basemaps[basemap].requestEncoding || 'KVP',
-                    //         "format": config.basemaps[basemap].format || 'image/jpeg',
-                    //         "resolutions": config.basemaps[basemap].resolutions || null,
-                    //         "wrapDateLine": ("wrapDateLine" in config.basemaps[basemap]) ? config.basemaps[basemap].wrapDateLine : true,
-                    //         "tileWidth": config.basemaps[basemap].tileWidth || config.defaultTileWidth,
-                    //         "tileHeight": config.basemaps[basemap].tileHeight || config.defaultTileHeight
-                    //     });
-                    //     break;
+                    case "wmts":
+                        baseLayer = exposed.createWMTSLayer({
+                            "map": params.map,
+                            "name": config.basemaps[basemap].name,
+                            "url": config.basemaps[basemap].url,
+                            "style": config.basemaps[basemap].style,
+                            "matrixSet": config.basemaps[basemap].matrixSet || config.projection,
+                            "matrixIds": config.basemaps[basemap].matrixIds || null,
+                            "layer": config.basemaps[basemap].layer || null,
+                            "requestEncoding": config.basemaps[basemap].requestEncoding || 'KVP',
+                            "format": config.basemaps[basemap].format || 'image/jpeg',
+                            "resolutions": config.basemaps[basemap].resolutions || null,
+                            "wrapDateLine": ("wrapDateLine" in config.basemaps[basemap]) ? config.basemaps[basemap].wrapDateLine : true,
+                            "tileWidth": config.basemaps[basemap].tileWidth || config.defaultTileWidth,
+                            "tileHeight": config.basemaps[basemap].tileHeight || config.defaultTileHeight
+                        });
+                        break;
                     default:
-                        //context.sandbox.logger.error('Did not load basemap. No support for basemap type:', config.basemaps[basemap].type);
+                        context.sandbox.logger.error('Did not load basemap. No support for basemap type:', config.basemaps[basemap].type);
                         break;
                 }
                 if(baseLayer) {
