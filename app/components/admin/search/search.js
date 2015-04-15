@@ -1,8 +1,8 @@
 define([    
-    './search-publisher',
+    './search-mediator',
     'bootstrap',
     'daterangepicker'
-], function (publisher) {
+], function (mediator) {
     var context, datePickerObj;
 
     var exposed = {
@@ -125,23 +125,23 @@ define([
                         if(!currentInput) {
                             $('input[type="text"]:visible').addClass('warning');
                             $searchMsg.text(msgOneCrit).show();
-                            publisher.clearAdminGrid();
+                            mediator.clearAdminGrid();
                         } else {
                             if($.isEmptyObject(data)) {
                                 $searchMsg.text(msgNoResults).show();
-                                publisher.clearAdminGrid();
+                                mediator.clearAdminGrid();
                             } else {
                                 $searchMsg.hide();
-                                publisher.publisherSearchAdmingridCreate(data);
+                                mediator.searchAdmingridCreate(data);
                             };
                         };
                     } else {
                         if($.isEmptyObject(data)) {
                             $searchMsg.text(msgNoResults).show();
-                            publisher.clearAdminGrid();
+                            mediator.clearAdminGrid();
                         } else {
                             $searchMsg.hide();
-                            publisher.publisherSearchAdmingridCreate(data);
+                            mediator.searchAdmingridCreate(data);
                         };
                     };
                 });               
@@ -149,7 +149,7 @@ define([
             $toggleClear.on('click', function() { 
                 $inputGeneric.removeClass('warning').val('');
                 $searchMsg.hide();
-                publisher.clearAdminGrid();
+                mediator.clearAdminGrid();
             });
         }       
     };

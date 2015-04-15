@@ -1,12 +1,11 @@
 define([
-    './admingrid-publisher',
     'slickcore',
     'slickgrid',
     'slickdataview',
     'slickRowSelectionModel',
     'slickpager',
     'moment'
-], function (publisher) {
+], function () {
 
     var context,
     grid,

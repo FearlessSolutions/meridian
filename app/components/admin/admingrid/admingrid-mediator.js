@@ -1,10 +1,11 @@
 define([
     './admingrid'
 ], function (admingrid) {
-    var context;
 
-    var exposed = {
-        init: function(thisContext){
+	var context;
+
+	var exposed = {
+        init: function(thisContext) {
             context = thisContext;
             context.sandbox.on('search.admingrid.create', admingrid.visible);
             context.sandbox.on('search.admingrid.create', admingrid.createGridData);
@@ -13,4 +14,5 @@ define([
     };
 
     return exposed;
+
 });

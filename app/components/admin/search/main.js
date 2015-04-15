@@ -2,10 +2,9 @@ define([
     'text!./search.css', 
     'text!./search.hbs',
     './search',
-    './search-publisher',
-    './search-subscriber',
+    './search-mediator',
     'handlebars'
-], function (searchToolCSS, searchToolHBS, searchTool, searchToolPublisher, searchToolSubscriber) {
+], function (searchToolCSS, searchToolHBS, searchTool, searchMediator) {
     return {
         initialize: function() {
             this.sandbox.utils.addCSS(searchToolCSS, 'tool-search-component-style');
@@ -15,8 +14,7 @@ define([
             this.html(html);
                     
             searchTool.init(this);
-            searchToolPublisher.init(this);   
-            searchToolSubscriber.init(this);
+            searchMediator.init(this);
         }
     };                
 });
