@@ -1,7 +1,6 @@
 define([
-	'./cmapi-view-publisher',
-    './cmapi-view-subscriber'
-], function (publisher, subscriber) {
+	'./cmapi-view-mediator'
+], function (mediator) {
 	var context,
         sendError,
         defaultLayerId;
@@ -11,8 +10,7 @@ define([
             context = thisContext;
             sendError = errorChannel;
             defaultLayerId = context.sandbox.cmapi.defaultLayerId;
-            publisher.init(context);
-            subscriber.init(context);
+            mediator.init(context, exposed);
         },
         receive: function(channel, message) {
             var chName  = context.sandbox.cmapi.utils.createChannelNameFunction(channel)
@@ -45,13 +43,13 @@ define([
 			sendError('map.view.zoom', message, 'channel not supported');
 		},
         mapViewZoomIn: function(message) {
-            publisher.zoomIn();
+            mediator.zoomIn();
         },
         mapViewZoomOut: function(message) {
-            publisher.zoomOut();
+            mediator.zoomOut();
         },
         mapViewZoomMaxExtent: function(message) {
-            publisher.zoomToMaxExtent();
+            mediator.zoomToMaxExtent();
         },
         mapViewCenterOverlay: function(message) {
             var params = {};
@@ -64,7 +62,7 @@ define([
             
             //defaulting auto zoom to null since we dont support zooming into a certain range
             params.zoom = null; // 
-            publisher.zoomToLayer(params);
+            mediator.zoomToLayer(params);
 		},
 		mapViewCenterFeature: function(message) {
             var newAJAX;
@@ -83,13 +81,13 @@ define([
                     //If the feature is a point, set center; else, zoom to extent
                     if(data.geometry){
                         if(data.geometry.type === "Point") {
-                            publisher.setCenter({
+                            mediator.setCenter({
                                 "lon": data.geometry.coordinates[1],
                                 "lat": data.geometry.coordinates[0]
                             });
                         } else { //if feature is any other geometry 
                             extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
-                            publisher.centerOnBounds(extent);
+                            mediator.centerOnBounds(extent);
                         }
                     } else {
                         context.sandbox.external.postMessageToParent({
@@ -108,7 +106,7 @@ define([
 		},
 		mapViewCenterLocation: function(message) {
 			if('location' in message && 'lat' in message.location && 'lon' in message.location){
-				publisher.setCenter(message.location);
+				mediator.setCenter(message.location);
 			} else {
                 sendError('map.view.center.location', message, 'Requires "location":{"lat", "lon"}');
             }
@@ -136,7 +134,7 @@ define([
                 'maxLat': message.bounds.northEast.lat
             };
 
-            publisher.centerOnBounds(bounds);
+            mediator.centerOnBounds(bounds);
 		},
         mapViewCenterData: function(message){
             var extent,
@@ -157,7 +155,7 @@ define([
                 maxLatDelta = Math.abs(extent.maxLat) * 0.25;
                 maxLonDelta = Math.abs(extent.maxLon) * 0.25;
 
-                publisher.centerOnBounds({
+                mediator.centerOnBounds({
                     'minLat': extent.minLat - minLatDelta,
                     'minLon': extent.minLon - minLonDelta,
                     'maxLat': extent.maxLat + maxLatDelta,
