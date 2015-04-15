@@ -31,7 +31,7 @@ define([
                             strokeColor: '#000',
                             strokeOpacity: 0.3,
                             strokeWidth: 2,
-                            fillColor: '#ffc600',
+                            fillColor: '#FF358B',
                             fillOpacity: 0.3
                         }
                     }
@@ -62,7 +62,6 @@ define([
                 publisher.closeDrawTool();
                 exposed.close();
                 // the coordinate emit for the channel here
-                // create dummy objec tiwht thefeatureid and messageid
                 var emitObject = {
                     featureId: 'something',
                     messageId: 'something',
@@ -75,9 +74,7 @@ define([
                         ]]
                     }
                 }
-
                 publisher.publishCoords(JSON.stringify(emitObject));
-
             }
         },
         test: function(params) {
