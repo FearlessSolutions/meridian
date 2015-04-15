@@ -76,9 +76,6 @@ define([
                 }
                 publisher.publishCoords(JSON.stringify(emitObject));
             }
-        },
-        test: function(params) {
-            console.log(params);
         }
     };
 
