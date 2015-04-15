@@ -3,8 +3,11 @@ define([
 	var context;
 
 	var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisParent) {
             context = thisContext;
+            parent = thisParent;
+
+            //context.sandbox.on('map.features.plot', olMapRenderer.plotFeatures);
         },
         plotFeatures: function(message) {
           context.sandbox.emit('map.features.plot', message);
