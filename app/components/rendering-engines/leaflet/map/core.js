@@ -7,7 +7,8 @@ define([
     './draw',
     './../map/clustering',
     './heatmap',
-    './../libs/leaflet-src'
+    './../libs/leaflet-src',
+    './../libs/leaflet-featureidgroup-src'
 ], function(
     publisher,
     mapBase,
