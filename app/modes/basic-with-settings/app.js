@@ -94,7 +94,6 @@ require(['jquery', 'aura/aura', 'meridian-config'], function($, Aura, configurat
     .use('extensions/external-pubsub-extension/external-pubsub-extension')
     .use('extensions/state-manager-extension/state-manager-extension')
     .use('extensions/data-storage-extension/data-storage-extension')
-    .use('extensions/splash-screen-extension/splash-screen-extension')
     .use('extensions/map-configuration-extension/map-configuration-extension')
     .use('extensions/user-settings-extension/user-settings-extension')
     .use('extensions/icon-extension/icon-extension')
@@ -105,7 +104,6 @@ require(['jquery', 'aura/aura', 'meridian-config'], function($, Aura, configurat
         $('#left-side-menu').css('display','table').animate({
             left: "0px"
           }, 500);
-        $('#loading').remove();
     });
 
 

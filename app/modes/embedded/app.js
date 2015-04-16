@@ -94,14 +94,12 @@ require(['jquery', 'aura/aura', 'meridian-config'], function($, Aura, configurat
     .use('extensions/external-pubsub-extension/external-pubsub-extension')
     .use('extensions/state-manager-extension/state-manager-extension')
     .use('extensions/data-storage-extension/data-storage-extension')
-    .use('extensions/splash-screen-extension/splash-screen-extension')
     .use('extensions/map-configuration-extension/map-configuration-extension')
     .use('extensions/icon-extension/icon-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
 
     .start({ components: 'body' })
     .then(function(){
-        $('#loading').remove();
     });
 
 });

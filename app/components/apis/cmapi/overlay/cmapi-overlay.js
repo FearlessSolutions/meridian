@@ -37,14 +37,17 @@ define([
 		"map.overlay.create": function(message) {
             var layerId =  message.overlayId || defaultLayerId;
 
+            //TODO Selectable functionality was removed. Add it back.
 			if(message === '') {
 				message = {
-                    selectable: DEFAULT_SELECTABLE
+//                    selectable: DEFAULT_SELECTABLE
+                    selectable: false
 				};
 			} else {
-                if(!('selectable' in message)) {
-                    message.selectable = DEFAULT_SELECTABLE;
-                }
+                message.selectable = false;
+//                if(!('selectable' in message)) {
+//                    message.selectable = DEFAULT_SELECTABLE;
+//                }
             }
 
             if(context.sandbox.dataStorage.datasets[layerId]) {

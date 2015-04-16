@@ -2,12 +2,14 @@ define([
     'jquery'
 ], function($) {
     var geoMeridian,
-        config;
+        config,
+        iframeSrc;
 
     var exposed = {
         init: function(configIn) {
             config= configIn;            
             geoMeridian = document.getElementById('webapp').contentWindow;
+            iframeSrc = $('iframe').prop('src');
 
             var pubChannels = config.channels,
                 $pubSelector = $("#pub-channel");
@@ -56,6 +58,6 @@ define([
             channel: channel,
             message: message
         };
-        geoMeridian.postMessage(toSend, "https://localhost:3000");
+        geoMeridian.postMessage(toSend, iframeSrc);
     }
 });

@@ -100,7 +100,6 @@ require(['jquery', 'aura/aura', 'meridian-config', 'jqueryCssWatch'], function($
 
     .start({ components: 'body' })
     .then(function(){
-        $('#loading').remove();
     });
 });
 

@@ -125,7 +125,8 @@ define([
             context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
 
             publisher.createLayer({
-                layerId: layerId
+                layerId: layerId,
+                selectable: false //TODO remove when select is re-implemented
             });    
         }
         //plot feature(s) from payload

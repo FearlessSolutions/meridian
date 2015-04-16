@@ -76,7 +76,7 @@ require.config({
     }
 });
 
-require(['jquery', 'aura/aura', 'meridian-config', 'jqueryCssWatch'], function($, Aura, configuration) {
+require(['jquery', 'aura/aura', 'meridian-config'], function($, Aura, configuration) {
 
     Aura({
         debug: true,
@@ -97,15 +97,10 @@ require(['jquery', 'aura/aura', 'meridian-config', 'jqueryCssWatch'], function($
     .use('extensions/map-configuration-extension/map-configuration-extension')
     .use('extensions/user-settings-extension/user-settings-extension')
     .use('extensions/icon-extension/icon-extension')
-    .use('extensions/exports/export-utils/export-utils')
-    .use('extensions/exports/geojson-extension/geojson-extension')
-    .use('extensions/exports/csv-extension/csv-extension')
-    .use('extensions/exports/kml-extension/kml-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
 
     .start({ components: 'body' })
     .then(function(){
-        $('#loading').remove();
     });
 
 });
