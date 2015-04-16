@@ -114,23 +114,30 @@ define([
     };
 
     function plotFeatures(message) {
+        var layerId = message.overlayId || app.sandbox.cmapi.defaultLayerId;
+
         //check if layer exsist, if not create it
         if(!context.sandbox.dataStorage.datasets[message.overlayId]) {
             //create new layer with overlayId provided
+
+            context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
+            context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
+            context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
+
             publisher.createLayer({
-                layerId: message.overlayId,
+                layerId: layerId
             });    
         }
         //plot feature(s) from payload
         publisher.plotFeatures({
-            layerId: message.overlayId,
+            layerId: layerId,
             data: message.feature.features
         });    
 
         //zoom to feature if specified in payload
         if(message.zoom) {
             publisher.zoomToFeatures({
-                "layerId": message.overlayId,
+                layerId: layerId
             });
         }
 
