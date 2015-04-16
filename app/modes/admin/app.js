@@ -97,39 +97,11 @@ require(['jquery', 'aura/aura', 'meridian-config', 'jqueryCssWatch'], function($
     .use('extensions/utils-extension/utils-extension')
     .use('extensions/ajax-handler-extension/ajax-handler-extension')
     .use('extensions/session-extension/session-extension')
-    .use('extensions/external-pubsub-extension/external-pubsub-extension')
-    .use('extensions/state-manager-extension/state-manager-extension')
-    .use('extensions/data-storage-extension/data-storage-extension')
-    .use('extensions/splash-screen-extension/splash-screen-extension')
-    .use('extensions/snapshot-extension/snapshot-extension')
-    .use('extensions/map-configuration-extension/map-configuration-extension')
-    .use('extensions/user-settings-extension/user-settings-extension')
-    .use('extensions/support-configuration-extension/support-configuration-extension')
-    .use('extensions/icon-extension/icon-extension')
-    .use('extensions/locator-extension/locator-query-extension')
-    .use('extensions/exports/export-utils/export-utils')
-    .use('extensions/exports/geojson-extension/geojson-extension')
-    .use('extensions/exports/csv-extension/csv-extension')
-    .use('extensions/exports/kml-extension/kml-extension')
-    .use('extensions/exports/googlemaps-extension/googlemaps-extension')
-    .use('extensions/data-services/mock-extension/mock-extension')
-    .use('extensions/data-services/fake-extension/fake-extension')
-    .use('extensions/cmapi-extension/cmapi-extension')
-    .use('extensions/upload-data-extension/upload-data-extension')
 
     .start({ components: 'body' })
     .then(function(){
-        $('#left-side-menu').css('display','table').animate({
-            left: "0px"
-          }, 500);
         $('#loading').remove();
     });
-
-
-    $('#left-side-menu .tab-handle').on('click', function() {
-        $('#left-side-menu').toggleClass('docked');
-    });
-
 });
 
 
