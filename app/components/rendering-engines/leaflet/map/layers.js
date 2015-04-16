@@ -511,19 +511,16 @@ define([
           
         },
         setBasemap: function(params) {
-            var baseLayer = basemapLayers[params.basemap]
-            if(params.map.hasLayer(baseLayer)){
-                params.map.eachLayer(function (layer){
-                    if(layer._url === baseLayer._url){
-                        layer.bringToFront();
-                    }else{
-                        params.map.removeLayer(layer);
-                    }
-                });
-            }
-            else{
-                params.map.addLayer(baseLayer);
-            }
+            var baseLayer = basemapLayers[params.basemap];
+            params.map.addLayer(baseLayer);
+            params.map.eachLayer(function (layer){
+                console.debug(layer);
+                if(layer._url && (layer._url !== baseLayer._url)){
+                    params.map.removeLayer(layer);
+                }
+            });
+            
+            
         },
         /**
          * Add popup to feature, even if it is in a cluster
