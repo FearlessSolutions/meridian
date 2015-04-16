@@ -147,9 +147,10 @@ define([
             });
             context.$('.bookmark-list button[type="cancel"]').on('click', function(event) {
                 var $dataName = context.$(this).parent().parent().children('.data-name'),
-                    $dataActions = context.$(this).parent().parent().children('.data-actions');
+                    $dataActions = context.$(this).parent().parent().children('.data-actions'),
+                    $origName = $dataName.children('label').text();
                 $dataName.children('label').show();
-                $dataName.children('input').hide();
+                $dataName.children('input').val($origName).hide();
                 $dataActions.children('button').hide();
                 $dataActions.children('.btn-default-icon').show();
             });
