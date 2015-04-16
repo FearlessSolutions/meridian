@@ -19,7 +19,7 @@ define([
             isActive = false;
             publisher.removeBBox();
         },
-        bboxAdded: function(params) {
+        copyShapetoLayer: function(params) {
             if (isActive) {
                 var shapeId = context.sandbox.utils.UUID();
                 console.log(shapeId);
@@ -39,7 +39,7 @@ define([
                     }
                 });
                 publisher.setLayerIndex({
-                    layerId: 'testaoi',
+                    layerId: shapeId + '_aoi',
                     layerIndex: 0
                 });
                 publisher.plotFeatures({
@@ -77,6 +77,11 @@ define([
                     }
                 }
                 publisher.publishCoords(JSON.stringify(emitObject));
+                publisher.publishMessage({
+                    "messageType": "success",
+                    "messageTitle": "Draw Rectangle",
+                    "messageText": "Coordinates successfully published"
+                });
             }
         }
     };
