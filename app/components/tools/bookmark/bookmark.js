@@ -142,16 +142,7 @@ define([
             // the input inside a row when editing the nane
             context.$('.bookmark-list input').on('keydown', function(e) {
                 if (e.keyCode === 13) {
-                    if (context.$(this).val() == '') {
-                        // add error class to input here later
-                        publisher.publishMessage( {
-                            messageType: 'error',
-                            messageTitle: 'Bookmarks',
-                            messageText: 'Bookmark name must have at least one character'
-                        });
-                    } else {
-                        saveEditBM(context.$(this));
-                    }
+                    saveEditBM(context.$(this));
                 }
             });
             context.$('.bookmark-list button[type="cancel"]').on('click', function(event) {
@@ -178,19 +169,29 @@ define([
             $dataActions = $submitOrigin.parent().parent().children('.data-actions'),
             newBMName = $dataName.children('input').val();
 
-        storedBookmarks[renameBMId] = {
-            bmId: storedBookmarks[renameBMId].bmId,
-            bmName: newBMName,
-            maxLat: storedBookmarks[renameBMId].maxLat,
-            minLat: storedBookmarks[renameBMId].minLat,
-            maxLon: storedBookmarks[renameBMId].maxLon,
-            minLon: storedBookmarks[renameBMId].minLon
-        };
-        context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
-        $dataName.children('label').text(newBMName).show();
-        $dataName.children('input').hide();
-        $dataActions.children('button').hide();
-        $dataActions.children('.btn-default-icon').show();
+        if ($submitOrigin.val() == '') {
+            // add error class to input here later
+            $dataName.children('input').focus();
+            publisher.publishMessage( {
+                messageType: 'error',
+                messageTitle: 'Bookmarks',
+                messageText: 'Bookmark name must have at least one character'
+            });
+        } else {
+            storedBookmarks[renameBMId] = {
+                bmId: storedBookmarks[renameBMId].bmId,
+                bmName: newBMName,
+                maxLat: storedBookmarks[renameBMId].maxLat,
+                minLat: storedBookmarks[renameBMId].minLat,
+                maxLon: storedBookmarks[renameBMId].maxLon,
+                minLon: storedBookmarks[renameBMId].minLon
+            };
+            context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
+            $dataName.children('label').text(newBMName).show();
+            $dataName.children('input').hide();
+            $dataActions.children('button').hide();
+            $dataActions.children('.btn-default-icon').show();
+        }
     }
 
     function deleteBookmark(bookmarkId) {
