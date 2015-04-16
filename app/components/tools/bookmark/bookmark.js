@@ -12,8 +12,7 @@ define([
         $bookmarkModalBody,
         $bookmarkCloseButton,
         $bookmarkListTable,
-        $noDataLabel,
-        bmData;
+        $noDataLabel;
 
     var exposed = {
         init: function(thisContext) {
@@ -27,9 +26,9 @@ define([
             $noDataLabel = context.$('#bookmark-modal.modal p.noDataLabel');
 
             $bookmarkModal.modal({
-                "backdrop": true,
-                "keyboard": true,
-                "show": false
+                backdrop: true,
+                keyboard: true,
+                show: false
              }).on('hidden.bs.modal', function() {
                 publisher.closeBookmark();
              });
@@ -40,7 +39,7 @@ define([
             });
         },
         openBookmark: function() {
-            bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
+            var bmData =  context.sandbox.utils.preferences.get('storedBookmarks');
             if(!context.sandbox.utils.isEmptyObject(bmData)) {
                 // Populate Bookmark table
                 exposed.updateBookmarks();
@@ -66,12 +65,12 @@ define([
                 storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
             if(!storedBookmarks){
                 storedBookmarks = {};
-            };
+            }
             if(bookmarkId in storedBookmarks) {
                 publisher.publishMessage({
-                    "messageType": "warning",
-                    "messageTitle": "Bookmarks",
-                    "messageText": "Bookmark already exists"
+                    messageType: "warning",
+                    messageTitle: "Bookmarks",
+                    messageText: "Bookmark already exists"
                 });
             } else {
                 // saves to bookmarks
@@ -92,44 +91,45 @@ define([
                     context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
 
                     publisher.publishMessage({
-                        "messageType": "success",
-                        "messageTitle": "Bookmarks",
-                        "messageText": "Bookmark successfully created"
+                        messageType: "success",
+                        messageTitle: "Bookmarks",
+                        messageText: "Bookmark successfully created"
                     });
                 });
             }
         },
         updateBookmarks: function() {
-            bmData = JSON.parse(localStorage.getItem("storedBookmarks"));
+            var bmData = context.sandbox.utils.preferences.get('storedBookmarks');
             $bookmarkListTable.empty();
-            if ( bmData === null  || Object.keys(bmData).length == 0 )  {
+            if ( bmData === null  || context.sandbox.utils.isEmptyObject(bmData))  {
                 $noDataLabel.removeClass('hide');
             } else {
                 $noDataLabel.addClass('hide');
-            };
+            }
 
             context.sandbox.utils.each(bmData, function (index, tempDataEntry) {
-                var bookmarkEntry = generateBookmarkEntryRow(tempDataEntry);
-                $bookmarkListTable.append(bookmarkEntry);
+                $bookmarkListTable.append(generateBookmarkEntryRow(tempDataEntry));
             });
 
             context.$('.bookmark-list .data-action-jump').on('click', function(event) {
                 var selectedBMId = context.$(this).parent().parent().data('bmid');
-                var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
+                var storedBookmark = context.sandbox.utils.preferences.get('storedBookmarks')[selectedBMId];
                 publisher.jumpToBookmark({
-                    minLon: storedBookmarks[selectedBMId].minLon,
-                    minLat: storedBookmarks[selectedBMId].minLat,
-                    maxLon: storedBookmarks[selectedBMId].maxLon,
-                    maxLat: storedBookmarks[selectedBMId].maxLat
+                    minLon: storedBookmark.minLon,
+                    minLat: storedBookmark.minLat,
+                    maxLon: storedBookmark.maxLon,
+                    maxLat: storedBookmark.maxLat
                 });
                 publisher.closeBookmark();
             });
             context.$('.bookmark-list .data-action-edit').on('click', function(event) {
-                var $origName = context.$(this).parent().parent().children('.data-name').children('input').val();
-                context.$(this).parent().parent().children('.data-name').children('label').hide();
-                context.$(this).parent().parent().children('.data-name').children('input').val('').show().focus().val($origName);
-                context.$(this).parent().parent().children('.data-actions').children('button').hide();
-                context.$(this).parent().parent().children('.data-actions').children('.pull-right').show();
+                var $dataName = context.$(this).parent().parent().children('.data-name'),
+                    $dataActions = context.$(this).parent().parent().children('.data-actions'),
+                    $origName = $dataName.children('input').val();
+                $dataName.children('label').hide();
+                $dataName.children('input').val('').show().focus().val($origName);
+                $dataActions.children('button').hide();
+                $dataActions.children('.pull-right').show();
             });
             context.$('.bookmark-list .data-action-delete').on('click', function(event) {
                 // Delete the bookmark
@@ -155,10 +155,12 @@ define([
                 }
             });
             context.$('.bookmark-list button[type="cancel"]').on('click', function(event) {
-                context.$(this).parent().parent().children('.data-name').children('label').show();
-                context.$(this).parent().parent().children('.data-name').children('input').hide();
-                context.$(this).parent().parent().children('.data-actions').children('button').hide();
-                context.$(this).parent().parent().children('.data-actions').children('.btn-default-icon').show();
+                var $dataName = context.$(this).parent().parent().children('.data-name'),
+                    $dataActions = context.$(this).parent().parent().children('.data-actions');
+                $dataName.children('label').show();
+                $dataName.children('input').hide();
+                $dataActions.children('button').hide();
+                $dataActions.children('.btn-default-icon').show();
             });
         }
     };
@@ -169,10 +171,13 @@ define([
             name: bookmarkEntryObject.bmName
         });
     }
-    function saveEditBM(submitOrigin) {
-        var renameBMId = $(submitOrigin).parent().parent().data('bmid');
-        var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
-        var newBMName = $(submitOrigin).parent().parent().children('.data-name').children('input').val();
+    function saveEditBM($submitOrigin) {
+        var renameBMId = $submitOrigin.parent().parent().data('bmid'),
+            storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks'),
+            $dataName = $submitOrigin.parent().parent().children('.data-name'),
+            $dataActions = $submitOrigin.parent().parent().children('.data-actions'),
+            newBMName = $dataName.children('input').val();
+
         storedBookmarks[renameBMId] = {
             bmId: storedBookmarks[renameBMId].bmId,
             bmName: newBMName,
@@ -180,12 +185,12 @@ define([
             minLat: storedBookmarks[renameBMId].minLat,
             maxLon: storedBookmarks[renameBMId].maxLon,
             minLon: storedBookmarks[renameBMId].minLon
-        }
+        };
         context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
-        $(submitOrigin).parent().parent().children('.data-name').children('label').text(newBMName).show();
-        $(submitOrigin).parent().parent().children('.data-name').children('input').hide();
-        $(submitOrigin).parent().parent().children('.data-actions').children('button').hide();
-        $(submitOrigin).parent().parent().children('.data-actions').children('.btn-default-icon').show();
+        $dataName.children('label').text(newBMName).show();
+        $dataName.children('input').hide();
+        $dataActions.children('button').hide();
+        $dataActions.children('.btn-default-icon').show();
     }
 
     function deleteBookmark(bookmarkId) {
