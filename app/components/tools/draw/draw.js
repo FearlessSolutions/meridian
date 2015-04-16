@@ -22,7 +22,6 @@ define([
         copyShapetoLayer: function(params) {
             if (isActive) {
                 var shapeId = context.sandbox.utils.UUID();
-                console.log(shapeId);
 
                 publisher.createShapeLayer({
                     layerId: shapeId + '_aoi',
@@ -65,8 +64,7 @@ define([
                 exposed.reset();
                 // the coordinate emit for the channel here
                 var emitObject = {
-                    featureId: 'something',
-                    messageId: 'something',
+                    featureId: shapeId + '_aoi',
                     properties: { // properties is the CMAPI 1.3.0 spec
                         coordinates: [[
                             [params.minLon, params.maxLat],

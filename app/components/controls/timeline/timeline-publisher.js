@@ -14,7 +14,6 @@ define([
             context.sandbox.emit('timeline.open');
         },
         createLayer: function(params) {
-            console.log(params);
             context.sandbox.emit('map.layer.create', params);
         },
         setLayerIndex: function(params) {
