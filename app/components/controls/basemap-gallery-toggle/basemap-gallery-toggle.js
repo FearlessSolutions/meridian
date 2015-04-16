@@ -1,7 +1,7 @@
 define([
-    './basemap-gallery-toggle-publisher',
+    './basemap-gallery-toggle-mediator',
     'bootstrap'
-], function (publisher) {
+], function (mediator) {
     var context,
         $supportButton;
 
@@ -22,9 +22,9 @@ define([
             $supportButton.on('click', function(event) {
                 event.preventDefault();
                 if($supportButton.hasClass('active')) {
-                    publisher.closeBasemapGallery();
+                    mediator.closeBasemapGallery();
                 } else {
-                    publisher.openBasemapGallery();
+                    mediator.openBasemapGallery();
                 }
             });
         },
