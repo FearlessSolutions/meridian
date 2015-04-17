@@ -19,7 +19,7 @@ define([
             isActive = false;
             publisher.removeBBox();
         },
-        copyShapetoLayer: function(params) {
+        commitShape: function(params) {
             if (isActive) {
                 var shapeId = context.sandbox.utils.UUID();
 
