@@ -1,12 +1,11 @@
 define([
-    './bookmark-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
         $bookmarkButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $bookmarkButton = context.$('#bookmarkToggleButton');
 
@@ -22,9 +21,9 @@ define([
             $bookmarkButton.on('click', function(event) {
                 event.preventDefault();
                 if($bookmarkButton.hasClass('active')) {
-                    publisher.closeBookmark();
+                    mediator.closeBookmark();
                 } else {
-                    publisher.openBookmark();
+                    mediator.openBookmark();
                 }
             });
         },
