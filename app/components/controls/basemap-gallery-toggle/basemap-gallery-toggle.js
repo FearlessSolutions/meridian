@@ -1,12 +1,11 @@
 define([
-    './basemap-gallery-toggle-mediator',
     'bootstrap'
-], function (mediator) {
+], function () {
     var context,
         $supportButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $supportButton = context.$('#basemapGalleryToggleButton');
 

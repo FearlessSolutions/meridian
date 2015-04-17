@@ -1,6 +1,6 @@
 define([
     'bootstrap'
-], function(mediator) {
+], function() {
     var context,
         dropdownMaxHeight, //In px
         defaultBasemapCSS,
