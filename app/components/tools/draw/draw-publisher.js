@@ -21,9 +21,6 @@ define([
         closeDrawTool: function(params) {
             context.sandbox.emit('draw.tool.close');
         },
-        createShapeLayer: function(params) {
-            context.sandbox.emit('map.layer.create', params);
-        },
         plotFeatures: function(params) {
             context.sandbox.emit('map.features.plot', params);
         },

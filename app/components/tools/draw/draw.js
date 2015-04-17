@@ -23,24 +23,6 @@ define([
             if (isActive) {
                 var shapeId = context.sandbox.utils.UUID();
 
-                //publisher.createShapeLayer({
-                //    layerId: shapeId + '_aoi',
-                //    name: shapeId + '_aoi',
-                //    initialVisibility: true,
-                //    styleMap: {
-                //        default: {
-                //            strokeColor: '#000',
-                //            strokeOpacity: 0.3,
-                //            strokeWidth: 2,
-                //            fillColor: '#FF358B',
-                //            fillOpacity: 0.2
-                //        }
-                //    }
-                //});
-                //publisher.setLayerIndex({
-                //    layerId: shapeId + '_aoi',
-                //    layerIndex: 0
-                //});
                 publisher.plotFeatures({
                     layerId: 'static_shape',
                     data: [{
