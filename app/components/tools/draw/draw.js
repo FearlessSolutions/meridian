@@ -63,18 +63,19 @@ define([
                 publisher.closeDrawTool();
                 exposed.reset();
                 // the coordinate emit for the channel here
-                var emitObject = {
-                    featureId: shapeId + '_aoi',
-                    properties: { // properties is the CMAPI 1.3.0 spec
-                        coordinates: [[
-                            [params.minLon, params.maxLat],
-                            [params.maxLon, params.maxLat],
-                            [params.maxLon, params.minLat],
-                            [params.minLon, params.minLat]
-                        ]]
+                publisher.publishCoords(JSON.stringify(
+                    {
+                        featureId: shapeId + '_aoi',
+                        properties: { // properties is the CMAPI 1.3.0 spec
+                            coordinates: [[
+                                [params.minLon, params.maxLat],
+                                [params.maxLon, params.maxLat],
+                                [params.maxLon, params.minLat],
+                                [params.minLon, params.minLat]
+                            ]]
+                        }
                     }
-                }
-                publisher.publishCoords(JSON.stringify(emitObject));
+                ));
                 publisher.publishMessage({
                     "messageType": "success",
                     "messageTitle": "Draw Rectangle",

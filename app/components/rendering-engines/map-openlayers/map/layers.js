@@ -598,7 +598,6 @@ define([
             featureadded: function(evt) {
                 var feature = evt.feature,
                     boundingBox,
-                    boundingBox,
                     splitBoundingBox,
                     coords;
 

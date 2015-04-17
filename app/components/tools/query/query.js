@@ -51,8 +51,7 @@ define([
                         maxLat: maxLat,
                         maxLon: maxLon,
                         pageSize: 300
-                };   
-
+                };
 
                 if(minLon === '' || isNaN(minLon)) {
                     $minLon.parent().addClass('has-error');
@@ -134,7 +133,6 @@ define([
         },
         open: function(params) {
             isActive = true;
-
             var drawOnDefault = true;
             if(context.sandbox.queryConfiguration && 
                 typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
@@ -159,8 +157,8 @@ define([
         bboxAdded: function(params) {
             if (isActive) {
                 $modal.modal('show');
+                exposed.populateCoordinates(params);
             };
-            exposed.populateCoordinates(params);   
         },
         populateCoordinates: function(params) {
             $minLon.val(params.minLon);
