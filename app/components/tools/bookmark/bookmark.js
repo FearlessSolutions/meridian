@@ -136,7 +136,7 @@ define([
                 deleteBookmark(context.$(this).parent().parent().data('bmid'));
                 exposed.updateBookmarks();
             });
-            context.$('.bookmark-list button[type="submit"]').on('click', function(event) {
+            context.$('.bookmark-list button[type="submit"]').on('click', function(e) {
                 saveEditBM(context.$(this));
             });
             // the input inside a row when editing the nane
@@ -147,10 +147,9 @@ define([
             });
             context.$('.bookmark-list button[type="cancel"]').on('click', function(event) {
                 var $dataName = context.$(this).parent().parent().children('.data-name'),
-                    $dataActions = context.$(this).parent().parent().children('.data-actions'),
-                    $origName = $dataName.children('label').text();
+                    $dataActions = context.$(this).parent().parent().children('.data-actions');
                 $dataName.children('label').show();
-                $dataName.children('input').val($origName).hide();
+                $dataName.children('input').hide();
                 $dataActions.children('button').hide();
                 $dataActions.children('.btn-default-icon').show();
             });
@@ -170,7 +169,7 @@ define([
             $dataActions = $submitOrigin.parent().parent().children('.data-actions'),
             newBMName = $dataName.children('input').val();
 
-        if ($submitOrigin.val() == '') {
+        if ($dataName.children('input').val() === '') {
             // add error class to input here later
             $dataName.children('input').focus();
             publisher.publishMessage( {
