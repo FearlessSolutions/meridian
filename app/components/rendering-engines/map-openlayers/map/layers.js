@@ -23,6 +23,8 @@ define([
                 geolocatorLayer,
                 drawParams,
                 drawLayer,
+                shapeParams,
+                shapeLayer,
                 heatmapParams,
                 heatmapLayer,
                 map = params.map;
@@ -72,6 +74,23 @@ define([
                 layer: drawLayer
             });
 
+            //Create shape layer options
+            shapeParams = {
+                map: map,
+                layerId: 'static_shape',
+                static: true,
+                styleMap: {
+                    default: {
+                        strokeColor: '#000',
+                        strokeOpacity: 0.3,
+                        strokeWidth: 2,
+                        fillColor: '#FF358B',
+                        fillOpacity: 0.2
+                    }
+                }
+            };
+            shapeLayer = exposed.createVectorLayer(shapeParams);
+
             //Create heatmap layer options
             heatmapParams = {
                 map: map,
@@ -105,7 +124,7 @@ define([
             };
             heatmapLayer = exposed.createVectorLayer(heatmapParams);
 
-            map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]);
+            map.addLayers([geolocatorLayer, drawLayer, shapeLayer, heatmapLayer]);
             mapBase.addLayerToSelector({
                 map: map,
                 layer: geolocatorLayer

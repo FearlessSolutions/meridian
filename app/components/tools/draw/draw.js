@@ -19,35 +19,35 @@ define([
             isActive = false;
             publisher.removeBBox();
         },
-        commitShape: function(params) {
+        saveShape: function(params) {
             if (isActive) {
                 var shapeId = context.sandbox.utils.UUID();
 
-                publisher.createShapeLayer({
-                    layerId: shapeId + '_aoi',
-                    name: shapeId + '_aoi',
-                    initialVisibility: true,
-                    styleMap: {
-                        default: {
-                            strokeColor: '#000',
-                            strokeOpacity: 0.3,
-                            strokeWidth: 2,
-                            fillColor: '#FF358B',
-                            fillOpacity: 0.2
-                        }
-                    }
-                });
-                publisher.setLayerIndex({
-                    layerId: shapeId + '_aoi',
-                    layerIndex: 0
-                });
+                //publisher.createShapeLayer({
+                //    layerId: shapeId + '_aoi',
+                //    name: shapeId + '_aoi',
+                //    initialVisibility: true,
+                //    styleMap: {
+                //        default: {
+                //            strokeColor: '#000',
+                //            strokeOpacity: 0.3,
+                //            strokeWidth: 2,
+                //            fillColor: '#FF358B',
+                //            fillOpacity: 0.2
+                //        }
+                //    }
+                //});
+                //publisher.setLayerIndex({
+                //    layerId: shapeId + '_aoi',
+                //    layerIndex: 0
+                //});
                 publisher.plotFeatures({
-                    layerId: shapeId + '_aoi',
+                    layerId: 'static_shape',
                     data: [{
-                        layerId: shapeId + '_aoi',
-                        featureId: '_aoi',
+                        layerId: 'static_shape',
+                        featureId: shapeId + '_aoi',
                         dataService: '',
-                        id: '_aoi',
+                        id: shapeId + '_aoi',
                         geometry: {
                             type: 'Polygon',
                             coordinates: [[
