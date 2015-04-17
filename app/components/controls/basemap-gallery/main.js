@@ -26,8 +26,9 @@ define([
             });
             this.html(html);
             
-            basemapGallery.init(this);
             basemapGalleryMediator.init(this);
+            basemapGallery.init(this, basemapGalleryMediator);
+            
             
         }
     };

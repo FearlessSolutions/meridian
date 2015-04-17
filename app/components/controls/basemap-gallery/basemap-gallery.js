@@ -1,5 +1,4 @@
 define([
-    './basemap-gallery-mediator',
     'bootstrap'
 ], function(mediator) {
     var context,
@@ -14,7 +13,7 @@ define([
         $toggle;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             var paddingInt;
 
             context = thisContext;

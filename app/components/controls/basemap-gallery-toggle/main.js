@@ -20,8 +20,8 @@ define([
             });
             this.html(html);
 
-            basemapGalleryToggle.init(this);
-            basemapGalleryToggleMediator.init(this);
+            //basemapGalleryToggle.init(this);
+            //basemapGalleryToggleMediator.init(this);
         }
     };
 
