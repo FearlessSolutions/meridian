@@ -18,7 +18,7 @@ div[data-aura-component='tools/query'] #query-modal .modal-dialog {
     width: 300px;
 }
 div[data-aura-component='tools/query'] #query-modal .modal-footer {
-    text-align:center;
+    text-align:right;
 }
 div[data-aura-component='tools/query'] #query-modal {
     overflow-y: hidden;
@@ -56,7 +56,4 @@ div[data-aura-component='tools/query'] .query-form #drawBBoxButton {
 }
 div[data-aura-component='tools/query'] .query-form .diamond-middle {
     text-align: center;
-}
-div[data-aura-component='tools/query'] .checkbox {
-    padding-bottom:15px;
 }

@@ -11,7 +11,6 @@ define([
             context.sandbox.on('bookmark.open', bookmark.openBookmark);
             context.sandbox.on('data.clear.all', bookmark.clear);
             context.sandbox.on('bookmark.create', bookmark.saveBMtoLS);
-            context.sandbox.on('data.finished', bookmark.saveBMtoLS);
         }
     };	
 

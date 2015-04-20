@@ -8,7 +8,8 @@ define([
         $maxLon,
         $maxLat,
         $minLon,
-        $minLat;
+        $minLat,
+        $chkboxBookmark;
 
     var exposed = {
         init: function(thisContext) {
@@ -18,6 +19,7 @@ define([
             $minLat = context.$('.query-form #query-location-minLat');
             $maxLon = context.$('.query-form #query-location-maxLon');
             $maxLat = context.$('.query-form #query-location-maxLat');
+            $chkboxBookmark = context.$('#chkboxBookmark');
 
             $modal.modal({
                 backdrop: 'static',
@@ -29,7 +31,7 @@ define([
             //     publisher.publishOpening({componentOpening: MENU_DESIGNATION});
             // });
             
-            context.$('.query-form button[type="submit"]').on('click', function(event) {
+            context.$('.modal-footer button[type="submit"]').on('click', function(event) {
                 event.preventDefault();                
                 var minLon = $minLon.val() || '',
                     minLat = $minLat.val() || '',
@@ -98,6 +100,7 @@ define([
                 if(errorFree){
                     publisher.closeQueryTool();
                     publisher.executeQuery(queryObject);
+                    //exposed.validateBookmark();
                     exposed.clearQueryForm();
                 } else {
                     publisher.publishMessage({
@@ -110,7 +113,7 @@ define([
                 return false;
             });
 
-            context.$('.query-form button[type="cancel"]').on('click', function(event) {
+            context.$('.modal-footer button[type="cancel"]').on('click', function(event) {
                 event.preventDefault();
                 exposed.clearQueryForm();
                 publisher.closeQueryTool();
@@ -129,6 +132,7 @@ define([
             });
         },
         open: function(params) {
+            $chkboxBookmark.prop('checked', false);
             var drawOnDefault = true;
             if(context.sandbox.queryConfiguration && 
                 typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
@@ -188,9 +192,11 @@ define([
            context.$('#query-source').val(params.querySource);
         },
         validateBookmark: function(params) {
-            if (context.$('#saveAsBookmark').is(":checked")) {
-                publisher.createBookmark(params);
-            }
+            if (context.sandbox.dataStorage.datasets[params.layerId].dataService != 'upload'){
+                if ($chkboxBookmark.is(":checked")) {
+                    publisher.createBookmark(params);
+                }
+            };
         }
     };
 
