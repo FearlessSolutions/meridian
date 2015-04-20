@@ -1,12 +1,11 @@
 define([
-    './datagrid-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
         $dataGridToggleButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $dataGridToggleButton = context.$('#dataGridToggleButton');
 
@@ -23,9 +22,9 @@ define([
                 event.preventDefault();
 
                 if(context.$(this).hasClass('active')) {
-                    publisher.closeDatagrid();
+                    mediator.closeDatagrid();
                 } else {
-                    publisher.openDatagrid();
+                    mediator.openDatagrid();
                 }
             });
 
@@ -34,7 +33,7 @@ define([
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 $dataGridToggleButton.addClass('active');
             } else {
-                publisher.publishMessage({
+                mediator.publishMessage({
                     "messageType": "warning",
                     "messageTitle": "Datatable",
                     "messageText": "No data to display in datatable."
