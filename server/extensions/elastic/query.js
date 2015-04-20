@@ -189,7 +189,6 @@ exports.getMetadataByTerm = function(queryTerms, callback){
             }
         }
     };
-    console.log(JSON.stringify(query, null, "  "));
     getJSONByQuery(null, config.index.metadata, null, query, callback);    
 };
 
