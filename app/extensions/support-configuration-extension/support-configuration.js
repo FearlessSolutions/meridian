@@ -167,9 +167,6 @@ define([
                 "title": "Feature Counts",
                 "content" : "Accurate counts will always be kept of both visible and total feature counts."
             }
-
-
-
         ]
     };
 

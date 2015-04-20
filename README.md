@@ -1,7 +1,10 @@
 [ ![Codeship Status for ozone-development/meridian](https://codeship.com/projects/479f9b90-5167-0132-a553-7262abc25231/status)](https://codeship.com/projects/48335)
 
-# Meridian
+![alt tag](http://ozone-development.github.io/meridian/images/logos/merid1.2.png)
+
 Event-driven, framework-agnostic, extensible architecture for mapping applications. Meridian wraps code into reusable and decoupled components and/or extensions that can easily communicate with each other. 
+
+
 
 ## Embed Meridian:
 
@@ -15,17 +18,24 @@ Just include the following `<iframe>` on any HTML page source code:
 https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/
 
 ## Download Meridian and host locally:
-### Requirements
 
-The project uses Grunt for task management. Use of Grunt is optional, but highly recommended.
+To host the database locally (which will be populated with mock data), you will need to have [Node.js](http://nodejs.org/) installed and found in the path, and [ElasticSearch] (http://www.elasticsearch.org/overview/elkdownloads/) exported into the `data` folder, making sure the path: `data/bin/` is valid. 
 
-- To install grunt, make sure the Node Packaged Module is installed by installing [Node.js](http://nodejs.org/).
+### Note: Some modules in the node_module folder are not version-current for stability purposes. 
+
+As a result, you may receive WARN messages from Node, but Meridian should still run just fine.
+
+The project uses Grunt for task management. Use of Grunt is optional, but highly recommended. If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the Grunt Support Setup instructions.
+
+### Optional: Install Grunt CLI
+
+- First make sure the Node Packaged Module is installed by installing [Node.js](http://nodejs.org/).
 
 - To use the command-line version of Grunt you will need to install the global [Grunt CLI](http://gruntjs.com/getting-started) module.
 
  - Run `npm install -g grunt-cli` if needed
-
-To host the database locally (which will be populated with mock data), you will need to have [Node.js](http://nodejs.org/) installed and found in the path, and [ElasticSearch] (http://www.elasticsearch.org/overview/elkdownloads/) exported into the `data` folder, making sure the path: `data/bin/` is valid. If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the Grunt Support Setup instructions.
+ 
+### JSDOM 
 
 The project also uses [JSDOM](https://www.npmjs.org/package/jsdom). Unfortunately, JSDOM relies on a node package called Contextify that is difficult to get working in WINDOWS. To install JSDOM you will need:
 
@@ -57,15 +67,18 @@ For other parts of the project, make sure:
 
 ### Setup
 
-You have two options for getting up an running, with or without the Grunt support.
+Please ensure you read the above requirements to make sure everything needed is installed.
+
+#### Clone the Repo
+
+Before you go any further, Clone the Repo: 
+`git clone https://github.com/ozone-development/meridian.git`
+
+Now change into the Meridian project directory: `cd meridian`.
+
+You now have two options for getting Meridian running: with, or without, the Grunt support.
 
 **Option 1 -** Without Grunt support:
-
-1. Make sure to read the above requirements to make sure everything needed is installed.
-
-1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
-
-1. Change into the project directory: `cd meridian`.
 
 1. Run `npm install -g` to make sure everything is up to date. 
 
@@ -73,23 +86,17 @@ You have two options for getting up an running, with or without the Grunt suppor
 
 1. Start ElasticSearch:
 	1. Run `data/bin/elasticsearch` on Unix, or `data/bin/elasticsearch.bat` on Windows.
-	1. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
+	1. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to ensure ElasticSearch is running.
 
 1. Start the App Server:
     1. To start the local server run: `node app.js`
     1. Now open your browser and visit ([https://localhost:3000](https://localhost:3000)) to see Meridian in action.
 
-NOTE: If when starting elastic search you recieve warnings regarding multicasting you most likely have been added to an already exsisting elastic search cluster and may recieve unintended outcomes from the application.  You can disable multicasting by navigating to the directory you extracted elastic search to and then navigating to the config/elasticsearch.yml file. In there uncomment the line `discovery.zen.ping.multicast.enabled: false` and save the file. You can now restart elastic search.
+NOTE: If when starting ElasticSearch you recieve warnings regarding multicasting you most likely have been added to an already existing ElasticSearch cluster and may recieve unintended outcomes from the application.  You can disable multicasting by navigating to the directory you extracted ElasticSearch to and then navigating to the config/elasticsearch.yml file. In there uncomment the line `discovery.zen.ping.multicast.enabled: false` and save the file. You can now restart ElasticSearch.
 
 **Option 2 -** With Grunt Support:
 
-1. Get Grunt's global CLI module. Run `npm install -g grunt-cli`.
-
-1. Make sure to read the above requirements to make sure everything needed is installed.
-
-1. Clone the repo: `git clone https://github.com/ozone-development/meridian.git`.
-
-1. Change into the project directory: `cd meridian`.
+1. If you haven't already, get Grunt's global CLI module. Run `npm install -g grunt-cli`.
 
 1. Run `npm install` to make sure everything is up to date.
 
@@ -105,8 +112,8 @@ developers will be responsible for running `npm install` to get the dependencies
 1. Make sure ElasticSearch starts okay, even though you will be using grunt to start it for you:
  1. Change into the `meridian` directory, if you are not already there.
  1. Run `data/bin/elasticsearch` on Unix, or `data/bin/elasticsearch.bat` on Windows.
- 1. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure elasticsearch is running.
- 1. Stop ElasticSearch since grunt will be starting it for you.
+ 1. Run `curl -X GET http://localhost:9200/` or visit `http://localhost:9200` to make sure ElasticSearch is running.
+ 1. Stop ElasticSearch; Grunt will start it for you.
 
 1. Start the App Server:
     1. To start the local server run: `grunt server`

@@ -14,7 +14,15 @@ define([
                 extension: '.geojson'
             }
         },
-        DISPLAY_NAME: 'Upload'
+        DATASOURCE_NAME: 'upload',
+        DISPLAY_NAME: 'Upload',
+        SERVER_NAME: 'upload',
+        namespace: 'upload-extension',
+        exports: [
+            'geojson',
+            'csv',
+            'kml'
+        ]
     };
 
     return configuration;

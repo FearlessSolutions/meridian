@@ -33,8 +33,8 @@ define([
                 app.sandbox.dataServices = {};
             }
 
-            app.sandbox.dataServices.cmapi = {
-                "infoWinTemplate": {
+            app.sandbox.dataServices.cmapi = { //TODO : need to readdress this
+                infoWinTemplate: {
                     "buildInfoWinTemplate": function(attributes, fullFeature) {
                         var cmapiTemplate = Handlebars.compile(cmapiHBS);
                         var html = cmapiTemplate({
@@ -47,6 +47,18 @@ define([
                         return html;
                     },
                     "postRenderingAction": function(feature, overlayId){ return; }
+                }
+            };
+
+            app.sandbox.cmapi.utils = {
+                createChannelNameFunction: function(channelName) {
+                    var tempStr = channelName.split(".");
+                    var newChannelName = "";
+                    for(i = 1; i < tempStr.length; i++){
+                        newChannelName += (tempStr[i])[0].toUpperCase()+ (tempStr[i]).slice(1);
+                    }
+                    newChannelName = 'map' + newChannelName;
+                    return newChannelName;
                 }
             };
         }
@@ -100,6 +112,10 @@ define([
         };
 
         return maxExtent;
+    }
+
+    function channelNameParser (channelName){
+
     }
 
     return exposed;

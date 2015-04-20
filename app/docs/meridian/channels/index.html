@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Meridian</title>
+    <meta charset="utf-8" />
+    <link rel='shortcut icon' type='image/x-icon' href='../images/logos/meridthumb.png'/>
+    <link href="../stylesheets/main.css" rel="stylesheet" type="text/css"/>
+    <script src="../javascripts/jquery-1.11.1/jquery.js"></script>
+    <script src="../javascripts/bootstrap-3.2.0/bootstrap.js"></script>
+  </head>
+  <body data-spy="scroll" data-target="#sideNav">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">Meridian</a>
+      </div>
+      <div class="navbar-collapse collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="./index.html">Getting Started</a></li>
+          <li><a href="../contribute/index.html">Contribute</a></li>
+          <li><a href="../examples/index.html">Examples</a></li>
+        </ul>
+      </div>
+    </nav>
+    
+    <section class="container">
+      <div class="row">
+        <section class="col-md-10 container">
+
+          <h3 id="startedQuickly" class="page-header">CMAPI Channel Support</h3>
+            <p>Meridian strives to be compliant with Common Map API as much as possible, however
+            it deviates from this specification in instances that are suited to support Meridian 
+            requirements and user needs. The below table outlines Meridians current compliance with 
+            version 1.3.0 of CMAPI, as well outlines key differences.</p>
+
+          <style type="text/css">
+            .tg  {border-collapse:collapse;border-spacing:0;}
+            .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+            .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+          </style>
+          <table class="tg">
+            <tr>
+              <th class="tg-031e">API Type</th>
+              <th class="tg-031e">Channel Type</th> 
+              <th class="tg-031e">CMAPI Channel</th>
+              <th class="tg-031e">MMAPI Channel</th>
+              <th class="tg-031e">Usage</th>
+              <th class="tg-031e">Notes</th>
+            </tr>
+            <tr>
+              <td class="tg-031e">Core</td>
+              <td class="tg-031e">Map View Channel</td>
+              <td class="tg-031e">map.view.zoom</td>
+              <td class="tg-031e">not supported</td>
+              <td class="tg-031e">depricated</td>
+              <td class="tg-031e">N/A</td>
+            </tr>
+            <tr>
+              <td class="tg-031e">Core</td>
+              <td class="tg-031e">Map View Channel</td>
+              <td class="tg-031e">not supported</td>
+              <td class="tg-031e">map.view.zoom.in</td>
+              <td class="tg-031e">extension</td>
+              <td class="tg-031e">N/A</td>
+            </tr>
+            <tr>
+              <td class="tg-031e">Core</td>
+              <td class="tg-031e">Map View Channel</td>
+              <td class="tg-031e">not supported</td>
+              <td class="tg-031e">map.view.zoom.out</td>
+              <td class="tg-031e">extension</td>
+              <td class="tg-031e">N/A</td>
+            </tr>
+            <tr>
+              <td class="tg-031e">Core</td>
+              <td class="tg-031e">Map View Channel</td>
+              <td class="tg-031e">not supported</td>
+              <td class="tg-031e">map.view.zoom.out</td>
+              <td class="tg-031e">extension</td>
+              <td class="tg-031e">N/A</td>
+            </tr>
+            <tr>
+              <td class="tg-031e">Core</td>
+              <td class="tg-031e">Map View Channel</td>
+              <td class="tg-031e">map.view.center.overlay</td>
+              <td class="tg-031e">map.view.center.overlay</td>
+              <td class="tg-031e">standard</td>
+              <td class="tg-031e">does not support auto zoom property in payload.  all calls to this method automatically zoom to bets fit for overlay</td>
+            </tr>
+            <tr>
+              <td class="tg-031e">Core</td>
+              <td class="tg-031e">Map View Channel</td>
+              <td class="tg-031e">map.view.center.feature</td>
+              <td class="tg-031e">map.view.center.feature</td>
+              <td class="tg-031e">standard</td>
+              <td class="tg-031e">N/A</td>
+            </tr>
+            <tr>
+              <td class="tg-031e">Core</td>
+              <td class="tg-031e">Map View Channel</td>
+              <td class="tg-031e">map.view.center.location</td>
+              <td class="tg-031e">map.view.center.location</td>
+              <td class="tg-031e">standard</td>
+              <td class="tg-031e">does not support auto zoom property in payload.  all calls to this method automatically zoom to bets fit for overlay</td>
+            </tr>
+            <tr>
+              <td class="tg-031e">Core</td>
+              <td class="tg-031e">Map View Channel</td>
+              <td class="tg-031e">not supported</td>
+              <td class="tg-031e">map.view.center.data</td>
+              <td class="tg-031e">extension</td>
+              <td class="tg-031e">N/A</td>
+            </tr>
+            <tr>
+              <td class="tg-031e">Core</td>
+              <td class="tg-031e">Map View Channel</td>
+              <td class="tg-031e">map.view.clicked</td>
+              <td class="tg-031e">map.view.clicked</td>
+              <td class="tg-031e">extension</td>
+              <td class="tg-031e">does not support attributes for click type</td>
+            </tr>
+          </table>
+
+        </section><!-- md-10 container -->
+
+        <section class="col-md-2">
+          <nav class="hidden-print hidden-xs hidden-sm" id="sideNav">
+            <ul class="nav affix">
+              <li><a href="#startedQuickly">Getting Started Quickly</a>
+                <ul class="nav">
+                  <li><a href="#accessMeridian">Access Meridian</a></li>
+                  <li><a href="#embedMeridian">Embed Meridian</a></li>
+                </ul>
+              </li>
+              <li><a href="#requirements">Local Meridian Setup</a></li>
+              <li><a href="#withoutGrunt">Without Grunt Support</a></li>
+              <li><a href="#withGrunt">With Grunt Support</a></li>
+              </li>
+              <li><a href="#resources">Resources</a></li>
+            </ul>
+          </nav> <!-- sideNav -->
+        </section><!-- md-2 -->
+      </div><!-- row -->
+    </section><!--container-->
+    
+    <hr>
+
+    <footer class="footer text-center">
+      <div class="container">
+        <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian/archive/master.zip"><i class="glyphicon glyphicon-cloud-download"></i> Download Meridian</a>
+        <a class="btn btn-primary btn-xs" href="//github.com/ozone-development/meridian"><i class="icon-github3"></i> View on Github</a>
+        <a class="btn btn-primary btn-xs" href="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/index.html" target="_blank"><i class="icon-rocket2"></i> Launch Meridian</a>
+      </div>
+        
+      <div class="container new-section small">
+        <p>Software (c) 2014 <a href="http://www.boeing.com/" title="Boeing">The Boeing Company</a></p>
+        <p>The United States Government has unlimited rights in this software, pursuant to the contracts under which it was developed.</p>
+     
+        <p>The AML Center (under OZONE) is released to the public as Open Source Software as required by <a href="http://www.gpo.gov/fdsys/pkg/PLAW-112publ81/pdf/PLAW-112publ81.pdf" title="NDAA FY12">Section 924 of the 2012 National Defense Authorization Act</a>.</p>
+
+        <p>Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html" title="Apache License v2.0">Apache License v2.0</a>.</p>
+
+        <p>Forked from the Open Source Project: <a href="http://aurajs.com/"> Aura JS</a>.</p>
+      </div>
+    </footer>
+  </body>
+</html>

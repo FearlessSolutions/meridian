@@ -9,19 +9,19 @@ define([
         init: function(thisContext) {
             context = thisContext;
             toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "positionClass": "toast-top-right",
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "2000",
-                "timeOut": "4000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut",
-                "target": "div[data-aura-component='displays/notifications']"
+                closeButton: true,
+                debug: false,
+                positionClass: 'toast-top-right',
+                onclick: null,
+                showDuration: '300',
+                hideDuration: '2000',
+                timeOut: '4000',
+                extendedTimeOut: '1000',
+                showEasing: 'swing',
+                hideEasing: 'linear',
+                showMethod: 'fadeIn',
+                hideMethod: 'fadeOut',
+                target: "div[data-aura-component='displays/notifications']"
             };
         },
         displayMessage: function(params) {
@@ -30,7 +30,7 @@ define([
                 messageText = params.messageText;
                 
             // hardcoded value for the toastr container to prevent message overflow -- plan to submit ticket to huboard
-            $("#toast-container").height($(window).height() - 190);
+            $('#toast-container').height($(window).height() - 350);
             
             if(messageType === 'success') {
                 toastr.success(messageText, messageTitle);

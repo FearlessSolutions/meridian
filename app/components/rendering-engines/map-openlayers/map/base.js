@@ -46,6 +46,10 @@ define([
                 exposed.trackMousePosition({
                     "map": map
                 });
+
+                exposed.trackMapClick({
+                    "map": map
+                });
             }
 
             // Set initial value of map extent, in the state manager
@@ -85,9 +89,11 @@ define([
         },
         addSelector: function(params) {
             var selector = new OpenLayers.Control.SelectFeature([], {
-                "click": true,
-                "autoActivate": true
+                click: true,
+                autoActivate: true
             });
+
+            selector.handlers.feature.stopDown = false;
             params.map.addControl(selector);
         },
         addLayerToSelector: function(params) {
@@ -133,6 +139,19 @@ define([
                 });
             });
         },
+        trackMapClick: function(params) {
+            params.map.events.register('click', params.map, function(e) {
+                var position = this.events.getMousePosition(e);
+                var latlon = exposed.getMouseLocation({
+                    "map": params.map,
+                    "position": position
+                });
+                publisher.publishMapClick({
+                    "lat": latlon.lat,
+                    "lon": latlon.lon
+                });
+            });
+        },
         getMouseLocation: function(params) {
             return params.map.getLonLatFromPixel(params.position).transform(params.map.projection, params.map.projectionWGS84);
         },
@@ -143,31 +162,46 @@ define([
 
             context.sandbox.stateManager.removeAllIdentifiedFeatures();
         },
-        identifyFeature: function(params) { // TODO: what is this being used by? A: Nothing right now. There isn't even a subscriber.
+        identifyFeature: function(params) {
             var popup,
+                map = params.map,
                 feature = params.feature,
-                anchor;
+                anchor,
+                bounds;
 
-            anchor = {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, -(feature.attributes.height/2))};
+            anchor = {
+                size: new OpenLayers.Size(0, 0),
+                offset: new OpenLayers.Pixel(0, -(feature.attributes.height/2))
+            };
             popup = new OpenLayers.Popup.FramedCloud(
                 'popup',
-                OpenLayers.LonLat.fromString(feature.geometry.toShortString()), //TODO centroid
+                OpenLayers.LonLat.fromString(feature.geometry.getCentroid().toShortString()),
                 null,
-                params.content,
+                params.buildInfoWinTemplate(feature),
                 anchor,
                 true,
                 function() {
                     exposed.clearMapSelection({
-                        "map": params.map
+                        map: map
                     });
                     exposed.clearMapPopups({
-                        "map": params.map
+                        map: map
                     });
                 }
             );
 
+            bounds = feature.geometry.getBounds();
+            map.setCenter(bounds.getCenterLonLat());
+
             feature.popup = popup;
-            params.map.addPopup(popup);
+            map.addPopup(popup);
+
+            params.postRenderingAction(feature);
+
+            context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
+                layerId: feature.layer.layerId,
+                featureIds:[feature.featureId]
+            });
         },
         setVisualMode: function(params) {
             if(params && params.mode) {

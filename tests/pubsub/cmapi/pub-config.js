@@ -118,10 +118,75 @@ define([
                         ]
                     },
                     "zoom":false,
-                    "dataZoom": false,
                     "readOnly":false
                 }
             },
+             "map.feature.plot": {
+                valid: true,
+                sample: {
+                    "overlayId":"testOverlayId1",
+                    "name":"Test Name 1",
+                    "format":"kml",
+                    "feature": {
+                        "type":"FeatureCollection",
+                        "features":[
+                            {
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [0.0, 10.0]
+                                },
+                                "properties": {
+                                    "p1": "pp1"
+                                },
+                                "style": {
+                                    "height": 24,
+                                    "width": 24,
+                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                }
+                            }
+                        ]
+                    },
+                    "zoom":false,
+                    "readOnly":false
+                }
+            },
+            "map.feature.plot.batch": {
+                valid: true,
+                sample: {
+                    "overlayId":"testOverlayId1",
+                    "name":"Test Name 1",
+                    "format":"geojson",
+                    "feature": {
+                        "type":"FeatureCollection",
+                        "features":[
+                            {
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [0.0, 10.0]
+                                },
+                                "properties": {
+                                    "featureId": "f1"
+                                },
+                                "style": {
+                                    "height": 24,
+                                    "width": 24,
+                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                }
+                            }
+                        ]
+                    },
+                    "zoom":false,
+                    "readOnly":false
+                }
+            },
+            /*"map.feature.plot": {
+                valid: true,
+                sample: {"overlayId": "testOverlayId1","name": "Test Name 1","format": "geojson","feature": {"type": "FeatureCollection","features": [{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[100,0],[101,0],[101,1],[100,1],[100,0]]},"properties":{"style":{"lineStyle":{"color":{"r":255,"g":0,"b":255,"a":0.5}},"polyStyle":{"color":{"r":0,"g":255,"b":0,"a":0.25}},"name":"test polygon","id":"tp13456","description":"polygon pop-up text"}}},{"type":"Feature","geometry":{"type":"Line","coordinates":[[80,3],[81,3],[81,5],[82,2]]},"properties":{"style":{"lineStyle":{"color":{"r":0,"g":255,"b":255,"a":0.5}}}},"name":"crossingLine","id":"0x45632","description":"this is a line you don’t want to cross"}]},"zoom": false,"dataZoom": false,"readOnly": false}
+            },*/
             "map.feature.hide": {
                 valid: true,
                 sample: {
@@ -137,8 +202,17 @@ define([
                     "zoom": false
                 }
             },
-            "map.view.zoom": {
-                valid: true
+            "map.view.zoom.in": {
+                valid: true,
+                sample: {}
+            },
+            "map.view.zoom.out": {
+                valid: true,
+                sample: {}
+            },
+            "map.view.zoom.max.extent": {
+                valid: true,
+                sample: {}
             },
             "map.view.center.overlay": {
                 valid: true,

@@ -33,9 +33,6 @@ define([
         },
         removeActive: function() {
             $bookmarkButton.removeClass('active');
-        },
-        clear: function() {
-            $bookmarkButton.removeClass('active');
         }
     };
 

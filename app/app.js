@@ -8,19 +8,15 @@ require.config({
         bootstrap: 'libs/bootstrap-3.2.0/bootstrap',
         daterangepicker: 'libs/bootstrap-daterangepicker-master/daterangepicker',
         toastr: 'libs/toastr-2.0.1/toastr',
-//        jqueryDrag: 'libs/jquery-drag-0.1.0/jquery-drag',
         jqueryDrag: 'libs/SlickGrid-master/lib/jquery.event.drag-2.2',
         jqueryDrop: 'libs/SlickGrid-master/lib/jquery.event.drop-2.2',
         bootstro: 'libs/bootstro/bootstro',
         typeahead: 'libs/bootstrap3-typeahead-3.0.3/bootstrap3-typeahead',
         backbone: 'libs/backbone-1.1.2/backbone',
-        boostrapMultiselect: 'libs/bootstrap-multiselect-0.9.4/bootstrap-multiselect',
         kml2geojson: 'libs/kml2geojson/kml2geojson',
         paginator: 'libs/bootstrap-paginator/bootstrap-paginator.min',
-        datatable: 'libs/dynamic-bootstrap-table/dynamic-bootstrap-table',
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
-//        jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min', // Custom build, check file's header to see what it includes
         jqueryUI: 'libs/jquery-ui-1.11.2.custom/jquery-ui.min', // Custom build, check file's header to see what it includes
         slickcore: 'libs/SlickGrid-master/slick.core',
         slickgrid: 'libs/SlickGrid-master/slick.grid',
@@ -28,6 +24,7 @@ require.config({
         slickRowSelectionModel: 'libs/SlickGrid-master/plugins/slick.rowselectionmodel',
         slickpager: 'libs/SlickGrid-master/controls/slick.pager',
         moment: 'libs/momentjs-2.8.3/moment.min',
+        togeojson: 'libs/togeojson/togeojson',
         coordinateConverter: 'libs/coordinate-converter/cc'
     },
     shim:{
@@ -51,14 +48,8 @@ require.config({
         jqueryCssWatch: {
             deps: ['jquery']
         },
-        boostrapMultiselect: {
-            deps: ['jquery','bootstrap']
-        },
         paginator:{
             deps: ['jquery','bootstrap']
-        },
-        datatable:{
-            deps: ['jquery','bootstrap', 'paginator']
         },
         jqueryUI: {
             deps: ['jquery']
@@ -77,6 +68,9 @@ require.config({
         },
         slickpager: {
             deps: ['slickgrid']
+        },
+        togeojson: {
+            deps: ['jquery']
         }
     }
 });
@@ -113,7 +107,6 @@ require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
     .use('extensions/support-configuration-extension/support-configuration-extension')
     .use('extensions/icon-extension/icon-extension')
     .use('extensions/locator-extension/locator-query-extension')
-    .use('extensions/locator-extension/locator-formatData-extension')
     .use('extensions/exports/export-utils/export-utils')
     .use('extensions/exports/geojson-extension/geojson-extension')
     .use('extensions/exports/csv-extension/csv-extension')
