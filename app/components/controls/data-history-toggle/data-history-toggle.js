@@ -1,12 +1,11 @@
 define([
-    './data-history-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
         $dataHistoryButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $dataHistoryButton = context.$('#dataHistoryToggleButton');
 
@@ -22,9 +21,9 @@ define([
             $dataHistoryButton.on('click', function(event) {
                 event.preventDefault();
                 if($dataHistoryButton.hasClass('active')) {
-                    publisher.closeDataHistory();
+                    mediator.closeDataHistory();
                 } else {
-                    publisher.openDataHistory();
+                    mediator.openDataHistory();
                 }
             });
         },
