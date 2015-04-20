@@ -1,13 +1,12 @@
 define([
-    './export-picker-toggle-publisher',
     'bootstrap'
-], function(publisher){
+], function(){
 
     var context,
         $button;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $button = context.$('#export-picker-toggle');
 
@@ -23,7 +22,7 @@ define([
             $button.on('click', function(event) {
                 event.preventDefault();
                 if($button.hasClass('active')) {
-                    publisher.closeModal();
+                    mediator.closeModal();
                 } else {
                     exposed.setActive();
                 }
@@ -31,7 +30,7 @@ define([
         },
         setActive: function() {
             if(context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
-                publisher.publishMessage({
+                mediator.publishMessage({
                     "messageType": 'warning',
                     "messageTitle": 'Export',
                     "messageText": 'No data to export.'
@@ -39,14 +38,14 @@ define([
                 //make sure export is defined and that options is not empty
             } else if(!context.sandbox.export || !context.sandbox.export.options ||
                 context.sandbox.utils.isEmptyObject(context.sandbox.export.options)) {
-                publisher.publishMessage({
+                mediator.publishMessage({
                     "messageType": 'warning',
                     "messageTitle": 'Export',
                     "messageText": 'No export options available in the application.'
                 });
             } else {
                 $button.addClass('active');
-                publisher.openModal();
+                mediator.openModal();
             }
         },
         removeActive: function() {
