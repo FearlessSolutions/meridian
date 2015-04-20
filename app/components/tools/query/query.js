@@ -9,11 +9,14 @@ define([
         $maxLat,
         $minLon,
         $minLat,
-        $chkboxBookmark;
+        $chkboxBookmark,
+        isActive;
+
 
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            isActive = false;
             $modal = context.$('#query-modal');
             $minLon = context.$('.query-form #query-location-minLon');
             $minLat = context.$('.query-form #query-location-minLat');
@@ -51,8 +54,7 @@ define([
                         maxLat: maxLat,
                         maxLon: maxLon,
                         pageSize: 300
-                };   
-
+                };
 
                 if(minLon === '' || isNaN(minLon)) {
                     $minLon.parent().addClass('has-error');
@@ -132,6 +134,7 @@ define([
         },
         open: function(params) {
             $chkboxBookmark.prop('checked', false);
+            isActive = true;
             var drawOnDefault = true;
             if(context.sandbox.queryConfiguration && 
                 typeof context.sandbox.queryConfiguration.queryDrawOnDefault !== undefined) {
@@ -150,11 +153,14 @@ define([
             }
         },
         close: function(params) {
+            isActive = false;
             closeMenu();
         },
         bboxAdded: function(params) {
-            $modal.modal('show');
-            exposed.populateCoordinates(params);   
+            if (isActive) {
+                $modal.modal('show');
+                exposed.populateCoordinates(params);
+            };
         },
         populateCoordinates: function(params) {
             $minLon.val(params.minLon);
