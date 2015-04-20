@@ -100,7 +100,6 @@ define([
                 if(errorFree){
                     publisher.closeQueryTool();
                     publisher.executeQuery(queryObject);
-                    //exposed.validateBookmark();
                     exposed.clearQueryForm();
                 } else {
                     publisher.publishMessage({
