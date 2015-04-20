@@ -1,11 +1,14 @@
 define([
-], function () {
+	'./cluster-toggle'
+], function (clusterToggle) {
 
-	var context;
+    var context;
 
 	var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext){
             context = thisContext;
+            context.sandbox.on('notification.confirm', clusterToggle.checkConfirmation);
+            context.sandbox.on('data.clear.all', clusterToggle.clear);
         },
         cluster: function(){
             context.sandbox.emit('map.cluster', {});
@@ -19,7 +22,7 @@ define([
         publishMessage: function(params) {
             context.sandbox.emit('message.publish', params); 
         }
-    };
+    };	
 
     return exposed;
 
