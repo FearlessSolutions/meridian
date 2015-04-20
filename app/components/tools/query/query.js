@@ -170,7 +170,6 @@ define([
                 context.$('#query-name').val('');
                 context.$('#query-justification').val('');
                 context.$('#query-source').val('mock');
-
                 context.$('.has-error').removeClass('has-error');            
         },
         clear: function(){
@@ -192,7 +191,7 @@ define([
         },
         validateBookmark: function(params) {
             if (context.sandbox.dataStorage.datasets[params.layerId].dataService != 'upload'){
-                if ($chkboxBookmark.is(":checked")) {
+                if ($chkboxBookmark.is(':checked')) {
                     publisher.createBookmark(params);
                 }
             };
