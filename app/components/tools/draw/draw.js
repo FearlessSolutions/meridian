@@ -59,9 +59,9 @@ define([
                     }
                 ));
                 publisher.publishMessage({
-                    "messageType": "success",
-                    "messageTitle": "Draw Rectangle",
-                    "messageText": "Coordinates successfully published"
+                    messageType: 'success',
+                    messageTitle: 'Draw Rectangle',
+                    messageText: 'Coordinates successfully published'
                 });
             }
         }
