@@ -1,14 +1,15 @@
 define([
     './fake',
-    './fake-publisher',
-    './fake-subscriber',
-], function (dataServiceFake, dataServiceFakePublisher, dataServiceFakeSubscriber) {
+    './fake-mediator',
+], function (
+    dataServiceFake,  
+    dataServiceFakeMediator
+) {
 
     return {
         initialize: function() {
-            dataServiceFakePublisher.init(this);
-            dataServiceFake.init(this);
-            dataServiceFakeSubscriber.init(this);
+            dataServiceFakeMediator.init(this);
+            dataServiceFake.init(this, dataServiceFakeMediator);
         }
     };
 
