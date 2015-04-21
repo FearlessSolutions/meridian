@@ -7,8 +7,7 @@ define([
     './draw',
     './../map/clustering',
     './heatmap',
-    './../libs/leaflet-src',
-    './../libs/leaflet-featureidgroup-src'
+    './../libs/leaflet-src'
 ], function(
     publisher,
     mapBase,
@@ -57,6 +56,10 @@ define([
                 "map": map
             });
 
+            mapLayers.loadLayerManager({
+                "map": map
+            });
+
             mapNavigation.zoomToExtent({
                 "map": map,
                 "minLon": context.sandbox.mapConfiguration.initialMinLon,
@@ -83,6 +86,10 @@ define([
                 "drawnItemsLayer": drawnItemsLayer
             });
 
+
+            mapLayers.test({
+                "map": map
+            });
             // var someIcon = L.icon({
             //     iconUrl: context.sandbox.mapConfiguration.markerIcons.default.icon,
             //     iconSize: [context.sandbox.mapConfiguration.markerIcons.default.width, context.sandbox.mapConfiguration.markerIcons.default.height],
@@ -98,7 +105,7 @@ define([
             // var buttonStr = "<div class='exportFeature'><button type='submit' class='btn btn-primary'>Delete</button></div>";
             
            
-            // var point1 = L.marker([5,5], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
+            //var point1 = L.marker([5,5], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
             // var point2 = L.marker([6,6], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
             // var point3 = L.marker([6,7], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
             // var point4 = L.marker([7,7], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
@@ -152,6 +159,8 @@ define([
                 // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
 
             //};
+
+        
             
             // query1.addTo(map);
             // //query2.addTo(map);

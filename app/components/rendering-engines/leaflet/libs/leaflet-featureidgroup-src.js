@@ -1,32 +1,42 @@
+(function (window, document, undefined) {
+
 L.FeatureIdGroup = L.FeatureGroup.extend({
 	
-	options: {
-		layerId: 
-	}
-
 	initialize: function(options){
 
+		L.LayerGroup.prototype.initialize.call(this);
+		this._layerById = {};
+		this._featureById = {};
+		this._layerGroup = L.featureGroup();
+		
 	},
 
-	addLayer: function (layer) {
+	addLayer: function (layerId, layer) {
 
-		if (layer instanceof L.LayerGroup) {
-			var array = [];
-			for (var i in layer._layers) {
-				array.push(layer._layers[i]);
-			}
-			return this.addLayers(array);
+		if(layer instanceof L.GeoJSON){
+			console.debug('layer being added is geojson');
+			layer.eachLayer(function(geo){
+				if(geo.feature.geometry.type !== 'Point'){
+					this._featureById[geo.feature.layerId] = geo;	
+				}
+				else{
+					this._featureById[geo.feature.featureId] = geo;
+				}
+				
+			});
+		}
+		else{
+			console.debug('layer not geojson');	
 		}
 
-		if (this.hasLayer(layer)) {
-			return this;
-		}
+		
+		//console.debug('id: ', layerId);
+		//console.debug('layer: ', layer);
+		console.debug('featureIds: ', this._featureById);
 
 		L.FeatureGroup.prototype.addLayer.call(this, layer);
 
-		
 
-		return this
 	},
 
 	removeLayer: function (layer) {
@@ -84,7 +94,9 @@ L.FeatureIdGroup = L.FeatureGroup.extend({
 
 		return bounds;
 	},
+	_addFeatures: function(obj){
 
+	},
 	_propagateEvent: function (e) {
 		e = L.extend({
 			layer: e.target,
@@ -97,3 +109,5 @@ L.FeatureIdGroup = L.FeatureGroup.extend({
 L.featureIdGroup = function (layers) {
 	return new L.FeatureIdGroup(layers);
 };
+
+}(window, document));

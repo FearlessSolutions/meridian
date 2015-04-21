@@ -3,10 +3,11 @@ define([
     './base',
     './../libs/leaflet-src',
     './../libs/markerCluster/leaflet.markercluster-src',
-    './../libs/wmts/leaflet-tilelayer-wmts-src.js'
+    './../libs/wmts/leaflet-tilelayer-wmts-src.js',
+    './../libs/leaflet-featureidgroup-src'
 ], function(publisher, mapBase) {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context, config, drawnItemsLayer, basemapLayers, singlePointLayer, clusterLayers, heatLayers;
+    var context, config, drawnItemsLayer, basemapLayers, singlePointLayer, clusterLayers, heatLayers, allLayers;
 
     var exposed = {
         init: function(thisContext) {
@@ -16,8 +17,12 @@ define([
             singlePointLayer = {};
             clusterLayers = {};
             heatLayers = {};
+            allLayers = new L.FeatureIdGroup();
             config = context.sandbox.mapConfiguration;
 
+        },
+        loadLayerManager: function(params){
+            params.map.addLayer(allLayers);
         },
         plotFeatures: function(params){
             //clusterLayers[params.layerId]        
@@ -43,26 +48,31 @@ define([
                     }
                 });
 
-                if(context.sandbox.stateManager.map.visualMode === 'cluster'){
-                    if(clusterLayers[params.layerId] === 'undefined'){
-                        exposed.createVectorLayer({
-                            'map': params.map,
-                            'layerId': params.layerId
-                        });
-                    }
-                    clusterLayers[params.layerId].addLayer(geo);
-                }
-                else if(context.sandbox.stateManager.map.visualMode === 'heatmap'){//for heatmap
+                console.debug('adding geo: ', geo);
+                
+                
 
-                } else{//for single points
-                    if(singlePointLayer[params.layerId] === 'undefined'){
-                        exposed.createVectorLayer({
-                            'map': params.map,
-                            'layerId': params.layerId
-                        });
-                    }
-                    singlePointLayer[params.layerId].addLayer(geo);
-                }
+
+                // if(context.sandbox.stateManager.map.visualMode === 'cluster'){
+                //     if(clusterLayers[params.layerId] === 'undefined'){
+                //         exposed.createVectorLayer({
+                //             'map': params.map,
+                //             'layerId': params.layerId
+                //         });
+                //     }
+                //     clusterLayers[params.layerId].addLayer(geo);
+                // }
+                // else if(context.sandbox.stateManager.map.visualMode === 'heatmap'){//for heatmap
+
+                // } else{//for single points
+                //     if(singlePointLayer[params.layerId] === 'undefined'){
+                //         exposed.createVectorLayer({
+                //             'map': params.map,
+                //             'layerId': params.layerId
+                //         });
+                //     }
+                //     singlePointLayer[params.layerId].addLayer(geo);
+                // }
 
 
             });
@@ -189,16 +199,18 @@ define([
 
 
             if(context.sandbox.stateManager.map.visualMode === 'cluster'){
-                if(clusterLayers[params.layerId] !== 'undefined'){
-                    clusterLayers[params.layerId] = new L.MarkerClusterGroup({
+                
+                    allLayers.addLayer(
+                        new L.MarkerClusterGroup({
                         maxClusterRadius: config.clustering.thresholds.clustering.distance
-                    }).addTo(params.map);
-                }
+                        });
+                    ); 
+                
 
             } else if( context.sandbox.stateManager.map.visualMode === 'heatmap'){
-                //heatLayers[params.layerId] = 
+                
             } else {
-                singlePointLayer[params.layerId] = new L.featureGroup().addTo(params.map);
+               allLayers.addLayer(new L.featureGroup());
             }
 
             var options,
@@ -514,7 +526,8 @@ define([
             var baseLayer = basemapLayers[params.basemap];
             params.map.addLayer(baseLayer);
             params.map.eachLayer(function (layer){
-                console.debug(layer);
+                //make sure its a tileLayer (contains _url)
+                //make sure the layer to be removed its not the same that was just added. 
                 if(layer._url && (layer._url !== baseLayer._url)){
                     params.map.removeLayer(layer);
                 }
