@@ -121,37 +121,6 @@ define([
                     "readOnly":false
                 }
             },
-             "map.feature.plot": {
-                valid: true,
-                sample: {
-                    "overlayId":"testOverlayId1",
-                    "name":"Test Name 1",
-                    "format":"kml",
-                    "feature": {
-                        "type":"FeatureCollection",
-                        "features":[
-                            {
-                                "type": "Feature",
-                                "geometry": {
-                                    "type": "Point",
-                                    "coordinates": [0.0, 10.0]
-                                },
-                                "properties": {
-                                    "p1": "pp1"
-                                },
-                                "style": {
-                                    "height": 24,
-                                    "width": 24,
-                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-                                }
-                            }
-                        ]
-                    },
-                    "zoom":false,
-                    "readOnly":false
-                }
-            },
             "map.feature.plot.batch": {
                 valid: true,
                 sample: {

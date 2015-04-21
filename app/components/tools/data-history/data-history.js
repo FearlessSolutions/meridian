@@ -285,6 +285,7 @@ define([
             publisher.closeDataHistory();
             publisher.requeryDataset(data);
         });
+
     }
 
     return exposed;
