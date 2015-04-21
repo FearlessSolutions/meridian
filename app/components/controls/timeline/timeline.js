@@ -15,7 +15,7 @@ define([
         init: function(thisContext, thisMediator) {
             context = thisContext;
             mediator = thisMediator;
-            snapshotMenu.init(context);
+            snapshotMenu.init(context, thisMediator);
             snapshotTemplate = Handlebars.compile(snapshotHBS);
             $timeline = context.$('#timeline');
         },
