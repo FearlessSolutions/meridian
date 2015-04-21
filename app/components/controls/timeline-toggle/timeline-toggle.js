@@ -1,12 +1,11 @@
 define([
-    './timeline-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
         $timelineButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $timelineButton = context.$('#timelineToggleButton');
 
@@ -23,9 +22,9 @@ define([
                 event.preventDefault();
 
                 if($timelineButton.hasClass('active')) {
-                    publisher.closeTimeline();
+                    mediator.closeTimeline();
                 } else {
-                    publisher.openTimeline();
+                    mediator.openTimeline();
                 }
             });
             
@@ -34,7 +33,7 @@ define([
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 $timelineButton.addClass('active');
             } else {
-                publisher.publishMessage({
+                mediator.publishMessage({
                     "messageType": "warning",
                     "messageTitle": "Timeline",
                     "messageText": "No data to display in timeline."
