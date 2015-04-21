@@ -148,6 +148,7 @@ define([
 
                 context.sandbox.utils.each(data, function(index, dataEntry) {
                     var now = moment(), //This needs to be done now to prevent race condition later
+                        queryId = dataEntry.queryId,
                         dataDate = moment.unix(dataEntry.createdOn),
                         expireDate = moment.unix(dataEntry.expireOn),
                         disableRequery = false,
@@ -158,7 +159,7 @@ define([
                         return;
                     }
 
-                    if(context.sandbox.stateManager.layers[dataEntry.queryId]){
+                    if(context.sandbox.stateManager.layers[queryId]){
                         disableRestore = true;
                     }
 
@@ -166,9 +167,9 @@ define([
                         disableRequery = true;
                     }
 
-                    currentDataSet[dataEntry.queryId] = dataEntry;
+                    currentDataSet[queryId] = dataEntry;
                     currentDataArray.push({
-                        datasetId: dataEntry.queryId,
+                        datasetId: queryId,
                         dataSessionId: dataEntry.sessionId,
                         dataSource: context.sandbox.dataServices[dataEntry.dataSource].DISPLAY_NAME,
                         dataName: dataEntry.queryName,
@@ -280,24 +281,11 @@ define([
 
     function requeryDataset(datasetId) {
 
-        var newAJAX = context.sandbox.utils.ajax({
-                type: 'GET',
-                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + datasetId,
-                xhrFields: {
-                    withCredentials: true
-                }
-            })
-            .done(function(data) {
-               //close data history table
-               publisher.closeDataHistory();
+        context.sandbox.dataStorage.getMetadataById(datasetId, function(data) {
+            publisher.closeDataHistory();
+            publisher.requeryDataset(data);
+        });
 
-               //publish query data to be requeried
-               publisher.requeryDataset({
-                    queryName: data.rawQuery.queryName,
-                    queryData: data.rawQuery,
-                    querySource: data.dataSource
-                });
-            });
     }
 
     return exposed;
