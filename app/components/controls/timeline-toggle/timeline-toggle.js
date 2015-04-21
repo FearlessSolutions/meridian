@@ -2,11 +2,13 @@ define([
     'bootstrap'
 ], function () {
     var context,
+        mediator,
         $timelineButton;
 
     var exposed = {
-        init: function(thisContext, mediator) {
+        init: function(thisContext,  thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $timelineButton = context.$('#timelineToggleButton');
 
             //Activate bootstrap tooltip. 

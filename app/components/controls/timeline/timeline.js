@@ -1,19 +1,20 @@
 define([
-    './timeline-publisher',
     'text!./snapshot.hbs',
     './snapshot-menu',
     'bootstrap',
     'handlebars'
-], function (publisher, snapshotHBS, snapshotMenu) {
+], function (snapshotHBS, snapshotMenu) {
     var context,
+        mediator,
         snapshotTemplate,
         $timeline,
         stopTimelinePlayback = true,
         timer;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             snapshotMenu.init(context);
             snapshotTemplate = Handlebars.compile(snapshotHBS);
             $timeline = context.$('#timeline');
@@ -30,7 +31,7 @@ define([
 
                     thumnailURL = context.sandbox.snapshot.thumbnailURL(coords);
 
-                    publisher.createLayer({
+                    mediator.createLayer({
                         layerId: layerId + '_aoi',
                         name: name + '_aoi',
                         initialVisibility: true,
@@ -45,12 +46,12 @@ define([
                         }
                     });
 
-                    publisher.setLayerIndex({
+                    mediator.setLayerIndex({
                         layerId: layerId + '_aoi',
                         layerIndex: 0
                     });
 
-                    publisher.plotFeatures({
+                    mediator.plotFeatures({
                         layerId: layerId + '_aoi',
                         data: [{
                             layerId: layerId + '_aoi',
@@ -83,7 +84,7 @@ define([
 
                 context.$('#timeline-container').append(snapshotHTML);
                 exposed.showTimeline();
-                publisher.openTimeline();
+                mediator.openTimeline();
 
                 snapshotMenu.createMenu({'layerId': layerId});
 
@@ -130,7 +131,7 @@ define([
 		clear: function() {
 			context.$('#timeline-container').html('');
             $timeline.hide();
-            publisher.closeTimeline();
+            mediator.closeTimeline();
 		},
         updateCount: function(params) {
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
@@ -260,7 +261,7 @@ define([
                         i++;
                     } else {
                         if(!context.sandbox.dataStorage.datasets[tempArray[i]]) {
-                            publisher.stopPlayback({status: 'Finished'});
+                            mediator.stopPlayback({status: 'Finished'});
                         }
                         clearInterval(timer);
                         context.$('#snapshot-' + tempArray[i-1]).removeClass('selected');
@@ -345,39 +346,39 @@ define([
         },
         showDataLayer: function(params) { //TODO this needs to be cleaned up. No reason to have multiple instnaces of the same logic.
             context.sandbox.stateManager.layers[params.layerId].visible = true;
-            publisher.showLayer({layerId: params.layerId});
+            mediator.showLayer({layerId: params.layerId});
         },
         hideDataLayer: function(params) { //TODO this needs to be cleaned up. No reason to have multiple instnaces of the same logic.
             context.sandbox.stateManager.layers[params.layerId].visible = false;
-            publisher.hideLayer({layerId: params.layerId});
+            mediator.hideLayer({layerId: params.layerId});
         },
         deleteDataLayer: function(params) { //TODO this needs to be cleaned up. No reason to have multiple instnaces of the same logic.
             //delete data from datastorage.
             delete context.sandbox.dataStorage.datasets[params.layerId];
-            publisher.publishMessage({ // TODO: move to mock after the delete call is moved out of here
+            mediator.publishMessage({ // TODO: move to mock after the delete call is moved out of here
                 messageType: 'success',
                 messageTitle: 'Data Service',
                 messageText: 'Layer successfully removed'
             });
-            publisher.deleteLayer({layerId: params.layerId});
+            mediator.deleteLayer({layerId: params.layerId});
         },
         showAOILayer: function(params) {
             if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
                 context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
-                publisher.showLayer({layerId: params.layerId + '_aoi'});
+                mediator.showLayer({layerId: params.layerId + '_aoi'});
             }
         },
         hideAOILayer: function(params) {
             if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
                 context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
-                publisher.hideLayer({layerId: params.layerId + '_aoi'});
+                mediator.hideLayer({layerId: params.layerId + '_aoi'});
             }
         },
         deleteAOILayer: function(params) {
             var layerId = params.layerId;
 
             delete context.sandbox.stateManager.layers[layerId + '_aoi'];
-            publisher.deleteLayer({layerId: layerId + '_aoi'});
+            mediator.deleteLayer({layerId: layerId + '_aoi'});
         },
         layerToggleOn: function(params) {
             var $querySnapshot = context.$('#snapshot-' + params.layerId);
@@ -424,7 +425,7 @@ define([
             //hide timeline if no other layers are present.
             if(context.sandbox.utils.size(context.sandbox.dataStorage.datasets) === 0) {
                 exposed.hideTimeline();
-                publisher.closeTimeline();
+                mediator.closeTimeline();
             }
         },
         validateBookmark: function(params){

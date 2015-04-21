@@ -1,8 +1,7 @@
 define([
     'text!./visual-mode-toggle-notification.hbs',
-    './visual-mode-toggle-publisher',
     'bootstrap'
-], function (notificationHBS, publisher) {
+], function (notificationHBS) {
     var context,
         targetVisualMode,
         currentVisualMode,
@@ -13,7 +12,7 @@ define([
         CONTROL_DESIGNATION = 'visual-mode-toggle';
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             notificationTemplate = Handlebars.compile(notificationHBS);
 
@@ -62,14 +61,14 @@ define([
                 exposed.setVisualMode();
 
                 if(countVisiblePoints() > MAX_VISIBLE) {
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         "messageType": "warning",
                         "messageTitle": "Visual Mode",
                         "messageText": "Unsafe to view in individual feature mode"
                     });    
                 }
             } else {
-                publisher.publishNotification({
+                mediator.publishNotification({
                     "origin": CONTROL_DESIGNATION,
                     "body": notificationTemplate()
                 });
@@ -87,7 +86,7 @@ define([
             $target.addClass('active');
             $target.attr('data-visual-mode');
             context.sandbox.stateManager.map.visualMode = targetVisualMode;
-            publisher.setVisualMode({'mode': targetVisualMode});
+            mediator.setVisualMode({'mode': targetVisualMode});
             currentVisualMode = targetVisualMode;
         },
         clear: function() {

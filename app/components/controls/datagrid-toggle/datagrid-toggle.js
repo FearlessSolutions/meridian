@@ -2,11 +2,13 @@ define([
     'bootstrap'
 ], function () {
     var context,
+        mediator,
         $dataGridToggleButton;
 
     var exposed = {
-        init: function(thisContext, mediator) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $dataGridToggleButton = context.$('#dataGridToggleButton');
 
             //Activate bootstrap tooltip. 

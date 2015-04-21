@@ -3,11 +3,13 @@ define([
 ], function(){
 
     var context,
+        mediator,
         $button;
 
     var exposed = {
-        init: function(thisContext, mediator) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $button = context.$('#export-picker-toggle');
 
             //Activate bootstrap tooltip. 
