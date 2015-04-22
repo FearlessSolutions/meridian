@@ -5,7 +5,7 @@ define([
     './event-counter-mediator',
     'handlebars'
 ], function (
-    ventCountToolCSS, 
+    eventCountToolCSS, 
     eventCountToolHBS, 
     eventCountTool, 
     eventCountToolMediator

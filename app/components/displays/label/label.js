@@ -5,8 +5,9 @@ define([
     var context;
 
 	var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             context.$("#labelContainer").draggable({ handle: ".dialog-header" });
         },
         createLabel: function(params) {
