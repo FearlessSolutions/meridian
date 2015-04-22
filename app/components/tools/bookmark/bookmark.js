@@ -1,12 +1,12 @@
 define([
-    './bookmark-publisher',
     'text!./bookmark-entry.hbs',
     'bootstrap',
     'handlebars',
     'moment'
-], function (publisher, bookmarkEntryHBS) {
+], function (bookmarkEntryHBS) {
 
     var context,
+        mediator,
         bookmarkEntryTemplate,
         $bookmarkModal,
         $bookmarkModalBody,
@@ -16,8 +16,9 @@ define([
         bmData;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
 
             bookmarkEntryTemplate = Handlebars.compile(bookmarkEntryHBS);
             $bookmarkModal = context.$('#bookmark-modal');
@@ -31,12 +32,12 @@ define([
                 "keyboard": true,
                 "show": false
              }).on('hidden.bs.modal', function() {
-                publisher.closeBookmark();
+                mediator.closeBookmark();
              });
 
             $bookmarkCloseButton.on('click', function(event) {
                 event.preventDefault();
-                publisher.closeBookmark();
+                mediator.closeBookmark();
             });
         },
         openBookmark: function() {
@@ -46,8 +47,8 @@ define([
                 exposed.updateBookmarks();
                 $bookmarkModal.modal('show');
             } else {
-                publisher.closeBookmark();
-                publisher.publishMessage( {
+                mediator.closeBookmark();
+                mediator.publishMessage( {
                     messageType: 'warning',
                     messageTitle: 'Bookmarks',
                     messageText: 'No data to display in table'
@@ -68,7 +69,7 @@ define([
                 storedBookmarks = {};
             };
             if(bookmarkId in storedBookmarks) {
-                publisher.publishMessage({
+                mediator.publishMessage({
                     "messageType": "warning",
                     "messageTitle": "Bookmarks",
                     "messageText": "Bookmark already exists"
@@ -91,7 +92,7 @@ define([
                     };
                     context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
 
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         "messageType": "success",
                         "messageTitle": "Bookmarks",
                         "messageText": "Bookmark successfully created"
@@ -116,13 +117,13 @@ define([
             context.$('.bookmark-list .data-action-jump').on('click', function(event) {
                 var selectedBMId = context.$(this).parent().parent().data('bmid');
                 var storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
-                publisher.jumpToBookmark({
+                mediator.jumpToBookmark({
                     minLon: storedBookmarks[selectedBMId].minLon,
                     minLat: storedBookmarks[selectedBMId].minLat,
                     maxLon: storedBookmarks[selectedBMId].maxLon,
                     maxLat: storedBookmarks[selectedBMId].maxLat
                 });
-                publisher.closeBookmark();
+                mediator.closeBookmark();
             });
             context.$('.bookmark-list .data-action-edit').on('click', function(event) {
                 var $origName = context.$(this).parent().parent().children('.data-name').children('input').val();
@@ -144,7 +145,7 @@ define([
                 if (e.keyCode === 13) {
                     if (context.$(this).val() == '') {
                         // add error class to input here later
-                        publisher.publishMessage( {
+                        mediator.publishMessage( {
                             messageType: 'error',
                             messageTitle: 'Bookmarks',
                             messageText: 'Bookmark name must have at least one character'
@@ -193,7 +194,7 @@ define([
         delete storedBookmarks[bookmarkId];
         context.sandbox.utils.preferences.set('storedBookmarks', storedBookmarks);
 
-        publisher.publishMessage( {
+        mediator.publishMessage( {
             messageType: 'success',
             messageTitle: 'Bookmarks',
             messageText: 'Bookmark successfully removed'
