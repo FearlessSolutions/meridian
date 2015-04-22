@@ -12,7 +12,7 @@ define([
             iframeSrc = $('iframe').prop('src');
 
             var pubChannels = config.channels,
-                $pubSelector = $("#pub-channel");
+                $pubSelector = $('#pub-channel');
 
             for(var channel in pubChannels){
                 var valid = pubChannels[channel].valid;
@@ -25,23 +25,23 @@ define([
                 html += ">" + channel + "</option>";
                 $pubSelector.append(html);
             }
-            $pubSelector.on("change", function(e){
+            $pubSelector.on('change', function(e){
                 var channel = this.selectedOptions[0].value,
-                    sample = JSON.stringify(pubChannels[channel].sample, null, "  ") || '';
+                    sample = JSON.stringify(pubChannels[channel].sample, null, '  ') || '';
 
-                if($(this.selectedOptions[0]).hasClass("has-error")){
-                    $(this).parent().addClass("has-error");
+                if($(this.selectedOptions[0]).hasClass('has-error')){
+                    $(this).parent().addClass('has-error');
                 }else{
-                    $(this).parent().removeClass("has-error");
+                    $(this).parent().removeClass('has-error');
                 }
 
-                $("#pub-message").val(sample);
+                $('#pub-message').val(sample);
             });
             $pubSelector.change(); //check if starting on error
 
-            $("#pub-button").on("click", function(){
-                var channel = $("#pub-channel").val(),
-                    message = $("#pub-message").val();
+            $('#pub-button').on('click', function(){
+                var channel = $('#pub-channel').val(),
+                    message = $('#pub-message').val();
 
                 sendMessage(channel, message);
             });
@@ -49,9 +49,6 @@ define([
     };
 
     return exposed;
-
-
-
 
     function sendMessage(channel, message){
         var toSend = {
