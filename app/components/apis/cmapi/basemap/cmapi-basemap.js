@@ -1,6 +1,6 @@
 define([
-	'./cmapi-basemap-publisher'
-], function (publisher) {
+	'./cmapi-basemap-mediator'
+], function (mediator) {
 	var context,
         sendError;
 
@@ -8,7 +8,7 @@ define([
         init: function(thisContext, errorChannel) {
             context = thisContext;
             sendError = errorChannel;
-            publisher.init(context);
+            mediator.init(context);
         },
         receive: function(channel, message) {
             if(receiveChannels[channel]) {
@@ -45,7 +45,7 @@ define([
             }
 
             if(basemapExists){
-                publisher.changeBasemap({
+                mediator.changeBasemap({
                     basemap: basemapId
                 });
             } else {
