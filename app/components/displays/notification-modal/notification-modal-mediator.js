@@ -9,6 +9,9 @@ define([
             context = thisContext;
             context.sandbox.on('notification.open', notificationModal.open);
             context.sandbox.on('data.clear.all', notificationModal.clear);
+        },
+        publishConfirmation: function(params) {
+            context.sandbox.emit('notification.confirm', params); 
         }
     };	
 
