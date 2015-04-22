@@ -1,10 +1,17 @@
 define([
-], function () {
-	var context;
+	'./upload-data'
+], function (component) {
+    var context;
 
 	var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext){
             context = thisContext;
+            context.sandbox.on('query.stop', component.stopQuery);
+            context.sandbox.on('data.clear.all', component.clear);
+            context.sandbox.on('tool.upload.show', component.show);
+            context.sandbox.on('tool.upload.hide', component.hide);
+            context.sandbox.on('tool.upload.hide', component.resetFields);
+            context.sandbox.on('data.restore', component.restoreDataset);
         },
         createLayer: function(params){
             context.sandbox.emit('map.layer.create', params);
@@ -36,7 +43,7 @@ define([
         closeUploadTool: function(){
             context.sandbox.emit('tool.upload.hide');
         }
-    };
+    };	
 
     return exposed;
 });
