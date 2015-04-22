@@ -2,31 +2,26 @@ define([
     'text!./export-picker.css',
     'text!./export-picker.hbs',
     './export-picker',
-    './export-picker-publisher',
-    './export-picker-subscriber',
+    './export-picker-mediator',
     'handlebars'
 ], function (
-    componentCSS,
-    componentHBS,
-    component,
-    publisher,
-    subscriber
+    exportPickerCSS,
+    exportPickerHBS,
+    exportPicker,
+    exportPickeMediator
 ) {
     var COMPONENT_NAME = 'tools-export-picker';
 
     return {
         initialize: function() {
-            var template = Handlebars.compile(componentHBS);
+            var template = Handlebars.compile(exportPickerHBS);
 
-            this.sandbox.utils.addCSS(componentCSS, COMPONENT_NAME + '-style');
+            this.sandbox.utils.addCSS(exportPickerCSS, COMPONENT_NAME + '-style');
 
-            this.html(template({
-                exports: this.sandbox.export.options
-            }));
+            this.html(template({exports: this.sandbox.export.options}));
 
-            publisher.init(this);
-            component.init(this);
-            subscriber.init(this);
+            exportPickeMediator.init(this);
+            exportPicker.init(this, exportPickeMediator);
         }
     };
 

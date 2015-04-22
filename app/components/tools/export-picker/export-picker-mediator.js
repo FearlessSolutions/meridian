@@ -1,10 +1,15 @@
 define([
-], function () {
-	var context;
+	'./export-picker'
+], function (component) {
+    var context;
 
 	var exposed = {
         init: function(thisContext) {
             context = thisContext;
+
+            context.sandbox.on('export.picker.close', component.close);
+            context.sandbox.on('export.picker.open', component.open);
+            context.sandbox.on('data.clear.all', component.clear);
         },
         publishMessage: function(params){
             context.sandbox.emit('message.publish', params);
@@ -21,7 +26,7 @@ define([
         export: function(params){
             context.sandbox.emit(params.channel, params);
         }
-    };
+    };	
 
     return exposed;
 });
