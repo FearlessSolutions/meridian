@@ -26,7 +26,7 @@ node_modules
 data/
 
 # Certificates
-#server/certs/
+server/certs/
 
 # Logs
 *.log
