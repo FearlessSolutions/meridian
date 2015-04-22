@@ -25,5 +25,8 @@ node_modules
 ## Elastic Search Data Storage
 data/
 
+# Certificates
+server/certs/
+
 # Logs
 *.log
