@@ -10,6 +10,9 @@ define([
             context.sandbox.on('map.legend.show', legend.show);
             context.sandbox.on('map.legend.hide', legend.hide);
             context.sandbox.on('data.clear.all', legend.clear);
+        },
+        hideLegend: function(params) {
+            context.sandbox.emit('map.legend.hide', params);
         }
     };	
 

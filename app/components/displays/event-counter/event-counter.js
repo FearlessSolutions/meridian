@@ -2,6 +2,7 @@ define([
     'bootstrap'
 ], function () {
     var context,
+        mediator,
         countPerQuery = {},
         displayedCount,
         totalCount,

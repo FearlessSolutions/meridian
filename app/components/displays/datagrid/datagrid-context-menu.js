@@ -3,6 +3,7 @@ define([
     'handlebars'
 ], function (menuRowHBS) {
     var context,
+        mediator,
         $menu,
         template,
         HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN';
