@@ -1,10 +1,12 @@
 define([
-], function () {
-	var context;
+	'./locator'
+], function (component) {
+    var context;
 
 	var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext){
             context = thisContext;
+            context.sandbox.on('data.clear.all', component.clear);
         },
         markLocation: function(params){
             context.sandbox.emit('map.features.plot', params); 
@@ -21,7 +23,7 @@ define([
         zoomToLocation: function(params){
             context.sandbox.emit('map.zoom.toLocation',params);
         }
-    };
+    };	
 
     return exposed;
 });
