@@ -1,16 +1,16 @@
 define([
-    './datagrid-publisher',
     'text!./datagrid-context-menu-row.hbs',
     'handlebars'
-], function (publisher, menuRowHBS) {
+], function (menuRowHBS) {
     var context,
         $menu,
         template,
         HIDDEN_PROPERTY = 'MERIDIAN_HIDDEN';
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             template = Handlebars.compile(menuRowHBS);
             $menu = context.$('#menu');
             $menu.hide();
