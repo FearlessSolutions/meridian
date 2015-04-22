@@ -2,10 +2,14 @@ define([
     'text!./query.css', 
     'text!./query.hbs',
     './query',
-    './query-publisher',
-    './query-subscriber',
+    './query-mediator',
     'handlebars'
-], function (queryToolCSS, queryToolHBS, queryTool, queryToolPublisher, queryToolSubscriber) {
+], function (
+    queryToolCSS, 
+    queryToolHBS, 
+    queryTool, 
+    queryToolMediator
+) {
 
     return {
         initialize: function() {
@@ -15,9 +19,8 @@ define([
             var html = queryToolTemplate({datasources: this.sandbox.datasources});
             this.html(html);
 
-            queryToolPublisher.init(this);
-            queryTool.init(this);
-            queryToolSubscriber.init(this);
+            queryToolMediator.init(this);
+            queryTool.init(this, queryToolMediator);
         }
     };
                 
