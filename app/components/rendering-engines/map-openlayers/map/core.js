@@ -110,6 +110,14 @@ define([
             });
         },
         /**
+         * Zoom to Max Extent
+         */
+        zoomToMaxExtent: function() {
+            mapNavigation.zoomToMaxExtent({
+                "map": map
+            });
+        },
+        /**
          * Zoom in to Layer
          * @param {object} params - JSON parameters
          * @param {string} params.layerId - id of layer
@@ -169,10 +177,16 @@ define([
         /**
          * Clear Features on Static Drawing Layer
          */
+        deactivateDrawing: function() {
+            mapDraw.deactivateDrawing({
+                map: map,
+                layerId: "static_draw"
+            });
+        },
         clearDrawing: function() {
             mapDraw.clearDrawing({
-                "map": map,
-                "layerId": "static_draw"
+                map: map,
+                layerId: "static_draw"
             });
         },
         /**

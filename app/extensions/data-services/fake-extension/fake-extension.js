@@ -49,7 +49,7 @@ define([
                             exports: config.exports
                         });
                     },
-                    postRenderingAction: function(feature, layerId) {                        
+                    postRenderingAction: function(feature, layerId) {
                         $('.' + config.namespace + ' .infoDiv .exportFeature .btn').on('click', function(){
                             //emiting message to open export picker.
                             context.sandbox.emit('export.picker.open', {

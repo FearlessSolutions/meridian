@@ -1,41 +1,40 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>Meridian Admin</title>
-    <link rel="stylesheet" href="/../../libs/bootstrap-3.2.0/css/bootstrap.css">
-    <link rel="stylesheet" href="/../../libs/bootstrap-daterangepicker-master/daterangepicker-bs3.css">
+    <head>
+        <meta charset="utf-8">
+        <title>Meridian Admin</title>
+        <link rel="stylesheet" href="/libs/bootstrap-3.2.0/css/bootstrap.css">
+        <link rel="stylesheet" href="/libs/bootstrap-daterangepicker-master/daterangepicker-bs3.css">
 
-    <link rel="stylesheet" href="./main-overide.css">
-    <script data-main="../../app" src="/../../bower_components/requirejs/require.js"></script>
-</head>
-<body>
-    <div id="admin-container">
-        <nav class="navbar navbar-admin" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
+        <link rel="stylesheet" href="./main-overide.css">
+        <script data-main="./app" src="/bower_components/requirejs/require.js"></script>
+    </head>
+    <body>
+        <div id="admin-container">
+            <nav class="navbar navbar-admin" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
 
-                    <a class="navbar-brand" href="#">
-                        <div class="wrapper_img">
-                            <img src="../../docs/meridian/images/logos/meridthumb.png" alt="Admin Dashboard">
+                        <a class="navbar-brand" href="#">
+                            <div class="wrapper_img">
+                                <img src="../../docs/meridian/images/logos/meridthumb.png" alt="Admin Dashboard">
+                            </div>
+                            <div class="wrapper_hlabel">Administrative Dashboard</div>
+                        </a>
+                    </div>
+                    <div class="container-login">
+                        <div class="wrapper_login">
+                            <div data-aura-component="displays/user-info"></div>
+                            <p class="navbar-text">Signed in as</p>
                         </div>
-                        <div class="wrapper_hlabel">Administrative Dashboard</div>
-                    </a>
-                </div>
-                <div class="container-login">
-                    <div class="wrapper_login">
-                        <div data-aura-component="displays/user-info"></div>
-                        <p class="navbar-text">Signed in as</p>
                     </div>
                 </div>
-            </div>
-        </nav>        
-        
-        <div data-aura-component="admin/search"></div>      
+            </nav>
 
-        <div data-aura-component="admin/admingrid"></div>
+            <div data-aura-component="admin/search"></div>
 
-    </div>
-    
-</body>
+            <div data-aura-component="admin/admingrid"></div>
+        </div>
+
+    </body>
 </html>

@@ -8,8 +8,10 @@ define([
     './overlay/cmapi-overlay',
     './feature/cmapi-feature',
     './status/cmapi-status',
-    './clear/cmapi-clear'
-], function(basemap, view, overlay, feature, status, clear) {
+    './clear/cmapi-clear',
+    './cmapi-subscriber',
+    'togeojson'
+], function(basemap, view, overlay, feature, status, clear, subscriber) {
     var context,
         processing = {};
 
@@ -27,6 +29,8 @@ define([
             view.init(context, sendError);
             clear.init(context, sendError);
 
+            subscriber.init(context);
+
             context.sandbox.external.onPostMessage(receive);
 
             processing.basemap = basemap;
@@ -37,7 +41,6 @@ define([
             processing.clear = clear;
         }
     };
-
 
     /**
      * Takes in the message and tries to parse it.
@@ -50,7 +53,7 @@ define([
             message;
 
         if(channel && typeof channel === 'string') {
-            category = channel.split('.')[1]; //0 is always "map"
+            category = channel.split('.')[1]; //0 is always "messageap"
             message = e.data.message;
 
             //Check to see if we are the origin (we sent it, so it is already a JSON object)
@@ -66,39 +69,28 @@ define([
                     if(!message.origin) {
                         message.origin = context.sandbox.cmapi.defaultLayerId;
                     }
-                    /* //TODO this is for handling kml also; not doing right now
-                    var split = message.split('<');
-                    if(split.length > 1){                    
-                        message = split.shift();
-                        var kml = '';
 
-                        while(split.length > 1){
-                            kml += '<' + split.shift();
+                    if(message.format && message.format === 'kml'){ 
+                        try{
+                            //need to convert kml features of payload to geojson
+                            var domParser=new DOMParser(); //putting KML in DOM for proper parsing by togeojson
+                            var kmlDoc=domParser.parseFromString(message.feature,"text/xml");
+                            message.feature = toGeoJSON.kml(kmlDoc);
+                        }catch(parseKMLerror){
+                            console.debug(parseKMLerror);
+                            sendError(channel, message, 'Failure parsing geoJSON message');
                         }
-
-                        var end = split[0].split('>');
-                        kml += '<' + end[0] + '>';
-                        message += end[1];
-
-                        message = JSON.parse(message);
-
-                        message.feature = kml;
-                        message.format = 'kml';
-                    }else{
-                        message = JSON.parse(message);    
-                    }  
-                
-                    if(!message.origin){
-                        message.origin = 'cmapi';
-                    }*/
+                    }
                 }            
-            } catch(parseE) {
-                console.debug(parseE);
-            } //This might not be an actual error?
-
+            }catch(parseJSONError) {
+                console.debug(parseJSONError);
+                sendError(channel, message, 'Failure parsing geoJSON message');
+            }            
             if(processing[category]) {
                 processing[category].receive(channel, message);
-            } else {} //Error?
+            } else {
+                sendError(channel, message, 'Failure processing message - channel does not exsist');
+            }
         }
     }
 
@@ -128,19 +120,5 @@ define([
         emit('map.error', payload);
     }
 
-
     return exposed;
-
-    /* //TODO this is for KML; not using right now; might use in the future?
-    function parseXMLString(text){//TODO move to Utils?
-        if (window.DOMParser){
-            var parser = new DOMParser();
-            return parser.parseFromString(text, 'text/xml');
-        }
-        else{ // Internet Explorer
-            var xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
-            xmlDoc.async = false;
-            return xmlDoc.loadXML(text); 
-        }
-    }*/
 });

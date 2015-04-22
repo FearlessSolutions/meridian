@@ -330,6 +330,18 @@
         return n===0 || n<=9 ? '0'+n: ''+n; 
     };
 
+    var alwaysThreeDigit = function(n){
+        if(n < 10){
+            return '00' + n;
+        }else if(n < 100) {
+            return '0' + n;
+        }else if(n === 0){
+             return '000';
+        }else {
+            return n;
+        }
+    };
+
     //Make sure the MGRS numbers dont contain a fractional part, are an even number of digits.
     var validateMgrsLocationNumbers = function(functionName, mgrsNumbers){
         if(mgrsNumbers.split('.').length > 1){
@@ -380,9 +392,8 @@
 
         precision = precision ? precision : 5;
 
-
-        lat = parseFloat(lat);
-        lon = parseFloat(lon);
+        lat = (typeof lat === 'string') ? parseFloat(lat) : lat;
+        lon = (typeof lon === 'string') ? parseFloat(lon) : lon;
 
         // convert lat/lon to UTM coordinates
         // its easier to pass an object to the utm functions.
@@ -444,8 +455,8 @@
             throw new Error('ddToUtm(): Missing arguments. Required: lat,lon,output.');
         }
 
-        lat = parseFloat(lat);
-        lon = parseFloat(lon);
+        lat = (typeof lat === 'string') ? parseFloat(lat) : lat;
+        lon = (typeof lon === 'string') ? parseFloat(lon) : lon;
 
         // Constrain reporting USNG coords to the latitude range [80S .. 84N]
         if (lat > 84.0 || lat < -80.0) {
@@ -591,12 +602,14 @@
         latMin = Math.floor(lat * 60);
         lat -= latMin / 60;
         latSec = Math.round((lat * 3600) * magic) / magic;
+        latSec = latSec.toFixed(digits);
 
         lonDeg = Math.floor(lon);
         lon -= lonDeg;
         lonMin = Math.floor(lon * 60);
         lon -= lonMin / 60;
         lonSec = Math.round((lon * 3600) * magic) / magic;
+        lonSec = lonSec.toFixed(2);
 
         if(typeof output === 'string' && output.toLowerCase() === 'object'){
            dms = {
@@ -619,7 +632,7 @@
             //     longitude: lonDeg + '°' + lonMin + '\'' + lonSec + '"' + lonDir
             // };
             dms = alwaysTwoDigit(latDeg)+alwaysTwoDigit(latMin)+alwaysTwoDigit(latSec)+latDir + ', '
-                + alwaysTwoDigit(lonDeg)+alwaysTwoDigit(lonMin)+alwaysTwoDigit(lonSec)+lonDir;
+                + alwaysThreeDigit(lonDeg)+alwaysTwoDigit(lonMin)+alwaysTwoDigit(lonSec)+lonDir;
         } else{
              throw new Error("ddToDms(): Incorrect output type specified. Required: string or object.");
         }
@@ -835,12 +848,14 @@
 
         lon = lonOrigin + lon * RAD_2_DEG;
 
-        // number that helps us round off un-needed digits
-        roundingNumber = Math.pow(10, precision);
+        if(precision !== null){
+            // number that helps us round off un-needed digits
+            roundingNumber = Math.pow(10, precision);
 
-        //cut of decimal places based on precision.
-        lat = Math.round(lat*roundingNumber)/roundingNumber;
-        lon = Math.round(lon*roundingNumber)/roundingNumber;
+            //cut of decimal places based on precision.
+            lat = Math.round(lat*roundingNumber)/roundingNumber;
+            lon = Math.round(lon*roundingNumber)/roundingNumber;
+        }
 
         if (typeof output === 'string' && output.toLowerCase() === 'object'){
             dd = {};
@@ -898,7 +913,7 @@
         //if no digit is provided, set digits to 2.
         digits = digits ? digits: 2;
 
-        var dd = cc.utmToDd(UTMZone, UTMEasting, UTMNorthing, 'object', 2);
+        var dd = cc.utmToDd(UTMZone, UTMEasting, UTMNorthing, 'object');
 
         return cc.ddToDms(dd.lat, dd.lon, output, digits);
     };
@@ -923,7 +938,7 @@
      * @param precision - Optional decimal precision, (String or Numeric). Default 2.
      * @return Depends on output parameter (Object or a String).
      */
-    cc.dmsToDd = function(lat, lon, output, precision){
+    cc.dmsToDd = function(lat, lon, output){
         var north = lat.match(/^\d{6,7}(\.\d+)?[Nn]/),
             south = lat.match(/^\d{6,7}(\.\d+)?[Ss]/),
             west = lon.match(/^\d{6,7}(\.\d+)?[Ww]$/),
@@ -942,13 +957,6 @@
         if(typeof west === 'undefined' && typeof east === 'undefined'){
              throw new Error('dmsToDd(): Missing W or E direction in lon param.');
         }
-        if (typeof precision === 'string') {
-            precision = parseInt(precision, 10);
-        }
-
-        //if no precision is provided, set precision to 2.
-        precision = precision ? precision: 2;
-
 
         if(north){
             lat = dmsToDecimal(north[0].substring(0, north[0].length - 1));
@@ -1022,7 +1030,7 @@
 
         precision = precision ? precision: 5;
 
-        dd = cc.dmsToDd(lat, lon, 'object', 2);
+        dd = cc.dmsToDd(lat, lon, 'object');
 
         return cc.ddToMgrs(dd.lat, dd.lon, output, precision);
     };
@@ -1072,7 +1080,7 @@
             throw new Error("dmsToUtm(): Incorrect output type specified. Required: string or object.");
         }
 
-        dd = cc.dmsToDd(lat, lon, 'object', 2);
+        dd = cc.dmsToDd(lat, lon, 'object');
 
         return cc.ddToUtm(dd.lat, dd.lon, output, zone);
     };

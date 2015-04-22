@@ -28,7 +28,8 @@ define([
         stopQuery: function(params) {
             var layerState,
                 dataTransferState,
-                dataset = context.sandbox.dataStorage.datasets[params.layerId];
+                queryId = params.layerId,
+                dataset = context.sandbox.dataStorage.datasets[queryId];
 
             //If the query is not related to this datasource, ignore
             if(dataset && dataset.dataService !== DATASOURCE_NAME){
@@ -36,26 +37,26 @@ define([
             }
 
             context.sandbox.ajax.stopQuery({
-                layerId: params.layerId
+                layerId: queryId
             });
 
             // Handle notifcations and state
-            layerState = context.sandbox.stateManager.getLayerStateById({"layerId": params.layerId});
+            layerState = context.sandbox.stateManager.getLayerStateById({layerId: queryId});
             if(layerState) {
                 // Check state manager for status of layer, if already stopped or finished don't publish message or change state
                 dataTransferState = layerState.dataTransferState;
 
                 if(dataTransferState !== 'stopped' && dataTransferState !== 'finished') {
                     publisher.publishMessage({
-                        messageType: "warning",
-                        messageTitle: "Data Service",
-                        messageText: "Query data transfer was stopped."
+                        messageType: 'warning',
+                        messageTitle: 'Data Service',
+                        messageText: 'Query data transfer was stopped.'
                     });
 
                     publisher.removeFromProgressQueue();
 
                     context.sandbox.stateManager.setLayerStateById({
-                        layerId: params.layerId,
+                        layerId: queryId,
                         state: {
                             dataTransferState: 'stopped'
                         }
@@ -79,7 +80,9 @@ define([
             // delete context.sandbox.dataStorage.datasets[params.layerId]; // TODO: like the clear above, use a method on dataStorage to delete layer instead of calling a delete directly
         },
         restoreDataset: function(params) {
-            var queryName,
+            var queryName = params.queryName,
+                queryId = params.queryId,
+                bbox = params.queryBbox,
                 minLat,
                 maxLat,
                 minLon,
@@ -88,39 +91,51 @@ define([
 
             //If the query is not related to this datasource, ignore
             if(params.dataSource === DATASOURCE_NAME) {
+                if(!context.sandbox.dataStorage.datasets[queryId]) {
+                    if(bbox){
+                        minLat = bbox.minLat;
+                        maxLat = bbox.maxLat;
+                        minLon = bbox.minLon;
+                        maxLon = bbox.maxLon;
+                    }else {
+                        minLat = null;
+                        maxLat = null;
+                        minLon = null;
+                        maxLon = null;
+                    }
 
-                queryName = params.queryName;
-
-                if(!context.sandbox.dataStorage.datasets[params.queryId]) {
-
-                    minLat = params.queryBbox ? params.queryBbox.bottom : null;
-                    maxLat = params.queryBbox ? params.queryBbox.top : null;
-                    minLon = params.queryBbox ? params.queryBbox.left : null;
-                    maxLon = params.queryBbox ? params.queryBbox.right : null;
-
-                    createLayer({queryId: params.queryId, name: queryName,
-                        minLat: minLat, minLon: minLon, maxLat: maxLat, maxLon: maxLon});
+                    createLayer({
+                        queryId: queryId,
+                        name: queryName,
+                        minLat: minLat,
+                        minLon: minLon,
+                        maxLat: maxLat,
+                        maxLon: maxLon
+                    });
                     initiateQuery(queryName);
 
                     getPage = function(params, start, pageSize){
-                        var newAJAX = context.sandbox.dataStorage.getResultsByQueryAndSessionId(params.queryId, params.sessionId, start, pageSize, function(err, results){
+                        var newAJAX = context.sandbox.dataStorage.getResultsByQueryAndSessionId(queryId, params.sessionId, start, pageSize, function(err, results){
                             if(err) {
                                 //If the error was because we aborted, ignore
                                 if(err.statusText === 'abort') {
                                     return;
                                 }
-                                handleError({queryId: params.queryId});
+                                handleError({queryId: queryId});
                             } else if (!results || results.length === 0) {
-                                completeQuery(queryName, params.queryId);
+                                completeQuery(queryName, queryId);
                             } else {
-                                processDataPage(results, {queryId: params.queryId, name: queryName});
+                                processDataPage(results, {
+                                                            queryId: queryId,
+                                                            name: queryName
+                                                        });
                                 getPage(params, start + RESTORE_PAGE_SIZE, RESTORE_PAGE_SIZE);
                             }
                         });
 
                         context.sandbox.ajax.addActiveAJAX({
                             newAJAX: newAJAX,
-                            layerId: params.queryId
+                            layerId: queryId
                         });
                     };
 
@@ -129,9 +144,9 @@ define([
                 } else {
                     // TODO: What do we do if the data set is already on the map?
                     publisher.publishMessage({
-                        messageType: "warning",
-                        messageTitle: "Data Service",
-                        messageText: "Dataset already loaded."
+                        messageType: 'warning',
+                        messageTitle: 'Data Service',
+                        messageText: 'Dataset already loaded.'
                     });
                 }
             }
@@ -139,13 +154,16 @@ define([
     };
 
     function createLayer(params) {
-        context.sandbox.dataStorage.datasets[params.queryId] = new Backbone.Collection();
-        context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
-        context.sandbox.dataStorage.datasets[params.queryId].layerName = params.name || paramns.queryId;
+        var queryId = params.queryId,
+            queryName = params.name;
+
+        context.sandbox.dataStorage.datasets[queryId] = new Backbone.Collection();
+        context.sandbox.dataStorage.datasets[queryId].dataService = DATASOURCE_NAME;
+        context.sandbox.dataStorage.datasets[queryId].layerName = queryName || queryId;
 
         publisher.createLayer({
-            layerId: params.queryId,
-            name: params.name,
+            layerId: queryId,
+            name: queryName,
             selectable: true,
             coords: {
                 minLat: params.minLat,
@@ -158,18 +176,18 @@ define([
 
     function initiateQuery(queryName) {
         publisher.publishMessage({
-            messageType: "success",
-            messageTitle: "Data Service",
-            messageText: queryName + " query initiated"
+            messageType: 'success',
+            messageTitle: 'Data Service',
+            messageText: queryName + ' query initiated'
         });
         publisher.addToProgressQueue();
     }
 
     function completeQuery(name, queryId) {
         publisher.publishMessage({
-            messageType: "success",
-            messageTitle: "Data Service",
-            messageText: name + " query complete"
+            messageType: 'success',
+            messageTitle: 'Data Service',
+            messageText: name + ' query complete'
         });
 
         context.sandbox.stateManager.setLayerStateById({
@@ -187,12 +205,10 @@ define([
     }
 
     function processDataPage(data, params) {
-        var layerId,
+        var queryId = params.queryId || data[0].properties.queryId,
             newData = [],
             keys = context.sandbox.dataServices[DATASOURCE_NAME].keys,
             newKeys = {};
-
-        layerId = params.queryId || data[0].properties.queryId;
 
         publisher.publishMessage({
             messageType: 'info',
@@ -201,7 +217,7 @@ define([
         });
 
         context.sandbox.stateManager.setLayerStateById({
-            layerId: layerId,
+            layerId: queryId,
             state: {
                 dataTransferState: 'running'
             }
@@ -209,7 +225,18 @@ define([
 
         //For each feature, create the minimized feature to be stored locally, with all the fields needed for datagrid
         context.sandbox.utils.each(data, function(dataIndex, dataFeature){
-            var newValue = {};
+            var newValue = {
+                dataService: DATASOURCE_NAME,
+                layerId: queryId,
+                id: data[dataIndex].id = dataFeature.properties.featureId,
+                geometry: dataFeature.geometry,
+                type: dataFeature.type,
+                properties: {},
+                lat: dataFeature.geometry.coordinates[1],
+                lon: dataFeature.geometry.coordinates[0],
+                featureId: dataFeature.properties.featureId,
+                mapUrl: context.sandbox.dataServices[DATASOURCE_NAME].processMapUrl(dataFeature.properties) //Add the map url
+            };
 
             dataFeature.properties.mapUrl = context.sandbox.dataServices[DATASOURCE_NAME].processMapUrl(dataFeature.properties); //Add the map url
 
@@ -226,21 +253,10 @@ define([
                 });
             }
 
-            newValue.dataService = data[dataIndex].dataService = DATASOURCE_NAME;
-
-            newValue.layerId = layerId;
-            newValue.id = data[dataIndex].id = dataFeature.properties.featureId;
-            newValue.geometry = dataFeature.geometry;
-            newValue.type = dataFeature.type;
-            newValue.properties = {};
-            newValue.lat = dataFeature.geometry.coordinates[1];
-            newValue.lon = dataFeature.geometry.coordinates[0];
-            newValue.featureId = dataFeature.properties.featureId;
-
-            newValue.mapUrl = context.sandbox.dataServices[DATASOURCE_NAME].processMapUrl(dataFeature.properties); //Add the map url
+            data[dataIndex].dataService = DATASOURCE_NAME;
 
             context.sandbox.dataStorage.addData({
-                datasetId: layerId,
+                datasetId: queryId,
                 data: newValue
             });
 
@@ -261,7 +277,7 @@ define([
         data = [];
 
         publisher.plotFeatures({
-            layerId: layerId,
+            layerId: queryId,
             data: newData
         });
     }
@@ -288,20 +304,34 @@ define([
     }
 
     function queryData(params) {
-        var newAJAX = context.sandbox.utils.ajax({
+        var queryId = params.queryId,
+            queryName = params.name,
+            query,
+            metadata,
+            newAJAX;
+
+        query = {
+            throttleMs: 0,
+            start: params.start || 0,
+            pageSize: params.pageSize
+        };
+
+        metadata = {
+            queryId: queryId,
+            queryName: queryName,
+            minLat: params.minLat,
+            minLon: params.minLon,
+            maxLat: params.maxLat,
+            maxLon: params.maxLon,
+            justification: params.justification
+        };
+
+        newAJAX = context.sandbox.utils.ajax({
             type: 'POST',
             url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/query/bbox/' + params.dataSourceId,
             data: {
-                throttleMs: 0,
-                minLat: params.minLat,
-                minLon: params.minLon,
-                maxLat: params.maxLat,
-                maxLon: params.maxLon,
-                start: params.start || 0,
-                queryId: params.queryId || null,
-                pageSize: params.pageSize,
-                queryName: params.name,
-                justification: params.justification
+                query: query,
+                metadata: metadata
             },
             xhrFields: {
                 withCredentials: true
@@ -312,10 +342,9 @@ define([
                 // Process and then loop to the next page
                 processDataPage(data, params);
                 params.start = parseInt(params.start || 0) + parseInt(params.pageSize);
-                params.queryId = params.queryId || data[0].properties.queryId;
                 queryData(params);
             } else {
-                completeQuery(params.name, params.queryId);
+                completeQuery(queryName, queryId);
             }
 
         })
@@ -330,10 +359,9 @@ define([
 
         context.sandbox.ajax.addActiveAJAX({
             newAJAX: newAJAX,
-            layerId: params.queryId
+            layerId: queryId
         });
     }
-
 
     return exposed;
 

@@ -60,7 +60,7 @@ define([
                     postRenderingAction: function(feature, layerId) {
                         $('.' + config.namespace + ' .infoDiv .exportFeature .btn').on('click', function(){
                             //emiting message to open export picker.
-                            context.sandbox.emit("export.picker.open", {
+                            context.sandbox.emit('export.picker.open', {
                                 featureId: feature.featureId,
                                 layerId: feature.queryId
                             });

@@ -1,6 +1,6 @@
-var fake = require('./fake.js');
-var uuid = require('node-uuid');
-var _ = require("underscore");
+var fake = require('./fake.js'),
+    uuid = require('node-uuid'),
+    _ = require("underscore");
 
 /**
  * curl -XPOST https://localhost:8000/query/bbox/fake -d'{"minLat":"40","maxLat":"50","minLon":"40","maxLon":"50"}' --cert sean.pines.p12:schemaless --insecure --header "Content-Type:application/json"
@@ -8,26 +8,27 @@ var _ = require("underscore");
  */
 exports.init = function(context){
 
-    var app = context.app;
-    var auth = context.sandbox.auth;
-    var save = context.sandbox.elastic.save;
+    var app = context.app,
+        auth = context.sandbox.auth,
+        save = context.sandbox.elastic.save;
 
     app.post('/query/bbox/fake', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
-        var minLat = parseFloat(req.body.minLat);
-        var minLon = parseFloat(req.body.minLon);
-        var maxLat = parseFloat(req.body.maxLat);
-        var maxLon = parseFloat(req.body.maxLon);
-        var start = parseInt(req.body.start);
-        var pageSize = parseInt(req.body.pageSize);
-        var throttleMs = req.body.throttleMs ? parseInt(req.body.throttleMs) : 0;
-        var userName = res.get('Parsed-User');
-        var sessionId = res.get('Parsed-SessionId');
-        var source = 'fake';
-
-        var queryId = req.body.queryId || uuid.v4();
-
+        var newMetadata = req.body.metadata,
+            newQuery = req.body.query,
+            minLat = parseFloat(newMetadata.minLat),
+            minLon = parseFloat(newMetadata.minLon),
+            maxLat = parseFloat(newMetadata.maxLat),
+            maxLon = parseFloat(newMetadata.maxLon),
+            start = parseInt(newQuery.start),
+            pageSize = parseInt(newQuery.pageSize),
+            throttleMs = newQuery.throttleMs ? parseInt(newQuery.throttleMs) : 0,
+            userName = res.get('Parsed-User'),
+            sessionId = res.get('Parsed-SessionId'),
+            source = 'fake',
+            queryId = newMetadata.queryId || uuid.v4();
 
         fake.query(minLat, maxLat, minLon, maxLon, start, pageSize, throttleMs, function(page){
+            var persistData;
 
             if (!page || page.length === 0){
                 res.status(204);
@@ -35,7 +36,7 @@ exports.init = function(context){
                 return;
             }
 
-            var persistData = function(){
+            persistData = function(){
                 save.writeGeoJSON(userName, sessionId, queryId, source, page, function(err, results){
                     if (err){
                         res.status(500);
@@ -48,33 +49,39 @@ exports.init = function(context){
                 });
             };
 
-
             if (parseInt(start) === 0){
                 context.sandbox.elastic.metadata
                     .create(userName, sessionId, queryId)
-                    .setQueryName(req.body.queryName)
-                    .setRawQuery(req.body)
-                    .setQueryBbox({top: maxLat, bottom: minLat, left: minLon, right: maxLon})
+                    .setQueryName(newMetadata.queryName)
+                    .setRawQuery(newQuery)
+                    .setQueryBbox({
+                        maxLat: maxLat,
+                        minLat: minLat,
+                        minLon: minLon,
+                        maxLon: maxLon
+                    })
                     .setDataSource(source)
+                    .setQueryType(source)
+                    .setJustification(newMetadata.justification) //TODO
+                    .setClassification('N/A')
                     .commit(persistData);
             } else {
                 persistData();
             }
         });
-
     });
 
     app.post('/query/bbox/fake/dummy', auth.verifyUser, auth.verifySessionHeaders, function(req, res){
         var queryId = uuid.v4();
 
         fake.query(40, 50, 40, 50, 0, 1000, 0, function(page){
+            var userName = res.get('Parsed-User'),
+                sessionId = res.get('Parsed-SessionId');
 
             page.forEach(function(record){
                 record.properties.queryId = queryId;
             });
 
-            var userName = res.get('Parsed-User');
-            var sessionId = res.get('Parsed-SessionId');
             save.writeGeoJSON(userName, sessionId, queryId, 'fake', page, function(err){
                 if (err){
                     console.log('error: ' + err);
@@ -86,6 +93,5 @@ exports.init = function(context){
                 }
             });
         });
-
     });
 };

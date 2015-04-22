@@ -1,0 +1,37 @@
+@font-face {
+    font-family: 'meridan_custom';
+    src:url('../fonts/meridan_custom.eot?nc34o9');
+    src:url('../fonts/meridan_custom.eot?#iefixnc34o9') format('embedded-opentype'),
+    url('../fonts/meridan_custom.woff?nc34o9') format('woff'),
+    url('../fonts/meridan_custom.ttf?nc34o9') format('truetype'),
+    url('../fonts/meridan_custom.svg?nc34o9#meridan_custom') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="iconM-"], [class*=" iconM-"] {
+    font-family: 'meridan_custom';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.iconM-download:before {
+    content: "\e600";
+}
+
+.iconM-upload:before {
+    content: "\e601";
+    font-size:17px;
+}
+.iconM-jump:before {
+    content: "\e602";
+    font-size:17px;
+}

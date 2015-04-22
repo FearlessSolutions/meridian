@@ -6,13 +6,27 @@ define([
     'handlebars'
 ], function(configuration, uploadDataInfoWinHBS, uploadDataInfoWinCSS) {
     var template = Handlebars.compile(uploadDataInfoWinHBS),
-        DATASOURCE_NAME = 'upload',
+        DATASOURCE_NAME,
         context;
 
     var exposed = {
         initialize: function(app) {
+            var datasource;
             context = app;
+            DATASOURCE_NAME = configuration.DATASOURCE_NAME;
+
             app.sandbox.utils.addCSS(uploadDataInfoWinCSS, 'upload-data-extension-style');
+
+            //Add datasource information to the sandbox
+            if(!app.sandbox.datasources){
+                app.sandbox.datasources = [];
+            }
+
+            datasource = {
+                DATASOURCE_NAME: configuration.DATASOURCE_NAME,
+                DISPLAY_NAME: configuration.DISPLAY_NAME
+            };
+            app.sandbox.datasources.push(datasource);
 
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};
@@ -40,6 +54,12 @@ define([
 
             //Make separate entries for different file type in case they are different in the future.
             app.sandbox.upload.file = uploadFile;
+
+            //Add the datasource to the export options
+            app.sandbox.export.utils.addDatasource({
+                id: DATASOURCE_NAME,
+                exports: configuration.exports
+            });
         }
     };
 

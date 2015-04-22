@@ -1,7 +1,6 @@
-var stream = require('./stream');
-var _ = require('underscore');
-
-var config,
+var stream = require('./stream'),
+    _ = require('underscore'),
+    config,
     client;
 
 exports.init = function(context){
@@ -64,11 +63,6 @@ exports.getResultsByQueryId = function(userName, sessionId, queryId, from, size,
                     {
                         term: {
                             userId: userName
-                        }
-                    },
-                    {
-                        term: {
-                            sessionId: sessionId
                         }
                     },
                     {
@@ -194,7 +188,6 @@ exports.getMetadataByTerm = function(queryTerms, callback){
             }
         }
     };
-    console.log(JSON.stringify(query, null, "  "));
     getJSONByQuery(null, config.index.metadata, null, query, callback);    
 };
 
@@ -217,14 +210,21 @@ exports.getMetadataByUserId = function(userId, callback){
 
 var getJSONByQuery = function(routing, index, type, query, callback){
 
-    var searchObj = {};
-    searchObj.index = index;
-    if (routing) { searchObj.routing = routing; }
+    var searchObj = {
+        index: index
+    };
+    if (routing) {
+        searchObj.routing = routing;
+    }
 
     // spines - This is a hacky fix, take the time to re-analyze usage of this method and
     //          future functions should be designed with pagination in mind
-    if (!query.from) { query.from = 0; }
-    if (!query.size) { query.size = 1000; }
+    if (!query.from) {
+        query.from = 0;
+    }
+    if (!query.size) {
+        query.size = 1000;
+    }
 
     searchObj.body = query;
 
@@ -243,7 +243,9 @@ var getJSONById = function(routing, index, type, id, callback){
         id: id
     };
 
-    if (routing){ req.routing = routing; }
+    if (routing){
+        req.routing = routing;
+    }
 
     client.get(req).then(function(resp){
         callback(null, resp);
@@ -264,7 +266,9 @@ exports.getCountByQuery = function(routing, index, type, body, callback){
         body: body
     };
 
-    if (routing){ req.routing = routing; }
+    if (routing){
+        req.routing = routing;
+    }
 
     client.count(req).then(function(resp){
         callback(null, resp);

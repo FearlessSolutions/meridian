@@ -317,11 +317,7 @@ define([
                     var featureId = feature.attributes.featureId,
                         item = dataView.getItemById(featureId);
 
-                    if(layerState.hiddenFeatures.indexOf(featureId) === -1){ //Not in the hidden feature array
-                        item[HIDDEN_PROPERTY] = false;
-                    }else{
-                        item[HIDDEN_PROPERTY] = true; //The layer isn't hidden, but the feature still is.
-                    }
+                    item[HIDDEN_PROPERTY] = layerState.hiddenFeatures.indexOf(featureId) !== -1;
 
                     dataView.updateItem(featureId, item);
                 });
@@ -456,7 +452,6 @@ define([
                 return false; //this breaks the $.each loop
             }
         });
-
 
         return found;
     }

@@ -1,7 +1,7 @@
-var save = require('./save');
-var query = require('./query');
-var _ = require('underscore');
-var moment = require('moment');
+var save = require('./save'),
+    query = require('./query'),
+    _ = require('underscore'),
+    moment = require('moment');
 
 exports.getMetadataByQueryId = function(userId, queryId, callback){
     query.getMetadataByQueryId(userId, queryId, function(err, meta){
@@ -58,7 +58,6 @@ function saveMetadata(userName, sessionId, queryId, metadata, callback){
     save.writeMetadata(userName, sessionId, queryId, metadata, callback);
 }
 
-
 // TODO: ExpireAt should be calculated from a config and that config should
 // TODO: be the same as the TTL for features
 exports.create = function(userName, sessionId, queryId){
@@ -72,9 +71,12 @@ exports.create = function(userName, sessionId, queryId){
         environment: process.env.NODE_ENV,
         queryBbox: {},
         numRecords: 0,
-        queryName: "",
+        queryName: '',
         rawQuery: {},
-        dataSource: ""
+        dataSource: '',
+        queryType: '',
+        justification: '',
+        classification: ''
     };
 
     return new MetadataBuilder(seedMeta);
@@ -102,15 +104,27 @@ var MetadataBuilder = function(seedMeta){
             meta.dataSource = dataSource;
             return this;
         },
+        setQueryType: function(dataSource){
+            meta.queryType = dataSource;
+            return this;
+        },
         setQueryBbox: function(boxObj){
-            meta.queryBbox.top = boxObj.top || boxObj.maxLat;
-            meta.queryBbox.bottom = boxObj.bottom || boxObj.minLat;
-            meta.queryBbox.left = boxObj.left || boxObj.minLon;
-            meta.queryBbox.right = boxObj.right || boxObj.maxLon;
+            meta.queryBbox.maxLat = boxObj.top || boxObj.maxLat;
+            meta.queryBbox.minLat = boxObj.bottom || boxObj.minLat;
+            meta.queryBbox.minLon = boxObj.left || boxObj.minLon;
+            meta.queryBbox.maxLon = boxObj.right || boxObj.maxLon;
             return this;
         },
         setNumRecords: function(numRecords){
             meta.numRecords = numRecords;
+            return this;
+        },
+        setClassification: function(classification){
+            meta.classification = classification;
+            return this;
+        },
+        setJustification: function(justification){
+            meta.justification = justification;
             return this;
         },
         getCreateTime: function(){
@@ -132,4 +146,4 @@ var MetadataBuilder = function(seedMeta){
             saveMetadata(meta.userId, meta.sessionId, meta.queryId, meta, callback || function(){})
         }
     }
-}
+};

@@ -2,31 +2,37 @@ define([
     './zoom-publisher',
     'bootstrap'
 ], function (publisher) {
-    var context;
+    var context,
+        $zoomIn,
+        $zoomOut;
 
 	var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            context.$('#zoom .zoom-in').tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
+            $zoomIn = context.$('.zoom-in');
+            $zoomOut = context.$('.zoom-out');
+            $zoomIn.tooltip({
+                container: 'body',
+                delay: {
+                    show: 500
                 }
             });
-            context.$('#zoom .zoom-in').click(function(event){
+            $zoomIn.click(function(event){
                 event.preventDefault();
                 publisher.zoomIn();
+                $zoomIn.blur();
             });
             
-            context.$('#zoom .zoom-out').tooltip({
-                "container": "body",
-                "delay": {
-                    "show": 500
+            $zoomOut.tooltip({
+                container: 'body',
+                delay: {
+                    show: 500
                 }
             });
-            context.$('#zoom .zoom-out').click(function(event){
+            $zoomOut.click(function(event){
                 event.preventDefault();
                 publisher.zoomOut();
+                $zoomOut.blur();
             });    
         }
     };
