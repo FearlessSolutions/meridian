@@ -12,6 +12,21 @@ define([
             context.sandbox.on('about.close', support.closeAbout);
             context.sandbox.on('about.open', support.openAbout);
             context.sandbox.on('data.clear.all', support.clear);
+        },
+        publishOpening: function(params){
+            context.sandbox.emit('menu.opening', params);
+        },
+        closeSupport: function() {
+            context.sandbox.emit('support.close');
+        },
+        closeAbout: function() {
+            context.sandbox.emit('about.close');
+        },
+        openSupport: function() {
+            context.sandbox.emit('support.open');
+        },
+        openAbout: function() {
+            context.sandbox.emit('about.open');
         }
     };	
 
