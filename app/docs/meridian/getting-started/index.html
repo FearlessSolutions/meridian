@@ -130,6 +130,20 @@
               <li>Start the App Server:</li>
                 <ul>
                   <li>To start the local server run: <code>grunt server</code>.</li>
+                  <ul>
+                      <li><strong>For windows users:</strong> There is a possibility that a user receives an error in the console.  <code>'grunt' is not recognized as an internal or external command, operable program or batch file.</code></li>
+                      <ul>
+                          <li>Go to Windows Explorer and right-click, 'This PC'.</li>
+                          <li>Select Properties in the context menu.</li>
+                          <li>On the left side, click the Advanced system settings link. A 'Systems Properties' window will pop up.</li>
+                          <li>In the 'Advanced' tab, at the bottom of the window, click the 'Environment Variables' button.</li>
+                          <li>An 'Environment Variables' window will pop up.</li>
+                          <li>In the user variables list box, there should be a variable named 'Path'. If none exist, click 'New'. Otherwise, click 'Edit'.</li>
+                          <li>For the value, enter the location of the <code>grunt.cmd</code> file on your computer.</li>
+                          <li>To find the location of the <code>grunt.cmd</code>, do a file search through your computer system.</li>
+                          <li>Press 'Ok' for the subsequent windows. Close your old console window and start a new instance of the console. Run <code>grunt server</code> in the command line.</li>
+                      </ul>
+                  </ul>
                   <li>This will open the main page <a href="http://localhost:3000">http://localhost:3000</a> in your default browser.</li>
                 </ul>
                 <br><p><strong>NOTE:</strong> If when starting elastic search, you recieve warnings regarding multicasting you most likely have been added to an already exsisting elastic search cluster and may recieve unintended outcomes from the application. You can disable multicasting by navigating to the directory you extracted elastic search to and then navigating to the config/elasticsearch.yml file. In there, uncomment the line <code>discovery.zen.ping.multicast.enabled: false</code> and save the file. You can now restart elastic search.</p>
