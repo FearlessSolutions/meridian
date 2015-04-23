@@ -5,6 +5,7 @@ define([
 ], function (notificationHBS) {
 
     var context,
+        mediator,
         $button,
         userNotified,
         notificationTemplate,
@@ -12,8 +13,9 @@ define([
         CONTROL_DESIGNATION = 'cluster-toggle';
 
     var exposed = {
-        init: function(thisContext, mediator) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $button = context.$('#clusterToggle');
             userNotified = false;
             notificationTemplate = Handlebars.compile(notificationHBS);

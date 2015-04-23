@@ -7,7 +7,15 @@ define([
     './admingrid',
     './admingrid-mediator',	
     'handlebars'
-], function (slickgrid_baseCSS, slickgrid_defaultCSS, slickgrid_pagerCSS, admingridCSS, admingridHBS, admingrid, admingridMediator) {
+], function (
+    slickgrid_baseCSS, 
+    slickgrid_defaultCSS,
+    slickgrid_pagerCSS, 
+    admingridCSS, 
+    admingridHBS, 
+    admingrid, 
+    admingridMediator
+) {
 
     return {
         initialize: function() {
@@ -21,8 +29,8 @@ define([
 
             this.html(html);
 
-            admingrid.init(this);
             admingridMediator.init(this);
+            admingrid.init(this, admingridMediator);
         }
     };
                 

@@ -13,10 +13,11 @@ define([
         $toggle;
 
     var exposed = {
-        init: function(thisContext, mediator) {
+        init: function(thisContext, thisMediator) {
             var paddingInt;
 
             context = thisContext;
+            mediator = thisMediator;
             $basemapGallery = context.$('#basemap-gallery');
             $basemap = context.$('.basemap');
             $dropdown = context.$('#basemap-selection');

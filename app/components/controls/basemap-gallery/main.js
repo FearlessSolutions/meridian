@@ -4,7 +4,12 @@ define([
     './basemap-gallery',
     './basemap-gallery-mediator',
     'handlebars'
-], function(basemapGalleryCSS, basemapGalleryHBS, basemapGallery, basemapGalleryMediator) {
+], function(
+    basemapGalleryCSS, 
+    basemapGalleryHBS, 
+    basemapGallery, 
+    basemapGalleryMediator
+) {
 
     return {
         initialize: function() {

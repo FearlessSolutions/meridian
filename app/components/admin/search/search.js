@@ -1,13 +1,13 @@
 define([    
-    './search-mediator',
     'bootstrap',
     'daterangepicker'
-], function (mediator) {
-    var context, datePickerObj;
+], function () {
+    var context, mediator, datePickerObj;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $toggleSearchType = context.$('#searchAdmin_toggleType');
             $toggleSearchDateType = context.$('#searchAdmin_searchDateType');
             $inputSearch1 = context.$('#searchAdmin_userid');

@@ -2,11 +2,13 @@ define([
     'bootstrap'
 ], function () {
     var context,
+        mediator,
         $bookmarkButton;
 
     var exposed = {
-        init: function(thisContext, mediator) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $bookmarkButton = context.$('#bookmarkToggleButton');
 
             //Activate bootstrap tooltip. 

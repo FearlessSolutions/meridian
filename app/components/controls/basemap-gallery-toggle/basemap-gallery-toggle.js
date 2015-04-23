@@ -5,8 +5,9 @@ define([
         $supportButton;
 
     var exposed = {
-        init: function(thisContext, mediator) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $supportButton = context.$('#basemapGalleryToggleButton');
 
             //Activate bootstrap tooltip. 

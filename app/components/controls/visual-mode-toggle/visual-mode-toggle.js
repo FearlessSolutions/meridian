@@ -3,6 +3,7 @@ define([
     'bootstrap'
 ], function (notificationHBS) {
     var context,
+        mediator,
         targetVisualMode,
         currentVisualMode,
         $target,
@@ -12,8 +13,9 @@ define([
         CONTROL_DESIGNATION = 'visual-mode-toggle';
 
     var exposed = {
-        init: function(thisContext, mediator) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             notificationTemplate = Handlebars.compile(notificationHBS);
 
             // Setting the current visual mode locally and in state manager from the config

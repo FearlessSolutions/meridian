@@ -8,12 +8,12 @@ define([
 ], function () {
 
     var context,
+    mediator,
     grid,
     data,
     dataView, columns, options;
     var exposed = {
-        init: function(thisContext) {
-                
+        init: function(thisContext, thisMediator) {
             context = thisContext,
             dataView = new Slick.Data.DataView();
             var columns = [
