@@ -4,39 +4,48 @@ L.FeatureIdGroup = L.FeatureGroup.extend({
 	
 	initialize: function(options){
 
-		L.LayerGroup.prototype.initialize.call(this);
-		this._layerById = {};
-		this._featureById = {};
+		
+		this._layersById = {};
+		this._featuresById = {};
 		this._layerGroup = L.featureGroup();
+		L.LayerGroup.prototype.initialize.call(this);
 		
 	},
 
 	addLayer: function (layerId, layer) {
 
-		if(layer instanceof L.GeoJSON){
-			console.debug('layer being added is geojson');
-			layer.eachLayer(function(geo){
-				if(geo.feature.geometry.type !== 'Point'){
-					this._featureById[geo.feature.layerId] = geo;	
-				}
-				else{
-					this._featureById[geo.feature.featureId] = geo;
-				}
-				
-			});
-		}
-		else{
-			console.debug('layer not geojson');	
-		}
-
-		
-		//console.debug('id: ', layerId);
-		//console.debug('layer: ', layer);
-		console.debug('featureIds: ', this._featureById);
-
+		this._layersById[layerId] = layer;
 		L.FeatureGroup.prototype.addLayer.call(this, layer);
 
 
+	},
+	addFeature: function(layerId, feature){
+		//make sure there is a layerId? if not fail?
+		
+
+		if(feature instanceof L.GeoJSON){
+			console.debug('adding a geoJSON');
+			feature.eachLayer(function(geo){
+				console.debug("geo: ", geo);
+				console.debug('this: ', this);
+				console.debug('featuresById ', this._featuresById);
+				if(geo.feature.geometry.type !== 'Point'){
+					//its a shape. Must use layerId as the featureId due to the _aoi being added.
+					this._featuresById["1234_aoi"] = geo;
+
+				}else {
+					//its a point, just add the point to the list of features.
+					this._featuresById[geo.feature.featureId] = geo
+				}
+			});
+		}
+
+
+		console.debug('featureIds: ', this._featuresById);
+		L.FeatureGroup.prototype.addLayer.call(this, feature);//add the feature like all other leaflet groups.
+	},
+	containsLayerId: function(layerId){
+		return this._layersById[layerId] ? true : false;
 	},
 
 	removeLayer: function (layer) {

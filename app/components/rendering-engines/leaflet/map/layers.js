@@ -14,17 +14,13 @@ define([
             context = thisContext;
             drawnItemsLayer = {};
             basemapLayers = {};
-            singlePointLayer = {};
-            clusterLayers = {};
-            heatLayers = {};
-            allLayers = new L.FeatureIdGroup();
+            singlePointLayer = new L.featureIdGroup();
+            clusterLayers = new L.featureIdGroup();
+            heatLayers = new L.featureIdGroup();
             config = context.sandbox.mapConfiguration;
 
         },
-        loadLayerManager: function(params){
-            params.map.addLayer(allLayers);
-        },
-        plotFeatures: function(params){
+         plotFeatures: function(params){
             //clusterLayers[params.layerId]        
             console.debug('params in plot: ', params);
 
@@ -53,15 +49,11 @@ define([
                 
 
 
-                // if(context.sandbox.stateManager.map.visualMode === 'cluster'){
-                //     if(clusterLayers[params.layerId] === 'undefined'){
-                //         exposed.createVectorLayer({
-                //             'map': params.map,
-                //             'layerId': params.layerId
-                //         });
-                //     }
-                //     clusterLayers[params.layerId].addLayer(geo);
-                // }
+                if(context.sandbox.stateManager.map.visualMode === 'cluster'){
+                  
+                    
+                    clusterLayers.addFeature(params.layerId, geo);
+                }
                 // else if(context.sandbox.stateManager.map.visualMode === 'heatmap'){//for heatmap
 
                 // } else{//for single points
@@ -199,18 +191,16 @@ define([
 
 
             if(context.sandbox.stateManager.map.visualMode === 'cluster'){
-                
-                    allLayers.addLayer(
-                        new L.MarkerClusterGroup({
+                clusterLayers.addLayer(params.layerId, new L.MarkerClusterGroup({
                         maxClusterRadius: config.clustering.thresholds.clustering.distance
-                        });
-                    ); 
+                    })
+                );  
                 
 
             } else if( context.sandbox.stateManager.map.visualMode === 'heatmap'){
                 
             } else {
-               allLayers.addLayer(new L.featureGroup());
+
             }
 
             var options,
@@ -218,8 +208,8 @@ define([
                 selector,
                 layers;
 
-                console.debug('singlePointLayer: ', singlePointLayer);
-                console.debug('clusterlayers: ', clusterLayers);
+                // console.debug('singlePointLayer: ', singlePointLayer);
+                // console.debug('clusterlayers: ', clusterLayers);
 
             // options = {
             //     "layerId": params.layerId, // set as layerId, is not present its null

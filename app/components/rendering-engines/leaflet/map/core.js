@@ -56,10 +56,6 @@ define([
                 "map": map
             });
 
-            mapLayers.loadLayerManager({
-                "map": map
-            });
-
             mapNavigation.zoomToExtent({
                 "map": map,
                 "minLon": context.sandbox.mapConfiguration.initialMinLon,
@@ -87,9 +83,6 @@ define([
             });
 
 
-            mapLayers.test({
-                "map": map
-            });
             // var someIcon = L.icon({
             //     iconUrl: context.sandbox.mapConfiguration.markerIcons.default.icon,
             //     iconSize: [context.sandbox.mapConfiguration.markerIcons.default.width, context.sandbox.mapConfiguration.markerIcons.default.height],
