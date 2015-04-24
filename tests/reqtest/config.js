@@ -5,6 +5,8 @@
     'paths': {
       'bootstrap': 'libs/bootstrap-3.2.0/bootstrap',
       'uploadComponent': 'components/tools/upload-data',
+      'zoomComponent': 'components/controls/zoom',
+      'clearComponent': 'components/controls/clear-toggle',
       'aura': 'bower_components/aura/lib',
       'handlebars': 'bower_components/handlebars/handlebars',
       'underscore': 'bower_components/underscore/underscore',

@@ -24,5 +24,5 @@ define([
             uploadDataToolSubscriber.init(this);
             uploadDataTool.init(this);
         }
-    };                
+    };
 });

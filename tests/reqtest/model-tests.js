@@ -2,8 +2,8 @@
 //Unless there is a way of including the require.js file and the config file in the command
 //prompt, I only see this working in the browser.
 
-//start your test here. 
-//mocha needs to see describe globaly. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
+//start your test here.
+//mocha needs to see describe globally. If you try putting it in a function, it wont execute. (Unless my test wasn't good.)
 describe('Upload Component message.publish channel', function() {
 	  		var upload, exitBeforeEach, meridian;
 
@@ -20,7 +20,7 @@ describe('Upload Component message.publish channel', function() {
 				        debug: true,
 				        sources: {default: 'components'}
 				    });
-				    //these extensions have .hbs files being loaded. Unless we host the test/index.html 
+				    //these extensions have .hbs files being loaded. Unless we host the test/index.html
 				    //it will throw the following error: Cross origin requests are only supported for protocol schemes.
 				    meridian.use('extensions/system-configuration-extension/system-configuration-extension')
 				    .use('extensions/utils-extension/utils-extension')
@@ -51,16 +51,18 @@ describe('Upload Component message.publish channel', function() {
 				        //must wait until aura starts before doing anything test related.
 				        //If not, meridian variable will be undefined.
 				        exitBeforeEach();
-				    
+
 					});//end of then
 				});//end of require
 
 		  	});//end of beforeEach
 
+/*
 		  	it("Message should match.", function() {
 		  		require(['uploadComponent/upload-data-publisher'], function(upload){
 		  			upload.init(meridian);
 		  			console.log('uplaod component: ', upload);
+						console.log(meridian.config);
 		  			var actual;
 
         			var expected = {
@@ -70,16 +72,53 @@ describe('Upload Component message.publish channel', function() {
         			};
         			meridian.sandbox.on('message.publish',function(params){
         				actual = params;
+
         			});
 
 		  			upload.publishMessage(expected);
 		  			console.debug('actual: ', actual);
 		  			console.debug('expected: ', expected);
+						console.debug("meridian: ", meridian);
+						console.log(meridian.sandbox.on.params);
 		  			chai.assert.deepEqual(actual,expected);
 		  		});
-		  		
-		    	
+
+
 		  	});//it
+*/
+
+
+
+it("Should confirm connection with the clear action.", function() {
+	require(['clearComponent/clear-toggle-publisher'], function(upload){
+
+		upload.init(meridian);
+		console.log('upload component: ', upload);
+		console.log(meridian.config);
+		console.debug("meridian: ", meridian);
+		var actual;
+
+			var expected = {
+					messageType: 'warning',
+					messageTitle: 'Data Upload',
+					messageText: 'File type not supported for upload'
+			};
+			meridian.sandbox.on('clear.menu.open',function(params){
+				actual = params;
+
+			});
+
+			publishOpenClearDialog(expected);
+		console.debug('actual: ', actual);
+		console.debug('expected: ', expected);
+		console.debug("meridian: ", meridian);
+		console.log(meridian.sandbox.on.params);
+		chai.assert.deepEqual(actual,expected);
+	});
+
+
+});//it
+
+
+
 		});//describe
-
-

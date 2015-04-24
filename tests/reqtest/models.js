@@ -10,6 +10,5 @@ define(['chai'], function (chai) {
 	    	});
 		});
 	});
-	
-});
 
+});
