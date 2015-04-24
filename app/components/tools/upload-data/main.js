@@ -8,7 +8,6 @@ define([
 ], function (uploadDataToolCSS, uploadDataToolHBS, uploadDataTool, uploadDataToolPublisher, uploadDataToolSubscriber) {
     return {
         initialize: function() {
-            console.log('THIS IN MAIN: ', this);
             this.sandbox.utils.addCSS(uploadDataToolCSS, 'tool-uploadData-component-style');
 
             var configOptions = this.sandbox.dataServices.upload.configuration,

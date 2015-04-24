@@ -57,7 +57,7 @@ describe('Upload Component message.publish channel', function() {
 
 		  	});//end of beforeEach
 
-		  	it("Should be {messageType: warning, messageTitle: Data Upload, messageText: File type not supported for upload}", function() {
+		  	it("Message should match.", function() {
 		  		require(['uploadComponent/upload-data-publisher'], function(upload){
 		  			upload.init(meridian);
 		  			console.log('uplaod component: ', upload);
