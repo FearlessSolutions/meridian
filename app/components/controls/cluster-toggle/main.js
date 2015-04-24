@@ -6,7 +6,8 @@ define([
     'handlebars'
 ], function (clusterToggleHBS,
              clusterToggle, 
-             clusterToggleMediator) {
+             clusterToggleMediator
+) {
     return {
         initialize: function() {
             var clusterToggleTemplate = Handlebars.compile(clusterToggleHBS),

@@ -2,11 +2,13 @@ define([
     'bootstrap'
 ], function () {
     var context,
+        mediator,
         $dataHistoryButton;
 
     var exposed = {
-        init: function(thisContext, mediator) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $dataHistoryButton = context.$('#dataHistoryToggleButton');
 
             //Activate bootstrap tooltip. 

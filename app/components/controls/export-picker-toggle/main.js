@@ -3,7 +3,11 @@ define([
     './export-picker-toggle',
     './export-picker-toggle-mediator',
     'handlebars'
-], function(exportpickerHBS, exportPicker, exportPickerMediator){
+], function(
+    exportpickerHBS, 
+    exportPicker, 
+    exportPickerMediator
+){
 
     return {
         initialize: function() {
