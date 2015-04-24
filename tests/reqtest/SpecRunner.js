@@ -1,5 +1,5 @@
 require.config({
-  baseUrl: '/backbone-tests/',
+  baseUrl: '.',
   paths: {
     'jquery'        : '../../app/bower_components/jquery/dist/jquery',
     'underscore'    : '../../app/bower_components/underscore/underscore',
@@ -11,26 +11,9 @@ require.config({
   },
   shim: {
     'chai-jquery': ['jquery', 'chai']
-  },
-  urlArgs: 'bust=' + (new Date()).getTime()
+  }
 });
 
-define(function(require) {
-  var chai = require('chai');
-  var mocha = require('mocha');
-  require('jquery');
-  require('chai-jquery');
-
-  // Chai
-  var should = chai.should();
-  chai.use(chaiJquery);
-
-  mocha.setup('bdd');
-
-  require([
-    './model-tests.js',
-  ], function(require) {
-    mocha.run();
-  });
-
-});
+// require(['chai'], function(chai) {
+//   console.log('im loaded on spec');
+// });

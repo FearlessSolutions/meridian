@@ -20,6 +20,7 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
+            console.debug('CONTEXT: ', context);
             $modal = context.$('#upload-data-modal');
             $file = context.$('#file');
             $dummyFile = context.$('#dummy-file');
