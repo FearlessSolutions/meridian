@@ -81,10 +81,10 @@ define([
                     $submit.prop('disabled', true);
                 }
             });
-            
+
             //Handle submit
             $submit.on('click', function(){
-                
+
                 //Get the file from the input
                 var file = $file[0].files[0],
                     filetype,
@@ -99,9 +99,9 @@ define([
                     queryName = file.name; //Use the file name as the query name
                     filetype = context.sandbox.utils.getFileExtension(file);
                     if (context.$('#zoomOnUpload').is(":checked")) {
-                        shouldZoom = true; 
+                        shouldZoom = true;
                     }
-                    
+
                     //Create a new collection for the data
                     context.sandbox.dataStorage.datasets[queryId] = new Backbone.Collection();
                     context.sandbox.dataStorage.datasets[queryId].dataService = DATASOURCE_NAME;

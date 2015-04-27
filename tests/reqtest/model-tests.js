@@ -61,7 +61,7 @@ describe('Upload Component message.publish channel', function() {
 		  	it("Message should match.", function() {
 		  		require(['uploadComponent/upload-data-publisher'], function(upload){
 		  			upload.init(meridian);
-		  			console.log('uplaod component: ', upload);
+		  			console.log('upload component: ', upload);
 						console.log(meridian.config);
 		  			var actual;
 
@@ -90,30 +90,25 @@ describe('Upload Component message.publish channel', function() {
 
 
 it("Should confirm connection with the clear action.", function() {
-	require(['clearComponent/clear-toggle-publisher'], function(upload){
+	require(['clearComponent/main'], function(main){
 
-		upload.init(meridian);
-		console.log('upload component: ', upload);
+		main.init(meridian);
+		console.log('Clear component: ', main);
 		console.log(meridian.config);
 		console.debug("meridian: ", meridian);
-		var actual;
 
-			var expected = {
-					messageType: 'warning',
-					messageTitle: 'Data Upload',
-					messageText: 'File type not supported for upload'
-			};
+		var weDidIt = false;
+
 			meridian.sandbox.on('clear.menu.open',function(params){
-				actual = params;
-
+				weDidIt = true;
 			});
 
+			$('#clear-toggle').click();
+
 			publishOpenClearDialog(expected);
-		console.debug('actual: ', actual);
-		console.debug('expected: ', expected);
 		console.debug("meridian: ", meridian);
 		console.log(meridian.sandbox.on.params);
-		chai.assert.deepEqual(actual,expected);
+		chai.assert.deepEqual(weDidIt,true);
 	});
 
 
