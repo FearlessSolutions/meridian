@@ -5,6 +5,7 @@
     'paths': {
       'bootstrap': 'libs/bootstrap-3.2.0/bootstrap',
       'uploadComponent': 'components/tools/upload-data',
+      'featurePlotComponent': 'components/apis/cmapi/feature',
       'aura': 'bower_components/aura/lib',
       'handlebars': 'bower_components/handlebars/handlebars',
       'underscore': 'bower_components/underscore/underscore',

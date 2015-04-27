@@ -5,7 +5,7 @@
 //start your test here. 
 //mocha needs to see describe globaly. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
 describe('Upload Component message.publish channel', function() {
-	  		var upload, exitBeforeEach, meridian;
+	  		var upload, plot, exitBeforeEach, meridian;
 
 		  	//Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
 		  	beforeEach(function(done) {
@@ -77,9 +77,50 @@ describe('Upload Component message.publish channel', function() {
 		  			console.debug('expected: ', expected);
 		  			chai.assert.deepEqual(actual,expected);
 		  		});
-		  		
-		    	
 		  	});//it
+            it("Feature Plot.", function() {
+                require(['featurePlotComponent/cmapi-feature-publisher'], function(plot){
+                    plot.init(meridian);
+                    var actual;
+
+                    var expected = {
+                        "overlayId": "testOverlayId1",
+                        "name": "Test Name 1",
+                        "format": "geojson",
+                        "feature": {
+                            "type": "FeatureCollection",
+                            "features": [
+                                {
+                                    "type": "Feature",
+                                    "geometry": {
+                                        "type": "Point",
+                                        "coordinates": [
+                                            0,
+                                            10
+                                        ]
+                                    },
+                                    "properties": {
+                                        "p1": "pp1"
+                                    },
+                                    "style": {
+                                        "height": 24,
+                                        "width": 24,
+                                        "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                        "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                    }
+                                }
+                            ]
+                        },
+                        "zoom": false,
+                        "readOnly": false
+                    };
+                    meridian.sandbox.on('map.feature.plot',function(params){
+                        actual = params;
+                    });
+
+                    chai.assert.deepEqual(actual,expected);
+                });
+            });//it
 		});//describe
 
 
