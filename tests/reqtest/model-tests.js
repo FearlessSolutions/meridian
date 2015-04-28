@@ -58,28 +58,28 @@ describe('Upload Component message.publish channel', function() {
 
 		  	});//end of beforeEach
 
-		  	it("Message should match.", function() {
-		  		require(['uploadComponent/upload-data-publisher'], function(upload){
-		  			upload.init(meridian);
-                    console.log(meridian);
-		  			console.log('upload component: ', upload);
-		  			var actual;
-
-        			var expected = {
-            			messageType: 'warning',
-			            messageTitle: 'Data Upload',
-			            messageText: 'File type not supported for upload'
-        			};
-        			meridian.sandbox.on('message.publish',function(params){
-        				actual = params;
-        			});
-
-		  			upload.publishMessage(expected);
-		  			console.debug('actual: ', actual);
-		  			console.debug('expected: ', expected);
-		  			chai.assert.deepEqual(actual,expected);
-		  		});
-		  	});//it
+		  	//it("Message should match.", function() {
+		  	//	require(['uploadComponent/upload-data-publisher'], function(upload){
+		  	//		upload.init(meridian);
+               //     console.log(meridian);
+		  	//		console.log('upload component: ', upload);
+		  	//		var actual;
+              //
+        		//	var expected = {
+            	//		messageType: 'warning',
+			  //          messageTitle: 'Data Upload',
+			  //          messageText: 'File type not supported for upload'
+        		//	};
+        		//	meridian.sandbox.on('message.publish',function(params){
+        		//		actual = params;
+        		//	});
+              //
+		  	//		upload.publishMessage(expected);
+		  	//		console.debug('actual: ', actual);
+		  	//		console.debug('expected: ', expected);
+		  	//		chai.assert.deepEqual(actual,expected);
+		  	//	});
+		  	//});//it
             // capture the map click
             it("Map Click, Step 1 of X", function() {
                 require(['cmapi/main'], function(cmapiMain){
