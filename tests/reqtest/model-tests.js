@@ -90,9 +90,19 @@ describe('Upload Component message.publish channel', function() {
 
 
 it("Should confirm connection with the clear action.", function() {
-	require(['clearComponent/main'], function(main){
 
-		main.init(meridian);
+	// require(['clear-toggle/main'], function(main){
+//	require(['../components/controls/clear-toggle/main.js'], function(main){
+require(['components/controls/clear-toggle/main'], function(main){
+
+		var div = $('<div data-aura-component="controls/clear-toggle"></div>');
+
+		$('body').append(div);
+		$.proxy(main.initialize, div)(meridan);
+		//main.initialize(meridian);
+
+
+
 		console.log('Clear component: ', main);
 		console.log(meridian.config);
 		console.debug("meridian: ", meridian);
@@ -109,6 +119,8 @@ it("Should confirm connection with the clear action.", function() {
 		console.debug("meridian: ", meridian);
 		console.log(meridian.sandbox.on.params);
 		chai.assert.deepEqual(weDidIt,true);
+
+	$('body').remove(div);
 	});
 
 

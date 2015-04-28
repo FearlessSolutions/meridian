@@ -2,21 +2,24 @@
 <head>
   <meta charset="utf-8">
   <title>Meridian tests</title>
-  <link rel="stylesheet" media="all" href="libs/mocha.css">
-  <script src="libs/chai.js"></script>
-  <script src="libs/mocha.js"></script>
-  <script src="../../app/bower_components/requirejs/require.js"></script>
+  <link rel="stylesheet" media="all" href="./libs/mocha.css">
+
+  <script src="./libs/chai.js"></script>
+  <script src="./libs/mocha.js"></script>
+<script src="/bower_components/requirejs/require.js"></script>
+
   <script type="text/javascript">
   	window._TEST_MODE = true;
 	mocha.setup('bdd');
   </script>
-  <script type="text/javascript" src="config.js"></script>
+  <script type="text/javascript" src="./config.js"></script>
 </head>
 <body>
   <div id="mocha"><p><a href=".">Index</a></p></div>
   <div id="messages"></div>
   <div id="fixtures"></div>
-  <script src="model-tests.js"></script>
+
+  <script src="./model-tests.js"></script>
   <script>mocha.run();</script>
 </body>
 </html>

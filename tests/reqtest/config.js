@@ -1,7 +1,9 @@
 (function() {
   // This is ultimately fed to require.config().
   var Config = {
-    baseUrl: '../../app',
+  //  baseUrl: '../../app',
+      baseUrl: window.location.origin,
+
     'paths': {
       'bootstrap': 'libs/bootstrap-3.2.0/bootstrap',
       'uploadComponent': 'components/tools/upload-data',
