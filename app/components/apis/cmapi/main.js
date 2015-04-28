@@ -104,6 +104,7 @@ define([
             "channel": channel,
             "message": message
         });
+        console.log('derp');
     }
 
     /**

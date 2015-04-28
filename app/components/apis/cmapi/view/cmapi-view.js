@@ -37,7 +37,7 @@ define([
                 'channel': 'map.view.clicked',
                 'message': payload
             });
-            console.log('der');
+            console.log(payload);
         } 
     };
 

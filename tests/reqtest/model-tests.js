@@ -26,7 +26,7 @@ describe('Upload Component message.publish channel', function() {
 				    .use('extensions/utils-extension/utils-extension')
 				    .use('extensions/ajax-handler-extension/ajax-handler-extension')
 				    .use('extensions/session-extension/session-extension')
-				    .use('extensions/external-pubsub-extension/external-pubsub-extension')
+				    .use('test/extensions/test-external-pubsub-extension/test-external-pubsub-extension')
 				    .use('extensions/state-manager-extension/state-manager-extension')
 				    .use('extensions/data-storage-extension/data-storage-extension')
 				    // .use('extensions/splash-screen-extension/splash-screen-extension')
@@ -47,6 +47,7 @@ describe('Upload Component message.publish channel', function() {
 				    // .use('extensions/upload-data-extension/upload-data-extension')
 				    .start({ components: 'body' })
 				    .then(function(){
+                            console.log('in then', meridian);
 				        //start test
 				        //must wait until aura starts before doing anything test related.
 				        //If not, meridian variable will be undefined.
@@ -82,16 +83,22 @@ describe('Upload Component message.publish channel', function() {
             // capture the map click
             it("Map Click, Step 1 of X", function() {
                 require(['cmapi/main'], function(cmapiMain){
+                    console.log('in it', meridian);
+                    meridian.sandbox.external.postMessageToParent = function(message) {
+                       console.log(message);
+                    } ;
+                    cmapiMain.initialize.call(meridian, meridian);
 
-                    cmapiMain.initialize(meridian);
-
-                    //console.log(meridian);
-                    var actual; // payload received by the listener
                     var expected = { };  // expected payload
 
-                    meridian.sandbox.on('map.view.clicked', actual);
+                    meridian.sandbox.emit('map.view.clicked', {lat: 11.910353555773261, lon: -8.020019531249982, button: "left", type: "single"}); // the lat/long is here //
 
-                    chai.assert.deepEqual(actual,expected);
+
+                    // what's the problem again?
+                    // populated by the dummy extension, which will listen to the map click and then publish out
+
+
+                    //chai.assert.deepEqual(actual,expected);
 
                     // to do:
                     // load main
@@ -104,7 +111,7 @@ describe('Upload Component message.publish channel', function() {
                     // will cause all listeners to be hit
                     // then do the 'equal of the payload received by the listener vs the expected
 
-                                      // make sure all the listening to the channel are set up before doing the emit
+                    // make sure all the listening to the channel are set up before doing the emit
                     //setup listeners
                     //publish
                     //verify
