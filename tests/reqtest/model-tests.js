@@ -26,7 +26,7 @@ describe('Upload Component message.publish channel', function() {
 				    .use('extensions/utils-extension/utils-extension')
 				    .use('extensions/ajax-handler-extension/ajax-handler-extension')
 				    .use('extensions/session-extension/session-extension')
-				    .use('test/extensions/test-external-pubsub-extension/test-external-pubsub-extension')
+				    .use('test/extensions/test-external-pubsub-extension/test-external-pubsub-extension') // added new
 				    .use('extensions/state-manager-extension/state-manager-extension')
 				    .use('extensions/data-storage-extension/data-storage-extension')
 				    // .use('extensions/splash-screen-extension/splash-screen-extension')
@@ -43,7 +43,7 @@ describe('Upload Component message.publish channel', function() {
 				    // .use('extensions/exports/googlemaps-extension/googlemaps-extension')
 				    // .use('extensions/data-services/mock-extension/mock-extension')
 				    // .use('extensions/data-services/fake-extension/fake-extension')
-				    .use('extensions/cmapi-extension/cmapi-extension')
+				    .use('extensions/cmapi-extension/cmapi-extension')  // added for cmapi
 				    // .use('extensions/upload-data-extension/upload-data-extension')
 				    .start({ components: 'body' })
 				    .then(function(){
