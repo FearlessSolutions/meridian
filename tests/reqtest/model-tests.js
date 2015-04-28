@@ -5,7 +5,7 @@
 //start your test here. 
 //mocha needs to see describe globaly. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
 describe('Upload Component message.publish channel', function() {
-	  		var upload, plot, exitBeforeEach, meridian;
+	  		var upload, mapclick, exitBeforeEach, meridian;
 
 		  	//Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
 		  	beforeEach(function(done) {
@@ -78,47 +78,40 @@ describe('Upload Component message.publish channel', function() {
 		  			chai.assert.deepEqual(actual,expected);
 		  		});
 		  	});//it
-            it("Feature Plot.", function() {
-                require(['featurePlotComponent/cmapi-feature-publisher'], function(plot){
-                    plot.init(meridian);
-                    var actual;
+            // capture the map click
+            it("Map Click, Step 1 of X", function() {
+                require(['cmapi/main'], function(mapclick){
 
-                    var expected = {
-                        "overlayId": "testOverlayId1",
-                        "name": "Test Name 1",
-                        "format": "geojson",
-                        "feature": {
-                            "type": "FeatureCollection",
-                            "features": [
-                                {
-                                    "type": "Feature",
-                                    "geometry": {
-                                        "type": "Point",
-                                        "coordinates": [
-                                            0,
-                                            10
-                                        ]
-                                    },
-                                    "properties": {
-                                        "p1": "pp1"
-                                    },
-                                    "style": {
-                                        "height": 24,
-                                        "width": 24,
-                                        "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-                                        "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-                                    }
-                                }
-                            ]
-                        },
-                        "zoom": false,
-                        "readOnly": false
-                    };
-                    meridian.sandbox.on('map.feature.plot',function(params){
-                        actual = params;
-                    });
+                    var cmapiMain =  require('cmapi/main');
+                    cmapiMain.initialize();
+
+                    cmapiMain.init(meridian);
+                    var actual; // payload received by the listener
+                    var expected = { };  // expected payload
+
+                    meridian.sandbox.on('map.view.clicked', actual);
 
                     chai.assert.deepEqual(actual,expected);
+
+
+
+                    // load main
+                    //call/apply context = meridian
+                    //  initialize of cmapi/main.js (for loading of main look at apply and call)
+                    // make vars of the in and out payloads (actual vs expected)
+                    //setup listeners on the sandbox on the channel i expect the paylod to be published
+                    // hook into extension (get bill/chris/john)
+                    // emit map.click
+                    // will cause all listeners to be hit
+                    // then do the 'equal of the payload received by the listener vs the expected
+
+                                      // make sure all the listening to the channel are set up before doing the emit
+                    //setup listeners
+                    //publish
+                    //verify
+                    //
+
+
                 });
             });//it
 		});//describe
