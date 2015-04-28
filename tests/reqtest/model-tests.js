@@ -3,9 +3,9 @@
 //prompt, I only see this working in the browser.
 
 //start your test here. 
-//mocha needs to see describe globaly. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
+//mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
 describe('Upload Component message.publish channel', function() {
-	  		var upload, mapclick, exitBeforeEach, meridian;
+	  		var upload, cmapiMain, exitBeforeEach, meridian;
 
 		  	//Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
 		  	beforeEach(function(done) {
@@ -43,7 +43,7 @@ describe('Upload Component message.publish channel', function() {
 				    // .use('extensions/exports/googlemaps-extension/googlemaps-extension')
 				    // .use('extensions/data-services/mock-extension/mock-extension')
 				    // .use('extensions/data-services/fake-extension/fake-extension')
-				    // .use('extensions/cmapi-extension/cmapi-extension')
+				    .use('extensions/cmapi-extension/cmapi-extension')
 				    // .use('extensions/upload-data-extension/upload-data-extension')
 				    .start({ components: 'body' })
 				    .then(function(){
@@ -60,7 +60,8 @@ describe('Upload Component message.publish channel', function() {
 		  	it("Message should match.", function() {
 		  		require(['uploadComponent/upload-data-publisher'], function(upload){
 		  			upload.init(meridian);
-		  			console.log('uplaod component: ', upload);
+                    console.log(meridian);
+		  			console.log('upload component: ', upload);
 		  			var actual;
 
         			var expected = {
@@ -80,12 +81,11 @@ describe('Upload Component message.publish channel', function() {
 		  	});//it
             // capture the map click
             it("Map Click, Step 1 of X", function() {
-                require(['cmapi/main'], function(mapclick){
+                require(['cmapi/main'], function(cmapiMain){
 
-                    var cmapiMain =  require('cmapi/main');
-                    cmapiMain.initialize();
+                    cmapiMain.initialize(meridian);
 
-                    cmapiMain.init(meridian);
+                    //console.log(meridian);
                     var actual; // payload received by the listener
                     var expected = { };  // expected payload
 
@@ -93,8 +93,7 @@ describe('Upload Component message.publish channel', function() {
 
                     chai.assert.deepEqual(actual,expected);
 
-
-
+                    // to do:
                     // load main
                     //call/apply context = meridian
                     //  initialize of cmapi/main.js (for loading of main look at apply and call)

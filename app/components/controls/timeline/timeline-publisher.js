@@ -20,7 +20,6 @@ define([
             context.sandbox.emit('map.layer.index.set', params);
         },
         plotFeatures: function(params) {
-            console.log(params);
             context.sandbox.emit('map.features.plot', params);
 
         },
