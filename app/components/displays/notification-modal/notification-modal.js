@@ -1,6 +1,5 @@
 define([
-    './notification-modal-publisher'
-], function(publisher) {
+], function() {
 
     var context,
         modalInitialized,
@@ -14,15 +13,16 @@ define([
           * You can't initialize the actual modal here
           * because the element is not ready fast enough.
           */
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             modalInitialized = false;
             $modalContainer = context.$('#notification-modal');
             $modalBody = context.$('.modal-body');
 
             currentOrigin = '';
             context.$('#notification-modal-confirm').on('click', function(event){
-                publisher.publishConfirmation({
+                mediator.publishConfirmation({
                     "origin": currentOrigin
                 });
             });

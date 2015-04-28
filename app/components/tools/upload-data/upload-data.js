@@ -1,14 +1,8 @@
-/**
- * Applies handlers to buttons
- * Gets and checks the disk file
- * Runs the upload
- * Sends everything to the map
- */
 define([
-    './upload-data-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
+        mediator,
         DATASOURCE_NAME = 'upload',
         $modal,
         $file,
@@ -18,8 +12,9 @@ define([
         RESTORE_PAGE_SIZE = 500;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $modal = context.$('#upload-data-modal');
             $file = context.$('#file');
             $dummyFile = context.$('#dummy-file');
@@ -33,7 +28,7 @@ define([
                 keyboard: true,
                 show: false
             }).on('hidden.bs.modal', function() {
-                publisher.closeUploadTool();
+                mediator.closeUploadTool();
             });
 
             //Tie the hidden <file> input with the pretty UI one
@@ -54,7 +49,7 @@ define([
                     if(file.size > FILE_SIZE_LIMIT){
                         $dummyFile.parent().addClass('has-error');
                         $submit.prop('disabled', true);
-                        publisher.publishMessage({
+                        mediator.publishMessage({
                             messageType: 'error',
                             messageTitle: 'Data Upload',
                             messageText: 'File too big - 10MB limit'
@@ -113,9 +108,9 @@ define([
                         selectable: true
                     });
 
-                    publisher.addToProgressQueue();
+                    mediator.addToProgressQueue();
 
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         messageType: 'success',
                         messageTitle: 'Data Upload',
                         messageText: 'Data upload was started.'
@@ -128,7 +123,7 @@ define([
                         file: file,
                         filetype: filetype
                     }, function(data){ //Success callback
-                            publisher.publishMessage({
+                            mediator.publishMessage({
                                 messageType: 'success',
                                 messageTitle: 'Data Upload',
                                 messageText: 'Data upload was Uploaded. Starting Import'
@@ -160,12 +155,12 @@ define([
                         }
                     });
 
-                    publisher.closeUploadTool();
+                    mediator.closeUploadTool();
                 }
             });
 
-            context.$('#upload-cancel').on('click', publisher.closeUploadTool); //Handle close
-            publisher.closeUploadTool();
+            context.$('#upload-cancel').on('click', mediator.closeUploadTool); //Handle close
+            mediator.closeUploadTool();
         },
         stopQuery: function(params){
             var layerState,
@@ -188,13 +183,13 @@ define([
                 dataTransferState = layerState.dataTransferState;
 
                 if(dataTransferState !== 'stopped' && dataTransferState !== 'finished') {
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Data Service',
                         messageText: 'Query data transfer was stopped.'
                     });
 
-                    publisher.removeFromProgressQueue();
+                    mediator.removeFromProgressQueue();
 
                     context.sandbox.stateManager.setLayerStateById({
                         layerId: params.layerId,
@@ -237,7 +232,7 @@ define([
 
                 getPage(params, 0);
             }else{
-                publisher.publishMessage({
+                mediator.publishMessage({
                     messageType: 'warning',
                     messageTitle: 'Data Restore',
                     messageText: 'Dataset already loaded.'
@@ -264,7 +259,7 @@ define([
             } else if (!results || results.length === 0) {
                 markQueryFinished(queryId, queryName);
                 if(params.shouldZoom){
-                    publisher.publishZoomToLayer({layerId: queryId});
+                    mediator.publishZoomToLayer({layerId: queryId});
                 }
             } else {
                 processDataPage(results, {
@@ -282,7 +277,7 @@ define([
     }
 
     function setFileError(){
-        publisher.publishMessage({
+        mediator.publishMessage({
             messageType: 'warning',
             messageTitle: 'Data Upload',
             messageText: 'File type not supported for upload'
@@ -296,7 +291,7 @@ define([
             queryName = params.queryName,
             newData = [];
 
-        publisher.publishMessage({
+        mediator.publishMessage({
             messageType: 'info',
             messageTitle: 'Data Service',
             messageText: data.length+ ' events have been added to ' + queryName + ' query layer.'
@@ -344,7 +339,7 @@ define([
         // Clear data out from memory
         data = [];
 
-        publisher.publishData({
+        mediator.publishData({
             layerId: queryId,
             data: newData
         });
@@ -352,26 +347,26 @@ define([
 
 
     function markQueryFinished(queryId, queryName){
-        publisher.removeFromProgressQueue();
+        mediator.removeFromProgressQueue();
 
-        publisher.publishMessage({
+        mediator.publishMessage({
             messageType: 'success',
             messageTitle: 'Data Upload',
             messageText: queryName + ' Upload Complete'
         });
 
-        publisher.publishFinished({layerId: queryId});
+        mediator.publishFinished({layerId: queryId});
     }
 
     function markQueryError(queryId, queryName, error){
-        publisher.removeFromProgressQueue();
+        mediator.removeFromProgressQueue();
 
         //If the error was because we aborted, ignore
         if(error === 'abort'){
             return;
         }
 
-        publisher.publishMessage({
+        mediator.publishMessage({
             messageType: 'error',
             messageTitle: 'Data Upload',
             messageText: 'Connection to upload service failed for ' + queryName
@@ -384,7 +379,7 @@ define([
             }
         });
 
-        publisher.publishError({
+        mediator.publishError({
             layerId: queryId
         });
 
@@ -396,7 +391,7 @@ define([
         context.sandbox.dataStorage.datasets[params.queryId].dataService = DATASOURCE_NAME;
         context.sandbox.dataStorage.datasets[params.queryId].layerName = params.queryName;
 
-        publisher.createLayer({
+        mediator.createLayer({
             layerId: params.queryId,
             name: params.queryName,
             selectable: true
@@ -404,11 +399,11 @@ define([
     }
 
     function markQueryStart(queryName) {
-        publisher.publishMessage({
+        mediator.publishMessage({
             messageType: 'success',
             messageTitle: 'Data Service',
             messageText: queryName + ' query initiated'
         });
-        publisher.addToProgressQueue();
+        mediator.addToProgressQueue();
     }
 });

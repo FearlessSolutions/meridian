@@ -1,14 +1,11 @@
 define([
-    './datagrid-publisher',
     './datagrid-context-menu',
     'slickcore',
     'slickgrid',
     'slickdataview',
     'slickRowSelectionModel',
     'slickpager'
-], function (publisher, datagridContextMenu) {
-    //TODO add server support  // libs/SlickGrid-master/slick.remotemodel.js
-
+], function (datagridContextMenu) {
     /**
      * Style Issues:
      * Header text color --> bold black
@@ -22,6 +19,7 @@ define([
      */
 
     var context,
+        mediator,
         grid,
         dataView,
         pager,
@@ -49,8 +47,9 @@ define([
         };
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             dataView = new Slick.Data.DataView();
             dataView.getItemMetadata = getItemMetadata;
             dataView.setFilter(searchFilter);
@@ -58,13 +57,13 @@ define([
                 searchString: ''
             });
 
-            datagridContextMenu.init(context);
+            datagridContextMenu.init(context, thisMediator);
             $datagridContainer = context.$('#datagridContainer');
             $testArea = context.$('#test-area');
             $searchTextBox = context.$('#grid-search-text');
 
             context.$('.close').on('click', function(){
-                publisher.closeDatagrid();
+                mediator.closeDatagrid();
             });
 
             grid = new Slick.Grid('#grid', dataView, [], DEFAULT_GRID_OPTIONS);
@@ -117,7 +116,7 @@ define([
                 if(gridSelectedRowNumbers.length){ //Were some selected, not now
                     rowData = dataView.getItem(gridSelectedRowNumbers[gridSelectedRowNumbers.length -1 ]); //Use the last one
 
-                    publisher.identifyRecord({
+                    mediator.identifyRecord({
                         featureId: rowData.featureId,
                         layerId: rowData.layerId
                     });
@@ -193,7 +192,7 @@ define([
 
                 datagridVisible = true;
             } else {
-                publisher.closeDatagrid();
+                mediator.closeDatagrid();
                 datagridVisible = false;
             }
 

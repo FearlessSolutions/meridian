@@ -1,15 +1,16 @@
 define([
-    './mock-publisher'
-], function(publisher) {
+], function() {
 
     var context,
+        mediator,
         DATASOURCE_NAME = 'mock',
         RESTORE_PAGE_SIZE = 500;
 
     var exposed = {
 
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
         },
         executeQuery: function(params) {
             if(params.dataSourceId === DATASOURCE_NAME) {
@@ -47,13 +48,14 @@ define([
                 dataTransferState = layerState.dataTransferState;
 
                 if(dataTransferState !== 'stopped' && dataTransferState !== 'finished') {
-                    publisher.publishMessage({
-                        messageType: 'warning',
-                        messageTitle: 'Data Service',
-                        messageText: 'Query data transfer was stopped.'
+
+                    mediator.publishMessage({
+                        messageType: "warning",
+                        messageTitle: "Data Service",
+                        messageText: "Query data transfer was stopped."
                     });
 
-                    publisher.removeFromProgressQueue();
+                    mediator.removeFromProgressQueue();
 
                     context.sandbox.stateManager.setLayerStateById({
                         layerId: queryId,
@@ -143,10 +145,11 @@ define([
 
                 } else {
                     // TODO: What do we do if the data set is already on the map?
-                    publisher.publishMessage({
-                        messageType: 'warning',
-                        messageTitle: 'Data Service',
-                        messageText: 'Dataset already loaded.'
+
+                    mediator.publishMessage({
+                        messageType: "warning",
+                        messageTitle: "Data Service",
+                        messageText: "Dataset already loaded."
                     });
                 }
             }
@@ -161,9 +164,11 @@ define([
         context.sandbox.dataStorage.datasets[queryId].dataService = DATASOURCE_NAME;
         context.sandbox.dataStorage.datasets[queryId].layerName = queryName || queryId;
 
-        publisher.createLayer({
-            layerId: queryId,
-            name: queryName,
+
+        mediator.createLayer({
+            layerId: params.queryId,
+            name: params.name,
+
             selectable: true,
             coords: {
                 minLat: params.minLat,
@@ -175,19 +180,21 @@ define([
     }
 
     function initiateQuery(queryName) {
-        publisher.publishMessage({
-            messageType: 'success',
-            messageTitle: 'Data Service',
-            messageText: queryName + ' query initiated'
+
+        mediator.publishMessage({
+            messageType: "success",
+            messageTitle: "Data Service",
+            messageText: queryName + " query initiated"
         });
-        publisher.addToProgressQueue();
+        mediator.addToProgressQueue();
     }
 
     function completeQuery(name, queryId) {
-        publisher.publishMessage({
-            messageType: 'success',
-            messageTitle: 'Data Service',
-            messageText: name + ' query complete'
+
+        mediator.publishMessage({
+            messageType: "success",
+            messageTitle: "Data Service",
+            messageText: name + " query complete"
         });
 
         context.sandbox.stateManager.setLayerStateById({
@@ -197,11 +204,11 @@ define([
             }
         });
 
-        publisher.publishFinish({
+        mediator.publishFinish({
             layerId: queryId
         });
 
-        publisher.removeFromProgressQueue();
+        mediator.removeFromProgressQueue();
     }
 
     function processDataPage(data, params) {
@@ -210,7 +217,9 @@ define([
             keys = context.sandbox.dataServices[DATASOURCE_NAME].keys,
             newKeys = {};
 
-        publisher.publishMessage({
+        layerId = params.queryId || data[0].properties.queryId;
+
+        mediator.publishMessage({
             messageType: 'info',
             messageTitle: 'Data Service',
             messageText: data.length+ ' events have been added to ' + params.name + ' query layer.'
@@ -276,20 +285,20 @@ define([
         // Clear data out from memory
         data = [];
 
-        publisher.plotFeatures({
-            layerId: queryId,
+        mediator.plotFeatures({
+            layerId: layerId,
             data: newData
         });
     }
 
     function handleError(params) {
-        publisher.publishMessage({
+        mediator.publishMessage({
             messageType: 'error',
             messageTitle: 'Data Service',
             messageText: 'Connection to data service failed.'
         });
 
-        publisher.removeFromProgressQueue();
+        mediator.removeFromProgressQueue();
 
         context.sandbox.stateManager.setLayerStateById({
             layerId: params.queryId,
@@ -298,7 +307,7 @@ define([
             }
         });
 
-        publisher.publishError({
+        mediator.publishError({
             layerId: params.queryId
         });
     }

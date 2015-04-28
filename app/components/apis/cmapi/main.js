@@ -9,9 +9,9 @@ define([
     './feature/cmapi-feature',
     './status/cmapi-status',
     './clear/cmapi-clear',
-    './cmapi-subscriber',
+    './cmapi-mediator',
     'togeojson'
-], function(basemap, view, overlay, feature, status, clear, subscriber) {
+], function(basemap, view, overlay, feature, status, clear, mediator) {
     var context,
         processing = {};
 
@@ -23,13 +23,13 @@ define([
             context = this;
             
             basemap.init(context, sendError, emit);
-            feature.init(context, sendError, emit);
-            overlay.init(context, sendError, emit);
+            feature.init(context, sendError);
+            overlay.init(context, sendError);
             status.init(context, sendError, emit);
             view.init(context, sendError);
             clear.init(context, sendError);
 
-            subscriber.init(context);
+            mediator.init(context);
 
             context.sandbox.external.onPostMessage(receive);
 

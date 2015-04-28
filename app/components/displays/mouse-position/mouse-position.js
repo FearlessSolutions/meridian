@@ -2,13 +2,15 @@ define([
     'bootstrap'
 ], function () {
     var context,
+        mediator,
         $container,
         $coordinates,
         DECIMAL_PLACES = 6;
 
 	var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $container = context.$('.container');
             $coordinates = context.$('#coordinates');
             $coordinates.html(

@@ -1,14 +1,13 @@
 define([
-    './playback-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
 
     var context,
         $playbackButton,
         running = false;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $playbackButton = context.$('#playback');
 
@@ -25,9 +24,9 @@ define([
                 // if there is more than one layer, handle event
                 if(checkLayerCount() > 1) {
                     if(running) {
-                        publisher.stopPlayback({"status": "Stopped"});
+                        mediator.stopPlayback({"status": "Stopped"});
                     } else {
-                        publisher.startPlayback();
+                        mediator.startPlayback();
                     }
                 } else {
                     warnPlaybackDisabled();
@@ -39,7 +38,7 @@ define([
             if(checkLayerCount() > 1) {
                 if(!running) {
                     $playbackButton.find('span').removeClass('glyphicon-play').addClass('glyphicon-stop');
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         "messageType": "info",
                         "messageTitle": "Timeline",
                         "messageText": "Playback Started"
@@ -55,7 +54,7 @@ define([
             if(checkLayerCount() > 1) {
                 if(running) {
                     $playbackButton.find('span').removeClass('glyphicon-stop').addClass('glyphicon-play');
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         "messageType": "info",
                         "messageTitle": "Timeline",
                         "messageText": "Playback " + params.status
@@ -77,7 +76,7 @@ define([
     }
 
     function warnPlaybackDisabled() { 
-        publisher.publishMessage({
+        mediator.publishMessage({
             "messageType": "warning",
             "messageTitle": "Timeline",
             "messageText": "Playback can't be controlled until you have more than one layer of data"

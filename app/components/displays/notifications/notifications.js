@@ -6,8 +6,9 @@ define([
 
     var exposed = { 
 
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             toastr.options = {
                 closeButton: true,
                 debug: false,

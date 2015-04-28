@@ -1,12 +1,15 @@
 define([
-    './data-history-publisher',
     'text!./data-history-entry.hbs',
     'text!./data-history-detail-view.hbs',
     'bootstrap',
     'handlebars',
     'moment'
-], function (publisher, dataHistoryEntryHBS, dataHistoryDetailViewHBS) {
+], function (
+    dataHistoryEntryHBS,
+    dataHistoryDetailViewHBS
+) {
     var context,
+        mediator,
         dataHistoryEntryTemplate,
         dataHistoryDetailViewTemplate,
         MENU_DESIGNATION = 'data-history',
@@ -20,8 +23,9 @@ define([
         currentDataSet = {};
     
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
 
             dataHistoryEntryTemplate = Handlebars.compile(dataHistoryEntryHBS);
             dataHistoryDetailViewTemplate = Handlebars.compile(dataHistoryDetailViewHBS);
@@ -39,19 +43,19 @@ define([
                 keyboard: true,
                 show: false
             }).on('hidden.bs.modal', function() {
-                publisher.closeDataHistory();
+                mediator.closeDataHistory();
                 exposed.hideDetailedInfo();
             });
 
             $closeButton.on('click', function(event) {
                 event.preventDefault();
-                publisher.closeDataHistory();
+                mediator.closeDataHistory();
             }); 
 
             context.$('.expiration span').tooltip();
         },
         open: function() {
-            publisher.publishOpening({componentOpening: MENU_DESIGNATION});
+            mediator.publishOpening({componentOpening: MENU_DESIGNATION});
 
             // Populate Data History table
             exposed.updateDataHistory();
@@ -107,8 +111,8 @@ define([
                     exposed.hideDetailedInfo();
                 });
                 context.$('.data-history-detail-view .data-action-restore').on('click', function(event) {
-                    publisher.restoreDataset(data);
-                    publisher.closeDataHistory();
+                    mediator.restoreDataset(data);
+                    mediator.closeDataHistory();
                 });
                 context.$('.data-history-detail-view .data-action-delete').on('click', function(event) {
                     // Delete the dataset
@@ -118,7 +122,7 @@ define([
                 context.$('.data-history-detail-view .data-action-requery').on('click', function(event) {
                     // Open up query dialog 
                     requeryDataset(tempData.datasetId);
-                    publisher.closeDataHistory();
+                    mediator.closeDataHistory();
                 });
 
                 $modalBody.addClass('finiteHeight');
@@ -207,8 +211,8 @@ define([
             });
         });
         context.$('.data-history-list .data-action-restore').on('click', function(event) {
-            publisher.restoreDataset(currentDataSet[context.$(this).parent().parent().data('datasetid')]);
-            publisher.closeDataHistory();
+            mediator.restoreDataset(currentDataSet[context.$(this).parent().parent().data('datasetid')]);
+            mediator.closeDataHistory();
         });
         context.$('.data-history-list .data-action-delete').on('click', function(event) {
             // Delete the dataset
@@ -217,7 +221,7 @@ define([
         });
         context.$('.data-history-list .data-action-requery').on('click', function(event) {
             requeryDataset(context.$(this).parent().parent().data('datasetid'));
-            publisher.closeDataHistory();
+            mediator.closeDataHistory();
         });
     }
 
@@ -250,7 +254,7 @@ define([
 
         //If the layer already exists on the map, delete it
         if(context.sandbox.stateManager.layers[datasetId]){
-            publisher.deleteDataset({
+            mediator.deleteDataset({
                 layerId: datasetId
             });
         }
@@ -271,7 +275,7 @@ define([
             });
             currentDataArray = newDataArray;
             populateDataHistoryTable();
-            publisher.publishMessage( {
+            mediator.publishMessage( {
                 messageType: 'success',
                 messageTitle: 'Data History',
                 messageText: 'Dataset successfully removed'
@@ -280,12 +284,10 @@ define([
     }
 
     function requeryDataset(datasetId) {
-
         context.sandbox.dataStorage.getMetadataById(datasetId, function(data) {
             publisher.closeDataHistory();
             publisher.requeryDataset(data);
         });
-
     }
 
     return exposed;

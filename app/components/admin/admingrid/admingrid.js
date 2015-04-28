@@ -1,5 +1,4 @@
 define([
-    './admingrid-publisher',
     'slickcore',
     'slickgrid',
     'slickdataview',
@@ -9,15 +8,18 @@ define([
 ], function () {
 
     var context,
+        mediator,
         grid,
         dataView;
 
     return {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             var columns,
                 options;
 
             context = thisContext;
+            mediator = thisMediator;
+
             dataView = new Slick.Data.DataView();
             columns = [
                 {

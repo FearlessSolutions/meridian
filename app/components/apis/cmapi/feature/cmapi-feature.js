@@ -1,7 +1,6 @@
 define([
-	'./cmapi-feature-publisher',	
-	'./cmapi-feature-subscriber'
-], function (publisher, subscriber) {
+	'./cmapi-feature-mediator',	
+], function (mediator) {
 	var context,
 		defaultLayerId,
         sendError,
@@ -12,8 +11,7 @@ define([
             context = thisContext;
             defaultLayerId = context.sandbox.cmapi.defaultLayerId;
             sendError = errorChannel;
-            publisher.init(context);
-            subscriber.init(context, exposed);
+            mediator.init(context, exposed);
         },
         receive: function(channel, message) {
             var chName  = context.sandbox.cmapi.utils.createChannelNameFunction(channel);
@@ -67,7 +65,7 @@ define([
                     layerId: message.overlayId,
                     featureIds: [message.featureId]
                 });
-                publisher.publishHideFeatures({
+                mediator.publishHideFeatures({
                     layerId: message.overlayId,
                     featureIds: [message.featureId]
                 });
@@ -85,12 +83,12 @@ define([
                     "layerId": message.overlayId,
                     "featureIds": [message.featureId]
                 });
-                publisher.publishShowFeatures({
+                mediator.publishShowFeatures({
                     "layerId": message.overlayId,
                     "featureIds": [message.featureId]
                 });
                 if(message.zoom) {
-                    publisher.publishZoomToFeatures({
+                    mediator.publishZoomToFeatures({
                         "layerId": message.overlayId,
                         "featureIds": [message.featureId]
                     });
@@ -124,21 +122,26 @@ define([
             context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
             context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
 
-            publisher.createLayer({
+            mediator.createLayer({
                 layerId: layerId,
                 selectable: false //TODO remove when select is re-implemented
             });    
         }
+                
+        mediator.createLayer({
+            layerId: message.overlayId,
+        });    
+        
         //plot feature(s) from payload
-        publisher.plotFeatures({
-            layerId: layerId,
+        mediator.plotFeatures({
+            layerId: message.overlayId,
             data: message.feature.features
         });    
 
         //zoom to feature if specified in payload
         if(message.zoom) {
-            publisher.zoomToFeatures({
-                layerId: layerId
+            mediator.zoomToFeatures({
+                "layerId": message.overlayId,
             });
         }
 

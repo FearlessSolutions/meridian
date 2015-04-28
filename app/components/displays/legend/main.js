@@ -2,10 +2,14 @@ define([
     'text!./legend.css',
     'text!./legend.hbs',
     './legend',
-    './legend-subscriber',
-    './legend-publisher',
+    './legend-mediator',
     'handlebars'
-], function (legendCSS, legendHBS, legend, legendSubscriber, legendPublisher) {
+], function (
+    legendCSS, 
+    legendHBS, 
+    legend, 
+    legendMediator
+) {
 
     return {
         initialize: function() {
@@ -14,9 +18,8 @@ define([
             this.html(html);
             this.sandbox.utils.addCSS(legendCSS, 'display-legend-component-style');
 
-            legend.init(this);
-            legendSubscriber.init(this);
-            legendPublisher.init(this);
+            legendMediator.init(this);
+            legend.init(this, legendMediator);
         }
     };
                 

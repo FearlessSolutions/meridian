@@ -1,13 +1,13 @@
 define([
-    './clear-toggle-publisher',
+    './clear-toggle-mediator',
     'bootstrap'
-], function (publisher) {
+], function () {
 
     var context,
         $toggleButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $toggleButton = context.$('#clear-toggle');
 
@@ -21,7 +21,7 @@ define([
             });
 
             $toggleButton.on('click', function(event){
-                publisher.publishOpenClearDialog();
+                mediator.openClearDialog();
             });
         }
     };

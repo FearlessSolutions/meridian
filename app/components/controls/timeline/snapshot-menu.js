@@ -1,13 +1,13 @@
 define([
-    './timeline-publisher',
     'text!./snapshot-menu.hbs',
     'handlebars'
-], function (publisher, snapshotMenuHBS) {
-    var context;
+], function (snapshotMenuHBS) {
+    var context, mediator;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
         },
         createMenu: function(params){
             var layerId = params.layerId,

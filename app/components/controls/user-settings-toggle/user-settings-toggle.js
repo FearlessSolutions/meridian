@@ -1,12 +1,11 @@
 define([
-    './user-settings-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
         $userSettingsButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $userSettingsButton = context.$('#userSettingsToggleButton');
 
@@ -22,9 +21,9 @@ define([
             $userSettingsButton.on('click', function(event) {
                 event.preventDefault();
                 if($userSettingsButton.hasClass('active')) {
-                    publisher.closeUserSettings();
+                    mediator.closeUserSettings();
                 } else {
-                    publisher.openUserSettings();
+                    mediator.openUserSettings();
                 }
             });
         },
