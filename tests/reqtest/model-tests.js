@@ -57,7 +57,7 @@ describe('Upload Component message.publish channel', function() {
 
 		  	});//end of beforeEach
 
-/*
+
 		  	it("Message should match.", function() {
 		  		require(['uploadComponent/upload-data-publisher'], function(upload){
 		  			upload.init(meridian);
@@ -85,9 +85,9 @@ describe('Upload Component message.publish channel', function() {
 
 
 		  	});//it
-*/
 
 
+/*
 
 it("Should confirm connection with the clear action.", function() {
 
@@ -126,6 +126,6 @@ require(['components/controls/clear-toggle/main'], function(main){
 
 });//it
 
-
+*/
 
 		});//describe
