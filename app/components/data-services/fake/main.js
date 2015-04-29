@@ -1,7 +1,7 @@
 define([
     './fake',
     './fake-publisher',
-    './fake-subscriber',
+    './fake-subscriber'
 ], function (dataServiceFake, dataServiceFakePublisher, dataServiceFakeSubscriber) {
 
     return {

@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: window.location.origin, //This makes it so that all modes start at the same place.
+    baseUrl:'./',//window.location.origin, //This makes it so that all modes start at the same place.
     waitSeconds: 30,
     paths: {
         aura: 'bower_components/aura/lib',
@@ -26,7 +26,8 @@ require.config({
         slickpager: 'libs/SlickGrid-master/controls/slick.pager',
         moment: 'libs/momentjs-2.8.3/moment.min',
         togeojson: 'libs/togeojson/togeojson',
-        coordinateConverter: 'libs/coordinate-converter/cc'
+        coordinateConverter: 'libs/coordinate-converter/cc',
+        text: 'bower_components/requirejs-text/text'
     },
     shim:{
         aura: {
@@ -76,7 +77,14 @@ require.config({
     }
 });
 
-require(['jquery', 'aura/aura', 'meridian-config', 'jqueryCssWatch'], function($, Aura, configuration) {
+require(['jquery',
+    'aura/aura',
+    'meridian-config',
+//    'text', //Load here for faster loading later
+//    'bootstrap', //Load here for faster loading later
+//    'handlebars', //Load here for faster loading later
+    'jqueryCssWatch'
+], function($, Aura, configuration) {
     // Listen to CSSWatch trigger (fired from datagrid/main.js)
     $(document).on('css-change', '#datagridContainer', function(event, change){
         $('#mapContainer').css('height', 'calc(100% - ' + change.height + ')');
