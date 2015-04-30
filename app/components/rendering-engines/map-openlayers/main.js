@@ -19,8 +19,9 @@ define([
             this.html(html);
 
             mapCore.init(context);
-            olMapRendererPublisher.init(context);
             olMapRendererSubscriber.init(context);
+            olMapRendererPublisher.init(context);
+            context.sandbox.stateManager.map.status.setReady(true);
         },
         getMap: mapCore.getMap
     };

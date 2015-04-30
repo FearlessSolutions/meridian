@@ -116,16 +116,20 @@ define([
                 meridian.sandbox.external.postMessageToParent = function (params) {
                     if (params.channel == 'map.status.ready') {
                         var map = renderer.getMap();
-                        console.log(map.getZoom());
                         //test goes here
                         // map goes first
-                        //meridian.sandbox.on('test.publish.map', function(params) {
-                        //    console.log(params);
-                        //});
-                        meridian.sandbox.external.receiveMessage({data:{channel:'map.view.zoom.in', message: {} }});
+                        map.events.register("zoomend", map, function(){
+                            console.debug('This is the zoom level after the emit has been published ' + map.getZoom());
+                        });
+                        console.debug('This is the initial map zoom level '+  map.getZoom());
+
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.view.zoom.in', message: {} }});  // manual publish to the channel
+                        // compare of the zoom level here
+                        //var actual
+                        chai.assert.equal(6, 7);
                     }
                 };
-                meridian.sandbox.on('map.zoom.in', function(params) { console.log('zoomListen')} );
+                //meridian.sandbox.on('map.zoom.in', function(params) { console.log('zoomListen')} );
 
                 cmapiMain.initialize.call(meridian, meridian);
                 var $fixtures = $('#fixtures');
