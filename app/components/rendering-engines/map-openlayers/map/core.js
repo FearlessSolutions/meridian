@@ -75,6 +75,7 @@ define([
             context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
             
             context.sandbox.stateManager.map.status.setReady(true);
+
         },
         /**
          * Zoom In
@@ -384,6 +385,9 @@ define([
             mapLayers.createStaticLayers({
                 "map": map
             });
+        },
+        getMap: function(){
+            return map;
         }
     };
     
