@@ -9,9 +9,13 @@ define([
 //Unless there is a way of including the require.js file and the config file in the command
 //prompt, I only see this working in the browser.
 
+    var assert = chai.assert,
+        expect = chai.expect,
+        should = chai.should(); // Note that should has to be executed
+
 //start your test here. 
 //mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
-    describe('Upload Component message.publish channel', function () {
+    describe('CMAPI Unit Test Channels', function () {
         var upload, cmapiMain, renderer, exitBeforeEach, meridian;
 
         //Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
@@ -110,23 +114,26 @@ define([
         //});//it
 
         // Capture the Zoom-in
-        it("Map Zoom-In (chris)", function () {
+        it("Map Zoom-In (chris)", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
                 meridian.sandbox.external.postMessageToParent = function (params) {
                     if (params.channel == 'map.status.ready') {
-                        var map = renderer.getMap();
-                        //test goes here
                         // map goes first
+                        var map = renderer.getMap();
+                        var afterZoom_state;
+                        //test goes here
+
                         map.events.register("zoomend", map, function(){
                             console.debug('This is the zoom level after the emit has been published ' + map.getZoom());
+                            afterZoom_state = map.getZoom();
+                            // compare of the zoom level here
+                            expect(beforeZoom_state).to.not.equal(afterZoom_state);
+                            done();
                         });
+                        var beforeZoom_state = map.getZoom();
                         console.debug('This is the initial map zoom level '+  map.getZoom());
-
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.view.zoom.in', message: {} }});  // manual publish to the channel
-                        // compare of the zoom level here
-                        //var actual
-                        chai.assert.equal(6, 7);
                     }
                 };
                 //meridian.sandbox.on('map.zoom.in', function(params) { console.log('zoomListen')} );
