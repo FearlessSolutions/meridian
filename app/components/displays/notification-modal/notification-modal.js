@@ -2,6 +2,7 @@ define([
 ], function() {
 
     var context,
+        mediator,
         modalInitialized,
         $modalContainer,
         $modalBody,

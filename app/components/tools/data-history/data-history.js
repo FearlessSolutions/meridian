@@ -285,8 +285,8 @@ define([
 
     function requeryDataset(datasetId) {
         context.sandbox.dataStorage.getMetadataById(datasetId, function(data) {
-            publisher.closeDataHistory();
-            publisher.requeryDataset(data);
+            mediator.closeDataHistory();
+            mediator.requeryDataset(data);
         });
     }
 
