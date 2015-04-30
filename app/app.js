@@ -1,4 +1,5 @@
 require.config({
+    baseUrl: window.location.origin, //This makes it so that all modes start at the same place.
     waitSeconds: 30,
     paths: {
         aura: 'bower_components/aura/lib',
@@ -8,7 +9,6 @@ require.config({
         bootstrap: 'libs/bootstrap-3.2.0/bootstrap',
         daterangepicker: 'libs/bootstrap-daterangepicker-master/daterangepicker',
         toastr: 'libs/toastr-2.0.1/toastr',
-//        jqueryDrag: 'libs/jquery-drag-0.1.0/jquery-drag',
         jqueryDrag: 'libs/SlickGrid-master/lib/jquery.event.drag-2.2',
         jqueryDrop: 'libs/SlickGrid-master/lib/jquery.event.drop-2.2',
         bootstro: 'libs/bootstro/bootstro',
@@ -18,7 +18,6 @@ require.config({
         paginator: 'libs/bootstrap-paginator/bootstrap-paginator.min',
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
-//        jqueryUI: 'libs/jquery-ui-1.10.4/jquery-ui-1.10.4.custom.min', // Custom build, check file's header to see what it includes
         jqueryUI: 'libs/jquery-ui-1.11.2.custom/jquery-ui.min', // Custom build, check file's header to see what it includes
         slickcore: 'libs/SlickGrid-master/slick.core',
         slickgrid: 'libs/SlickGrid-master/slick.grid',
@@ -26,6 +25,7 @@ require.config({
         slickRowSelectionModel: 'libs/SlickGrid-master/plugins/slick.rowselectionmodel',
         slickpager: 'libs/SlickGrid-master/controls/slick.pager',
         moment: 'libs/momentjs-2.8.3/moment.min',
+        togeojson: 'libs/togeojson/togeojson',
         coordinateConverter: 'libs/coordinate-converter/cc'
     },
     shim:{
@@ -76,23 +76,22 @@ require.config({
     }
 });
 
-require(['jquery', 'aura/aura', 'jqueryCssWatch'], function($, Aura) {
-
+require(['jquery', 'aura/aura', 'meridian-config', 'jqueryCssWatch'], function($, Aura, configuration) {
     // Listen to CSSWatch trigger (fired from datagrid/main.js)
     $(document).on('css-change', '#datagridContainer', function(event, change){
         $('#mapContainer').css('height', 'calc(100% - ' + change.height + ')');
         $('div[data-aura-component="rendering-engines/map-openlayers"], #map').css('height', '100%');
         window.dispatchEvent(new Event('resize')); // Trigger OpenLayers to redraw the map
     });
-    
+
     Aura({
         debug: true,
-        appName: 'Meridian',
+        appName: configuration.appName,
         sources: {default: 'components'},
-        mediator: {maxListeners: 50},
-        version: '1.0.0',
-        releaseDate: '02/27/2015',
-        cmapiVersion: '1.2.0'
+        mediator: configuration.mediator,
+        version: configuration.version,
+        releaseDate: configuration.releaseDate,
+        cmapiVersion: configuration.cmapiVersion
     })
     .use('extensions/system-configuration-extension/system-configuration-extension')
     .use('extensions/utils-extension/utils-extension')

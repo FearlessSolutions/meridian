@@ -2,10 +2,14 @@ define([
     'text!./visual-mode-toggle.css',
     'text!./visual-mode-toggle.hbs',
     './visual-mode-toggle',
-    './visual-mode-toggle-publisher',
-    './visual-mode-toggle-subscriber',
+    './visual-mode-toggle-mediator',
     'handlebars'
-], function (visualModeCSS, visualModeHBS, visualMode, visualModePublisher, visualModeSubscriber) {
+], function (
+    visualModeCSS, 
+    visualModeHBS, 
+    visualMode,  
+    visualModeMediator
+) {
 
     return {
         initialize: function() {
@@ -19,9 +23,8 @@ define([
                 this.html(html);
             }
 
-            visualMode.init(this);
-            visualModePublisher.init(this);
-            visualModeSubscriber.init(this);
+            visualModeMediator.init(this);
+            visualMode.init(this, visualModeMediator);
         }
     };
 

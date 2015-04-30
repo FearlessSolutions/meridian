@@ -1,12 +1,11 @@
 define([
-    './data-upload-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
         $toggleButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $toggleButton = context.$('#dataUploadToggleButton');
 
@@ -22,10 +21,10 @@ define([
             $toggleButton.on('click', function(event) {
                 event.preventDefault();
                 if($toggleButton.hasClass('active')) {
-                    publisher.hideLegend();
+                    mediator.hideLegend();
                     exposed.removeActiveClass();
                 } else {
-                    publisher.showLegend();
+                    mediator.showLegend();
                     exposed.addActiveClass();
                 }
             });

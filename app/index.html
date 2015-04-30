@@ -3,17 +3,17 @@
 <head>
     <meta charset="utf-8">
     <title>Meridian Map</title>
-    <link rel="stylesheet" href="./libs/bootstrap-3.2.0/css/bootstrap.css">
-    <link rel="stylesheet" href="./libs/meridian_custom/css/meridian_custom.css">
-    <link rel="stylesheet" href="./libs/toastr-2.0.1/toastr.css">
-    <link rel="stylesheet" href="./libs/bootstrap-dialog/bootstrap-dialog.css">
-    <link rel="stylesheet" href="./libs/jquery-ui-1.11.2.custom/jquery-ui.min.css">
-    <link rel="stylesheet" href="./libs/bootstrap-multiselect-0.9.4/bootstrap-multiselect.css">
-    <link rel="stylesheet" href="./libs/select2-3.4.8/select2.css">
+    <link rel="stylesheet" href="/libs/bootstrap-3.2.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/libs/meridian_custom/css/meridian_custom.css">
+    <link rel="stylesheet" href="/libs/toastr-2.0.1/toastr.css">
+    <link rel="stylesheet" href="/libs/bootstrap-dialog/bootstrap-dialog.css">
+    <link rel="stylesheet" href="/libs/jquery-ui-1.11.2.custom/jquery-ui.min.css">
+    <link rel="stylesheet" href="/libs/bootstrap-multiselect-0.9.4/bootstrap-multiselect.css">
+    <link rel="stylesheet" href="/libs/select2-3.4.8/select2.css">
     <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="./styles/main.css">
+    <link rel="stylesheet" href="/styles/main.css">
     <!-- endbuild -->
-    <script data-main="app" src="./bower_components/requirejs/require.js"></script>
+    <script data-main="./app" src="/bower_components/requirejs/require.js"></script>
 </head>
 <body>
     <div id="loading">
@@ -30,6 +30,7 @@
         <div data-aura-component="controls/basemap-gallery"></div>
         <div data-aura-component="controls/timeline"></div>
         <div data-aura-component="tools/query"></div>
+        <div data-aura-component="tools/draw"></div>
         <div data-aura-component="tools/bookmark"></div>
         <div data-aura-component="tools/data-history"></div>
         <div data-aura-component="tools/upload-data"></div>
@@ -47,6 +48,7 @@
         <div id="left-side-menu">
             <div class="menu-button-group">
                 <div data-aura-component="controls/query-toggle"></div>
+                <div data-aura-component="controls/draw-toggle"></div>
                 <div data-aura-component="controls/bookmark-toggle"></div>
                 <div data-aura-component="controls/datagrid-toggle"></div>
                 <div data-aura-component="controls/legend-toggle"></div>

@@ -1,11 +1,11 @@
 define([
-    './user-settings-publisher',
     'text!./user-settings-basemapList.hbs',
     'bootstrap',
     'handlebars'
-], function (publisher,userSettingsListHBS) {
+], function (userSettingsListHBS) {
 
     var context,
+        mediator,
         MENU_DESIGNATION = 'user-settings',
         menuDisabled, //If the whole menu is disabled
         queryDrawOnDefault = true,
@@ -22,8 +22,9 @@ define([
         $cursorLocationDefaultToggle;
     
     var exposed = {
-        init:function(thisContext) {
+        init:function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
 
             $modal = context.$('#user-settings-modal');
             $modalBody = context.$('#user-settings-modal .modal-body');
@@ -54,17 +55,17 @@ define([
                 "keyboard": true,
                 "show": false
              }).on('hidden.bs.modal', function() {
-                publisher.closeUserSettings();
+                mediator.closeUserSettings();
              });
 
              $closeButton.on('click', function(event) {
                 event.preventDefault();
-                publisher.closeUserSettings();
+                mediator.closeUserSettings();
             }); 
 
         },
         open: function() {
-            publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            mediator.publishOpening({"componentOpening": MENU_DESIGNATION});
             $modal.modal('show');
         },
         close: function() {
@@ -147,7 +148,7 @@ define([
 
             //Publish when shown
             $modalBody.on('shown.bs.dialog', function(){
-                publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+                mediator.publishOpening({"componentOpening": MENU_DESIGNATION});
             });
 
             /**
@@ -231,20 +232,20 @@ define([
                     });
 
                     if(preferencesSaveStatus) {
-                        publisher.publishMessage({
+                        mediator.publishMessage({
                             "messageType": "success",
                             "messageTitle": "User Settings",
                             "messageText": "User settings saved."
                         });
                     }else {
-                        publisher.publishMessage({
+                        mediator.publishMessage({
                             "messageType": "error",
                             "messageTitle": "User Settings",
                             "messageText": "User settings failed to save."
                         });
                     }
                 }else {
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         "messageType": "error",
                         "messageTitle": "User Settings",
                         "messageText": "Invalid coordinates."
@@ -303,7 +304,7 @@ define([
             $maxLon.val(params.maxLon);
             $minLat.val(params.minLat);
 
-            publisher.publishMessage({
+            mediator.publishMessage({
                 "messageType": "success",
                 "messageTitle": "User Settings",
                 "messageText": "Extent loaded. Remember to save."

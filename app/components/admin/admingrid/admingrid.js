@@ -1,28 +1,54 @@
 define([
-    './admingrid-publisher',
     'slickcore',
     'slickgrid',
     'slickdataview',
     'slickRowSelectionModel',
     'slickpager',
     'moment'
-], function (publisher) {
+], function () {
 
     var context,
-    grid,
-    data,
-    dataView, columns, options;
-    var exposed = {
-        init: function(thisContext) {
-                
-            context = thisContext,
+        mediator,
+        grid,
+        dataView;
+
+    return {
+        init: function(thisContext, thisMediator) {
+            var columns,
+                options;
+
+            context = thisContext;
+            mediator = thisMediator;
+
             dataView = new Slick.Data.DataView();
-            var columns = [
-                {id: "col1", name: "User ID", field: "id"},
-                {id: "col2", name: "Data Source", field: "dataSource", maxWidth: 120, sortable: true },
-                {id: "col3", name: "Query Date", field: "queryDate", maxWidth: 240, sortable: true },
-                {id: "col4", name: "Expiration Date", field: "expireDate", maxWidth: 240, sortable: true }
-            ],
+            columns = [
+                {
+                    id: 'col1',
+                    name: 'User ID',
+                    field: 'id'
+                },
+                {
+                    id: 'col2',
+                    name: 'Data Source',
+                    field: 'dataSource',
+                    maxWidth: 120,
+                    sortable: true
+                },
+                {
+                    id: 'col3',
+                    name: 'Query Date',
+                    field: 'queryDate',
+                    maxWidth: 240,
+                    sortable: true
+                },
+                {
+                    id: 'col4',
+                    name: 'Expiration Date',
+                    field: 'expireDate',
+                    maxWidth: 240,
+                    sortable: true
+                }
+            ];
             options = {
                 enableCellNavigation: false,
                 enableColumnReorder: true,
@@ -31,36 +57,36 @@ define([
                 syncColumnCellResize: true,
                 fullWidthRows: true
             };
+
             grid = new Slick.Grid('#admingrid', dataView, columns, options);
 
-            $(window).resize(function(){                
-                // redraws grid on browser resize
+            // redraws grid on browser resize
+            context.sandbox.utils.onWindowResize(function(){
                 gridHeight();
                 grid.resizeCanvas();
             });
         },
         visible: function() {
-            $('#admingridContainer').css('visibility','visible');                    
+            context.$('#admingridContainer').css('visibility','visible');
         },
         hidden: function() {
-            $('#admingridContainer').css('visibility','hidden');
+            context.$('#admingridContainer').css('visibility','hidden');
         },
         createGridData: function(data) {
             var currentDataArray = [];
               
                 context.sandbox.utils.each(data, function (queryId, obj) {
-                    var now = moment(),
-                        sDate = moment.unix(obj.createdOn) || '',
-                        eDate = moment.unix(obj.expireOn) || '';
-                        var sVal = sDate.format('MMMM Do YYYY, hh:mm:ss A');
-                        var eVal = eDate.format('MMMM Do YYYY, hh:mm:ss A');
+                    var sDate = moment.unix(obj.createdOn) || '',
+                        eDate = moment.unix(obj.expireOn) || '',
+                        sVal = sDate.format('MMMM Do YYYY, hh:mm:ss A'),
+                        eVal = eDate.format('MMMM Do YYYY, hh:mm:ss A');
 
-                    var tempObject = {};
-                    tempObject.id = obj.userId;
-                    tempObject.dataSource = obj.dataSource;                   
-                    tempObject.queryDate = sVal;
-                    tempObject.expireDate =  eVal;
-                    currentDataArray.push(tempObject);
+                    currentDataArray.push({
+                        id: obj.userId,
+                        dataSource: obj.dataSource,
+                        queryDate: sVal,
+                        expireDate:  eVal
+                    });
                 });
                 gridHeight();
                 grid.setData(currentDataArray);
@@ -69,9 +95,7 @@ define([
     };
 
     function gridHeight () {
-        $('#admingrid').height($(window).height() - ($('.panel-body').height() + 145));
+        context.$('#admingrid').height(context.sandbox.utils.pageHeight() - (context.$('.panel-body').height() + 145));
     }
-
-    return exposed;
 
 });

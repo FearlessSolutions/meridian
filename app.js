@@ -74,6 +74,5 @@ app.use('/embedded', express.static(__dirname + '/app/modes/embedded'));
 app.use('/dashboard', express.static(__dirname + '/app/modes/dashboard'));
 app.use('/admin', express.static(__dirname + '/app/modes/admin'));
 
-
 // Initiate routes
 require('./server/app').init(app);

@@ -1,28 +1,21 @@
 define([
-    'text!./query-toggle.css',
     'text!./query-toggle.hbs',
     './query-toggle',
-    './query-toggle-publisher',
-    './query-toggle-subscriber',
+    './query-toggle-mediator',
     'handlebars'
 ], function (
-    queryToggleCSS,
     queryToggleHBS,
     queryToggle,
-    queryTogglePublisher,
-    queryToggleSubscriber
+    queryToggleMediator
 ){
     return {
         initialize: function() {
-            this.sandbox.utils.addCSS(queryToggleCSS, 'controls-query-toggle-component-style');
-
             var queryToggleTemplate = Handlebars.compile(queryToggleHBS);
             var html = queryToggleTemplate();
             this.html(html);
 
-            queryToggle.init(this);
-            queryTogglePublisher.init(this);
-            queryToggleSubscriber.init(this);
+            queryToggleMediator.init(this);
+            queryToggle.init(this, queryToggleMediator);
         }
     };
 

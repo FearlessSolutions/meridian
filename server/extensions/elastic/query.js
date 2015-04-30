@@ -1,7 +1,6 @@
-var stream = require('./stream');
-var _ = require('underscore');
-
-var config,
+var stream = require('./stream'),
+    _ = require('underscore'),
+    config,
     client;
 
 exports.init = function(context){
@@ -189,7 +188,6 @@ exports.getMetadataByTerm = function(queryTerms, callback){
             }
         }
     };
-    console.log(JSON.stringify(query, null, "  "));
     getJSONByQuery(null, config.index.metadata, null, query, callback);    
 };
 

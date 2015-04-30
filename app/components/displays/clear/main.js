@@ -2,10 +2,14 @@ define([
     'text!./clear.hbs',
     'text!./clear.css',
     './clear',
-    './clear-publisher',
-    './clear-subscriber',
+    './clear-mediator',
     'handlebars'
-], function (clearHBS, clearCSS, clear, clearPublisher, clearSubscriber) {
+], function (
+    clearHBS, 
+    clearCSS, 
+    clear,  
+    clearMediator
+) {
 
     return {
         initialize: function() {
@@ -16,9 +20,8 @@ define([
 
             this.html(html);
 
-            clear.init(this);
-            clearPublisher.init(this);
-            clearSubscriber.init(this);
+            clearMediator.init(this);
+            clear.init(this, clearMediator);
         }
     };
 

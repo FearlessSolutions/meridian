@@ -2,10 +2,14 @@ define([
     'text!./boilerplate.css', 
     'text!./boilerplate.hbs',
     './boilerplate',
-    './boilerplate-publisher',
-    './boilerplate-subscriber',
+    './boilerplate-mediator',
     'handlebars'
-], function (boilerplateCSS, boilerplateHBS, boilerplate, boilerplatePublisher, boilerplateSubscriber) {
+], function (
+    boilerplateCSS, 
+    boilerplateHBS, 
+    boilerplate, 
+    boilerplateMediator
+) {
 
     return {
         initialize: function() {
@@ -29,15 +33,11 @@ define([
             // Output resulting HTML to the module's parent div (access provided by Aura Framework)
             this.html(html);
 
-            // Initialize boilerplatePublisher from boilerplate-publisher.js
-            boilerplatePublisher.init(this);
+            // Initialize boilerplateMediator from boilerplate-mediator.js
+            boilerplateMediator.init(this);
 
             // Initialize boilerplate from boilerplate.js
-            boilerplate.init(this);
-
-            // Initialize boilerplateSubscriber from boilerplate-subscriber.js
-            boilerplateSubscriber.init(this);
-
+            boilerplate.init(this, boilerplateMediator);
         }
     };
                 

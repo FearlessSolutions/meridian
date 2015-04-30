@@ -2,10 +2,14 @@ define([
     'text!./upload-data.css',
     'text!./upload-data.hbs',
     './upload-data',
-    './upload-data-publisher',
-    './upload-data-subscriber',
+    './upload-data-mediator',
     'handlebars'
-], function (uploadDataToolCSS, uploadDataToolHBS, uploadDataTool, uploadDataToolPublisher, uploadDataToolSubscriber) {
+], function (
+    uploadDataToolCSS, 
+    uploadDataToolHBS, 
+    uploadDataTool,  
+    uploadDataToolMediator
+) {
     return {
         initialize: function() {
             this.sandbox.utils.addCSS(uploadDataToolCSS, 'tool-uploadData-component-style');
@@ -20,9 +24,8 @@ define([
             });
             this.html(html);
 
-            uploadDataToolPublisher.init(this);
-            uploadDataToolSubscriber.init(this);
-            uploadDataTool.init(this);
+            uploadDataToolMediator.init(this);
+            uploadDataTool.init(this, uploadDataToolMediator);
         }
     };                
 });

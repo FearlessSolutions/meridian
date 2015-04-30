@@ -1,17 +1,17 @@
 define([
-    './boilerplate-publisher',
     './boilerplate-extended'
-], function (publisher, boilerplatExtended) {
+], function (boilerplatExtended) {
 
     // To add '_boilerplate' component, add following line to index.html
     // <div data-aura-component="_boilerplate"></div>
 
-    var context;
+    var context, mediator;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             // The 'context' provides a reference to 'sandbox' using 'context.sandbox'
             context = thisContext;
+            mediator = thisMediator;
         },
         dummyFunction: function(params) {
             // Example of an extension being used
@@ -21,7 +21,7 @@ define([
             context.sandbox.logger.log(boilerplatExtended.dummyPrefix(msg) + exposed.dummySuffix());
         }, 
         dummySuffix: function() {
-            publisher.publishMessage({
+            mediator.publishMessage({
                 "messageType": "info",
                 "messageTitle": "Boilerplate",
                 "messageText": "What did Ben say?"

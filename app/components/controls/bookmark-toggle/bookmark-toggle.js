@@ -1,13 +1,14 @@
 define([
-    './bookmark-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
+        mediator,
         $bookmarkButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $bookmarkButton = context.$('#bookmarkToggleButton');
 
             //Activate bootstrap tooltip. 
@@ -22,9 +23,9 @@ define([
             $bookmarkButton.on('click', function(event) {
                 event.preventDefault();
                 if($bookmarkButton.hasClass('active')) {
-                    publisher.closeBookmark();
+                    mediator.closeBookmark();
                 } else {
-                    publisher.openBookmark();
+                    mediator.openBookmark();
                 }
             });
         },

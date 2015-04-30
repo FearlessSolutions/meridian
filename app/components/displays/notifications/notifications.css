@@ -1,6 +1,6 @@
 div[data-aura-component='displays/notifications']  {
     position: absolute;
-    z-index: 1100;
+    z-index: 1050;
     top: 0px;
     right: 0px;
 }

@@ -2,10 +2,14 @@ define([
     'text!./timeline.css', 
     'text!./timeline.hbs',
     './timeline',
-    './timeline-publisher',
-    './timeline-subscriber',
+    './timeline-mediator',
     'handlebars'
-], function (timelineCSS, timelineHBS, timeline, timelinePublisher, timelineSubscriber) {
+], function (
+    timelineCSS, 
+    timelineHBS, 
+    timeline, 
+    timelineMediator
+) {
 
     return {
         initialize: function() {
@@ -15,9 +19,9 @@ define([
             var html = timelineTemplate();
             this.html(html);
 
-            timelinePublisher.init(this);
-            timeline.init(this);
-            timelineSubscriber.init(this);
+            timelineMediator.init(this);
+            timeline.init(this, timelineMediator);
+            
         }
     };
                 
