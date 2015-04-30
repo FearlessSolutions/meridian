@@ -114,7 +114,7 @@ define([
         //});//it
 
         // Capture the Zoom-in
-        it("Map Zoom-In (chris)", function (done) {
+        it("Map Zoom-In Unit Test", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
                 meridian.sandbox.external.postMessageToParent = function (params) {
@@ -123,16 +123,14 @@ define([
                         var map = renderer.getMap();
                         var afterZoom_state;
                         //test goes here
-
                         map.events.register("zoomend", map, function(){
-                            console.debug('This is the zoom level after the emit has been published ' + map.getZoom());
                             afterZoom_state = map.getZoom();
-                            // compare of the zoom level here
-                            expect(beforeZoom_state).to.not.equal(afterZoom_state);
+                            console.debug('This is the zoom level after the emit has been published ' + afterZoom_state);
+                            expect(beforeZoom_state).to.not.equal(afterZoom_state);  // compare of the zoom level here
                             done();
                         });
                         var beforeZoom_state = map.getZoom();
-                        console.debug('This is the initial map zoom level '+  map.getZoom());
+                        console.debug('This is the initial map zoom level '+  beforeZoom_state);
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.view.zoom.in', message: {} }});  // manual publish to the channel
                     }
                 };
