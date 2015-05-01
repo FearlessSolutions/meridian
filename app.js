@@ -67,6 +67,7 @@ app.use(function(req, res, next){
 
 // Server static content
 app.use('/', express.static(__dirname + '/app-built'));
+//app.use('/', express.static(__dirname + '/app'));
 //app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));
 //app.use('/basic', express.static(__dirname + '/app-built/modes/basic'));
 //app.use('/basic-with-settings', express.static(__dirname + '/app-built/modes/basic-with-settings'));

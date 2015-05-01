@@ -7,12 +7,56 @@
     inlineText: true, //TODO try this on with a modules with text
 
     onBuildWrite: function(moduleName, path, contents){
-        if(moduleName.match(/main$/)){
-            return contents.replace("'" + moduleName + "',", '');
+        if(moduleName.match(/^components\//)
+            && !moduleName.match(/openlayers/)){
 
-        }else{
-            return contents
+            //Fix module name; Default one has no name.
+            if(moduleName.match(/main$/)){
+                 contents = contents.replace("'" + moduleName + "',", '');
+            } else {
+                contents = contents.replace(moduleName, function(){
+                    return moduleName.split('/').pop(); //Return last element of the module
+                });
+            }
+
+            // Convert dependencies
+            contents = contents.replace(/define[\s\S]*\],\s?function\s?\(/m, function(matched){
+                var header = matched.match(/^define\(.*\[/m),
+                    footer = matched.match(/\],\s*?function\s?\(/m),
+                    dependencies;
+
+                if(header && footer){
+                    header = header[0];
+                    footer = footer[0];
+
+                    matched = matched.replace(header, '').replace(footer, ''); //Clean up
+                    dependencies = matched.match(/'.*'/g); //Get dependencies
+                    if(dependencies === null || dependencies.length === 0){
+                        return header + matched + footer;
+                    }else{
+                        dependencies.forEach(function(dependency, dependencyIndex){
+                            if(dependency.match(/^'\.\//g)){
+                                dependencies[dependencyIndex] = '\'' + dependency.split('/').pop(); //It will already have the '
+                            }else if(dependency.match(/^'text!\.\//g)){ //Text modules cannot be modified, so use the full module path
+                                var baseModule = moduleName.split('/');
+                                baseModule.pop(); //Modify in place; Returns popped element, so don't save it.
+
+                                dependencies[dependencyIndex] = '\'text!'
+                                    + baseModule.join('/')
+                                    + '/'
+                                    + dependency.split('/').pop(); //It will already have the '
+
+                            }//else, it's fine
+                        });
+                        return header + dependencies.join(',') + footer;
+                    }
+                }else{
+                    return matched; //It wasn't a normal module, so ignore it
+                }
+            });
         }
+
+        return contents;
     },
     // Define the modules to compile.
     modules: [
@@ -30,18 +74,60 @@
             ],
             excludeShallow: []
         },
-        {
-            name: "components/data-services/fake/main",
-            excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery']
-        },
-        {
-            name: "components/controls/basemap-gallery/main",
-            excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery']
-        },
-        {
-            name: "components/controls/bookmark-toggle/main",
-            excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery']
-        }
+        //Admin
+        { name: "components/admin/admingrid/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/admin/search/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        //apis
+        { name: "components/apis/cmapi/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        //controls
+        { name: "components/controls/basemap-gallery/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/basemap-gallery-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/bookmark-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/clear-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/cluster-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/data-history-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/datagrid-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/draw-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/export-picker-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/internal-pubsub-tester/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/internal-pubsub-tester-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/legend-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/playback/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/query-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/support-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/timeline/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/timeline-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/upload-data-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/user-settings/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/user-settings-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/visual-mode-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/controls/zoom/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        //data-services
+        { name: "components/data-services/fake/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/data-services/mock/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        //displays
+        { name: "components/displays/clear/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/displays/datagrid/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/displays/event-counter/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/displays/label/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/displays/legend/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/displays/mouse-position/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/displays/notification-modal/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/displays/notifications/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/displays/progress-notification/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/displays/splash-screen/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/displays/user-info/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        //rendering-engines
+//        { name: "components/rendering-engines/map-openlayers/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        //tools
+        { name: "components/tools/bookmark/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/tools/data-history/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/tools/draw/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/tools/export-picker/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/tools/locator/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/tools/query/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/tools/support/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+        { name: "components/tools/upload-data/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] }
 
     ],
 
