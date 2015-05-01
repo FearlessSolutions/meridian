@@ -12,8 +12,11 @@ define([
     var assert = chai.assert,
         expect = chai.expect,
         should = chai.should(); // Note that should has to be executed
+    function iThrowError() {
+        throw new Error("Error thrown");
+    }
 
-//start your test here. 
+//start your test here.
 //mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
     describe('CMAPI Unit Test Channels', function () {
         var upload, cmapiMain, renderer, exitBeforeEach, meridian;
@@ -114,34 +117,38 @@ define([
         //});//it
 
         // Capture the Zoom-in
-        //it("Map Zoom-In Unit Test", function (done) {
-        //    require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-        //        console.log('in it', meridian);
-        //        meridian.sandbox.external.postMessageToParent = function (params) {
-        //            if (params.channel == 'map.status.ready') {
-        //                // map goes first
-        //                var map = renderer.getMap();
-        //                var afterZoom_state;
-        //                //test goes here
-        //                map.events.register("zoomend", map, function(){
-        //                    afterZoom_state = map.getZoom();
-        //                    console.debug('This is the zoom level after the emit has been published ' + afterZoom_state);
-        //                    expect(beforeZoom_state).to.not.equal(afterZoom_state);  // compare of the zoom level here
-        //                    done();
-        //                });
-        //                var beforeZoom_state = map.getZoom();
-        //                console.debug('This is the initial map zoom level '+  beforeZoom_state);
-        //                meridian.sandbox.external.receiveMessage({data:{channel:'map.view.zoom.in', message: {} }});  // manual publish to the channel
-        //            }
-        //        };
-        //        //meridian.sandbox.on('map.zoom.in', function(params) { console.log('zoomListen')} );
-        //
-        //        cmapiMain.initialize.call(meridian, meridian);
-        //        var $fixtures = $('#fixtures');
-        //        meridian.html = $fixtures.html;
-        //        renderer.initialize.call(meridian, meridian);
-        //    });
-        //});//it
+        it("Map Zoom-In Unit Test", function (done) {
+            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                console.log('in it', meridian);
+                meridian.sandbox.external.postMessageToParent = function (params) {
+                    if (params.channel == 'map.status.ready') {
+                        // map goes first
+                        var map = renderer.getMap();
+                        var afterZoom_state;
+                        //test goes here
+                        map.events.register("zoomend", map, function(){
+                            afterZoom_state = map.getZoom();
+                            expect(beforeZoom_state).to.exist;  // the target is neither null nor undefined
+                            expect(afterZoom_state).to.exist;  // the target is neither null nor undefined
+                            console.debug('This is the zoom level after the emit has been published ' + afterZoom_state);
+                            expect(beforeZoom_state).to.not.equal(afterZoom_state);  // compare of the zoom level here
+                            console.debug('The initial zoom level ' + beforeZoom_state + ' is less than the post-zoom-in zoom level ' + afterZoom_state + ', therefore, it correctly zoomed in');
+                            expect(beforeZoom_state).to.be.below(afterZoom_state);
+                            done();
+                        });
+                        var beforeZoom_state = map.getZoom();
+                        console.debug('This is the initial map zoom level '+  beforeZoom_state);
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.view.zoom.in', message: {} }});  // manual publish to the channel
+                    }
+                };
+                //meridian.sandbox.on('map.zoom.in', function(params) { console.log('zoomListen')} );
+
+                cmapiMain.initialize.call(meridian, meridian);
+                var $fixtures = $('#fixtures');
+                meridian.html = $fixtures.html;
+                renderer.initialize.call(meridian, meridian);
+            });
+        });//it
         // Capture the Zoom-out
         // ZOOMOUT START HERE
 
@@ -160,16 +167,20 @@ define([
 
                         // map.setCenter moved before the event register because it was logging a message in the console
                         map.setCenter(new OpenLayers.LonLat(38.860830, -77.059307), 5);
-
                         map.events.register("zoomend", map, function(){
                             afterZoom_state = map.getZoom();
                             afterCenter_pos = map.getCenter();
+                            expect(beforeZoom_state).to.exist;  // the target is neither null nor undefined
+                            expect(afterZoom_state).to.exist;  // the target is neither null nor undefined
                             console.debug('This is the zoom level after the emit has been published ' + afterZoom_state);
                             expect(beforeZoom_state).to.not.equal(afterZoom_state);  // compare of the zoom level
                             console.debug('This is the center position after the emit has been published ' + afterCenter_pos);
                             expect(beforeCenter_pos).to.not.equal(afterCenter_pos); // compare of the center position
+                            console.debug('The initial zoom level ' + beforeZoom_state + ' is greater than the post-zoom-to-max-extent zoom level ' + afterZoom_state + ', therefore, it correctly zoomed out');
+                            expect(beforeZoom_state).to.be.above(afterZoom_state);
                             done();
                         });
+                        //map.setCenter(new OpenLayers.LonLat(38.860830, -77.059307), 5); // setCenter must go here to display
                         var beforeZoom_state = map.getZoom();
                         var beforeCenter_pos = map.getCenter();
                         console.debug('This is the initial map zoom level '+  beforeZoom_state);
@@ -184,7 +195,6 @@ define([
                 renderer.initialize.call(meridian, meridian);
             });
         });//it
-
     });//describe
 });
 
