@@ -115,6 +115,52 @@ define([
         //
         //    });
         //});//it
+        // Capture the Basemap change
+        it("Change the Basemap Unit Test", function (done) {
+            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                console.log('in it', meridian);
+                meridian.sandbox.external.postMessageToParent = function (params) {
+                    if (params.channel == 'map.status.ready') {
+                        // map goes first
+                        var map = renderer.getMap(),
+                            payload = {
+                                "basemap": "imagery"
+                            },
+                            initialBasemap = {
+                                "basemap": "landscape"
+                            },
+                            expectedBasemap = {  // expected value result after map.basemap.change emitted
+                                "basemap": "imagery"
+                            },
+                            actualBasemap, mapUrl;
+
+                        //test goes here
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.basemap.change', message: payload }});  // manual publish to the channel
+
+                        expect(payload).to.exist; // payload exists
+                        expect(payload).to.be.an('object'); // payload is an object
+                        meridian.sandbox.on('map.basemap.change', function(params) {
+                            actualBasemap = params;
+                            expect(actualBasemap).to.exist; // payload is neither null or undefined
+                            expect(actualBasemap).to.be.an('object'); // payload is an object
+                            expect(initialBasemap).to.not.equal(actualBasemap);
+                            console.debug('The actual basemap is equal to the expected basemap');
+                            expect(expectedBasemap).to.equal(actualBasemap);
+                            console.debug('The actual basemap is equal to the expected basemap');
+                            mapUrl = map["baseLayer"]["url"].indexOf("USGSImageryOnly");
+                            expect(mapUrl).to.not.equal(-1);  // indexOf is -1 when the value does not occur in the string (false)
+                            console.debug("The basemap change to imagery is successful");  // This checks a specific property value that contains a substring as a URL when the basemap change is successful
+                        });
+                        done();
+                    }
+                };
+                //meridian.sandbox.on('map.basemap.change', function(params) {  var actualBasemap =  params } );
+                cmapiMain.initialize.call(meridian, meridian);
+                var $fixtures = $('#fixtures');
+                meridian.html = $fixtures.html;
+                renderer.initialize.call(meridian, meridian);
+            });
+        });//it
 
         // Capture the Zoom-in
         it("Map Zoom-In Unit Test", function (done) {
@@ -128,8 +174,8 @@ define([
                         //test goes here
                         map.events.register("zoomend", map, function(){
                             afterZoom_state = map.getZoom();
-                            expect(beforeZoom_state).to.exist;  // the target is neither null nor undefined
-                            expect(afterZoom_state).to.exist;  // the target is neither null nor undefined
+                            expect(beforeZoom_state).to.exist;  // payload is neither null nor undefined
+                            expect(afterZoom_state).to.exist;  // payload is neither null nor undefined
                             console.debug('This is the zoom level after the emit has been published ' + afterZoom_state);
                             expect(beforeZoom_state).to.not.equal(afterZoom_state);  // compare of the zoom level here
                             console.debug('The initial zoom level ' + beforeZoom_state + ' is less than the post-zoom-in zoom level ' + afterZoom_state + ', therefore, it correctly zoomed in');
@@ -169,8 +215,8 @@ define([
                         map.events.register("zoomend", map, function(){
                             afterZoom_state = map.getZoom();
                             afterCenter_pos = map.getCenter();
-                            expect(beforeZoom_state).to.exist;  // the target is neither null nor undefined
-                            expect(afterZoom_state).to.exist;  // the target is neither null nor undefined
+                            expect(beforeZoom_state).to.exist;  // payload is neither null nor undefined
+                            expect(afterZoom_state).to.exist;  // payload is neither null nor undefined
                             console.debug('This is the zoom level after the emit has been published ' + afterZoom_state);
                             expect(beforeZoom_state).to.not.equal(afterZoom_state);  // compare of the zoom level
                             console.debug('This is the center position after the emit has been published ' + afterCenter_pos);
