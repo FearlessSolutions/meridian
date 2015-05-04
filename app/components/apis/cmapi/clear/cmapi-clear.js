@@ -2,8 +2,10 @@ define([
 	'./cmapi-clear-mediator'
 ], function (mediator) {
 	var context,
-        sendError;
-    var exposed = {
+        sendError,
+        exposed;
+
+    exposed = {
         init: function(thisContext, errorChannel) {
             context = thisContext;
             sendError = errorChannel;

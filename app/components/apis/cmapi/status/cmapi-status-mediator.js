@@ -1,8 +1,9 @@
 define([
 ], function () {
-	var context, parent;
+	var context,
+        parent;
 
-	var exposed = {
+	return {
        init: function(thisContext, thisParent) {
             context = thisContext;
             parent = thisParent;
@@ -14,5 +15,4 @@ define([
         }
     };
 
-    return exposed;
 });

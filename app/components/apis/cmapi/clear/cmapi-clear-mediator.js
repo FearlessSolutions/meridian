@@ -3,7 +3,7 @@ define([
     var context,
         parent;
 
-	var exposed = {
+	return {
         init: function(thisContext, thisParent) {
             context = thisContext;
             parent = thisParent;
@@ -14,5 +14,4 @@ define([
         }
     };	
 
-    return exposed;
 });

@@ -2,7 +2,7 @@ define([
 ], function () {
 	var context;
 
-	var exposed = {
+	return {
         init: function(thisContext) {
             context = thisContext;
         },
@@ -11,5 +11,4 @@ define([
         }
     };
 
-    return exposed;
 });
