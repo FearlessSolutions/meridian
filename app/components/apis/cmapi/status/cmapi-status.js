@@ -13,7 +13,7 @@ define([
             mediator.init(context, exposed);
 
             //On map.status.ready, send message
-            //context.sandbox.stateManager.map.status.addReadyCallback(emitChannels['map.status.ready']);
+            context.sandbox.stateManager.map.status.addReadyCallback(emitChannels['map.status.ready']);
         },
         receive: function(channel, message) {
             if(receiveChannels[channel]) {
