@@ -37,8 +37,8 @@ exports.init = function(context){
 
     fileDownload.init(context);
 
-    app.head('/results.*', auth.verifyUser, function(req, res){
-        var queryIds = req.query.ids.split(',');
+    app.head('/export/file', auth.verifyUser, function(req, res){
+        var queryIds = req.query.ids;
         query.getCountByQuery(
             null,
             config.index.data,
@@ -60,27 +60,38 @@ exports.init = function(context){
                 }
             }
         );
-
     });
 
-    app.get('/results.csv', auth.verifyUser, function(req, res) {
+    app.get('/export/file/csv', auth.verifyUser, function(req, res) {
         var userName = res.get('Parsed-User'),
-            queryIds = req.query.ids.split(",");
+            queryIds = req.query.ids,
+            filename = req.query.filename;
+
+        //Make sure that the filename has the correct file type
+        if(!filename.match(/\.csv$/i)){
+            filename += '.csv';
+        }
 
         // Response prep
         res.header('Content-Type', 'text/csv');
-        res.header('Content-Disposition', 'attachment; filename=results.csv');
+        res.header('Content-Disposition', 'attachment; filename=' + filename);
 
         fileDownload.pipeCSVToResponseForQuery(userName, queryIds, res);
     });
 
-    app.get('/results.geojson', auth.verifyUser, function(req, res) {
+    app.get('/export/file/geojson', auth.verifyUser, function(req, res) {
         var userName = res.get('Parsed-User'),
-            queryIds = req.query.ids.split(','),
+            queryIds = req.query.ids,
+            filename = req.query.filename,
             mutex = 0,
             done = false,
             started = false,
             incrementMutex;
+
+        //Make sure that the filename has the correct file type
+        if(!filename.match(/\.geojson$/i)){
+            filename += '.geojson';
+        }
 
         /**
          * Used for mutex
@@ -91,7 +102,7 @@ exports.init = function(context){
 
         // Response prep
         res.header('Content-Type', 'application/json');
-        res.header('Content-Disposition', 'attachment; filename=results.geojson');
+        res.header('Content-Disposition', 'attachment; filename=' + filename);
         res.write('{"type": "FeatureCollection","features": [');
 
         fileDownload.pipeGeoJSONResponse(
@@ -130,15 +141,21 @@ exports.init = function(context){
         );
     });
 
-    app.get('/results.kml', auth.verifyUser, function(req, res) {
+    app.get('/export/file/kml', auth.verifyUser, function(req, res) {
         var userName = res.get('Parsed-User'),
-            queryIds = req.query.ids.split(','),
+            queryIds = req.query.ids,
+            filename = req.query.filename,
             mutex = 0,
             done = false,
             started = false,
             incrementMutex,
             closeKML,
             schemaFields = {};
+
+        //Make sure that the filename has the correct file type
+        if(!filename.match(/\.kml$/i)){
+            filename += '.kml';
+        }
 
         /**
          * Used for mutex
@@ -161,7 +178,7 @@ exports.init = function(context){
 
         // Response prep
         res.header('Content-Type', 'application/vnd.google-earth.kml+xml');
-        res.header('Content-Disposition', 'attachment; filename=results.kml');
+        res.header('Content-Disposition', 'attachment; filename=' + filename);
 
         fileDownload.pipeKMLResponse(
             userName,

@@ -109,6 +109,9 @@ define([
                 },
                 trim: $.trim, // for help see jquery.trim
                 type: $.type, // for help see jquery.type
+                endsWith: function(str, suffix){
+                    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+                },
                 getCurrentNodeJSEndpoint: function() {
                     return "https://" + window.location.host;
                 },
