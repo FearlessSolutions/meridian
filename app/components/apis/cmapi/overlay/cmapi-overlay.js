@@ -1,12 +1,14 @@
 define([
-	'./cmapi-overlay-mediator',	
+	'./cmapi-overlay-mediator'
 ], function (mediator) {
 	var context,
 		defaultLayerId,
         sendError,
-        DEFAULT_SELECTABLE = true;
+        DEFAULT_SELECTABLE = true, //TODO
+        exposed,
+        receiveChannels;
 
-    var exposed = {
+    exposed = {
         init: function(thisContext, errorChannel) {
             context = thisContext;
             defaultLayerId = context.sandbox.cmapi.defaultLayerId;
@@ -22,7 +24,7 @@ define([
         }
     };
 
-    var receiveChannels = {
+    receiveChannels = {
         /**
          * Creates an overlay with given params.
          * If a layer already exists with the given id, that call is ignored
@@ -38,19 +40,18 @@ define([
             //TODO Selectable functionality was removed. Add it back.
 			if(message === '') {
 				message = {
-//                    selectable: DEFAULT_SELECTABLE
+//                    selectable: DEFAULT_SELECTABLE //TODO
                     selectable: false
 				};
 			} else {
                 message.selectable = false;
-//                if(!('selectable' in message)) {
+//                if(!('selectable' in message)) { //TODO
 //                    message.selectable = DEFAULT_SELECTABLE;
 //                }
             }
 
             if(context.sandbox.dataStorage.datasets[layerId]) {
                 sendError('map.overlay.create', message, 'Layer already made');
-                return; //Layer already made; ignore this request
             } else {
                 context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
                 context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;

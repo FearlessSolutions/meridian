@@ -1,11 +1,14 @@
 define([
-	'./cmapi-status-mediator',	
+	'./cmapi-status-mediator'
 ], function (mediator) {
 	var context,
         sendError,
-        emit;
+        emit,
+        exposed,
+        receiveChannels,
+        emitChannels;
 
-    var exposed = {
+    exposed = {
         init: function(thisContext, errorChannel, parentEmit) {
             context = thisContext;
             sendError = errorChannel;
@@ -45,7 +48,7 @@ define([
         }
     };
 
-    var receiveChannels= {
+    receiveChannels= {
 		"map.status.request": function(message) {
             if(message.types) {
                 message.types.forEach(function(channel) {
@@ -62,7 +65,7 @@ define([
 		}	
     };
 
-    var emitChannels= {
+    emitChannels= {
         "map.status.view": function() {
             // TODO: read map statuse values from the State Manager, and format to CMAPI bounds
             // context.sandbox.stateManager.getMapExtent()
