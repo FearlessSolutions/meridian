@@ -1,3 +1,14 @@
+/**
+ * This file can be run to combine and minify our js code.
+ * It takes everything in ../app (the usual app folder) and copies it to a new directory, ../app-built.
+ * For each module defined in modules:[...], it will also combine all of the files into the main.js file for the folder.
+ * Any new component will need to be added here to minify it. Not adding one will not break anything, but will not
+ * help with loading speed.
+ * NOTE that all extensions are skipped because they are not as uniformly named, and it would be a lot of work for little
+ * benefit to add them.
+ * NOTE that the rendering engine component has been skipped because it was too complicated, and was not minifying correctly.
+ */
+
 ({
     //To run: node node_modules/grunt-contrib-requirejs/node_modules/requirejs/bin/r.js -o ./app/app.build.js
 
@@ -118,7 +129,7 @@
         { name: "components/displays/splash-screen/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
         { name: "components/displays/user-info/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
         //rendering-engines
-//        { name: "components/rendering-engines/map-openlayers/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+//        { name: "components/rendering-engines/map-openlayers/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] }, //This causes problems.
         //tools
         { name: "components/tools/bookmark/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
         { name: "components/tools/data-history/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
@@ -134,6 +145,7 @@
     // Turn off UglifyJS so that we can view the compiled source
     // files (in order to make sure that we know that the compile
     // is working properly - for debugging only.)
-    optimize: "none"
+    optimize: "uglify2", //uglify2 seems to be better than uglify
+    skipDirOptimize: true //Only minify modules defined, not everything. Leaves out libs and rendering engine
 
 })

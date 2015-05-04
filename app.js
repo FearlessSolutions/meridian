@@ -4,7 +4,9 @@ var https = require('https');
 var fs = require('fs');
 var Busboy = require('busboy'); //TODO replace with connect-busboy on connect upgrade
 
-var app = express();
+var app = express(),
+    //Set up which directory the app will get stuff from //TODO remove this when nginx comes in
+    appDir = process.argv[2] || '/app'; //argv = ['node', '{{location being run from}}', {{command arguments}}]
 
 var options = {
     pfx: fs.readFileSync('server/certs/localhost.p12'),
@@ -66,14 +68,13 @@ app.use(function(req, res, next){
 });
 
 // Server static content
-app.use('/', express.static(__dirname + '/app-built'));
-//app.use('/', express.static(__dirname + '/app'));
-//app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));
-//app.use('/basic', express.static(__dirname + '/app-built/modes/basic'));
-//app.use('/basic-with-settings', express.static(__dirname + '/app-built/modes/basic-with-settings'));
-//app.use('/embedded', express.static(__dirname + '/app-built/modes/embedded'));
-//app.use('/dashboard', express.static(__dirname + '/app-built/modes/dashboard'));
-//app.use('/admin', express.static(__dirname + '/app-built/modes/admin'));
+app.use('/', express.static(__dirname + appDir));
+app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));
+app.use('/basic', express.static(__dirname + appDir + '/modes/basic'));
+app.use('/basic-with-settings', express.static(__dirname + appDir + '/modes/basic-with-settings'));
+app.use('/embedded', express.static(__dirname + appDir + '/modes/embedded'));
+app.use('/dashboard', express.static(__dirname + appDir + '/modes/dashboard'));
+app.use('/admin', express.static(__dirname + appDir + '/modes/admin'));
 
 // Initiate routes
 require('./server/app').init(app);
