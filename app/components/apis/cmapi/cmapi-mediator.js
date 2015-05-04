@@ -6,9 +6,10 @@ define([
     './status/cmapi-status',
     './clear/cmapi-clear'
 ], function (basemap, view, overlay, feature, status, clear) {
-    var context;
+    var context,
+        exposed;
 
-	var exposed = {
+	exposed = {
         init: function(thisContext) {
             context = thisContext;
 

@@ -2,24 +2,10 @@ define([
 	'./cmapi-basemap-mediator'
 ], function (mediator) {
 	var context,
-        sendError;
+        sendError,
+        receiveChannels;
 
-    var exposed = {
-        init: function(thisContext, errorChannel) {
-            context = thisContext;
-            sendError = errorChannel;
-            mediator.init(context);
-        },
-        receive: function(channel, message) {
-            if(receiveChannels[channel]) {
-                receiveChannels[channel](message);
-            } else {
-                sendError(channel, message, 'Channel not supported');
-            }
-        }
-    };
-
-    var receiveChannels = {
+    receiveChannels = {
         /**
          * Changes the basemap of the map.
          * If a basemap does not exist, use default
@@ -54,5 +40,19 @@ define([
 		}
     };
 
-    return exposed;
+    return {
+        init: function(thisContext, errorChannel) {
+            context = thisContext;
+            sendError = errorChannel;
+            mediator.init(context);
+        },
+        receive: function(channel, message) {
+            if(receiveChannels[channel]) {
+                receiveChannels[channel](message);
+            } else {
+                sendError(channel, message, 'Channel not supported');
+            }
+        }
+    };
+
 });
