@@ -216,7 +216,6 @@ define([
                                     minLon: "-13.908691",
                                     maxLat: "11.587669",
                                     maxLon: "-8.283691"
-
                                 }
                             },
                             beforeLayerCount = map.layers.length, // layer count prior to the channel emit
@@ -232,6 +231,64 @@ define([
                             done();
                         });
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }});  // manual publish to the channel
+                    }
+                };
+                cmapiMain.initialize.call(meridian, meridian);
+                var $fixtures = $('#fixtures');
+                meridian.html = $fixtures.html;
+                renderer.initialize.call(meridian, meridian);
+            });
+        });//it
+
+        // Capture Remove Layer
+        it("Remove a Layer Unit Test", function (done) {
+            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                console.log('in it', meridian);
+                console.log('REMOVE START HERE');
+                meridian.sandbox.external.postMessageToParent = function (params) {
+                    if (params.channel == 'map.status.ready') {
+                        // map goes first
+                        var map = renderer.getMap(),
+                            payload = {
+                                overlayId: "testOverlayId1"
+                            },
+                            beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+                            afterLayerCreateCount,
+                            afterLayerRemoveCount;
+                        //test goes here
+                        function layerCheck(layerExists, params) {
+                            var searchTerm = "testOverlayId1",
+                                index = -1,
+                                mapLayers = params;
+                            for(var i= 0, len = mapLayers.length; i < len; i++) {
+                                if(mapLayers[i].layerId === searchTerm) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            if (layerExists) {
+                                expect(index).to.not.equal(-1);
+                                console.log('layer exists');
+                            } else {
+                                expect(index).to.equal(-1);
+                                console.log('layer does not exist');
+                            }
+                        }
+                        meridian.sandbox.on('map.layer.create', function(params) {
+                            afterLayerCreateCount = map.layers.length;
+                            expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+                            expect(map.layers[map.layers.length-1]["layerId"]).to.equal(payload.overlayId); // confirms that Id is the overlayId value from the payload
+                            layerCheck(true, map.layers);
+                        });
+                        meridian.sandbox.on('map.layer.delete', function(params) {
+                            afterLayerRemoveCount = map.layers.length;
+                            expect(afterLayerCreateCount).to.be.above(afterLayerRemoveCount);  // confirms the layer with overlayId value from payload was removed
+                            // confirm that no layers contain layerId of testOverlayId1
+                            layerCheck(false, map.layers);
+                            done();
+                        });
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }}); // manual publish to the channel
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.remove', message: payload }}); // manual publish to the channel
                     }
                 };
                 cmapiMain.initialize.call(meridian, meridian);
