@@ -1,7 +1,8 @@
 define([
     './../map-api-publisher',
+    './layers',
     './../libs/leaflet-src'
-], function(publisher) {
+], function(publisher, mapLayers) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context;
 
@@ -30,16 +31,11 @@ define([
          * @param params
          */
         zoomToLayer: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
 
-            if(layer && layer.getDataExtent()) {
-                params.map.zoomToExtent(layer.getDataExtent());
-            } else {
-                publisher.publishMessage({
-                    messageType: 'warning',
-                    messageTitle: 'Zoom to Layer',
-                    messageText: 'No data in layer to zoom to.'
-                });
+            var layer = mapLayers.getActiveLayer();
+
+            if(layer && layer.getBounds(params.layerId)) {
+                params.map.fitBounds(layer.getBounds(params.layerId));
             }
         },
         /**
