@@ -24,7 +24,7 @@ define([
             //map.addLayer(drawnItems);
             
             params.map.on('draw:created', function(e){
-                e.layer.addTo(params.drawnItemsLayer);
+               // e.layer.addTo(params.drawnItemsLayer);
                 publisher.stopDrawing({
                     "minLon": e.layer.getBounds().getWest(),
                     "minLat": e.layer.getBounds().getSouth(),

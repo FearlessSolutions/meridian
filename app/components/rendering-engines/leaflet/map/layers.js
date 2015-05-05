@@ -14,15 +14,9 @@ define([
             context = thisContext;
             drawnItemsLayer = {};
             basemapLayers = {};
-            singlePointLayer = new L.featureIdGroup();
-            clusterLayers = new L.featureIdGroup();
-            heatLayers = new L.featureIdGroup();
             config = context.sandbox.mapConfiguration;
-
         },
-         plotFeatures: function(params){
-            //clusterLayers[params.layerId]        
-            console.debug('params in plot: ', params);
+        plotFeatures: function(params){
 
             context.sandbox.util.each(params.data, function(index, obj){
                 //geoJson objects
@@ -43,29 +37,22 @@ define([
                         return config.shapeStyles.rectangle.shapeOptions;
                     }
                 });
-
-                console.debug('adding geo: ', geo);
-                
-                
-
-
+    
                 if(context.sandbox.stateManager.map.visualMode === 'cluster'){
-                  
-                    
-                    clusterLayers.addFeature(params.layerId, geo);
+                    if(clusterLayers.hasLayerId(params.layerId) === false){
+                        //create cluster layer before passing the data to it.
+                        exposed.createVectorLayer({
+                            'map': params.map,
+                            'layerId': params.layerId
+                        });
+                    }
+                    clusterLayers.addDataToLayer(params.layerId, geo);
                 }
-                // else if(context.sandbox.stateManager.map.visualMode === 'heatmap'){//for heatmap
+                else if(context.sandbox.stateManager.map.visualMode === 'heatmap'){
 
-                // } else{//for single points
-                //     if(singlePointLayer[params.layerId] === 'undefined'){
-                //         exposed.createVectorLayer({
-                //             'map': params.map,
-                //             'layerId': params.layerId
-                //         });
-                //     }
-                //     singlePointLayer[params.layerId].addLayer(geo);
-                // }
-
+                } else{//for single points
+                    
+                }
 
             });
         },
@@ -81,88 +68,96 @@ define([
          * Create layers that are not accessible to the user, and that don't go away
          * @param params
          */
-        createStaticLayers: function(params) {
-            var geolocatorParams,
-                geolocatorLayer,
-                drawParams,
-                drawLayer,
-                heatmapParams,
-                heatmapLayer;
+        createViewLayers: function(params) {
+            singlePointLayer = new L.featureIdGroup();
+            clusterLayers = new L.featureIdGroup();
+            heatLayers = new L.featureIdGroup();
 
-            //Create geolocator layer options
-            geolocatorParams = {
-                "map": params.map,
-                "layerId": "static_geolocator",
-                "static": true,
-                "styleMap": {
-                    "externalGraphic": "${icon}",
-                    "graphicHeight": "${height}",
-                    "graphicWidth":  "${width}",
-                    "graphicYOffset": config.markerIcons.default.graphicYOffset || 0
-                }
-            };
-            geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
-            addGeoLocatorListeners({
-                "map": params.map,
-                "layer": geolocatorLayer
-            });
+            params.map.addLayer(clusterLayers);
+            params.map.addLayer(heatLayers);
+            params.map.addLayer(singlePointLayer);
 
-            //Create draw layer options
-            drawParams = {
-                "map": params.map,
-                "layerId": "static_draw",
-                "static": true,
-                "styleMap": {
-                    "default": {
-                        "fillOpacity": 0.05,
-                        "strokeOpacity": 1
-                    }
-                }
-            };
-            drawLayer = exposed.createVectorLayer(drawParams);
-            addDrawListeners({
-                "map": params.map,
-                "layer": drawLayer
-            });
+            // var geolocatorParams,
+            //     geolocatorLayer,
+            //     drawParams,
+            //     drawLayer,
+            //     heatmapParams,
+            //     heatmapLayer;
 
-            //Create heatmap layer options
-            heatmapParams = {
-                "map": params.map,
-                "layerId": "static_heatmap",
-                "renderers": ['Heatmap'],
-                "static": true,
-                "styleMap": {
-                    "default": new OpenLayers.Style({
-                        "pointRadius": 10,
-                        // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer.
-                        // The weight is calcluated by the context.weight function below.
-                        "weight": "${weight}"
-                    }, {
-                        "context": {
-                            weight: function() {
-                                var visibleDataRecordCount = 0;
-                                // Build the visibleDataRecordCount by adding all records from datasets that are visible
-                                context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value) {
-                                    if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible) {
-                                        visibleDataRecordCount += value.length;
-                                    }
-                                });
-                                // Set initial weight value to 0.1,
-                                // once there are more than 10k records it will decrease by 0.01 per 1k records, 
-                                // stopping at a lowest weight of 0.01 at 100k records (it will not go lower, even if more than 100k records)
-                                return Math.max(Math.min(1000 / visibleDataRecordCount, 0.1), 0.01);
-                            }
-                        }
-                    })
-                }
-            };
-            heatmapLayer = exposed.createVectorLayer(heatmapParams);
+            // //Create geolocator layer options
+            // geolocatorParams = {
+            //     "map": params.map,
+            //     "layerId": "static_geolocator",
+            //     "static": true,
+            //     "styleMap": {
+            //         "externalGraphic": "${icon}",
+            //         "graphicHeight": "${height}",
+            //         "graphicWidth":  "${width}",
+            //         "graphicYOffset": config.markerIcons.default.graphicYOffset || 0
+            //     }
+            // };
+            // geolocatorLayer = exposed.createVectorLayer(geolocatorParams);
+            // addGeoLocatorListeners({
+            //     "map": params.map,
+            //     "layer": geolocatorLayer
+            // });
 
-            params.map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]);
-            mapBase.addLayerToSelector({
-                "map": params.map,
-                "layer": geolocatorLayer
-            });
+            // //Create draw layer options
+            // drawParams = {
+            //     "map": params.map,
+            //     "layerId": "static_draw",
+            //     "static": true,
+            //     "styleMap": {
+            //         "default": {
+            //             "fillOpacity": 0.05,
+            //             "strokeOpacity": 1
+            //         }
+            //     }
+            // };
+            // drawLayer = exposed.createVectorLayer(drawParams);
+            // addDrawListeners({
+            //     "map": params.map,
+            //     "layer": drawLayer
+            // });
+
+            // //Create heatmap layer options
+            // heatmapParams = {
+            //     "map": params.map,
+            //     "layerId": "static_heatmap",
+            //     "renderers": ['Heatmap'],
+            //     "static": true,
+            //     "styleMap": {
+            //         "default": new OpenLayers.Style({
+            //             "pointRadius": 10,
+            //             // The 'weight' of the point (between 0.0 and 1.0), used by the heatmap renderer.
+            //             // The weight is calcluated by the context.weight function below.
+            //             "weight": "${weight}"
+            //         }, {
+            //             "context": {
+            //                 weight: function() {
+            //                     var visibleDataRecordCount = 0;
+            //                     // Build the visibleDataRecordCount by adding all records from datasets that are visible
+            //                     context.sandbox.utils.each(context.sandbox.dataStorage.datasets, function(key, value) {
+            //                         if(context.sandbox.stateManager.layers[key] && context.sandbox.stateManager.layers[key].visible) {
+            //                             visibleDataRecordCount += value.length;
+            //                         }
+            //                     });
+            //                     // Set initial weight value to 0.1,
+            //                     // once there are more than 10k records it will decrease by 0.01 per 1k records, 
+            //                     // stopping at a lowest weight of 0.01 at 100k records (it will not go lower, even if more than 100k records)
+            //                     return Math.max(Math.min(1000 / visibleDataRecordCount, 0.1), 0.01);
+            //                 }
+            //             }
+            //         })
+            //     }
+            // };
+            // heatmapLayer = exposed.createVectorLayer(heatmapParams);
+
+            // params.map.addLayers([geolocatorLayer, drawLayer, heatmapLayer]);
+            // mapBase.addLayerToSelector({
+            //     "map": params.map,
+            //     "layer": geolocatorLayer
+            // });
 
         },
         /**
@@ -186,7 +181,7 @@ define([
               
             //drawnItemsLayers is empty bc removeboundingbox is called when the query tool is closed.
 
-            console.debug('params in createVectorLayer: ', params);
+            //console.debug('params in createVectorLayer: ', params);
 
 
 
@@ -194,8 +189,7 @@ define([
                 clusterLayers.addLayer(params.layerId, new L.MarkerClusterGroup({
                         maxClusterRadius: config.clustering.thresholds.clustering.distance
                     })
-                );  
-                
+                ); 
 
             } else if( context.sandbox.stateManager.map.visualMode === 'heatmap'){
                 
@@ -358,15 +352,15 @@ define([
 
             });
 
-//            context.sandbox.utils.each(allIdentifiedFeatures, function(identifiedFeatureLayerId, identifiedFeatureLayerArray){
-//                context.sandbox.utils.each(identifiedFeatureLayerArray, function(identifiedFeatureIndex, identifiedFeatureId){
-//                    exposed.identifyFeature({
-//                        featureId: identifiedFeatureId,
-//                        layerId: identifiedFeatureLayerId,
-//                        map: map
-//                    });
-//                });
-//            });
+               // context.sandbox.utils.each(allIdentifiedFeatures, function(identifiedFeatureLayerId, identifiedFeatureLayerArray){
+               //     context.sandbox.utils.each(identifiedFeatureLayerArray, function(identifiedFeatureIndex, identifiedFeatureId){
+               //         exposed.identifyFeature({
+               //             featureId: identifiedFeatureId,
+               //             layerId: identifiedFeatureLayerId,
+               //             map: map
+               //         });
+               //     });
+               // });
 
         },
         /**
@@ -424,6 +418,17 @@ define([
                 if(currentLayer) {
                     currentLayer.setVisibility(true);
                 }
+            }
+        },
+        getActiveLayer: function(params){//DONE
+
+            if(context.sandbox.stateManager.map.visualMode === 'cluster'){
+                return clusterLayers;
+            }
+            else if(context.sandbox.stateManager.map.visualMode === 'heatmap'){
+                return heatLayers;
+            } else{//for single points
+                return singlePointLayer;
             }
         },
         /**

@@ -46,13 +46,16 @@ define([
         /**
          * Create a Leaflet Map
          * @param {object} params - JSON parameters
-         * @param {string} params.el - name of map (optional)
          */
         createMap: function(params) {
 
             map = mapBase.createMap(params);
 
             mapLayers.loadBasemaps({
+                "map": map
+            });
+
+            mapLayers.createViewLayers({
                 "map": map
             });
 
@@ -82,7 +85,7 @@ define([
                 "drawnItemsLayer": drawnItemsLayer
             });
 
-
+            //the following is all test code used for the initial demo. Slowly removing this...
             // var someIcon = L.icon({
             //     iconUrl: context.sandbox.mapConfiguration.markerIcons.default.icon,
             //     iconSize: [context.sandbox.mapConfiguration.markerIcons.default.width, context.sandbox.mapConfiguration.markerIcons.default.height],
@@ -125,7 +128,6 @@ define([
             //                 className: 'marker-cluster' + ' marker-cluster-large',
             //                 iconSize: new L.Point(40, 40) });
             //         }
-                    
             //     }
             // });
             // query2.addLayers([point2,point3,point4,square]);
@@ -182,55 +184,66 @@ define([
 
 
 
-            var geoJson = {
-    "features": [
-      { "type": "Feature",
-        "geometry": {"type": "Point", "coordinates": [9, 9]},
-        "properties": {"prop0": "value0"}
-        },
-      { "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [9, 9]
-          },
-        "properties": {
-          "prop0": "value0",
-          "prop1": 0.0
-          }
-        },
-      { "type": "Feature",
-         "geometry": {
-           "type": "Point",
-           "coordinates":[9, 9]
-         },
-         "properties": {
-           "prop0": "value0",
-           "prop1": {"this": "that"}
-            },
-        "style": {
-          "height": 24,
-          "width": 24,
-          "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-          "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-            }
-        }
-       ]
-     };
+            // var geoJson = {
+            //     "features": [
+            //       { "type": "Feature",
+            //         "geometry": {"type": "Point", "coordinates": [9, 9]},
+            //         "properties": {"prop0": "value0"}
+            //         },
+            //       { "type": "Feature",
+            //         "geometry": {
+            //           "type": "Point",
+            //           "coordinates": [9, 9]
+            //           },
+            //         "properties": {
+            //           "prop0": "value0",
+            //           "prop1": 0.0
+            //           }
+            //         },
+            //       { "type": "Feature",
+            //          "geometry": {
+            //            "type": "Point",
+            //            "coordinates":[9, 9]
+            //          },
+            //          "properties": {
+            //            "prop0": "value0",
+            //            "prop1": {"this": "that"}
+            //             },
+            //         "style": {
+            //           "height": 24,
+            //           "width": 24,
+            //           "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+            //           "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+            //             }
+            //         },
+            //         { "type": "Feature",
+            //            "geometry": {
+            //            "type": "Polygon",
+            //            "coordinates": [
+            //              [ [10.0, 10.0], [11.0, 10.0], [11.0, 11.0],
+            //                [10.0, 10.0], [10.0, 10.0] ]
+            //              ]
+            //          },
+            //          "properties": {
+            //            "prop0": "value0",
+            //            "prop1": {"this": "that"}
+            //            }
+            //          }
+            //     ]
+            // };
 
 
-        // var geoLayer = L.geoJson(geoJson,{
-        //     onEachFeature: function(feature, layer){
-        //         //layer.bindPopup(feature.properties.prop0);
-        //         //console.debug('static feature',feature);
-        //         //console.debug('static layer', layer);
-        //     }
-        // });
-        // query2.addLayer(geoLayer);
-        // //map.addLayer(geoLayer);
-        // geoLayer.on('click', function(marker){
-        //     //marker.layer.openPopup();
-        //     //console.debug(marker);
-        // })
+            // var geoLayer = L.geoJson(geoJson,{
+            //     onEachFeature: function(feature, layer){
+            //         //layer.bindPopup(feature.properties.prop0);
+            //         //console.debug('static feature',feature);
+            //         //console.debug('static layer', layer);
+            //     }
+            // });
+            // query2.addLayer(geoLayer);
+            // map.addLayer(query2);
+            // console.info('clusterGroup: ', query2);
+            // console.info('geoJson layer: ', geoLayer);
 
         },
         /**
