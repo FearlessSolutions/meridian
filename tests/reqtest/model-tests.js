@@ -389,7 +389,100 @@ define([
                 meridian.html = $fixtures.html;
                 renderer.initialize.call(meridian, meridian);
             });
+
         });//it
+
+        it("Zoom Out: Should Set Map Zoom to 5, then Zoom Out to a level of 4.", function () {
+
+            chai.should();
+            var initialZoom = 0;
+            var finalZoom;
+
+
+            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                console.log('in it', meridian);
+                meridian.sandbox.external.postMessageToParent = function (params) {
+                    if (params.channel == 'map.status.ready') {
+
+                        var map = renderer.getMap();
+
+
+                        map.setCenter([5, 5], 5);
+
+                        var startingZoom = map.getZoom();
+
+                        map.events.register("zoomend", map, function () {
+
+                            console.debug('This is the zoom level after the emit has been published ' + map.getZoom());
+
+                            // HERE IS THE ZOOM OUT TEST:
+                            // THE -STARTING- ZOOM VALUE minus 1,
+                            // SHOULD EQUAL THE -PRESENT- VALUE.
+
+                            //console.log("Get Zoom: " + map.getZoom());
+
+                            (startingZoom - 1).should.equal(map.getZoom());
+                            meridian = null;
+
+                        });
+
+
+                        meridian.sandbox.external.receiveMessage({
+                            data: {
+                                channel: 'map.view.zoom.out',
+                                message: {}
+                            }
+                        });
+                        // manual publish to the channel
+                        //console.log("MINUS ONE " + map.getZoom());
+                        // compare of the zoom level here
+                        //var actual
+                    }
+                };
+
+                cmapiMain.initialize.call(meridian, meridian);
+                var $fixtures = $('#fixtures');
+                meridian.html = $fixtures.html;
+                renderer.initialize.call(meridian, meridian);
+            });
+        });//it
+
+        it("Payload of Lat 30 / Lon 30 should convert and match post-conversion.", function () {
+
+            chai.should();
+
+            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                console.log('in it', meridian);
+                meridian.sandbox.external.postMessageToParent = function (params) {
+                    if (params.channel == 'map.status.ready') {
+                        var map = renderer.getMap();
+                        meridian.sandbox.external.receiveMessage({
+                            data: {
+                                channel: 'map.view.center.location', message: {
+                                    "location": {
+                                        "lat": 30,
+                                        "lon": 30
+                                    }
+                                }
+                            }
+                        });  // manual publish to the channel
+
+                        var payloadCoords = map.getCenter().transform(map.projection, map.projectionWGS84);
+                        console.debug("Post-Emited Raw Coordinates: " + map.getCenter());
+                        console.debug("Converted Longitude: " + payloadCoords.lon);
+                        console.debug("Converted Latitude: " + payloadCoords.lat);
+                        chai.expect(payloadCoords.lon).to.be.above(29.99999999).and.below(30.00000001);
+                        chai.expect(payloadCoords.lat).to.be.above(29.99999999).and.below(30.00000001);
+                    }
+                };
+
+                cmapiMain.initialize.call(meridian, meridian);
+                var $fixtures = $('#fixtures');
+                meridian.html = $fixtures.html;
+                renderer.initialize.call(meridian, meridian);
+            });
+        });//it
+        
     });//describe
 });
 
