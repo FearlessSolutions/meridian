@@ -11,107 +11,72 @@ L.FeatureIdGroup = L.FeatureGroup.extend({
 		L.LayerGroup.prototype.initialize.call(this);
 		
 	},
-
 	addLayer: function (layerId, layer) {
-
+		
+		//This adds the initial layers used as the encapsulating layer. 
+		//In our cases, cluster and heatmap from their respective libraries
+		//an additional, simple and normal layer group is added to keep the single points.
 		this._layersById[layerId] = layer;
 		L.FeatureGroup.prototype.addLayer.call(this, layer);
 
-
+		return this;
 	},
-	addFeature: function(layerId, feature){
-		//make sure there is a layerId? if not fail?
-		
+	addDataToLayer: function(layerId, dataLayer){
+		//cant reference variable inside the for-loop.
+		var featureGroup = this._featuresById;
 
-		if(feature instanceof L.GeoJSON){
-			console.debug('adding a geoJSON');
-			feature.eachLayer(function(geo){
-				console.debug("geo: ", geo);
-				console.debug('this: ', this);
-				console.debug('featuresById ', this._featuresById);
+		//get the encapsulating layer and use its native addLayer to
+		//include the provided layer.
+		this._layersById[layerId].addLayer(dataLayer);
+
+		if(dataLayer instanceof L.GeoJSON){
+			dataLayer.eachLayer(function(geo){
 				if(geo.feature.geometry.type !== 'Point'){
-					//its a shape. Must use layerId as the featureId due to the _aoi being added.
-					this._featuresById["1234_aoi"] = geo;
-
-				}else {
-					//its a point, just add the point to the list of features.
-					this._featuresById[geo.feature.featureId] = geo
+					//shapes have featureId as _aoi. using layerId for now since only one shape
+					//can be drawn by layer. When mutiple shapes can be drawn, we need to send different ids
+					//for each shape. 
+					featureGroup[layerId] = geo;	
 				}
+				else{
+					featureGroup[geo.feature.featureId] = geo;
+				}
+				
 			});
 		}
 
-
-		console.debug('featureIds: ', this._featuresById);
-		L.FeatureGroup.prototype.addLayer.call(this, feature);//add the feature like all other leaflet groups.
-	},
-	containsLayerId: function(layerId){
-		return this._layersById[layerId] ? true : false;
-	},
-
-	removeLayer: function (layer) {
-		if (!this.hasLayer(layer)) {
-			return this;
-		}
-		if (layer in this._layers) {
-			layer = this._layers[layer];
-		}
-
-		layer.off(L.FeatureGroup.EVENTS, this._propagateEvent, this);
-
-		L.LayerGroup.prototype.removeLayer.call(this, layer);
-
-		if (this._popupContent) {
-			this.invoke('unbindPopup');
-		}
-
-		return this.fire('layerremove', {layer: layer});
-	},
-
-	bindPopup: function (content, options) {
-		this._popupContent = content;
-		this._popupOptions = options;
-		return this.invoke('bindPopup', content, options);
-	},
-
-	openPopup: function (latlng) {
-		// open popup on the first layer
-		for (var id in this._layers) {
-			this._layers[id].openPopup(latlng);
-			break;
-		}
 		return this;
 	},
-
-	setStyle: function (style) {
-		return this.invoke('setStyle', style);
+	hasLayerId: function(layerId){
+		return this._layersById[layerId] ? true : false;
+	},
+	getLayerById: function(layerId){
+		return this._layersById[layerId];
 	},
 
-	bringToFront: function () {
-		return this.invoke('bringToFront');
+	removeLayerById: function (layerId) {
+		// if (!this.hasLayerId(layerId)) {
+		// 	return this;
+		// }
+		// console.debug('before delete: ', this._layersById);
+		// var layer =  this._layersById[layerId];
+		// delete this._layersById[layerId];
+		// console.debug('after delete: ', this._layersById);
+		// L.LayerGroup.prototype.removeLayer.call(this, layer);
 	},
-
-	bringToBack: function () {
-		return this.invoke('bringToBack');
-	},
-
-	getBounds: function () {
+	getBounds: function (layerId) {
 		var bounds = new L.LatLngBounds();
 
-		this.eachLayer(function (layer) {
-			bounds.extend(layer instanceof L.Marker ? layer.getLatLng() : layer.getBounds());
-		});
+		if(this.hasLayerId(layerId)){
+			this._layersById[layerId].eachLayer(function(innerLayer){
+				bounds.extend(innerLayer.getLatLng());
+			});
+		}
 
+		if(this._featuresById[layerId]){
+			bounds.extend(this._featuresById[layerId].getBounds());
+		}
+		
 		return bounds;
-	},
-	_addFeatures: function(obj){
-
-	},
-	_propagateEvent: function (e) {
-		e = L.extend({
-			layer: e.target,
-			target: this
-		}, e);
-		this.fire(e.type, e);
 	}
 });
 
