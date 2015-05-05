@@ -116,7 +116,53 @@ define([
         //    });
         //});//it
         // Capture the Basemap change
-        it("Change the Basemap Unit Test", function (done) {
+        //it("Change the Basemap Unit Test", function (done) {
+        //    require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+        //        console.log('in it', meridian);
+        //        meridian.sandbox.external.postMessageToParent = function (params) {
+        //            if (params.channel == 'map.status.ready') {
+        //                // map goes first
+        //                var map = renderer.getMap(),
+        //                    payload = {
+        //                        "basemap": "imagery"
+        //                    },
+        //                    initialBasemap = {
+        //                        "basemap": "landscape"
+        //                    },
+        //                    expectedBasemap = {  // expected value result after map.basemap.change emitted
+        //                        "basemap": "imagery"
+        //                    },
+        //                    actualBasemap, mapUrl;
+        //
+        //                //test goes here
+        //                meridian.sandbox.external.receiveMessage({data:{channel:'map.basemap.change', message: payload }});  // manual publish to the channel
+        //
+        //                expect(payload).to.exist; // payload exists
+        //                expect(payload).to.be.an('object'); // payload is an object
+        //                meridian.sandbox.on('map.basemap.change', function(params) {
+        //                    actualBasemap = params;
+        //                    expect(actualBasemap).to.exist; // payload is neither null or undefined
+        //                    expect(actualBasemap).to.be.an('object'); // payload is an object
+        //                    expect(initialBasemap).to.not.equal(actualBasemap);
+        //                    console.debug('The actual basemap is equal to the expected basemap');
+        //                    expect(expectedBasemap).to.equal(actualBasemap);
+        //                    console.debug('The actual basemap is equal to the expected basemap');
+        //                    mapUrl = map["baseLayer"]["url"].indexOf("USGSImageryOnly");
+        //                    expect(mapUrl).to.not.equal(-1);  // indexOf is -1 when the value does not occur in the string (false)
+        //                    console.debug("The basemap change to imagery is successful");  // This checks a specific property value that contains a substring as a URL when the basemap change is successful
+        //                });
+        //                done();
+        //            }
+        //        };
+        //        cmapiMain.initialize.call(meridian, meridian);
+        //        var $fixtures = $('#fixtures');
+        //        meridian.html = $fixtures.html;
+        //        renderer.initialize.call(meridian, meridian);
+        //    });
+        //});//it
+
+        // Capture the Create Layer
+        it("Create a Layer (with overlayId) Unit Test", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
                 meridian.sandbox.external.postMessageToParent = function (params) {
@@ -124,37 +170,71 @@ define([
                         // map goes first
                         var map = renderer.getMap(),
                             payload = {
-                                "basemap": "imagery"
+                                name: "Test Name 1",  // can't check name, because it isn't saved in OL
+                                overlayId: "testOverlayId1",
+                                coords: {
+                                    minLat: "7.602108",
+                                    minLon: "-13.908691",
+                                    maxLat: "11.587669",
+                                    maxLon: "-8.283691"
+                                }
                             },
-                            initialBasemap = {
-                                "basemap": "landscape"
-                            },
-                            expectedBasemap = {  // expected value result after map.basemap.change emitted
-                                "basemap": "imagery"
-                            },
-                            actualBasemap, mapUrl;
-
+                            beforeLayerCount = map.layers.length, // layer count prior to the channel emit
+                            afterLayerCount,
+                            actualLayer;
                         //test goes here
-                        meridian.sandbox.external.receiveMessage({data:{channel:'map.basemap.change', message: payload }});  // manual publish to the channel
-
-                        expect(payload).to.exist; // payload exists
-                        expect(payload).to.be.an('object'); // payload is an object
-                        meridian.sandbox.on('map.basemap.change', function(params) {
-                            actualBasemap = params;
-                            expect(actualBasemap).to.exist; // payload is neither null or undefined
-                            expect(actualBasemap).to.be.an('object'); // payload is an object
-                            expect(initialBasemap).to.not.equal(actualBasemap);
-                            console.debug('The actual basemap is equal to the expected basemap');
-                            expect(expectedBasemap).to.equal(actualBasemap);
-                            console.debug('The actual basemap is equal to the expected basemap');
-                            mapUrl = map["baseLayer"]["url"].indexOf("USGSImageryOnly");
-                            expect(mapUrl).to.not.equal(-1);  // indexOf is -1 when the value does not occur in the string (false)
-                            console.debug("The basemap change to imagery is successful");  // This checks a specific property value that contains a substring as a URL when the basemap change is successful
+                        map.events.register("addlayer", map, function(){
+                            afterLayerCount = map.layers.length; // layer count prior to the channel emit
+                            expect(afterLayerCount).to.be.above(beforeLayerCount); // confirmation that a layer was created
+                            map.layers[map.layers.length-1];  //  last layer added
+                            actualLayer = map.layers[map.layers.length-1];
+                            expect(actualLayer).to.exist;
+                            expect(actualLayer.layerId).to.equal(payload.overlayId);  // actual layerId should equal the payload overlayId
+                            done();
                         });
-                        done();
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }});  // manual publish to the channel
                     }
                 };
-                //meridian.sandbox.on('map.basemap.change', function(params) {  var actualBasemap =  params } );
+                cmapiMain.initialize.call(meridian, meridian);
+                var $fixtures = $('#fixtures');
+                meridian.html = $fixtures.html;
+                renderer.initialize.call(meridian, meridian);
+            });
+        });//it
+
+        it("Create a Layer (without overlayId) Unit Test", function (done) {
+            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                console.log('in it', meridian);
+                meridian.sandbox.external.postMessageToParent = function (params) {
+                    if (params.channel == 'map.status.ready') {
+                        // map goes first
+                        var map = renderer.getMap(),
+                            payload = {
+                                name: "Test Name 1",  // can't check name, because it isn't saved in OL
+                                overlayId: "",
+                                coords: {
+                                    minLat: "7.602108",
+                                    minLon: "-13.908691",
+                                    maxLat: "11.587669",
+                                    maxLon: "-8.283691"
+
+                                }
+                            },
+                            beforeLayerCount = map.layers.length, // layer count prior to the channel emit
+                            afterLayerCount,
+                            actualLayer;
+                        //test goes here
+                        map.events.register("addlayer", map, function(){
+                            afterLayerCount = map.layers.length; // layer count prior to the channel emit
+                            expect(afterLayerCount).to.be.above(beforeLayerCount); // confirmation that a layer was created
+                            map.layers[map.layers.length-1];  //  last layer added
+                            actualLayer = map.layers[map.layers.length-1];
+                            expect(actualLayer.layerId).to.equal('cmapi');  // cmapi is the defaultLayerId assigned by cmapi when value is empty
+                            done();
+                        });
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }});  // manual publish to the channel
+                    }
+                };
                 cmapiMain.initialize.call(meridian, meridian);
                 var $fixtures = $('#fixtures');
                 meridian.html = $fixtures.html;

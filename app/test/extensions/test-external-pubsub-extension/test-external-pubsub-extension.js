@@ -16,7 +16,6 @@ define([
 
             app.sandbox.external.postMessageToParent = function(msg) {
                 // empty function to be filled out
-                console.log('testinextension');
             };
             app.sandbox.external.receiveMessage = function(event) {
                 callbacks.forEach(function(callback) {
