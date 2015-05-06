@@ -1,15 +1,15 @@
 define([
-	'./cmapi-clear-publisher',
-	'./cmapi-clear-subscriber'
-], function (publisher, subscriber) {
+	'./cmapi-clear-mediator'
+], function (mediator) {
 	var context,
-        sendError;
-    var exposed = {
+        sendError,
+        exposed;
+
+    exposed = {
         init: function(thisContext, errorChannel) {
             context = thisContext;
             sendError = errorChannel;
-            publisher.init(context);
-            subscriber.init(context, exposed);
+            mediator.init(context, exposed);
         },
         receive: function(channel, message) {
             clear();
@@ -28,7 +28,7 @@ define([
     };
 
     function clear(){
-        publisher.publishClear();
+        mediator.publishClear();
     }
 
     return exposed;

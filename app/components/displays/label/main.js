@@ -1,10 +1,15 @@
 define([
 	'./label',
-    './label-subscriber',
+    './label-mediator',
 	'text!./label.hbs',
 	'text!./label.css',
     'handlebars'
-], function (labelDisplay, labelSubscriber, labelHBS, labelCSS) {
+], function (
+    labelDisplay, 
+    labelMediator, 
+    labelHBS, 
+    labelCSS
+) {
 
     return {
         initialize: function() {
@@ -15,8 +20,8 @@ define([
 
             this.html(html);
 
-            labelDisplay.init(this);
-            labelSubscriber.init(this);
+            labelMediator.init(this);
+            labelDisplay.init(this, labelMediator);
 
         }
     };

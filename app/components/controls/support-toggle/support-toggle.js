@@ -1,12 +1,11 @@
 define([
-    './support-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
         $supportButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $supportButton = context.$('#supportToggleButton');
 
@@ -22,9 +21,9 @@ define([
             $supportButton.on('click', function(event) {
                 event.preventDefault();
                 if($supportButton.hasClass('active')) {
-                    publisher.closeSupport();
+                    mediator.closeSupport();
                 } else {
-                    publisher.openSupport();
+                    mediator.openSupport();
                 }
             });
         },

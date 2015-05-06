@@ -1,14 +1,14 @@
 define([    
-    './search-publisher',
     'bootstrap',
     'daterangepicker'
-], function (publisher) {
-    var context,
-        datePickerObj;
+], function () {
+    var context, mediator, datePickerObj;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
+
             var $toggleSearchType = context.$('#searchAdmin_toggleType'),
                 $toggleSearchDateType = context.$('#searchAdmin_searchDateType'),
                 $inputSearch1 = context.$('#searchAdmin_userid'),
@@ -22,6 +22,7 @@ define([
                 currentKey = 'userId',
                 msgOneCrit = 'You must enter a value for the search criteria',
                 msgNoResults = 'No Results Found';
+
 
             $toggleSearchDateType.daterangepicker({
                 ranges: {
@@ -125,31 +126,32 @@ define([
                         if(!currentInput) {
                             context.$('input[type="text"]:visible').addClass('warning');
                             $searchMsg.text(msgOneCrit).show();
-                            publisher.clearAdminGrid();
+                            mediator.clearAdminGrid();
                         } else {
                             if(context.sandbox.utils.isEmptyObject(data)) {
                                 $searchMsg.text(msgNoResults).show();
-                                publisher.clearAdminGrid();
+                                mediator.clearAdminGrid();
                             } else {
                                 $searchMsg.hide();
-                                publisher.publisherSearchAdmingridCreate(data);
+                                mediator.searchAdmingridCreate(data);
                             }
-                        }
+                        };
+
                     } else {
                         if(context.sandbox.utils.isEmptyObject(data)) {
                             $searchMsg.text(msgNoResults).show();
-                            publisher.clearAdminGrid();
+                            mediator.clearAdminGrid();
                         } else {
                             $searchMsg.hide();
-                            publisher.publisherSearchAdmingridCreate(data);
+                            mediator.searchAdmingridCreate(data);
                         }
-                    }
+                    };
                 });               
             });
             $toggleClear.on('click', function() { 
                 $inputGeneric.removeClass('warning').val('');
                 $searchMsg.hide();
-                publisher.clearAdminGrid();
+                mediator.clearAdminGrid();
             });
         }       
     };

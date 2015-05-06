@@ -1,11 +1,11 @@
 define([
-    './export-picker-publisher',
     'text!./export-picker-layers.hbs',
     'bootstrap',
     'handlebars'
-], function (publisher, layersHBS) {
+], function (layersHBS) {
 
     var context,
+        mediator,
         selectedFeature,
         layerListTemplate,
         $modal,
@@ -18,8 +18,9 @@ define([
         COMPONENT_DESIGNATION = 'export-picker-modal';
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             selectedFeature = null;
             layerListTemplate = Handlebars.compile(layersHBS);
 
@@ -42,7 +43,7 @@ define([
                 keyboard: true,
                 show: false
             }).on('hidden.bs.modal', function() {
-                publisher.close();
+                mediator.close();
             });
 
             //Export button
@@ -55,7 +56,7 @@ define([
                     publishMessageCallback;
 
                 publishMessageCallback = function(callbackParams){
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         messageType: callbackParams.messageType,
                         messageTitle: callbackParams.messageTitle,
                         messageText: callbackParams.messageText
@@ -63,7 +64,7 @@ define([
                 };
 
                 if(!selectedExportOption || selectedExportOption === ''){
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Export',
                         messageText: 'No export option selected.'
@@ -72,7 +73,7 @@ define([
                     featureId = selectedFeature.featureId;
                     layerId = selectedFeature.layerId;
 
-                    publisher.close(); //This resets selected feature
+                    mediator.close(); //This resets selected feature
                     context.sandbox.export.export[selectedExportOption]({
                         featureId: featureId,
                         layerId: layerId,
@@ -80,13 +81,13 @@ define([
                         callback: publishMessageCallback
                     });
                 } else if (!selectedLayers.length){
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Export',
                         messageText: 'No layer to export selected.'
                     });
                 } else{
-                    publisher.close();
+                    mediator.close();
                     context.sandbox.export.export[selectedExportOption]({
                         layerIds: selectedLayers,
                         options: extraFields,
@@ -98,7 +99,7 @@ define([
             //Close button
             $modal.find('.modal-footer button[type="cancel"]').on('click', function(event) {
                 event.preventDefault();
-                publisher.close();
+                mediator.close();
             });
 
             //select all logic. WILL NOT WORK consistently WITH .attr
@@ -118,12 +119,10 @@ define([
             //Export radio buttons. These don't get removed, so can do up here.
             $exportContainer.find('input:radio[name=exportOption]').on('change', function(){
                 var $this = context.$(this),
-                    exportId = $this.val(),
-                    enabledExtraOptions;
+                    exportId = $this.val();
 
                 $exportContainer.find('.radio').removeClass('selected');
                 enableExtraOptions(exportId);
-
             });
 
             //Layercontainer click logic.
@@ -147,7 +146,7 @@ define([
                     layerId: params.layerId
                 };
 
-                publisher.publishOpening({
+                mediator.publishOpening({
                     componentOpening: COMPONENT_DESIGNATION
                 });
 
@@ -160,7 +159,7 @@ define([
 
             }else if(params && params.layerId){ //It is a specific layer
                 //message came from timeline containing params.overlayId
-                publisher.publishOpening({
+                mediator.publishOpening({
                     componentOpening: COMPONENT_DESIGNATION
                 });
                 exposed.updateExportLayerList();
@@ -170,7 +169,7 @@ define([
                 validateLayers();
 
             } else{ //It is all layers
-                publisher.publishOpening({
+                mediator.publishOpening({
                     componentOpening: COMPONENT_DESIGNATION
                 });
                 exposed.updateExportLayerList();
@@ -321,14 +320,27 @@ define([
 
     //verifies if the export option has additional options
     function enableExtraOptions(exportId){
-        var $exportPane = $extraContainer.find('#tab-' + exportId);
+        var $extraOptionTab = $extraContainer.find('#tab-' + exportId);
 
-        if($exportPane.length) { //Check if there is a pane for the export id
+        $extraContainer.find('.extra-export-tab').hide(); //Hide all extra option tabs
+        if($extraOptionTab.length) { //Check if there is a pane for the export id
             if($modalDialog.hasClass('singlePoint')){
                 stepTwoSinglePoint();
             }else{
                 showStepThree();
             }
+
+            //For each of the inputs for the extra tab, apply any defaults, then show the tab
+            $extraOptionTab.find('input').each(function(inputIndex, input){
+                var $this = $(this),
+                    defaultValue = $this.data('default');
+
+                if(defaultValue){
+                    $this.val(defaultValue);
+                }
+            });
+            $extraOptionTab.show(); //Show just this extra option tab
+
         }else{
             if($modalDialog.hasClass('singlePoint')){
                 stepOneSinglePoint();

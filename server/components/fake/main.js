@@ -1,6 +1,6 @@
-var fake = require('./fake.js'),
-    uuid = require('node-uuid'),
-    _ = require("underscore");
+var fake = require('./fake.js');
+var uuid = require('node-uuid');
+var _ = require('underscore');
 
 /**
  * curl -XPOST https://localhost:8000/query/bbox/fake -d'{"minLat":"40","maxLat":"50","minLon":"40","maxLon":"50"}' --cert sean.pines.p12:schemaless --insecure --header "Content-Type:application/json"

@@ -1,7 +1,7 @@
 define([
-    './zoom-publisher',
+    './zoom-mediator',
     'bootstrap'
-], function (publisher) {
+], function (mediator) {
     var context,
         $zoomIn,
         $zoomOut;
@@ -19,7 +19,7 @@ define([
             });
             $zoomIn.click(function(event){
                 event.preventDefault();
-                publisher.zoomIn();
+                mediator.zoomIn();
                 $zoomIn.blur();
             });
             
@@ -31,7 +31,7 @@ define([
             });
             $zoomOut.click(function(event){
                 event.preventDefault();
-                publisher.zoomOut();
+                mediator.zoomOut();
                 $zoomOut.blur();
             });    
         }

@@ -1,11 +1,11 @@
 define([
     'text!./cluster-toggle-notification.hbs',
-    './cluster-toggle-publisher',
     'bootstrap',
     'handlebars'
-], function (notificationHBS, publisher) {
+], function (notificationHBS) {
 
     var context,
+        mediator,
         $button,
         userNotified,
         notificationTemplate,
@@ -13,9 +13,9 @@ define([
         CONTROL_DESIGNATION = 'cluster-toggle';
 
     var exposed = {
-        init: function(thisContext, notificationHTML) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
-            notificationMessage = notificationHTML;
+            mediator = thisMediator;
             $button = context.$('#clusterToggle');
             userNotified = false;
             notificationTemplate = Handlebars.compile(notificationHBS);
@@ -31,24 +31,24 @@ define([
             });
         },
         cluster: function() {            
-            publisher.cluster();
+            mediator.cluster();
             $button.addClass('active');
         },
         uncluster: function() {
             if(userNotified){
-                publisher.uncluster();
+                mediator.uncluster();
 
                 $button.removeClass('active');
 
                 if(countVisiblePoints() > MAX_VISIBLE){
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         "messageType": "warning",
                         "messageTitle": "Clustering",
                         "messageText": "Unsafe to uncluster"
                     });    
                 }
             }else{
-                publisher.publishNotification({
+                mediator.publishNotification({
                     "origin": CONTROL_DESIGNATION,
                     "body": notificationTemplate({
                         "maxCount": MAX_VISIBLE

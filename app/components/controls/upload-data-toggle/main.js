@@ -1,24 +1,21 @@
 define([
     'text!./data-upload-toggle.hbs',
     './data-upload-toggle',
-    './data-upload-toggle-publisher',
-    './data-upload-toggle-subscriber',
+    './data-upload-toggle-mediator',
     'handlebars'
 ], function (
-    toggleHBS,
-    toggle,
-    togglePublisher,
-    toggleSubscriber
+    dataToggleHBS,
+    dataToggle,
+    dataToggleMediator
 ){
     return {
         initialize: function() {
-            var toggleTemplate = Handlebars.compile(toggleHBS);
-            var html = toggleTemplate();
+            var dataToggleTemplate = Handlebars.compile(dataToggleHBS);
+            var html = dataToggleTemplate();
             this.html(html);
 
-            toggle.init(this);
-            togglePublisher.init(this);
-            toggleSubscriber.init(this);
+            dataToggleMediator.init(this);
+            dataToggle.init(this, dataToggleMediator);
         }
     };
 

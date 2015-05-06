@@ -1,13 +1,14 @@
 define([
-    './data-history-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
+        mediator,
         $dataHistoryButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $dataHistoryButton = context.$('#dataHistoryToggleButton');
 
             //Activate bootstrap tooltip. 
@@ -22,9 +23,9 @@ define([
             $dataHistoryButton.on('click', function(event) {
                 event.preventDefault();
                 if($dataHistoryButton.hasClass('active')) {
-                    publisher.closeDataHistory();
+                    mediator.closeDataHistory();
                 } else {
-                    publisher.openDataHistory();
+                    mediator.openDataHistory();
                 }
             });
         },

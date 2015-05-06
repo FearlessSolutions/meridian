@@ -1,7 +1,6 @@
 define([
-	'./cmapi-view-publisher',
-    './cmapi-view-subscriber'
-], function (publisher, subscriber) {
+	'./cmapi-view-mediator'
+], function (mediator) {
 	var context,
         sendError,
         defaultLayerId;
@@ -11,11 +10,10 @@ define([
             context = thisContext;
             sendError = errorChannel;
             defaultLayerId = context.sandbox.cmapi.defaultLayerId;
-            publisher.init(context);
-            subscriber.init(context);
+            mediator.init(context, exposed);
         },
         receive: function(channel, message) {
-            var chName  = context.sandbox.cmapi.utils.createChannelNameFunction(channel)
+            var chName  = context.sandbox.cmapi.utils.createChannelNameFunction(channel);
             if(receiveChannels[chName]) {
                 receiveChannels[chName](message);
             } else {
@@ -27,15 +25,15 @@ define([
             
             if('lat' in message && 'lon' in message) {
                 payload = {
-                    'lat': message.lat,
-                    'lon': message.lon,
-                    'button': 'left', //only supporting left click - TODO: need to revisit 
-                    'type': 'single' //only supporting single click - TODO: need to revisit 
+                    lat: message.lat,
+                    lon: message.lon,
+                    button: 'left', //only supporting left click - TODO: need to revisit
+                    type: 'single' //only supporting single click - TODO: need to revisit
                 };
             } 
             context.sandbox.external.postMessageToParent({
-                'channel': 'map.view.clicked',
-                'message': payload
+                channel: 'map.view.clicked',
+                message: payload
             });
         } 
     };
@@ -45,77 +43,63 @@ define([
 			sendError('map.view.zoom', message, 'channel not supported');
 		},
         mapViewZoomIn: function(message) {
-            publisher.zoomIn();
+            mediator.zoomIn();
         },
         mapViewZoomOut: function(message) {
-            publisher.zoomOut();
+            mediator.zoomOut();
         },
         mapViewZoomMaxExtent: function(message) {
-            publisher.zoomToMaxExtent();
+            mediator.zoomToMaxExtent();
         },
         mapViewCenterOverlay: function(message) {
-            var params = {};
-            
-            if(message.overlayId) {
-                params.layerId = message.overlayId;
-            } else {
-                params.layerId = defaultLayerId;
-            }
-            
-            //defaulting auto zoom to null since we dont support zooming into a certain range
-            params.zoom = null; // 
-            publisher.zoomToLayer(params);
+            mediator.zoomToLayer({
+                layerId: message.overlayerId ? message.overlayId : defaultLayerId,
+                zoom: null //defaulting auto zoom to null since we dont support zooming into a certain range
+            });
 		},
 		mapViewCenterFeature: function(message) {
-            var newAJAX;
-            
             //check for required fields (featureId)
-            if(message !== '' && message !== undefined) {
-                if(!('featureId' in message)) {
-                    sendError('map.view.center.feature', message, 'message must include a featureId');
-                    return;
-                }
+            if(message !== undefined && message !== '' && !('featureId' in message)) {
+                sendError('map.view.center.feature', message, 'message must include a featureId');
+                return;
             }
 
             try{
-                newAJAX = context.sandbox.dataStorage.getFeatureById(message, function(data) {
+                context.sandbox.dataStorage.getFeatureById(message, function(data) {
                     var extent;
                     //If the feature is a point, set center; else, zoom to extent
                     if(data.geometry){
-                        if(data.geometry.type === "Point") {
-                            publisher.setCenter({
-                                "lon": data.geometry.coordinates[1],
-                                "lat": data.geometry.coordinates[0]
+                        if(data.geometry.type === 'Point') {
+                            mediator.setCenter({
+                                lon: data.geometry.coordinates[1],
+                                lat: data.geometry.coordinates[0]
                             });
                         } else { //if feature is any other geometry 
                             extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
-                            publisher.centerOnBounds(extent);
+                            mediator.centerOnBounds(extent);
                         }
                     } else {
                         context.sandbox.external.postMessageToParent({
-                            'channel': 'map.view.center.feature',
-                            'message': 'message failure - feature not found'
+                            channel: 'map.view.center.feature',
+                            message: 'message failure - feature not found'
                         });
                     }
                  });
             } catch (error){
-                console.log(error);
                 context.sandbox.external.postMessageToParent({
-                    'channel': 'map.view.center.feature',
-                    'message': 'message failure - feature not found'
+                    channel: 'map.view.center.feature',
+                    message: 'message failure - feature not found'
                 });
             }           
 		},
 		mapViewCenterLocation: function(message) {
 			if('location' in message && 'lat' in message.location && 'lon' in message.location){
-				publisher.setCenter(message.location);
+				mediator.setCenter(message.location);
 			} else {
                 sendError('map.view.center.location', message, 'Requires "location":{"lat", "lon"}');
             }
 		},
 		mapViewCenterBounds: function(message){
-            var bounds;
-
             if(
                 !message.bounds ||
                 !message.bounds.northEast || 
@@ -129,14 +113,12 @@ define([
                 return;
             }
 
-            bounds = {
-                'minLon': message.bounds.southWest.lon,
-                'minLat': message.bounds.southWest.lat,
-                'maxLon': message.bounds.northEast.lon,
-                'maxLat': message.bounds.northEast.lat
-            };
-
-            publisher.centerOnBounds(bounds);
+            mediator.centerOnBounds({
+                minLon: message.bounds.southWest.lon,
+                minLat: message.bounds.southWest.lat,
+                maxLon: message.bounds.northEast.lon,
+                maxLat: message.bounds.northEast.lat
+            });
 		},
         mapViewCenterData: function(message){
             var extent,
@@ -157,19 +139,18 @@ define([
                 maxLatDelta = Math.abs(extent.maxLat) * 0.25;
                 maxLonDelta = Math.abs(extent.maxLon) * 0.25;
 
-                publisher.centerOnBounds({
-                    'minLat': extent.minLat - minLatDelta,
-                    'minLon': extent.minLon - minLonDelta,
-                    'maxLat': extent.maxLat + maxLatDelta,
-                    'maxLon': extent.maxLon + maxLonDelta
+                mediator.centerOnBounds({
+                    minLat: extent.minLat - minLatDelta,
+                    minLon: extent.minLon - minLonDelta,
+                    maxLat: extent.maxLat + maxLatDelta,
+                    maxLon: extent.maxLon + maxLonDelta
                 });
             } else {
                 context.sandbox.external.postMessageToParent({
-                    'channel': 'map.view.center.data',
-                    'message': 'message failure - no data present'
+                    channel: 'map.view.center.data',
+                    message: 'message failure - no data present'
                 });
             }
-           
         }
     };
 

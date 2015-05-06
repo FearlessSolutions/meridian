@@ -1,23 +1,23 @@
 define([
     'text!./export-picker-toggle.hbs',
     './export-picker-toggle',
-    './export-picker-toggle-publisher',
-    './export-picker-toggle-subscriber',
+    './export-picker-toggle-mediator',
     'handlebars'
-], function(componentHBS, component, publisher, subscriber){
+], function(
+    exportpickerHBS, 
+    exportPicker, 
+    exportPickerMediator
+){
 
     return {
         initialize: function() {
 
-            var componentTemplate = Handlebars.compile(componentHBS);
-            var html = componentTemplate();
-
+            var exportpickerTemplate = Handlebars.compile(exportpickerHBS);
+            var html = exportpickerTemplate();
             this.html(html);
 
-            component.init(this);
-            publisher.init(this);
-            subscriber.init(this);
-
+            exportPickerMediator.init(this);
+            exportPicker.init(this, exportPickerMediator);
         }
     };
 });

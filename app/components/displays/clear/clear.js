@@ -1,17 +1,18 @@
 define([
-    './clear-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
 
     var context,
+        mediator,
         MENU_DESIGNATION = 'clear',
         $modal,
         $cancelButton,
         $clearButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $modal = context.$('#clear-modal');
             $cancelButton = context.$('#cancel-clear');
             $clearButton = context.$('#accept-clear');
@@ -27,19 +28,11 @@ define([
             });
 
             $clearButton.on('click', function(e) {
-                // TODO: Move this to be handled by the data services (will require reasonable refactor)
-                // context.sandbox.utils.ajax({
-                //     type: 'DELETE',
-                //     url: '/clear',
-                //     headers: {
-                //         'x-meridian-session-id': context.sandbox.sessionId
-                //     }
-                // });
-                publisher.publishClear();
+                mediator.publishClear();
             });
         },
         open: function(params) {
-            publisher.publishOpening({"componentOpening": MENU_DESIGNATION});
+            mediator.publishOpening({"componentOpening": MENU_DESIGNATION});
             $modal.modal('show');
         },
         clear: function(){

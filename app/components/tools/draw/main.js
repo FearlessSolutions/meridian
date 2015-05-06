@@ -1,15 +1,16 @@
 define([
     './draw',
-    './draw-publisher',
-    './draw-subscriber',
+    './draw-mediator',
     'handlebars'
-], function (drawTool, drawToolPublisher, drawToolSubscriber) {
+], function (
+    drawTool,  
+    drawToolMediator
+) {
 
     return {
         initialize: function() {
-            drawToolPublisher.init(this);
             drawTool.init(this);
-            drawToolSubscriber.init(this);
+            drawToolMediator.init(this, drawToolMediator);
         }
     };
                 

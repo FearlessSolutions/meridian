@@ -1,9 +1,9 @@
 define([
     'text!./clear-toggle.hbs',
     './clear-toggle',
-    './clear-toggle-publisher',
+    './clear-toggle-mediator',
     'handlebars'
-], function (clearHBS, clear, clearPublisher) {
+], function (clearHBS, clear, clearMediator) {
 
     return {
         initialize: function() {
@@ -12,8 +12,8 @@ define([
 
             this.html(html);
 
-            clear.init(this);
-            clearPublisher.init(this);
+            clearMediator.init(this);
+            clear.init(this, clearMediator);
         }
     };
 

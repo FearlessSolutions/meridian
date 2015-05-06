@@ -1,14 +1,12 @@
 define([
     'text!./legend-toggle.hbs',
     './legend-toggle',
-    './legend-toggle-publisher',
-    './legend-toggle-subscriber',
+    './legend-toggle-mediator',
     'handlebars'
 ], function (
     legendToggleHBS,
     legendToggle,
-    legendTogglePublisher,
-    legendToggleSubscriber
+    legendToggleMediator
 ){
     return {
         initialize: function() {
@@ -16,9 +14,8 @@ define([
             var html = legendToggleTemplate();
             this.html(html);
 
-            legendToggle.init(this);
-            legendTogglePublisher.init(this);
-            legendToggleSubscriber.init(this);
+            legendToggleMediator.init(this);
+            legendToggle.init(this, legendToggleMediator);
         }
     };
 

@@ -2,9 +2,14 @@ define([
     'text!./zoom.css', 
     'text!./zoom.hbs',
     './zoom',
-    './zoom-publisher',
+    './zoom-mediator',
     'handlebars'
-], function (zoomControlCSS, zoomControlHBS, zoomControl, zoomControlPublisher) {
+], function (
+    zoomControlCSS, 
+    zoomControlHBS, 
+    zoomControl, 
+    zoomControlMediator
+) {
 
     return {
         initialize: function() {
@@ -14,7 +19,7 @@ define([
             var html = zoomControlTemplate();
             this.html(html);
 
-            zoomControlPublisher.init(this);
+            zoomControlMediator.init(this);
             zoomControl.init(this);
         }
     };

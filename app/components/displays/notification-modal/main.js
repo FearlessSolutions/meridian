@@ -2,10 +2,14 @@ define([
     'text!./notification-modal.css',
     'text!./notification-modal.hbs',
     './notification-modal',
-    './notification-modal-subscriber',
-    './notification-modal-publisher',
+    './notification-modal-mediator',
     'handlebars'
-], function (notificationCSS, notificationHBS, notification, notificationSubscriber, notificationPublisher) {
+], function (
+    notificationCSS, 
+    notificationHBS, 
+    notification, 
+    notificationMediator
+) {
 
     return {
         initialize: function() {
@@ -16,9 +20,8 @@ define([
 
             this.html(notificationHTML);
 
-            notificationPublisher.init(this);
-            notification.init(this);
-            notificationSubscriber.init(this);
+            notificationMediator.init(this);
+            notification.init(this, notificationMediator);
         }
     };
                 

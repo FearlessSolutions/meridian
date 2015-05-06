@@ -1,9 +1,9 @@
 define([
-    './locator-publisher',
     'typeahead',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
+        mediator,
         timeout,
         selectedLocation = null,
         dataByName = {},
@@ -13,8 +13,9 @@ define([
         regEx = /([0-9])/;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $locator = context.$('#locator');
             $locatorButton = context.$('#locator .btn');
             $locatorInput = context.$('#locator input');
@@ -34,13 +35,13 @@ define([
                 event.preventDefault();
 
                 if(selectedLocation === null) {
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Search',
                         messageText: 'No valid location selected. Please select an option from the dropdown.'
                     });
                 }else if(selectedLocation === 'error') { //It is a coordinate error
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         messageType: 'warning',
                         messageTitle: 'Search',
                         messageText: 'Incorrect or unsupported coordinate format.'
@@ -54,7 +55,7 @@ define([
                 } else{
                     context.sandbox.locator.createLocationGeoJSON(selectedLocation, function(error, locationGeoJSON){
                         if(error){
-                            publisher.publishMessage({
+                            mediator.publishMessage({
                                 messageType: 'error',
                                 messageTitle: 'Search',
                                 messageText: 'Error creating location marker.'
@@ -104,7 +105,7 @@ define([
                         timeout = setTimeout(function() {
                             /*No need to query empty input*/
                             if(query) {
-                                publisher.publishMessage({
+                                mediator.publishMessage({
                                     messageType: 'info',
                                     messageTitle: 'Looking up suggestions',
                                     messageText: 'Validating ...'
@@ -112,7 +113,7 @@ define([
                                 //get the name data.
                                 context.sandbox.locator.query(query, function(data){
                                     if(data.names === []) {
-                                        publisher.publishMessage({
+                                        mediator.publishMessage({
                                             messageType: 'warning',
                                             messageTitle: 'Search Results',
                                             messageText: 'No results/suggestions found.'
@@ -142,7 +143,7 @@ define([
                  * Item is added to the input box.*/
                 updater:function(name) {
                     selectedLocation = dataByName[name];
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         messageType: 'success',
                         messageTitle: 'Search',
                         messageText: 'Valid location selected.'
@@ -168,14 +169,14 @@ define([
 
     function goToLocation(locationGeoJSON){
         if(locationGeoJSON.bbox){
-            publisher.zoomToLocation(locationGeoJSON.bbox);
+            mediator.zoomToLocation(locationGeoJSON.bbox);
         } else if(locationGeoJSON.geometry.type === 'Point') {
-            publisher.setMapCenter({
+            mediator.setMapCenter({
                 lat: locationGeoJSON.geometry.coordinates[1],
                 lon: locationGeoJSON.geometry.coordinates[0]
             });
         } else {
-            publisher.zoomToFeature({
+            mediator.zoomToFeature({
                 layerId: 'static_geolocator',
                 featureIds: [locationGeoJSON.featureId]
             });
@@ -185,7 +186,7 @@ define([
     }
 
     function markLocation(locationGeoJSON){
-        publisher.markLocation({
+        mediator.markLocation({
             layerId: 'static_geolocator',
             data: [locationGeoJSON]
         });

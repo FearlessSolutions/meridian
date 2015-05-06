@@ -1,14 +1,15 @@
 define([
     './mock',
-    './mock-publisher',
-    './mock-subscriber',
-], function (dataServiceMock, dataServiceMockPublisher, dataServiceMockSubscriber) {
+    './mock-mediator'
+], function (
+    dataServiceMock, 
+    dataServiceMockMediator
+) {
 
     return {
         initialize: function() {
-            dataServiceMockPublisher.init(this);
-            dataServiceMock.init(this);
-            dataServiceMockSubscriber.init(this);
+            dataServiceMockMediator.init(this);
+            dataServiceMock.init(this, dataServiceMockMediator);
         }
     };
 

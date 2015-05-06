@@ -1,14 +1,12 @@
 define([
     'text!./datagrid-toggle.hbs',
     './datagrid-toggle',
-    './datagrid-toggle-publisher',
-    './datagrid-toggle-subscriber',
+    './datagrid-toggle-mediator',
     'handlebars'
 ], function (
     datagridToggleHBS,
     datagridToggle,
-    datagridTogglePublisher,
-    datagridToggleSubscriber
+    datagridToggleMediator
 ){
     return {
         initialize: function() {
@@ -16,9 +14,8 @@ define([
             var html = datagridToggleTemplate();
             this.html(html);
 
-            datagridToggle.init(this);
-            datagridTogglePublisher.init(this);
-            datagridToggleSubscriber.init(this);
+            datagridToggleMediator.init(this);
+            datagridToggle.init(this, datagridToggleMediator);
         }
     };
 

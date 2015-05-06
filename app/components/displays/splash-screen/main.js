@@ -1,9 +1,12 @@
 define([
     'text!./splash-screen.css', 
     './splash-screen',
-    './splash-screen-publisher',
     'handlebars'
-], function (splashScreenCSS, splashScreen, splashScreenPublisher) {
+], function (
+    splashScreenCSS, 
+    splashScreen, 
+    splashScreenMediator
+) {
 
     return {
         initialize: function() {
@@ -14,7 +17,6 @@ define([
                 var html = splashScreenTemplate();
                 this.html(html);
 
-                splashScreenPublisher.init(this);
                 splashScreen.init(this);
             }
         }

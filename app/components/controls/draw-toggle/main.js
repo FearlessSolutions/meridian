@@ -1,14 +1,12 @@
 define([
     'text!./draw-toggle.hbs',
     './draw-toggle',
-    './draw-toggle-publisher',
-    './draw-toggle-subscriber',
+    './draw-toggle-mediator',
     'handlebars'
 ], function (
     drawToggleHBS,
     drawToggle,
-    drawTogglePublisher,
-    drawToggleSubscriber
+    drawToggleMediator
 ){
     return {
         initialize: function() {
@@ -16,9 +14,8 @@ define([
             var html = drawToggleTemplate();
             this.html(html);
 
-            drawToggle.init(this);
-            drawTogglePublisher.init(this);
-            drawToggleSubscriber.init(this);
+            drawToggleMediator.init(this);
+            drawToggle.init(this, drawToggleMediator);
         }
     };
 

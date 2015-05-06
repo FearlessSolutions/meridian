@@ -2,13 +2,13 @@ define([
     'text!./progress-notification.css',
     'text!./progress-notification.hbs',
     './progress-notification',
-    './progress-notification-subscriber',
+    './progress-notification-mediator',
     'handlebars'
 ], function (
     progressNotificationCSS,
     progressNotificationHBS,
     progressNotification,
-    progressNotificationSubscriber
+    progressNotificationMediator
 ){
     return {
         initialize: function() {
@@ -18,8 +18,8 @@ define([
             var html = progressNotificationTemplate();
             this.html(html);
 
-            progressNotification.init(this);
-            progressNotificationSubscriber.init(this);
+            progressNotificationMediator.init(this);
+            progressNotification.init(this, progressNotificationMediator);
         }
     };
 });
