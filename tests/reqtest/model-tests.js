@@ -240,7 +240,7 @@ define([
             });
         });//it
 
-        // Capture Remove Layer
+        //Capture Remove Layer
         it("Remove a Layer Unit Test", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
@@ -283,7 +283,6 @@ define([
                             afterLayerRemoveCount = map.layers.length;
                             expect(afterLayerCreateCount).to.be.above(afterLayerRemoveCount);  // confirms the layer with overlayId value from payload was removed
                             layerCheck(false, map.layers);
-                            done();
                         });
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }}); // manual publish to the channel
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.remove', message: payload }}); // manual publish to the channel
@@ -293,6 +292,7 @@ define([
                 var $fixtures = $('#fixtures');
                 meridian.html = $fixtures.html;
                 renderer.initialize.call(meridian, meridian);
+                done();
             });
         });//it
 
@@ -330,6 +330,50 @@ define([
                 var $fixtures = $('#fixtures');
                 meridian.html = $fixtures.html;
                 renderer.initialize.call(meridian, meridian);
+            });
+        });//it
+
+        // Capture Show Layer
+        it("Show Layer Unit Test", function (done) {
+            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                console.log('in it', meridian);
+                console.debug(meridian);
+                meridian.sandbox.external.postMessageToParent = function (params) {
+                    if (params.channel == 'map.status.ready') {
+                        // map goes first
+                        var map = renderer.getMap(),
+                            payload = {
+                                overlayId: "testOverlayId1"
+                            },
+                            beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+                            afterLayerCreateCount,
+                            targetLayer;
+                        //test goes here
+                        meridian.sandbox.on('map.layer.create', function(params) {
+                            afterLayerCreateCount = map.layers.length;
+                            expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+                            targetLayer = map.layers[map.layers.length-1];
+                            expect(targetLayer.layerId).to.equal(payload.overlayId); // confirms that Id is the overlayId value from the payload
+                            expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId1 is visible
+                            console.debug("The visibility of this layer is currently set to " + targetLayer.getVisibility());
+                            meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.hide', message: payload }});
+                            expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is not visible
+                            console.debug("The visibility of this layer is currently set to " + targetLayer.getVisibility());
+                            meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.show', message: payload }});
+
+                        });
+                        meridian.sandbox.on('map.layer.show', function(params) {
+                            console.log('its visible');
+                            //done();
+                        });
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }}); // manual publish to the channel
+                    }
+                };
+                cmapiMain.initialize.call(meridian, meridian);
+                var $fixtures = $('#fixtures');
+                meridian.html = $fixtures.html;
+                renderer.initialize.call(meridian, meridian);
+                done();
             });
         });//it
 
