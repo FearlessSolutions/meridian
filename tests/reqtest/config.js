@@ -85,7 +85,8 @@ require(['chai', 'mocha', 'jquery'], function(chai) {
 
     require([
         //TODO add tests that you want to run here
-        './model-tests.js',
+        './map_view_tests.js',
+        //'./map_overlay_tests.js'
         //'./demo.js'
     ], function(require) {
         mocha.run();
