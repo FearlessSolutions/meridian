@@ -358,13 +358,10 @@ define([
                             console.debug("The visibility of this layer is currently set to " + targetLayer.getVisibility());
                             meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.hide', message: payload }});
                             expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is not visible
-                            console.debug("The visibility of this layer is currently set to " + targetLayer.getVisibility());
+                            console.debug('The visibility of this layer is currently set to ' + targetLayer.getVisibility());
                             meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.show', message: payload }});
-
-                        });
-                        meridian.sandbox.on('map.layer.show', function(params) {
-                            console.log('its visible');
-                            //done();
+                            expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer.show emit is successful
+                            console.debug('Show layer successful ' + targetLayer.getVisibility());
                         });
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }}); // manual publish to the channel
                     }
