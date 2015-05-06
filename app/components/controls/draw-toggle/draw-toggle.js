@@ -1,13 +1,15 @@
 define([
-    './draw-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
+        mediator,
         $drawToolButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
+
             $drawToolButton = context.$('#drawToggleButton');
 
             //Activate bootstrap tooltip. 
@@ -22,9 +24,9 @@ define([
             $drawToolButton.on('click', function(event) {
                 event.preventDefault();
                 if($drawToolButton.hasClass('active')) {
-                    publisher.closeDrawTool();
+                    mediator.closeDrawTool();
                 } else {
-                    publisher.openDrawTool();
+                    mediator.openDrawTool();
                 }
             });
         },

@@ -2,15 +2,13 @@ define([
     'text!./data-history.css', 
     'text!./data-history.hbs',
     './data-history',
-    './data-history-publisher',
-    './data-history-subscriber',
+    './data-history-mediator',
     'handlebars'
 ], function (
     dataHistoryCSS,
     dataHistoryHBS,
     dataHistory,
-    dataHistoryPublisher,
-    dataHistorySubscriber
+    dataHistoryMediator
 ) {
     return {
         initialize: function() {
@@ -20,9 +18,8 @@ define([
             var html = dataHistoryTemplate();
             this.html(html);
 
-            dataHistory.init(this);
-            dataHistoryPublisher.init(this);
-            dataHistorySubscriber.init(this);
+            dataHistory.init(this, dataHistoryMediator);
+            dataHistoryMediator.init(this);
         }
     };
                 

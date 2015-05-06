@@ -1,8 +1,7 @@
 define([
-    './support-publisher',
     'bootstro',
     'bootstrap'
-], function (publisher, bootstro) {
+], function (bootstro) {
 
     var context,
         contentLoaded = false,
@@ -16,8 +15,9 @@ define([
         $aboutCloseButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
 
             $supportModal = context.$('#support-modal');
             $supportModalBody = context.$('#support-modal .modal-body');
@@ -28,7 +28,7 @@ define([
 
             context.$('#tour').on('click', function(event) {
                 var bootstroStepCount;
-                publisher.closeSupport();
+                mediator.closeSupport();
                 $supportButton.trigger('click');
 
                 if(contentLoaded === false){
@@ -53,14 +53,14 @@ define([
             });
 
             context.$('#about').on('click', function(event) {
-                publisher.closeSupport();
-                publisher.openAbout();
+                mediator.closeSupport();
+                mediator.openAbout();
 
             });
 
             context.$('#ok').on('click', function(event) {
-                publisher.closeAbout();
-                publisher.openSupport();
+                mediator.closeAbout();
+                mediator.openSupport();
 
             });
 
@@ -69,7 +69,7 @@ define([
                 keyboard: true,
                 show: false
              }).on('hidden.bs.modal', function() {
-                publisher.closeSupport();
+                mediator.closeSupport();
              });
 
              $aboutModal.modal({
@@ -77,29 +77,29 @@ define([
                 keyboard: true,
                 show: false
              }).on('hidden.bs.modal', function() {
-                publisher.closeAbout();
+                mediator.closeAbout();
              });
 
             $supportCloseButton.on('click', function(event) {
                 event.preventDefault();
-                publisher.closeSupport();
+                mediator.closeSupport();
             });
             $aboutCloseButton.on('click', function(event) {
                 event.preventDefault();
-                publisher.closeAbout();
+                mediator.closeAbout();
             }); 
 
            
         },
         openSupport: function() {
-            publisher.publishOpening({componentOpening: SUPPORT_DESIGNATION});
+            mediator.publishOpening({componentOpening: SUPPORT_DESIGNATION});
             $supportModal.modal('show');
         },
         closeSupport: function() {
             $supportModal.modal('hide');
         },
         openAbout: function() {
-            publisher.publishOpening({componentOpening: ABOUT_DESIGNATION});
+            mediator.publishOpening({componentOpening: ABOUT_DESIGNATION});
             $aboutModal.modal('show');
         },
         closeAbout: function() {

@@ -1,11 +1,11 @@
 define([
     'text!./legend-image.hbs',
-    './legend-publisher',
     'handlebars',
     'bootstrap',
     'jqueryUI'
-], function (imageHBS, publisher) {
+], function (imageHBS) {
     var context,
+        mediator,
         $legend,
         $legendDialogBody,
         imageTemplate,
@@ -13,8 +13,9 @@ define([
 
 
 	var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
 
             $legend = context.$('#legendDialog');
             $legendDialogBody = context.$('#legendDialog .dialog-content .dialog-body').html(EMPTY_BODY_HTML);
@@ -26,7 +27,7 @@ define([
 
             $legend.find('.close').on('click', function(e) {
                 e.preventDefault();
-                publisher.hideLegend();
+                mediator.hideLegend();
             });
         },
         update: function(params) {

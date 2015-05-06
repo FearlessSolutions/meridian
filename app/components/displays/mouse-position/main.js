@@ -2,9 +2,14 @@ define([
     'text!./mouse-position.css', 
     'text!./mouse-position.hbs',
     './mouse-position',
-    './mouse-position-subscriber',
+    './mouse-position-mediator',
     'handlebars'
-], function (mousePositionCSS, mousePositionHBS, mousePosition, mousePositionSubscriber) {
+], function (
+    mousePositionCSS, 
+    mousePositionHBS, 
+    mousePosition, 
+    mousePositionMediator
+) {
 
     return {
         initialize: function() {
@@ -23,8 +28,8 @@ define([
                 var html = mousePositionTemplate();
                 this.html(html);
                 
-                mousePosition.init(this);
-                mousePositionSubscriber.init(this);
+                mousePositionMediator.init(this);
+                mousePosition.init(this, mousePositionMediator);
             }
         }
     };

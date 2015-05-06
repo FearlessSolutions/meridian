@@ -1,8 +1,8 @@
 define([
-    './query-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
+        mediator,
         MENU_DESIGNATION = 'query-tool',
         $modal,
         $maxLon,
@@ -12,9 +12,11 @@ define([
         isActive;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             isActive = false;
+            
             $modal = context.$('#query-modal');
             $minLon = context.$('.query-form #query-location-minLon');
             $minLat = context.$('.query-form #query-location-minLat');
@@ -26,11 +28,7 @@ define([
                 keyboard: false,
                 show: false
             });
-
-            // $modal.on('shown.bs.dialog', function(){
-            //     publisher.publishOpening({componentOpening: MENU_DESIGNATION});
-            // });
-            
+       
             context.$('.query-form button[type="submit"]').on('click', function(event) {
                 event.preventDefault();                
                 var minLon = $minLon.val() || '',
@@ -97,13 +95,13 @@ define([
                 }
                 
                 if(errorFree){
-                    publisher.closeQueryTool();
+                    mediator.closeQueryTool();
 
-                    publisher.executeQuery(queryObject);
+                    mediator.executeQuery(queryObject);
 
                     exposed.clearQueryForm();
                 } else {
-                    publisher.publishMessage({
+                    mediator.publishMessage({
                         messageType: 'error',
                         messageTitle: 'Query Tool',
                         messageText: 'Invalid query parameters.'
@@ -116,19 +114,19 @@ define([
             context.$('.query-form button[type="cancel"]').on('click', function(event) {
                 event.preventDefault();
                 exposed.clearQueryForm();
-                publisher.closeQueryTool();
+                mediator.closeQueryTool();
             });
 
             context.$('.modal-header button[type="button"].close').on('click', function(event) {
                 event.preventDefault();
                 exposed.clearQueryForm();
-                publisher.closeQueryTool();
+                mediator.closeQueryTool();
             });
 
             context.$('.query-form #drawBBoxButton').on('click', function(event) {
                 event.preventDefault();
                 closeMenu();
-                publisher.drawBBox();
+                mediator.drawBBox();
             });
         },
         open: function(params) {
@@ -141,12 +139,12 @@ define([
 
             if(drawOnDefault) {
                 closeMenu();
-                publisher.drawBBox();
+                mediator.drawBBox();
             } else {
                 //TODO Publish that the menu is opening (if it is)
                 $modal.modal('toggle');
 
-                publisher.removeBBox();
+                mediator.removeBBox();
                 exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
             }
         },
@@ -199,7 +197,7 @@ define([
 
     function closeMenu(){
         $modal.modal('hide');
-        publisher.removeBBox();
+        mediator.removeBBox();
     }
 
     return exposed;

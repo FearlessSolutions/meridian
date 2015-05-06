@@ -306,6 +306,7 @@ module.exports = function (grunt) {
                     }
                 ]
             }
+
         },
 
         htmlmin: {
@@ -329,6 +330,17 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        wait: {
+            options: {
+                delay: 6000
+            },
+            pause: {
+                before: function(options){
+                    console.log('pausing %dms', options.delay);
+                }
+            }
+        }
+
 
     });
 
@@ -336,6 +348,7 @@ module.exports = function (grunt) {
         'clean:server',
         'shell:startElasticSearch',
         'shell:startElasticSearch4Win',
+        'wait',
         'shell:startServer',
         'open:server',
         'watch'

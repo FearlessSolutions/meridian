@@ -3,16 +3,14 @@ define([
     'text!./support.hbs',
     'text!./about.hbs',
     './support',
-    './support-publisher',
-    './support-subscriber',
+    './support-mediator',
     'handlebars'
 ], function (
     supportToolCSS, 
     supportToolHBS, 
     aboutHBS,
     supportTool, 
-    supportPublisher, 
-    supportSubscriber
+    supportMediator
 ) {
     return {
         initialize: function() {
@@ -33,9 +31,8 @@ define([
 
             this.html(html);
 
-            supportPublisher.init(this);
-            supportTool.init(this);
-            supportSubscriber.init(this);
+            supportMediator.init(this);
+            supportTool.init(this, supportMediator);
         }
     };
 

@@ -2,9 +2,14 @@ define([
     'text!./event-counter.css', 
     'text!./event-counter.hbs',
     './event-counter',
-    './event-counter-subscriber',
+    './event-counter-mediator',
     'handlebars'
-], function (eventCountToolCSS, eventCountToolHBS, eventCountTool, eventCountToolSubscriber) {
+], function (
+    eventCountToolCSS, 
+    eventCountToolHBS, 
+    eventCountTool, 
+    eventCountToolMediator
+){
 
     return {
         initialize: function() {
@@ -14,8 +19,8 @@ define([
             var html = eventCountToolTemplate();
             this.html(html);
 
-            eventCountTool.init(this);
-            eventCountToolSubscriber.init(this);
+            eventCountToolMediator.init(this);
+            eventCountTool.init(this, eventCountToolMediator);
         }
     };
                 

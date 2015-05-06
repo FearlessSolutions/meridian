@@ -1,24 +1,24 @@
 define([
-	'./cmapi-feature-publisher',	
-	'./cmapi-feature-subscriber'
-], function (publisher, subscriber) {
+	'./cmapi-feature-mediator'
+], function (mediator) {
 	var context,
 		defaultLayerId,
         sendError,
-        emit;
+        emit,
+        exposed,
+        receiveChannels;
 
-    var exposed = {
+    exposed = {
         init: function(thisContext, errorChannel) {
             context = thisContext;
             defaultLayerId = context.sandbox.cmapi.defaultLayerId;
             sendError = errorChannel;
-            publisher.init(context);
-            subscriber.init(context, exposed);
+            mediator.init(context, exposed);
         },
         receive: function(channel, message) {
             var chName  = context.sandbox.cmapi.utils.createChannelNameFunction(channel);
             if(receiveChannels[chName]) {
-                receiveChannels[chName](message);
+                receiveChannels[chName](message, channel);
             } else {
                 sendError(channel, message, 'Channel not supported');
             }
@@ -29,7 +29,7 @@ define([
     };
 
     //Map channels to functions, and error if a channel is not supported
-    var receiveChannels= {
+    receiveChannels= {
 		mapFeaturePlot: function(message) { // TODO: if featureId already exists, remove it and replot
             if(message === '') {
                 sendError(channel, message, 'No message payload supplied');
@@ -37,71 +37,21 @@ define([
                 plotFeatures(message);
             }
 		},
-        mapFeaturePlotBatch: function(message) {
-            if(message === '') {
-                sendError(channel, message, 'No message payload supplied');
-            } else {
-                //plot all features in payload
-                plotFeaturesByURL(message);
-            }
+        mapFeaturePlotBatch: function(message, channel) {
+            sendError(channel, message, 'Channel not supported');
         },
-		mapFeaturePlotUrl: function(message) {
-            if(message === '') {
-                sendError(channel, message, 'No message payload supplied');
-            } else {
-                sendError(channel, message, 'Channel not supported');
-            }
+		mapFeaturePlotUrl: function(message, channel) {
+            sendError(channel, message, 'Channel not supported');
+        },
+		mapFeatureUnplot: function(message, channel) {
+            sendError(channel, message, 'Channel not supported');
 		},
-		mapFeatureUnplot: function(message) {
-            if(message === '') {
-                sendError(channel, message, 'No message payload supplied');
-            } else {
-                unplotFeatures(message);
-            }
-		},
-		mapFeatureHide: function(message) {
-            if(message === '') {
-                return;
-            } else if(!message.format || message.format === 'geojson') {
-                context.sandbox.stateManager.addHiddenFeaturesByLayerId({
-                    layerId: message.overlayId,
-                    featureIds: [message.featureId]
-                });
-                publisher.publishHideFeatures({
-                    layerId: message.overlayId,
-                    featureIds: [message.featureId]
-                });
-            } else if(message.format === 'kml') {
-                sendError('map.feature.unplot', message, 'KML is not currently supported');
-            } else {
-                sendError('map.feature.unplot', message, 'GeoJSON is the only supported format, for now.');
-            }
-		},
+		mapFeatureHide: function(message, channel) {
+            sendError(channel, message, 'Channel not supported');
+        },
 		mapFeatureShow: function(message) {
-            if(message === '') {
-                return;
-            } else if(!message.format || message.format === 'geojson') {
-                context.sandbox.stateManager.removeHiddenFeaturesByLayerId({
-                    "layerId": message.overlayId,
-                    "featureIds": [message.featureId]
-                });
-                publisher.publishShowFeatures({
-                    "layerId": message.overlayId,
-                    "featureIds": [message.featureId]
-                });
-                if(message.zoom) {
-                    publisher.publishZoomToFeatures({
-                        "layerId": message.overlayId,
-                        "featureIds": [message.featureId]
-                    });
-                }
-                // TODO: add support for CMAPI allowing you to zoom to the feature passed in
-            } else if(message.format === 'kml') {
-                sendError('map.feature.unplot', message, 'KML is not currently supported');
-            } else {
-                sendError('map.feature.unplot', message, 'GeoJSON is the only supported format, for now.');
-            }
-		},
+            sendError(channel, message, 'Channel not supported');
+        },
 		mapFeatureSelected: function(message) {
             sendError('map.feature.selected', message, 'Channel not supported');
 		},
@@ -114,34 +64,34 @@ define([
     };
 
     function plotFeatures(message) {
-        var layerId = message.overlayId || app.sandbox.cmapi.defaultLayerId;
+        var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId;
 
         //check if layer exsist, if not create it
-        if(!context.sandbox.dataStorage.datasets[message.overlayId]) {
+        if(!context.sandbox.dataStorage.datasets[layerId]) {
             //create new layer with overlayId provided
 
             context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
             context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
             context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
 
-            publisher.createLayer({
+            mediator.createLayer({
                 layerId: layerId,
                 selectable: false //TODO remove when select is re-implemented
             });    
         }
+        
         //plot feature(s) from payload
-        publisher.plotFeatures({
+        mediator.plotFeatures({
             layerId: layerId,
             data: message.feature.features
         });    
 
         //zoom to feature if specified in payload
         if(message.zoom) {
-            publisher.zoomToFeatures({
+            mediator.zoomToFeatures({
                 layerId: layerId
             });
         }
-
     }
 
     return exposed;

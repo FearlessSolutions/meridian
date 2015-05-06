@@ -2,15 +2,13 @@ define([
     'text!./bookmark.css',
     'text!./bookmark.hbs',
     './bookmark',
-    './bookmark-publisher',
-    './bookmark-subscriber',
+    './bookmark-mediator',
     'handlebars'
 ], function (
     bookmarkToolCSS,
     bookmarkToolHBS,
     bookmarkTool,
-    bookmarkPublisher,
-    bookmarkSubscriber
+    bookmarkMediator
 ) {
     return {
         initialize: function() {
@@ -21,9 +19,8 @@ define([
 
             this.html(html);
 
-            bookmarkPublisher.init(this);
-            bookmarkTool.init(this);
-            bookmarkSubscriber.init(this);
+            bookmarkMediator.init(this);
+            bookmarkTool.init(this, bookmarkMediator);
         }
     };
 

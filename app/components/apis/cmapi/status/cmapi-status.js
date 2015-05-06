@@ -1,22 +1,19 @@
-/**
- * Handles all of the CMAPI status channels
- * TODO needs to actually be implemented
- */
 define([
-	'./cmapi-status-publisher',	
-	'./cmapi-status-subscriber'
-], function (publisher, subscriber) {
+	'./cmapi-status-mediator'
+], function (mediator) {
 	var context,
         sendError,
-        emit;
+        emit,
+        exposed,
+        receiveChannels,
+        emitChannels;
 
-    var exposed = {
+    exposed = {
         init: function(thisContext, errorChannel, parentEmit) {
             context = thisContext;
             sendError = errorChannel;
             emit = parentEmit;
-            publisher.init(context);
-            subscriber.init(context, exposed);
+            mediator.init(context, exposed);
 
             //On map.status.ready, send message
             context.sandbox.stateManager.map.status.addReadyCallback(emitChannels['map.status.ready']);
@@ -51,7 +48,7 @@ define([
         }
     };
 
-    var receiveChannels= {
+    receiveChannels= {
 		"map.status.request": function(message) {
             if(message.types) {
                 message.types.forEach(function(channel) {
@@ -68,7 +65,7 @@ define([
 		}	
     };
 
-    var emitChannels= {
+    emitChannels= {
         "map.status.view": function() {
             // TODO: read map statuse values from the State Manager, and format to CMAPI bounds
             // context.sandbox.stateManager.getMapExtent()

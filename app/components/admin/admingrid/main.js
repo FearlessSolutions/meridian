@@ -5,10 +5,17 @@ define([
     'text!./admingrid.css',
     'text!./admingrid.hbs',
     './admingrid',
-    './admingrid-subscriber',
-    './admingrid-publisher',	
+    './admingrid-mediator',	
     'handlebars'
-], function (slickgrid_baseCSS, slickgrid_defaultCSS, slickgrid_pagerCSS, admingridCSS, admingridHBS, admingrid, admingridPublisher, admingridSubscriber) {
+], function (
+    slickgrid_baseCSS, 
+    slickgrid_defaultCSS,
+    slickgrid_pagerCSS, 
+    admingridCSS, 
+    admingridHBS, 
+    admingrid, 
+    admingridMediator
+) {
 
     return {
         initialize: function() {
@@ -22,9 +29,8 @@ define([
 
             this.html(html);
 
-            admingrid.init(this);
-            admingridPublisher.init(this);
-            admingridSubscriber.init(this);
+            admingridMediator.init(this);
+            admingrid.init(this, admingridMediator);
         }
     };
                 

@@ -9,13 +9,13 @@ define([
     './feature/cmapi-feature',
     './status/cmapi-status',
     './clear/cmapi-clear',
-    './cmapi-subscriber',
+    './cmapi-mediator',
     'togeojson'
-], function(basemap, view, overlay, feature, status, clear, subscriber) {
+], function(basemap, view, overlay, feature, status, clear, mediator) {
     var context,
         processing = {};
 
-    var exposed = {
+    return {
         /**
          * Starts up all the sub-modules and adds the postMessage callback
          */
@@ -23,13 +23,13 @@ define([
             context = this;
             
             basemap.init(context, sendError, emit);
-            feature.init(context, sendError, emit);
-            overlay.init(context, sendError, emit);
+            feature.init(context, sendError);
+            overlay.init(context, sendError);
             status.init(context, sendError, emit);
             view.init(context, sendError);
             clear.init(context, sendError);
 
-            subscriber.init(context);
+            mediator.init(context);
 
             context.sandbox.external.onPostMessage(receive);
 
@@ -50,7 +50,9 @@ define([
     function receive(e) {
         var channel = e.data.channel,
             category,
-            message;
+            message,
+            domParser,
+            kmlDoc;
 
         if(channel && typeof channel === 'string') {
             category = channel.split('.')[1]; //0 is always "messageap"
@@ -73,8 +75,8 @@ define([
                     if(message.format && message.format === 'kml'){ 
                         try{
                             //need to convert kml features of payload to geojson
-                            var domParser=new DOMParser(); //putting KML in DOM for proper parsing by togeojson
-                            var kmlDoc=domParser.parseFromString(message.feature,"text/xml");
+                            domParser = new DOMParser(); //putting KML in DOM for proper parsing by togeojson
+                            kmlDoc = domParser.parseFromString(message.feature,"text/xml");
                             message.feature = toGeoJSON.kml(kmlDoc);
                         }catch(parseKMLerror){
                             console.debug(parseKMLerror);
@@ -83,7 +85,6 @@ define([
                     }
                 }            
             }catch(parseJSONError) {
-                console.debug(parseJSONError);
                 sendError(channel, message, 'Failure parsing geoJSON message');
             }            
             if(processing[category]) {
@@ -101,8 +102,8 @@ define([
      */
     function emit(channel, message) {
         context.sandbox.external.postMessageToParent({
-            "channel": channel,
-            "message": message
+            channel: channel,
+            message: message
         });
     }
 
@@ -112,13 +113,12 @@ define([
      */
     function sendError(failedChannel, msg, err) {
         var payload = {
-            "sender": context.sandbox.systemConfiguration.appName,
-            "type": failedChannel,
-            "msg": msg,
-            "error": err
+            sender: context.sandbox.systemConfiguration.appName,
+            type: failedChannel,
+            msg: msg,
+            error: err
         };
         emit('map.error', payload);
     }
 
-    return exposed;
 });

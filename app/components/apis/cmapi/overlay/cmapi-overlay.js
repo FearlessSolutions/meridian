@@ -1,19 +1,19 @@
 define([
-	'./cmapi-overlay-publisher',	
-	'./cmapi-overlay-subscriber'
-], function (publisher, subscriber) {
+	'./cmapi-overlay-mediator'
+], function (mediator) {
 	var context,
 		defaultLayerId,
         sendError,
-        DEFAULT_SELECTABLE = true;
+        DEFAULT_SELECTABLE = true, //TODO
+        exposed,
+        receiveChannels;
 
-    var exposed = {
+    exposed = {
         init: function(thisContext, errorChannel) {
             context = thisContext;
             defaultLayerId = context.sandbox.cmapi.defaultLayerId;
             sendError = errorChannel;
-            publisher.init(context);
-            subscriber.init(context, exposed);
+            mediator.init(context, exposed);
         },
         receive: function(channel, message) {
             if(receiveChannels[channel]) {
@@ -24,7 +24,7 @@ define([
         }
     };
 
-    var receiveChannels = {
+    receiveChannels = {
         /**
          * Creates an overlay with given params.
          * If a layer already exists with the given id, that call is ignored
@@ -40,26 +40,25 @@ define([
             //TODO Selectable functionality was removed. Add it back.
 			if(message === '') {
 				message = {
-//                    selectable: DEFAULT_SELECTABLE
+//                    selectable: DEFAULT_SELECTABLE //TODO
                     selectable: false
 				};
 			} else {
                 message.selectable = false;
-//                if(!('selectable' in message)) {
+//                if(!('selectable' in message)) { //TODO
 //                    message.selectable = DEFAULT_SELECTABLE;
 //                }
             }
 
             if(context.sandbox.dataStorage.datasets[layerId]) {
                 sendError('map.overlay.create', message, 'Layer already made');
-                return; //Layer already made; ignore this request
             } else {
                 context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
                 context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
                 context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
 
 
-                publisher.publishCreateLayer({
+                mediator.publishCreateLayer({
                     layerId: layerId,
                     name: message.name,
                     selectable: message.selectable,
@@ -69,7 +68,7 @@ define([
                     styleMap: message.styleMap
                 });
 
-                publisher.publishMessage({
+                mediator.publishMessage({
                     messageType: 'success',
                     messageTitle: 'Layer Management',
                     messageText: 'A new layer has been created.'
@@ -85,7 +84,7 @@ define([
 		"map.overlay.remove": function(message) {
             var layerId =  message.overlayId || defaultLayerId;
 
-            publisher.publishRemoveLayer({
+            mediator.publishRemoveLayer({
                 layerId: layerId
             });
         },
@@ -99,7 +98,7 @@ define([
             var layerId =  message.overlayId || defaultLayerId;
 
             context.sandbox.stateManager.layers[layerId].visible = false;
-			publisher.publishHideLayer({
+			mediator.publishHideLayer({
                 layerId: layerId
             });
 		},
@@ -113,7 +112,7 @@ define([
             var layerId =  message.overlayId || defaultLayerId;
 
             context.sandbox.stateManager.layers[layerId].visible = true;
-			publisher.publishShowLayer({
+			mediator.publishShowLayer({
                 layerId: layerId
             });
 		},

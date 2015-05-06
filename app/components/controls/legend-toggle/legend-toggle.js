@@ -1,12 +1,11 @@
 define([
-    './legend-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
         $legendToggleButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $legendToggleButton = context.$('#legendToggleButton');
 
@@ -22,10 +21,10 @@ define([
             $legendToggleButton.on('click', function(event) {
                 event.preventDefault();
                 if($legendToggleButton.hasClass('active')) {
-                    publisher.hideLegend();
+                    mediator.hideLegend();
                     exposed.removeActiveClass();
                 } else {
-                    publisher.showLegend();
+                    mediator.showLegend();
                     exposed.addActiveClass();
                 }
             });

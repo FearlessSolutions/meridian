@@ -2,6 +2,7 @@ define([
     'bootstrap'
 ], function () {
     var context,
+        mediator,
         countPerQuery = {},
         displayedCount,
         totalCount,
@@ -9,8 +10,9 @@ define([
         $totalBadge;
 
 	var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             totalCount = 0;
             displayedCount = 0;
             $displayedBadge = context.$('#stats-displayed-features');

@@ -1,13 +1,13 @@
 define([
-    './basemap-gallery-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
         $supportButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $supportButton = context.$('#basemapGalleryToggleButton');
 
             //Activate bootstrap tooltip. 
@@ -22,9 +22,9 @@ define([
             $supportButton.on('click', function(event) {
                 event.preventDefault();
                 if($supportButton.hasClass('active')) {
-                    publisher.closeBasemapGallery();
+                    mediator.closeBasemapGallery();
                 } else {
-                    publisher.openBasemapGallery();
+                    mediator.openBasemapGallery();
                 }
             });
         },

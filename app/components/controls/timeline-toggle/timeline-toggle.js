@@ -1,13 +1,14 @@
 define([
-    './timeline-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
+        mediator,
         $timelineButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext,  thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
             $timelineButton = context.$('#timelineToggleButton');
 
             //Activate bootstrap tooltip. 
@@ -23,9 +24,9 @@ define([
                 event.preventDefault();
 
                 if($timelineButton.hasClass('active')) {
-                    publisher.closeTimeline();
+                    mediator.closeTimeline();
                 } else {
-                    publisher.openTimeline();
+                    mediator.openTimeline();
                 }
             });
             
@@ -34,7 +35,7 @@ define([
             if(!context.sandbox.utils.isEmptyObject(context.sandbox.dataStorage.datasets)) {
                 $timelineButton.addClass('active');
             } else {
-                publisher.publishMessage({
+                mediator.publishMessage({
                     "messageType": "warning",
                     "messageTitle": "Timeline",
                     "messageText": "No data to display in timeline."

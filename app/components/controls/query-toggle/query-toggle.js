@@ -1,12 +1,11 @@
 define([
-    './query-toggle-publisher',
     'bootstrap'
-], function (publisher) {
+], function () {
     var context,
         $queryToolButton;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, mediator) {
             context = thisContext;
             $queryToolButton = context.$('#queryToggleButton');
 
@@ -22,9 +21,9 @@ define([
             $queryToolButton.on('click', function(event) {
                 event.preventDefault();
                 if($queryToolButton.hasClass('active')) {
-                    publisher.closeQueryTool();
+                    mediator.closeQueryTool();
                 } else {
-                    publisher.openQueryTool();
+                    mediator.openQueryTool();
                 }
             });
         },
