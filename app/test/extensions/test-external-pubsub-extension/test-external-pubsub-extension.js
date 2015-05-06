@@ -1,10 +1,11 @@
 define([
 ], function() {
 
-    var callbacks = [];
+    var callbacks;
 
     var exposed = {
         initialize: function(app) {
+            callbacks = [];
 
             if (!app.sandbox.external) {
                 app.sandbox.external = {};
