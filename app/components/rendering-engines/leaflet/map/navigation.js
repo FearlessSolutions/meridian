@@ -4,11 +4,59 @@ define([
     './../libs/leaflet-src'
 ], function(publisher, mapLayers) {
     // Setup context for storing the context of 'this' from the component's main.js 
-    var context;
+    var context,
+        map;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMap) {
+            var cursorLocation;
             context = thisContext;
+            map = thisMap;
+
+            //Set initial value of map extent, in the state manager
+            context.sandbox.stateManager.setMapExtent({
+                extent: {
+                    minLon: context.sandbox.mapConfiguration.initialMinLon,
+                    minLat: context.sandbox.mapConfiguration.initialMinLat,
+                    maxLon: context.sandbox.mapConfiguration.initialMaxLon,
+                    maxLat: context.sandbox.mapConfiguration.initialMaxLat
+                }
+            });
+
+            //Listen for map movents and update the map extent in the state manager
+            map.on('moveend', function(evt) {
+                var currentExtent = map.getBounds();
+                context.sandbox.stateManager.setMapExtent({
+                    extent: {
+                        minLon: currentExtent.getWest(),
+                        minLat: currentExtent.getSouth(),
+                        maxLon: currentExtent.getEast(),
+                        maxLat: currentExtent.getNorth()
+                    }
+                });
+            });
+
+            //Check if there is a user setting; If no user setting, use default true.
+            cursorLocation = context.sandbox.cursorLocation;
+            if(!cursorLocation
+                || !('defaultDisplay' in cursorLocation)
+                || cursorLocation.defaultDisplay){
+                map.on('mousemove', function(e) {
+                    var position = e.latlng;
+                    publisher.publishMousePosition({
+                        lat: position.lat,
+                        lon: position.lng
+                    });
+                });
+            }
+
+            exposed.zoomToExtent({
+                map: map,
+                minLon: context.sandbox.mapConfiguration.initialMinLon,
+                minLat: context.sandbox.mapConfiguration.initialMinLat,
+                maxLon: context.sandbox.mapConfiguration.initialMaxLon,
+                maxLat: context.sandbox.mapConfiguration.initialMaxLat
+            });
         },
         zoomIn: function(params) {
             params.map.zoomIn();
@@ -24,18 +72,17 @@ define([
             var southWest = L.latLng(params.minLat, params.minLon),
                 northEast = L.latLng(params.maxLat, params.maxLon),
                 bounds = L.latLngBounds(southWest, northEast);
-            params.map.fitBounds(bounds);
+            map.fitBounds(bounds);
         },
         /**
          * Zoom to extent of layer DATA
          * @param params
          */
         zoomToLayer: function(params) {
-
             var layer = mapLayers.getActiveLayer();
 
             if(layer && layer.getBounds(params.layerId)) {
-                params.map.fitBounds(layer.getBounds(params.layerId));
+                map.fitBounds(layer.getBounds(params.layerId));
             }
         },
         /**
@@ -43,7 +90,7 @@ define([
          * @param params
          */
         zoomToFeatures: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0],
+            var layer = map.getLayersBy('layerId', params.layerId)[0],
                 bounds = new OpenLayers.Bounds(),
                 featuresFound = false;
 
@@ -74,7 +121,7 @@ define([
                 });
 
                 if(featuresFound) {
-                   params.map.zoomToExtent(bounds);
+                   map.zoomToExtent(bounds);
                 } else {
                     publisher.publishMessage({
                         messageType: 'warning',
@@ -100,7 +147,7 @@ define([
                 lon = params.lon;
 
             centerPoint = new OpenLayers.LonLat(lon, lat);
-            params.map.setCenter(centerPoint.transform(params.map.projectionWGS84, params.map.projection), 8);
+            map.setCenter(centerPoint.transform(map.projectionWGS84, map.projection), 8);
         }
     };
     
