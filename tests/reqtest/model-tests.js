@@ -378,7 +378,6 @@ define([
         it("Feature Plot Unit Test", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
-                console.debug(meridian);
                 meridian.sandbox.external.postMessageToParent = function (params) {
                     if (params.channel == 'map.status.ready') {
                         // map goes first
@@ -395,7 +394,7 @@ define([
                                             "geometry": {
                                                 "type": "Point",
                                                 "coordinates": [
-                                                    0,
+                                                    -5,
                                                     10
                                                 ]
                                             },
@@ -431,14 +430,23 @@ define([
                                 }
                             }
                             expect(index).to.not.equal(-1); // confirms map.feature.plot added a layer and one with the overlayId, 'testOverlayId1'
-                            console.debug('Layer exists, create layer successful');
+                            console.debug('Layer exists, create layer successful with expected overlayId');
                         });
                         meridian.sandbox.on('map.features.plot', function(params) {
-                            //console.debug(map.layers[index]);
-                            var test1 = map.layers[index]["features"][0]["geometry"]["bounds"];
-
                             console.debug(map);
-                            //console.debug(map.layers[index]["features"][0]["geometry"]["bounds"].transform(map.projection, map.projectionWGS84));
+                            // confirm featureId exists
+                            var featureIdcheck = map.layers[index]["features"][0]["derp"];
+                            expect(featureIdcheck).to.exist;
+                            var convertedCoords = map.layers[index]["features"][0]["geometry"]['bounds'].transform(map.projection, map.projectionWGS84),
+                            actualLat = convertedCoords["left"],
+                            actualLon = convertedCoords["top"];
+                            // expected payload Lat is -5, actual Lat should be somewhat close (factoring in mathematical conversion)
+                            console.log(actualLat);
+                            expect(actualLat).to.be.below(-4.999999999).and.above(-5.000000001);
+                            console.debug("The actual latitude value for the plotted feature is within 9 decimal places of the expected value");
+                            // expected payload Lon is 10, actual Lat should be somewhat close (factoring in mathematical conversion)
+                            expect(actualLon).to.be.above(9.999999999).and.below(10.000000001);
+                            console.debug("The actual longitude value for the plotted feature is within 9 decimal places of the expected value");
                         });
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.feature.plot', message: payload }}); // manual publish to the channel
                     }
