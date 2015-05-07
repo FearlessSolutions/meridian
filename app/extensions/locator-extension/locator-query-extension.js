@@ -87,7 +87,7 @@ define([
                     lat
                 ]
             },
-            type: 'feature',
+            type: 'Feature',
             properties: {
                 dd: '' + lat + ', ' + lon,
                 dms: coordinates.dms,

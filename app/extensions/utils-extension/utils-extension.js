@@ -25,9 +25,9 @@ define([
                 contains: $.contains, // for help see jquery.contains
                 createGeoJson: function(coordinates){
                     var geoJson = {
-                            type: 'feature',
+                            type: 'Feature',
                             geometry: {
-                                type: 'point',
+                                type: 'Point',
                                 coordinates: [coordinates.lon, coordinates.lat]
                             },
                             properties: {}
