@@ -433,10 +433,11 @@ define([
                             console.debug('Layer exists, create layer successful with expected overlayId');
                         });
                         meridian.sandbox.on('map.features.plot', function(params) {
-                            console.debug(map);
-                            // confirm featureId exists
-                            var featureIdcheck = map.layers[index]["features"][0]["derp"];
-                            expect(featureIdcheck).to.exist;
+                            //console.debug(map);
+                            expect( map.layers[index]["features"].length).is.above(0); // confirm feature added to layer
+                            var plottedFeature = map.layers[index]["features"][0]; // confirm featureId exists / despite not in payload
+                            expect("featureId" in plottedFeature).is.true;
+                            console.debug('featureId property added to feature');
                             var convertedCoords = map.layers[index]["features"][0]["geometry"]['bounds'].transform(map.projection, map.projectionWGS84),
                             actualLat = convertedCoords["left"],
                             actualLon = convertedCoords["top"];
@@ -447,6 +448,7 @@ define([
                             // expected payload Lon is 10, actual Lat should be somewhat close (factoring in mathematical conversion)
                             expect(actualLon).to.be.above(9.999999999).and.below(10.000000001);
                             console.debug("The actual longitude value for the plotted feature is within 9 decimal places of the expected value");
+                            done();
                         });
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.feature.plot', message: payload }}); // manual publish to the channel
                     }
@@ -455,7 +457,7 @@ define([
                 var $fixtures = $('#fixtures');
                 meridian.html = $fixtures.html;
                 renderer.initialize.call(meridian, meridian);
-                done();
+                //done();
             });
         });//it
 
