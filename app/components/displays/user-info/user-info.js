@@ -29,14 +29,9 @@ define([
                 if(e.statusText === "abort") {
                     return;
                 }
-                handleError(params);
+                context.html('ERROR');
                 return false;
             });
-
-            context.sandbox.ajax.addActiveAJAX({
-                "newAJAX": newAJAX
-            });
-
         }
     };
 

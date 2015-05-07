@@ -1,5 +1,6 @@
 var express = require('express');
 var connect = require('connect');
+var http = require('http');
 var https = require('https');
 var fs = require('fs');
 var Busboy = require('busboy'); //TODO replace with connect-busboy on connect upgrade
@@ -15,7 +16,7 @@ var options = {
 };
 
 // Launch vanilla https server
-https.createServer(options, app).listen(3000);
+app.listen(3000);
 
 // Enable parsing of post bodies
 app.use(connect.json());
@@ -67,6 +68,7 @@ app.use(function(req, res, next){
     next();
 });
 
+<<<<<<< HEAD
 // Server static content
 app.use('/', express.static(__dirname + appDir));
 app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));
@@ -76,5 +78,7 @@ app.use('/embedded', express.static(__dirname + appDir + '/modes/embedded'));
 app.use('/dashboard', express.static(__dirname + appDir + '/modes/dashboard'));
 app.use('/admin', express.static(__dirname + appDir + '/modes/admin'));
 
+=======
+>>>>>>> feature/640/nginx
 // Initiate routes
 require('./server/app').init(app);
