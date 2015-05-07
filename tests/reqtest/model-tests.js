@@ -337,7 +337,6 @@ define([
         it("Show Layer Unit Test", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
-                console.debug(meridian);
                 meridian.sandbox.external.postMessageToParent = function (params) {
                     if (params.channel == 'map.status.ready') {
                         // map goes first
@@ -433,7 +432,6 @@ define([
                             console.debug('Layer exists, create layer successful with expected overlayId');
                         });
                         meridian.sandbox.on('map.features.plot', function(params) {
-                            //console.debug(map);
                             expect( map.layers[index]["features"].length).is.above(0); // confirm feature added to layer
                             var plottedFeature = map.layers[index]["features"][0]; // confirm featureId exists / despite not in payload
                             expect("featureId" in plottedFeature).is.true;
@@ -442,7 +440,6 @@ define([
                             actualLat = convertedCoords["left"],
                             actualLon = convertedCoords["top"];
                             // expected payload Lat is -5, actual Lat should be somewhat close (factoring in mathematical conversion)
-                            console.log(actualLat);
                             expect(actualLat).to.be.below(-4.999999999).and.above(-5.000000001);
                             console.debug("The actual latitude value for the plotted feature is within 9 decimal places of the expected value");
                             // expected payload Lon is 10, actual Lat should be somewhat close (factoring in mathematical conversion)
@@ -459,8 +456,6 @@ define([
                 renderer.initialize.call(meridian, meridian);
             });
         });//it
-
-        // Capture Feature Plot
         it("Feature Plot (Feature in layer created prior to plot emit) Unit Test", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
@@ -479,7 +474,6 @@ define([
                                     "type": "FeatureCollection",
                                     "features": [
                                         {
-                                            //"id": "hardcodedfeatureId",
                                             "type": "Feature",
                                             "geometry": {
                                                 "type": "Point",
@@ -517,13 +511,79 @@ define([
                             meridian.sandbox.external.receiveMessage({data:{channel:'map.feature.plot', message: payload2 }}); // manual publish to the channel
                         });
                         meridian.sandbox.on('map.features.plot', function(params) {
-                            console.debug(map);
                             var confirmPlot = map.layers[map.layers.length-1];
                             expect(confirmPlot["features"].length).is.above(0); // confirm feature added to layer
                             console.debug('Feature was added to layer that was created prior to the plot emit');
                             done();
                         });
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }}); // manual publish to the channel
+                    }
+                };
+                cmapiMain.initialize.call(meridian, meridian);
+                var $fixtures = $('#fixtures');
+                meridian.html = $fixtures.html;
+                renderer.initialize.call(meridian, meridian);
+            });
+        });//it
+        it("Feature Plot (Feature exists in default layer when layerId is not declared in the payload) Unit Test", function (done) {
+            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                console.log('in it', meridian);
+                meridian.sandbox.external.postMessageToParent = function (params) {
+                    if (params.channel == 'map.status.ready') {
+                        // map goes first
+                        var map = renderer.getMap(),
+                            payload = {
+                                "overlayId": "",
+                                "name": "Test Name 1",
+                                "format": "geojson",
+                                "feature": {
+                                    "type": "FeatureCollection",
+                                    "features": [
+                                        {
+                                            "id": "testFeatureId09",
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [
+                                                    -5,
+                                                    10
+                                                ]
+                                            },
+                                            "properties": {
+                                                "p1": "pp1"
+                                            },
+                                            "style": {
+                                                "height": 24,
+                                                "width": 24,
+                                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "zoom": false,
+                                "readOnly": false
+                            },
+                            beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+                            afterLayerCreateCount,
+                            actualLayer;
+                        //test goes here
+                        meridian.sandbox.on('map.layer.create', function(params) {
+                            afterLayerCreateCount = map.layers.length;
+                            expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount); // confirmation that a layer was created
+                            map.layers[map.layers.length-1];  //  last layer added
+                            actualLayer = map.layers[map.layers.length-1];
+                            expect(actualLayer).to.exist;
+                            expect(actualLayer.layerId).to.equal('cmapi');  // actual layerId should equal the default layerId, 'cmapi'
+                            console.debug('The defaultId, cmapi, was assigned to the created layer, since the payload did not provide one');
+                        });
+                        meridian.sandbox.on('map.features.plot', function(params) {
+                            var confirmPlot = map.layers[map.layers.length-1];  // grab layer that has cmapi layerId
+                            expect(confirmPlot["features"][0]["featureId"]).to.equal(payload.feature.features[0].id); // confirm feature added to default layer
+                            console.debug('Feature was added to default layer, cmapi');
+                            done();
+                        });
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.feature.plot', message: payload }}); // manual publish to the channel
                     }
                 };
                 cmapiMain.initialize.call(meridian, meridian);
