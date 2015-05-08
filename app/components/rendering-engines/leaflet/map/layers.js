@@ -14,7 +14,7 @@ define([
         clusterLayers,
         heatLayers,
         allLayers,
-        featureStyles,
+        featureIcons,
         clusterStyles;
 
     var exposed = {
@@ -23,8 +23,10 @@ define([
             map = thisMap;
             drawnItemsLayer = {};
             basemapLayers = {};
-            featureStyles = {};
-            clusterStyles = {};
+            featureIcons = {};
+            clusterStyles = {
+                defaultStyle: {}
+            };
             config = context.sandbox.mapConfiguration;
 
             loadBasemaps();
@@ -36,26 +38,20 @@ define([
             createDrawLayer()
         },
         plotFeatures: function(params){
+            var layerId = params.layerId;
 
             context.sandbox.util.each(params.data, function(index, obj){
                 //geoJson objects
                 var geo = L.geoJson(obj,{
                     onEachFeature: function (feature, layer){
                         if(feature.geometry.type === 'Point'){
-                            layer.setIcon(new L.icon({
-                                iconUrl: feature.properties.icon || config.markerIcons.default.icon,
-                                iconSize: [feature.properties.width, feature.properties.height] || [config.markerIcons.default.width, config.markerIcons.default.height],
-                                iconAnchor: [feature.properties.width/2, feature.properties.height] || config.markerIcons.default.iconAnchor,// offset from the top left corner.half the size of the width and then the entire value of the height to use the correct pin position.
-                                popupAnchor: [0, (feature.properties.height * -1)] || config.markerIcons.default.popupAnchor// make pop up originate elsewhere instead of the actual point.
-                            }));
+                            layer.setIcon(getPointStyle(feature, layerId));
                         }
                     },
                     style: function(feature){
                         return config.shapeStyles.rectangle.shapeOptions;
                     }
                 });
-
-
 
                 if(context.sandbox.stateManager.map.visualMode === 'cluster'){
                     if(clusterLayers.hasLayerId(params.layerId) === false){
@@ -75,6 +71,11 @@ define([
         },
 
         createVectorLayer: function(params) {
+            var layerId = params.layerId;
+
+            if(!clusterStyles[layerId]){ //TODO only do this if the layer can cluster
+                clusterStyles[layerId] = {};
+            }
 
             if(context.sandbox.stateManager.map.visualMode === 'cluster'){
                 clusterLayers.addLayer(params.layerId, new L.MarkerClusterGroup({
@@ -88,11 +89,11 @@ define([
 
             }
 
-            var options,
-                newVectorLayer,
-                selector,
-                layers;
-
+            //var options,
+            //    newVectorLayer,
+            //    selector,
+            //    layers;
+            //
                 // console.debug('singlePointLayer: ', singlePointLayer);
                 // console.debug('clusterlayers: ', clusterLayers);
             // options = {
@@ -538,180 +539,28 @@ define([
         return drawnItemsLayer;
     }
 
-    /**
-     * Add mouse position listener
-     * @param params
-     */
-    function addGeoLocatorListeners(params) {
-        params.layer.events.on({
-            beforefeatureselected: function(evt) {
-                mapBase.clearMapSelection({
-                });
-                mapBase.clearMapPopups({
-                });
-            },
-            featureselected: function(evt) {
-                var projectedPoint,
-                    latLonString;
-
-                projectedPoint = evt.feature.geometry.clone().transform(map.projection, map.projectionWGS84);
-
-                var htmlTemplate =
-                    '<div class="locator info-win-dialog">'+
-                        '<p class="title">Geocoded Location</p>'+
-                        '<div class="content">'+
-                            '<div>Lat: '+projectedPoint.y+'</div>'+
-                            '<div>Lon: '+projectedPoint.x+'</div>'+
-                        '</div>'+
-                    '</div>';
-
-                mapBase.identifyFeature({
-                    "feature": evt.feature,
-                    "content": htmlTemplate
-                });
-            },
-            featureunselected: function(evt) {
-                mapBase.clearMapPopups({
-                });
-            }    
-        });
-    }
-
-    // TODO: Split the control func into the drawing.js file and the boxLayer converts to more generic drawing func.
-    function addDrawListeners(params) {
-        params.layer.events.on({
-            featureadded: function(evt) {
-                var feature = evt.feature,
-                    boundingBox,
-                    splitBoundingBox,
-                    coords;
-
-                feature.attributes = feature.attributes || {};
-
-                if(feature) {
-                    boundingBox = feature.geometry.bounds.transform(map.projection, map.projectionWGS84).toBBOX();
-                    splitBoundingBox = boundingBox.split(',');
-                    coords = {
-                        "minLon": splitBoundingBox[0], 
-                        "minLat": splitBoundingBox[1],
-                        "maxLon": splitBoundingBox[2],
-                        "maxLat": splitBoundingBox[3]
-                    };
-
-                    publisher.stopDrawing(coords);
-                }
-
-                if(params.layer.features.length > 1) {
-                    params.layer.removeFeatures([params.layer.features[0]]);
-                }
-            }
-        });
-    }
-
-    // TODO: add default listeners for default looking default popups for when in default clustering default mode on default layer in the default map
-    function addDefaultListeners(params) {
-        params.layer.events.on({
-            beforefeatureselected: function(evt) {
-                var selectController = map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-                selectController.unselectAll();
-            },
-            featureselected: function(evt) {
-                var popup,
-                    infoWinTemplateRef,
-                    feature = evt.feature,
-                    formattedAttributes = {},
-                    anchor,
-                    bounds,
-                    zoom,
-                    maxAuto;
-
-                if(!feature.cluster) {
-
-                    context.sandbox.dataStorage.getFeatureById({
-                        "featureId": feature.featureId}, 
-                        function(fullFeature) {
-                            infoWinTemplateRef = context.sandbox.dataServices[feature.attributes.dataService].infoWinTemplate;
-                            context.sandbox.utils.each(fullFeature.properties,
-                                function(k, v) {
-                                    if((context.sandbox.utils.type(v) === "string" ||
-                                        context.sandbox.utils.type(v) === "number" ||
-                                        context.sandbox.utils.type(v) === "boolean")) {
-                                        formattedAttributes[k] = v;
-                                    }
-                            });
-
-                            anchor= {"size": new OpenLayers.Size(0, 0), "offset": new OpenLayers.Pixel(0, -(feature.attributes.height/2))};
-                            popup = new OpenLayers.Popup.FramedCloud('popup',
-                                OpenLayers.LonLat.fromString(feature.geometry.getCentroid().toShortString()),
-                                null,
-                                infoWinTemplateRef.buildInfoWinTemplate(
-                                    formattedAttributes,
-                                    fullFeature
-                                ),
-                                anchor,
-                                true,
-                                function() {
-                                    mapBase.clearMapSelection({
-                                    });
-                                    mapBase.clearMapPopups({
-                                    });
-                                }
-                            );
-                            feature.popup = popup;
-                            map.addPopup(popup);
-                            infoWinTemplateRef.postRenderingAction(fullFeature, feature.layer.layerId);
-
-                            context.sandbox.stateManager.setIdentifiedFeaturesByLayerId({
-                                "layerId": feature.layer.layerId,
-                                "featureIds": [
-                                    feature.featureId
-                                ]
-                            });
-                        }
-                    );
-                } else {
-                    bounds = feature.geometry.getBounds();
-                    feature.cluster.forEach(function(point) {
-                        bounds.extend(point.geometry.getBounds());
-                    });
-                    zoom = map.getZoomForExtent(bounds);
-
-                    //If there is a popup already attached, just zoom to the cluster (done below)
-                    if(!feature.popup){
-                        // To prevent zooming in too far
-                        // Sources don't always provide the correct information
-                        // as to what levels they have imagery for.
-                        //
-                        // Clicking a cluster should never zoom the user out.
-                        maxAuto = config.maxAutoZoomLevel;
-                        if(zoom > maxAuto) {
-                            zoom = map.zoom > maxAuto ? map.zoom : maxAuto;
-                            publisher.publishMessage({
-                                messageType: 'warning',
-                                messageTitle: 'Auto Zoom',
-                                messageText: 'Auto zoom is at maximum zoom level. Please use manual zoom for more detail.'
-                            });
-                        }
-                        map.setCenter(bounds.getCenterLonLat(), zoom);
-                    }
-                }
-            },
-            featureunselected: function(evt) {
-                var feature = evt.feature;
-
-                if(feature.popup){
-                    map.removePopup(feature.popup);
-                    feature.popup.destroy();
-                    feature.popup = null;
-                }
-            }
-        });
-    }
-
     return exposed;
 
-    function getPointStyle(){
+    function getPointStyle(feature, layerId){
+        var iconDefaults = config.markerIcons.default,
+            iconUrl = feature.properties.icon || iconDefaults.icon,
+            width = feature.properties.width || iconDefaults.width,
+            height = feature.properties.height || iconDefaults.height,
+            iconPath = icon + 'width' + width + 'height' + height,
+            icon = featureIcons[iconPath];
 
+        if(!icon){
+            icon = new L.icon({
+                iconUrl: iconUrl,
+                iconSize: [width, height],
+                iconAnchor: [width/2, height],// offset from the top left corner.half the size of the width and then the entire value of the height to use the correct pin position.
+                popupAnchor: [0, (height * -1)]// make pop up originate elsewhere instead of the actual point.
+            });
+
+            featureIcons[iconPath] = icon;
+        }
+
+        return icon;
     }
 
     function getClusterStyle(){

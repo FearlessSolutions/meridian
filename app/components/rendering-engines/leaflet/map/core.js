@@ -199,17 +199,13 @@ define([
          * Zoom In
          */
         zoomIn: function() {
-            mapNavigation.zoomIn({
-                "map": map
-            });
+            mapNavigation.zoomIn();
         },
         /**
          * Zoom Out
          */
         zoomOut: function() {
-            mapNavigation.zoomOut({
-                "map": map
-            });
+            mapNavigation.zoomOut();
         },
         /**
          * Zoom to Extent
@@ -221,11 +217,10 @@ define([
          */
         zoomToExtent: function(params) {
             mapNavigation.zoomToExtent({
-                "map": map,
-                "minLon": params.minLon,
-                "minLat": params.minLat,
-                "maxLon": params.maxLon,
-                "maxLat": params.maxLat
+                minLon: params.minLon,
+                minLat: params.minLat,
+                maxLon: params.maxLon,
+                maxLat: params.maxLat
             });
         },
         /**
@@ -235,8 +230,7 @@ define([
          */
         zoomToLayer: function(params) {
             mapNavigation.zoomToLayer({
-                "map": map,
-                "layerId": params.layerId
+                layerId: params.layerId
             });
         },
         /**
@@ -247,9 +241,8 @@ define([
          */
         zoomToFeatures: function(params) {
             mapNavigation.zoomToFeatures({
-                "map": map,
-                "layerId": params.layerId,
-                "featureIds": params.featureIds
+                layerId: params.layerId,
+                featureIds: params.featureIds
             });
         },
         /**
@@ -270,9 +263,8 @@ define([
          */
         setCenter: function(params) {
             mapNavigation.setCenter({
-                "map": map,
-                "lat": params.lat,
-                "lon": params.lon
+                lat: params.lat,
+                lon: params.lon
             });
         },
         /**
@@ -280,7 +272,6 @@ define([
          */
         startDrawing: function() {
             mapDraw.startDrawing({
-                "map": map,
             });
         },
         /**
@@ -288,7 +279,6 @@ define([
          */
         clearDrawing: function() {
             mapLayers.clearDrawing({
-                "map": map,
             });
         },
         /**
@@ -303,7 +293,7 @@ define([
            // console.debug('params in renderer: ', params);
             var newLayer,
                 layerOptions = {
-                    "layerId": params.layerId
+                    layerId: params.layerId
                 };
             layerOptions.map = map;
             //mapClustering.addClusteringToLayerOptions(layerOptions);
@@ -311,7 +301,7 @@ define([
             // If a symbolizers were provided, overwrite the default symbolizers from clustering
             if(params.symbolizers) {
                 // layerOptions.styleMap = mapClustering.applyCustomSymbolizers({
-                //     "symbolizers": params.symbolizers
+                //     symbolizers: params.symbolizers
                 // });
             }
             // // If a styleMap was provided, overwrite the default style from clustering
@@ -321,8 +311,6 @@ define([
             if(params.selectable) {
                 layerOptions.selectable = params.selectable;
             }
-           // console.debug(params.layerId);
-            //console.debug(params.layerId.indexOf("_aoi"));
 
             if(params.layerId.indexOf("_aoi") !== -1){
                 //remove the _aoi at the end of the layerId
@@ -330,11 +318,6 @@ define([
                 layerOptions.layerId = tempStr[0];
             }
             mapLayers.createVectorLayer(layerOptions);
-            // mapLayers.addEventListenersToLayer({
-            //     "map": map,
-            //     "layer": newLayer,
-            //     "eventListeners": params.events // Can pass in your own event listeners or take the default by not providing any
-            // });
         },
         /**
          * Delete Layer
@@ -343,8 +326,7 @@ define([
          */
         deleteLayer: function(params) {
             mapLayers.deleteLayer({
-                "map": map,
-                "layerId": params.layerId
+                layerId: params.layerId
             });
         },
         /**
@@ -355,9 +337,8 @@ define([
          */
         setLayerIndex: function(params) {
             // mapLayers.setLayerIndex({
-            //     "map": map,
-            //     "layerId": params.layerId,
-            //     "layerIndex": params.layerIndex
+            //     layerId: params.layerId,
+            //     layerIndex: params.layerIndex
             // });
         },
         /**
@@ -369,24 +350,21 @@ define([
         plotFeatures: function(params) {
             if(params.layerId.indexOf("_aoi") === -1){
                 mapLayers.plotFeatures({
-                    "map": map,
-                    "layerId": params.layerId,
-                    "data": params.data
+                    layerId: params.layerId,
+                    data: params.data
                 });
             }
             else{
                 //remove the _aoi at the end of the layerId
                 var tempStr = params.layerId.split('_aoi');
                 mapLayers.plotFeatures({
-                    "map": map,
-                    "layerId": tempStr[0],
-                    "data": params.data
+                    layerId: tempStr[0],
+                    data: params.data
                 });
             }
            
             // if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
             //     mapHeatmap.update({
-            //         "map": map
             //     });
             // }
         },
@@ -399,15 +377,12 @@ define([
          */
         hideFeatures: function(params) {
             mapFeatures.hideFeatures({
-                "map": map,
-                "layerId": params.layerId,
-                "featureIds": params.featureIds,
-                "exclusive": params.exclusive
+                layerId: params.layerId,
+                featureIds: params.featureIds,
+                exclusive: params.exclusive
             });
             if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
-                mapHeatmap.update({
-                    "map": map
-                });
+                mapHeatmap.update({});
             }
             publisher.updateEventCounter(); // TODO: Hack for updating event counter
         },
@@ -419,15 +394,12 @@ define([
          */
         showFeatures: function(params) {
             mapFeatures.showFeatures({
-                "map": map,
-                "layerId": params.layerId,
-                "featureIds": params.featureIds,
-                "exclusive": params.exclusive
+                layerId: params.layerId,
+                featureIds: params.featureIds,
+                exclusive: params.exclusive
             });
             if(context.sandbox.stateManager.map.visualMode === 'heatmap') {
-                mapHeatmap.update({
-                    "map": map
-                });
+                mapHeatmap.update({});
             }
             publisher.updateEventCounter(); // TODO: Hack for updating event counter
         },
@@ -439,9 +411,8 @@ define([
          */
         updateFeatures: function(params) {
             mapFeatures.updateFeatures({
-                "map": map,
-                "layerId": params.layerId,
-                "featureObjects": params.featureObjects // [{"featureId": 123, "style":{stylishstuff}}]
+                layerId: params.layerId,
+                featureObjects: params.featureObjects // [{featureId: 123, style:{stylishstuff}}]
             });
         },
         /**
@@ -451,8 +422,7 @@ define([
          */
         hideLayer: function(params) {
             mapLayers.hideLayer({
-                "map": map,
-                "layerId": params.layerId
+                layerId: params.layerId
             });
         },
         /**
@@ -462,8 +432,7 @@ define([
          */
         showLayer: function(params) {
             mapLayers.showLayer({
-                "map": map,
-                "layerId": params.layerId
+                layerId: params.layerId
             });
         },
         /**
@@ -489,24 +458,16 @@ define([
          */
         identifyRecord: function(params) {
             mapLayers.identifyFeature({
-                "map": map,
-                "layerId": params.layerId,
-                "featureId": params.featureId
+                layerId: params.layerId,
+                featureId: params.featureId
             });
         },
         /**
          * Clear All Layers
          */
         clear: function() {
-            mapBase.resetSelector({
-                "map": map
-            });
-            mapLayers.clear({
-                "map": map
-            });
-            mapLayers.createStaticLayers({
-                "map": map
-            });
+            mapLayers.clear();
+            mapLayers.createStaticLayers();
         }
     };
     
