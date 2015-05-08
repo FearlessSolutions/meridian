@@ -694,6 +694,7 @@ define([
                         }
                         expect(payload).to.exist; // payload exists
                         expect(payload).to.be.an('object'); // payload is an object
+                        console.debug("NEW EXPECTED" + map.getBounds());
                         var expectedBounds_values = {  // expected values of the bounds result after map.view.center.bounds emitted
                             bottom: 42.50188756945924,
                             left: -102.20312499999488,
