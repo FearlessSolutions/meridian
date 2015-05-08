@@ -65,18 +65,31 @@ L.FeatureIdGroup = L.FeatureGroup.extend({
 	},
 	getBounds: function (layerId) {
 		var bounds = new L.LatLngBounds();
-
+		//this apparently doesnt contain shapes
 		if(this.hasLayerId(layerId)){
 			this._layersById[layerId].eachLayer(function(innerLayer){
 				bounds.extend(innerLayer.getLatLng());
 			});
 		}
-
+		//shapes are stored here
 		if(this._featuresById[layerId]){
 			bounds.extend(this._featuresById[layerId].getBounds());
 		}
 		
 		return bounds;
+	},
+	getFeatures: function(layerId){
+		var features = [];
+		if(this.hasLayerId(layerId)){
+			this._layersById[layerId].eachLayer(function(innerLayer){
+				features.push(innerLayer);
+			});
+		}
+		//smae issue as getBounds?
+		if(this._featuresById[layerId]){
+			features.push(this._featuresById[layerId]);
+		}
+		return features;
 	}
 });
 

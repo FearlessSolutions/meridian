@@ -17,7 +17,6 @@ define([
             config = context.sandbox.mapConfiguration;
         },
         plotFeatures: function(params){
-
             context.sandbox.util.each(params.data, function(index, obj){
                 //geoJson objects
                 var geo = L.geoJson(obj,{

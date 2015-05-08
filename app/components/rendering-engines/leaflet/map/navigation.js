@@ -43,52 +43,30 @@ define([
          * @param params
          */
         zoomToFeatures: function(params) {
-            var layer = params.map.getLayersBy('layerId', params.layerId)[0],
-                bounds = new OpenLayers.Bounds(),
-                featuresFound = false;
+            var layer = mapLayers.getActiveLayer();
 
-            if(layer) {
-                // TODO: make it also work in cluster mode (to check through the features in clusters)
-                context.sandbox.utils.each(params.featureIds, function(index, featureId) {
-                    var feature = layer.getFeatureBy('featureId', featureId),
-                        featureExtent;
+            var features = layer.getFeatures(params.layerId);
 
-                    if(feature) {
-                        featureExtent = feature.geometry.getBounds();
-                        bounds.extend(featureExtent);
-                        featuresFound = true;
-                    } else {
-                        // feature is likely in a cluster
-                        context.sandbox.utils.each(layer.features, function(k1, v1) {
-                        if(v1.cluster) {
-                            context.sandbox.utils.each(v1.cluster, function(k2, singleFeature) {
-                                if(singleFeature.featureId === featureId) {
-                                    featureExtent = singleFeature.geometry.getBounds();
-                                    bounds.extend(featureExtent);
-                                    featuresFound = true;
-                                }
-                            });
-                        }
-                    });
-                    }
-                });
+            var bounds = new L.LatLngBounds();
 
-                if(featuresFound) {
-                   params.map.zoomToExtent(bounds);
-                } else {
-                    publisher.publishMessage({
-                        messageType: 'warning',
-                        messageTitle: 'Zoom to Features',
-                        messageText: 'Features not found.'
-                    });
+            context.sandbox.utils.each(features, function(index, obj){
+                if(obj.feature.geometry.type === 'Point'){
+                    bounds.extend(obj.getLatLng());
                 }
-            } else {
+            });
+           
+            if(features.length === '0'){
                 publisher.publishMessage({
                     messageType: 'warning',
                     messageTitle: 'Zoom to Features',
                     messageText: 'Features not found.'
                 });
+            }else{
+                //this goes to max zoom. If expecting different behavior, 
+                //use setZoom to change the zoom.
+                params.map.fitBounds(bounds);
             }
+            
         },
         /**
          * Pan to given point and zoom to zoom-level-8
@@ -97,10 +75,12 @@ define([
         setCenter: function(params) {
             var centerPoint,
                 lat = params.lat,
-                lon = params.lon;
+                lon = params.lon,
+                layer = mapLayers.getActiveLayer();
 
-            centerPoint = new OpenLayers.LonLat(lon, lat);
-            params.map.setCenter(centerPoint.transform(params.map.projectionWGS84, params.map.projection), 8);
+
+            centerPoint = new L.latLng(lat, lon);
+            params.map.setView(centerPoint, 8);
         }
     };
     
