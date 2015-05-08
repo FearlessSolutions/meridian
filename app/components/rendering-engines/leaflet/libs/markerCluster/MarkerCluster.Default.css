@@ -1,8 +1,8 @@
 .marker-cluster-small {
-	background-color: rgba(181, 226, 140, 0.6);
+	background-color: blue;
 	}
 .marker-cluster-small div {
-	background-color: rgba(110, 204, 57, 0.6);
+	background-color: red;
 	}
 
 .marker-cluster-medium {
@@ -21,7 +21,8 @@
 
 	/* IE 6-8 fallback colors */
 .leaflet-oldie .marker-cluster-small {
-	background-color: rgb(181, 226, 140);
+	/*background-color: rgb(181, 226, 140);*/
+	background-color: blue;
 	}
 .leaflet-oldie .marker-cluster-small div {
 	background-color: rgb(110, 204, 57);

@@ -14,6 +14,101 @@ div[data-aura-component='rendering-engines/leaflet'] #map {
     height: 100%;
 }
 
+.mm-cluster {
+	border-radius: 50%;
+	text-align: center;
+	position: relative;
+}
+.mm-cluster-inner{
+	border-radius: 50%;
+	position: relative;
+	text-align: center;
+}
+
+.mm-cluster-small {
+	color: blue;
+	background-color: orange;
+	opacity: .6;
+	width: 26px;
+	height: 26px;
+	top: -4px;
+	left: -4px;
+}
+.mm-cluster-small-inner {
+	background-color: salmon;
+	height: 20px;
+	width: 20px;
+	top: -27px;
+	left: -1px;
+}
+
+
+
+
+
+.mm-cluster-medium {
+	color: blue;
+	background-color: darkcyan;
+	opacity: .6;
+	width: 36px;
+	height: 36px;
+	margin-left: -9px;
+	margin-top: -8px;
+}
+.mm-cluster-medium-inner {
+	background-color: cyan;
+	height: 30px;
+	width: 30px;
+	top: -33px;
+	left: -6px;
+}
+
+
+
+
+
+
+.mm-cluster-large {
+	color: blue;
+	background-color: green;
+	opacity: .6;
+	width: 46px;
+	height: 46px;
+	margin-left: -14px;
+	margin-top: -13px;
+}
+
+.mm-cluster-large-inner {
+	background-color: greenyellow;
+	height: 40px;
+	width: 40px;
+	top: -43px;
+	left: -11px;
+}
+
+/*.lfCircle {*/
+	/*border-radius: 50%;*/
+	/*width: 25px;*/
+	/*height: 25px;*/
+	/*text-align: center;*/
+	/*color: blue;*/
+	/*background-color: indianred;*/
+	/*margin-left: -3px; /!* 1/4 of the width(height) *!/*/
+	/*margin-top: -4px;*/
+/*}*/
+
+/*.lfCircle-inner {*/
+	/*position: relative;*/
+	/*top: 7px;*/
+	/*left: 7px;*/
+	/*border-radius: 50%;*/
+	/*width: 10px;*/
+	/*height: 10px;*/
+	/*background-color: aquamarine;*/
+	/*/!*margin-left: 4px;*/
+	/*/!*margin-top: 4px;*!/*/
+/*}*/
+
 .marker-cluster-small {
 	background-color: rgba(204, 0, 204, 0.6);
 	}

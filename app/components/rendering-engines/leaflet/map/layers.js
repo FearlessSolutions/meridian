@@ -1,13 +1,15 @@
 define([
     './../map-api-publisher',
+    'text!./../cluster.hbs',
     './../libs/markerCluster/leaflet.markercluster-src',
     './../libs/wmts/leaflet-tilelayer-wmts-src.js',
     './../libs/leaflet-featureidgroup-src'
-], function(publisher) {
+], function(publisher, clusterHBS) {
     // Setup context for storing the context of 'this' from the component's main.js 
     var context,
         map,
         config,
+        clusterTemplate,
         drawnItemsLayer,
         basemapLayers,
         singlePointLayer,
@@ -28,7 +30,7 @@ define([
                 defaultStyle: {}
             };
             config = context.sandbox.mapConfiguration;
-
+            clusterTemplate = Handlebars.compile(clusterHBS);
             loadBasemaps();
             exposed.setBasemap({
                 basemap: config.defaultBaseMap
@@ -63,7 +65,6 @@ define([
                 } else{//for single points
 
                 }
-
             });
         },
         clearDrawing: function(params){
@@ -79,7 +80,10 @@ define([
 
             if(context.sandbox.stateManager.map.visualMode === 'cluster'){
                 clusterLayers.addLayer(params.layerId, new L.MarkerClusterGroup({
-                        maxClusterRadius: config.clustering.thresholds.clustering.distance
+                        maxClusterRadius: config.clustering.thresholds.clustering.distance,
+                        iconCreateFunction: function(cluster){
+                            return getClusterStyle(cluster);
+                        }
                     })
                 ); 
 
@@ -563,7 +567,31 @@ define([
         return icon;
     }
 
-    function getClusterStyle(){
+    function getClusterStyle(cluster){
+        var count = cluster.getChildCount(),
+            size,
+            icon = clusterStyles[count];
 
+        if(!icon){
+            if(count < 10){
+                size = 'small';
+            } else if(count < 99){
+                size = 'medium';
+            } else {
+                size = 'large';
+            }
+
+            icon = new L.DivIcon({
+                iconSize: [20, 20],
+                html: clusterTemplate({
+                    count: count,
+                    size: size
+                })
+            });
+
+            clusterStyles[count] = icon;
+        }
+
+        return icon;
     }
 });
