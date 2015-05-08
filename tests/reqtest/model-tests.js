@@ -694,12 +694,12 @@ define([
                         }
                         expect(payload).to.exist; // payload exists
                         expect(payload).to.be.an('object'); // payload is an object
-                        console.debug("NEW EXPECTED" + map.getBounds());
+                        console.debug(map.getExtent().transform(map.projection, map.projectionWGS84));
                         var expectedBounds_values = {  // expected values of the bounds result after map.view.center.bounds emitted
-                            bottom: 42.50188756945924,
-                            left: -102.20312499999488,
-                            right: -100.79687499999713,
-                            top: 43.53004857001649
+                            bottom: 30.76711104806655,
+                            left: -116.88085937499952,
+                            right: -86.11914062499609,
+                            top: 543.23679754234628
                         }
                         //test goes here
                         //map.setCenter(new OpenLayers.LonLat(38.860830, -77.059307), 5); // setCenter must go here to display the error in the mocha HTML error log
@@ -733,7 +733,7 @@ define([
                             console.debug('The actual bounds top property is equal to the expected bounds top property');
                             done();
                         });
-                        //map.setCenter(new OpenLayers.LonLat(38.860830, -77.059307), 5); // setCenter must go here to display the error in the mocha HTML error log
+                        map.setCenter(new OpenLayers.LonLat(38.860830, -77.059307), 5); // setCenter must go here to display the error in the mocha HTML error log
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.view.center.bounds', message: payload }});  // manual publish to the channel
                     }
                 };
