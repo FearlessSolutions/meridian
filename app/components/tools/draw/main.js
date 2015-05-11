@@ -9,8 +9,9 @@ define([
 
     return {
         initialize: function() {
-            drawTool.init(this);
-            drawToolMediator.init(this, drawToolMediator);
+            drawToolMediator.init(this);
+            drawTool.init(this, drawToolMediator);
+
         }
     };
                 
