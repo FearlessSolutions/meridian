@@ -695,16 +695,19 @@ define([
                         expect(payload).to.exist; // payload exists
                         expect(payload).to.be.an('object'); // payload is an object
                         console.debug(map.getExtent().transform(map.projection, map.projectionWGS84));
+                        console.log('THIS IS BEFORE');
                         var expectedBounds_values = {  // expected values of the bounds result after map.view.center.bounds emitted
                             bottom: 30.76711104806655,
                             left: -116.88085937499952,
                             right: -86.11914062499609,
-                            top: 543.23679754234628
+                            top: 53.23679754234628
                         }
                         //test goes here
                         //map.setCenter(new OpenLayers.LonLat(38.860830, -77.059307), 5); // setCenter must go here to display the error in the mocha HTML error log
                         map.events.register("moveend", map, function(){ // zoomend does not seem to work for this channel emit
                             var actualBounds_values = map.getExtent().transform(map.projection, map.projectionWGS84); // gets the extent and converts back to lat/lon, this value will change if a different projection is used
+                            console.debug(actualBounds_values);
+                            console.log('THIS IS AFTER');
                             //var actualBounds_values = {  // expected values of the bounds result after map.view.center.bounds emitted
                             //    bottom: null,
                             //    left: -102.20312499999488,
@@ -733,7 +736,7 @@ define([
                             console.debug('The actual bounds top property is equal to the expected bounds top property');
                             done();
                         });
-                        map.setCenter(new OpenLayers.LonLat(38.860830, -77.059307), 5); // setCenter must go here to display the error in the mocha HTML error log
+                        //map.setCenter(new OpenLayers.LonLat(38.860830, -77.059307), 5); // setCenter must go here to display the error in the mocha HTML error log
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.view.center.bounds', message: payload }});  // manual publish to the channel
                     }
                 };
