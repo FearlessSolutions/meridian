@@ -33,16 +33,7 @@ define([
                     publisher.createLayer({
                         layerId: layerId + '_aoi',
                         name: name + '_aoi',
-                        initialVisibility: true,
-                        styleMap: {
-                            default: {
-                                strokeColor: '#000',
-                                strokeOpacity: 0.3,
-                                strokeWidth: 2,
-                                fillColor: 'gray',
-                                fillOpacity: 0.3
-                            }
-                        }
+                        initialVisibility: true
                     });
 
                     publisher.setLayerIndex({
@@ -67,7 +58,16 @@ define([
                                 ]]
                             },
                             type: 'Feature'
-                        }]
+                        }],
+                        styleMap: {
+                            default: {
+                                strokeColor: '#000',
+                                strokeOpacity: 0.3,
+                                strokeWidth: 2,
+                                fillColor: 'gray',
+                                fillOpacity: 0.3
+                            }
+                        }
                     });
 
                 } else {

@@ -25,11 +25,14 @@ define([
             map = thisMap;
             drawnItemsLayer = {};
             basemapLayers = {};
+            config = context.sandbox.mapConfiguration;
             featureIcons = {};
             clusterStyles = {
-                defaultStyle: {}
+                defaultStyle: {
+                    styleMap: config.clustering.styleMap,
+                    clusters: {}
+                }
             };
-            config = context.sandbox.mapConfiguration;
             clusterTemplate = Handlebars.compile(clusterHBS);
             loadBasemaps();
             exposed.setBasemap({
@@ -42,6 +45,9 @@ define([
         plotFeatures: function(params){
             var layerId = params.layerId;
 
+            if(params.styleMap){
+                //TODO apply special stylemap to this set of features. Specifically for aoi
+            }
             context.sandbox.util.each(params.data, function(index, obj){
                 //geoJson objects
                 var geo = L.geoJson(obj,{
@@ -74,15 +80,18 @@ define([
         createVectorLayer: function(params) {
             var layerId = params.layerId;
 
-            if(!clusterStyles[layerId]){ //TODO only do this if the layer can cluster
-                clusterStyles[layerId] = {};
+            if(!clusterStyles[layerId] && params.styleMap){ //TODO only do this if the layer can cluster
+                clusterStyles[layerId] = {
+                    styleMap: params.styleMap,
+                    clusters: {}
+                };
             }
 
             if(context.sandbox.stateManager.map.visualMode === 'cluster'){
                 clusterLayers.addLayer(params.layerId, new L.MarkerClusterGroup({
                         maxClusterRadius: config.clustering.thresholds.clustering.distance,
                         iconCreateFunction: function(cluster){
-                            return getClusterStyle(cluster);
+                            return getClusterStyle(cluster, layerId);
                         }
                     })
                 ); 
@@ -567,31 +576,55 @@ define([
         return icon;
     }
 
-    function getClusterStyle(cluster){
+    function getClusterStyle(cluster, layerId){
         var count = cluster.getChildCount(),
-            size,
-            icon = clusterStyles[count];
+            icon;
 
-        if(!icon){
-            if(count < 10){
-                size = 'small';
-            } else if(count < 99){
-                size = 'medium';
-            } else {
-                size = 'large';
+        if(clusterStyles[layerId]){
+            icon = clusterStyles[layerId][count];
+            if(!icon){
+                icon = getIcon(clusterStyles[layerId].styleMap, count);
+                clusterStyles[layerId][count] = icon;
             }
-
-            icon = new L.DivIcon({
-                iconSize: [20, 20],
-                html: clusterTemplate({
-                    count: count,
-                    size: size
-                })
-            });
-
-            clusterStyles[count] = icon;
+        } else {
+            icon = clusterStyles.defaultStyle[count];
+            if(!icon){
+                icon = getIcon(clusterStyles.defaultStyle.styleMap, count);
+                clusterStyles.defaultStyle[count] = icon;
+            }
         }
 
         return icon;
+
+        function getIcon(stylemap, count){
+            var rules,
+                strokeCss = '',
+                fillCss = '';
+
+            if(count < 10){
+                rules = stylemap.small
+            } else if(count < 99){
+                rules = stylemap.medium
+            } else {
+                rules = stylemap.large
+            }
+
+            context.sandbox.utils.each(rules.stroke, function(strokePropertyName, strokeProperty){
+                strokeCss += strokePropertyName + ':' + strokeProperty + '; ';
+            });
+
+            context.sandbox.utils.each(rules.fill, function(fillPropertyName, fillProperty){
+                fillCss += fillPropertyName + ':' + fillProperty + '; ';
+            });
+
+            return new L.DivIcon({
+                iconSize: [15, 15],
+                html: clusterTemplate({
+                    count: count,
+                    strokeCss: strokeCss,
+                    fillCss: fillCss
+                })
+            });
+        }
     }
 });

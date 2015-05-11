@@ -348,7 +348,7 @@ define([
          * @param {integer} params.layerIndex - index of layer
          */
         plotFeatures: function(params) {
-            if(params.layerId.indexOf("_aoi") === -1){
+            if(params.layerId.indexOf("_aoi") === -1){ //TODO handle aoi's better
                 mapLayers.plotFeatures({
                     layerId: params.layerId,
                     data: params.data
@@ -359,7 +359,8 @@ define([
                 var tempStr = params.layerId.split('_aoi');
                 mapLayers.plotFeatures({
                     layerId: tempStr[0],
-                    data: params.data
+                    data: params.data,
+                    styleMap: params.styleMap
                 });
             }
            
