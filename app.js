@@ -1,18 +1,12 @@
-var express = require('express');
-var connect = require('connect');
-var http = require('http');
-var https = require('https');
-var fs = require('fs');
-var Busboy = require('busboy'); //TODO replace with connect-busboy on connect upgrade
+var express = require('express'),
+    connect = require('connect'),
+    http = require('http'),
+    fs = require('fs'),
+    Busboy = require('busboy'), //TODO replace with connect-busboy on connect upgrade
 
-var app = express(),
+    app = express(),
     //Set up which directory the app will get stuff from //TODO remove this when nginx comes in
     appDir = process.argv[2] || '/app'; //argv = ['node', '{{location being run from}}', {{command arguments}}]
-
-var options = {
-    rejectUnauthorized: false,
-    requestCert: true
-};
 
 // Launch vanilla https server
 app.listen(3000);
@@ -67,15 +61,15 @@ app.use(function(req, res, next){
     next();
 });
 
-// Server static content
-app.use('/', express.static(__dirname + appDir));
-app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));
-app.use('/basic', express.static(__dirname + appDir + '/modes/basic'));
-app.use('/basic-with-settings', express.static(__dirname + appDir + '/modes/basic-with-settings'));
-app.use('/embedded', express.static(__dirname + appDir + '/modes/embedded'));
-app.use('/dashboard', express.static(__dirname + appDir + '/modes/dashboard'));
-app.use('/admin', express.static(__dirname + appDir + '/modes/admin'));
-
+//// Server static content
+//app.use('/', express.static(__dirname + appDir));
+//app.use('/cmapi', express.static(__dirname + '/tests/pubsub/cmapi'));
+//app.use('/basic', express.static(__dirname + appDir + '/modes/basic'));
+//app.use('/basic-with-settings', express.static(__dirname + appDir + '/modes/basic-with-settings'));
+//app.use('/embedded', express.static(__dirname + appDir + '/modes/embedded'));
+//app.use('/dashboard', express.static(__dirname + appDir + '/modes/dashboard'));
+//app.use('/admin', express.static(__dirname + appDir + '/modes/admin'));
+//
 
 // Initiate routes
 require('./server/app').init(app);
