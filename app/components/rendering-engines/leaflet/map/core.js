@@ -1,21 +1,17 @@
 define([
     './../map-api-publisher',
-    './base',
     './navigation',
     './layers',
     './features',
     './draw',
-    './../map/clustering',
     './heatmap',
     './../libs/leaflet-src'
 ], function(
     publisher,
-    mapBase,
     mapNavigation,
     mapLayers,
     mapFeatures,
     mapDraw,
-    mapClustering,
     mapHeatmap
 ){
     // Setup context for storing the context of 'this' from the component's main.js 
@@ -32,59 +28,32 @@ define([
          */
         init: function(thisContext) {
             context = thisContext;
+            context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
 
-            mapBase.init(context);
-            // mapClustering.init(context);
-            mapDraw.init(context);
-            // mapFeatures.init(context);
-            // mapHeatmap.init(context);
-            mapLayers.init(context);
-            mapNavigation.init(context);
+            map = L.map('map', {
+                zoomControl: false, //remoe the native +/- zoom controls.
+                attributionControl: false, //remove the attribution section of the map.
+                center: [0,0],
+                zoom: 4,
+                minZoom: 2,
+                maxZoom: context.sandbox.mapConfiguration.maxAutoZoomLevel,
+                inertia: true,
+                inertiaDeceleration: 3000,
+                inertiaMaxSpeed: 1500,
+                inertiaThreshold: 30
+            });
 
-            exposed.createMap();
+            mapLayers.init(context, map);
+            mapNavigation.init(context, map);
+            mapDraw.init(context, map);
+
+            context.sandbox.stateManager.map.status.setReady(true);
         },
         /**
          * Create a Leaflet Map
          * @param {object} params - JSON parameters
          */
-        createMap: function(params) {
-
-            map = mapBase.createMap(params);
-
-            mapLayers.loadBasemaps({
-                "map": map
-            });
-
-            mapLayers.createViewLayers({
-                "map": map
-            });
-
-            mapNavigation.zoomToExtent({
-                "map": map,
-                "minLon": context.sandbox.mapConfiguration.initialMinLon,
-                "minLat": context.sandbox.mapConfiguration.initialMinLat,
-                "maxLon": context.sandbox.mapConfiguration.initialMaxLon,
-                "maxLat": context.sandbox.mapConfiguration.initialMaxLat
-            });
-
-            exposed.setBasemap({
-                "map": map,
-                "basemap": context.sandbox.mapConfiguration.defaultBaseMap
-            });
-
-            drawnItemsLayer = mapLayers.createDrawingLayer({
-                "map": map
-            });
-            
-            context.sandbox.stateManager.map.visualMode = context.sandbox.mapConfiguration.defaultVisualMode;
-            
-            context.sandbox.stateManager.map.status.setReady(true);
-
-            mapDraw.setDrawingActions({
-                "map": map,
-                "drawnItemsLayer": drawnItemsLayer
-            });
-
+//        createMap: function(params) {
             //the following is all test code used for the initial demo. Slowly removing this...
             // var someIcon = L.icon({
             //     iconUrl: context.sandbox.mapConfiguration.markerIcons.default.icon,
@@ -92,15 +61,10 @@ define([
             //     iconAnchor: [12,24],// offset from the top left corner.half the size of the width and then the entire value of the height to use the correct pin position.
             //     popupAnchor: [0,-12]// make pop up originate elsewhere instead of the actual point.
             // });
-
             // // var myPopup = L.popup.extend({
             // //     initialize: function(){}
             // // });
-            
-            
             // var buttonStr = "<div class='exportFeature'><button type='submit' class='btn btn-primary'>Delete</button></div>";
-            
-           
             //var point1 = L.marker([5,5], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
             // var point2 = L.marker([6,6], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
             // var point3 = L.marker([6,7], {icon: someIcon}).bindPopup("<div>Lat: " + 5 + "</div><div>Lon: "+5+"</div>");
@@ -112,7 +76,6 @@ define([
             //     iconCreateFunction: function(cluster){
             //         var childCount = cluster.getChildCount();
             //         //console.debug('a: ', cluster.__parent);
-
             //         var c = ' marker-cluster-';
             //         if (childCount < 10) {
             //             return new L.DivIcon({ html: '<div><span>' 
@@ -152,15 +115,10 @@ define([
                 // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
                 // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
                 // query2.addLayer(new L.marker([11,11], {icon: someIcon}).bindPopup("<div>Lat: " + 7 + "</div><div>Lon: "+ 7 +"</div>"));
-
             //};
-
-        
-            
             // query1.addTo(map);
             // //query2.addTo(map);
             // map.addLayer(query2);
-
             // query2.on('click', function(obj){
             //    //console.debug(obj);
             //    obj.layer.openPopup();
@@ -169,21 +127,15 @@ define([
                //map.removeLayer(query2._leaflet_id);
                //map.removeLayer(point1);
             // });
-
             // query1.on('click', function(marker){
             //    var a = context.$('.exportFeature');
             //    a.on('click', function(b){
             //     //console.debug('marker: ', marker);
-                
             //     query1.removeLayer(marker.layer);
             //    });
             //     //console.debug('query: ', query1);
             // });
-
             //  context.$('.marker-cluster').css('background-color', 'black');
-
-
-
             // var geoJson = {
             //     "features": [
             //       { "type": "Feature",
@@ -231,8 +183,6 @@ define([
             //          }
             //     ]
             // };
-
-
             // var geoLayer = L.geoJson(geoJson,{
             //     onEachFeature: function(feature, layer){
             //         //layer.bindPopup(feature.properties.prop0);
@@ -244,8 +194,7 @@ define([
             // map.addLayer(query2);
             // console.info('clusterGroup: ', query2);
             // console.info('geoJson layer: ', geoLayer);
-
-        },
+//        },
         /**
          * Zoom In
          */
@@ -310,8 +259,7 @@ define([
          */
         setBasemap: function(params) {
             mapLayers.setBasemap({
-                "map": map,
-                "basemap": params.basemap
+                basemap: params.basemap
             });
         },
         /**
@@ -355,7 +303,7 @@ define([
            // console.debug('params in renderer: ', params);
             var newLayer,
                 layerOptions = {
-                    "layerId": params.layerId,
+                    "layerId": params.layerId
                 };
             layerOptions.map = map;
             //mapClustering.addClusteringToLayerOptions(layerOptions);
@@ -524,13 +472,13 @@ define([
          * @param {string} params.mode - name of visual mode (cluster/feature/heatmap)
          */
         changeVisualMode: function(params) {
-            mapBase.setVisualMode({
-                "map": map,
-                "mode": params.mode
+            mapLayers.setVisualMode({
+                map: map,
+                mode: params.mode
             });
             mapLayers.visualModeChanged({
-                "map": map,
-                "mode": params.mode
+                map: map,
+                mode: params.mode
             });
         },
         /**
