@@ -53,7 +53,7 @@ define([
         },
         mapViewCenterOverlay: function(message) {
             mediator.zoomToLayer({
-                layerId: message.overlayerId ? message.overlayId : defaultLayerId,
+                layerId: message.overlayId ? message.overlayId : defaultLayerId,
                 zoom: null //defaulting auto zoom to null since we dont support zooming into a certain range
             });
 		},
