@@ -1,7 +1,7 @@
 define([
     './../map-api-publisher',
     'text!./../cluster.hbs',
-    './../libs/markerCluster/leaflet.markercluster-src',
+    './../libs/markerCluster/leaflet.markercluster-src-mm',
     './../libs/wmts/leaflet-tilelayer-wmts-src.js',
     './../libs/leaflet-featureidgroup-src'
 ], function(publisher, clusterHBS) {
@@ -61,6 +61,8 @@ define([
                     }
                 });
 
+                //singlePointLayer.addDataToLayer(layerId, geo);
+
                 if(context.sandbox.stateManager.map.visualMode === 'cluster'){
                     if(clusterLayers.hasLayerId(params.layerId) === false){
                     }
@@ -87,15 +89,22 @@ define([
                 };
             }
 
-            if(context.sandbox.stateManager.map.visualMode === 'cluster'){
-                clusterLayers.addLayer(params.layerId, new L.MarkerClusterGroup({
-                        maxClusterRadius: config.clustering.thresholds.clustering.distance,
-                        iconCreateFunction: function(cluster){
-                            return getClusterStyle(cluster, layerId);
-                        }
-                    })
-                ); 
+            //singlePointLayer.addLayer(layerId, new L.featureGroup());
 
+            if(context.sandbox.stateManager.map.visualMode === 'cluster'){
+                //clusterLayers.addLayer(layerId, new L.MarkerClusterGroup({ //TODO uncomment this. It works.
+                //        maxClusterRadius: function(zoom, layer) { //{config.clustering.thresholds.clustering.distance,
+                //            return 80;
+                //        },
+                //        iconCreateFunction: function(cluster){
+                //            return getClusterStyle(cluster, layerId);
+                //        },
+                //        shouldCluster: false,
+                //        disableClusteringAtZoom: 1
+                //    })
+                //);
+
+                clusterLayers.addLayer(layerId, new L.featureGroup()); //TODO remove this after fixing
             } else if( context.sandbox.stateManager.map.visualMode === 'heatmap'){
                 
             } else {
@@ -272,24 +281,24 @@ define([
             }
         },
         visualModeChanged: function(params) { //TODO duplicate?
-            var selector = map.getControlsByClass('OpenLayers.Control.SelectFeature')[0];
-            selector.unselectAll();
-            mapClustering.update({
-            });
-            mapClustering.visualModeChanged({
-                "mode": params.mode
-            });
-            mapHeatmap.update({
-            });
+            console.debug('chaning modes and stuff');
+            //mapClustering.update({
+            //});
+            //mapClustering.visualModeChanged({
+            //    "mode": params.mode
+            //});
+            //mapHeatmap.update({
+            //});
         },
         clear: function(params) {
-            var layers = map.getLayersByClass('OpenLayers.Layer.Vector');
-            layers.forEach(function(layer) {
-                layer.destroy();              
-            });
-            context.sandbox.stateManager.layers = {};
-            mapClustering.clear();
-            mapHeatmap.clear({
+            var layers = singlePointLayer;
+            console.debug(layers);
+            context.sandbox.utils.each(singlePointLayer._layersById, function(layerId, layer){
+                layer.eachLayer(function(feature){
+                    if(Math.random() < .5){
+                        layer.removeLayer(feature);
+                    }
+                });
             });
         },
         addEventListenersToLayer: function(params) {

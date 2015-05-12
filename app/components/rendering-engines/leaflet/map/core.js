@@ -442,12 +442,7 @@ define([
          * @param {string} params.mode - name of visual mode (cluster/feature/heatmap)
          */
         changeVisualMode: function(params) {
-            mapLayers.setVisualMode({
-                map: map,
-                mode: params.mode
-            });
             mapLayers.visualModeChanged({
-                map: map,
                 mode: params.mode
             });
         },
@@ -468,7 +463,7 @@ define([
          */
         clear: function() {
             mapLayers.clear();
-            mapLayers.createStaticLayers();
+            //mapLayers.createStaticLayers();
         }
     };
     
