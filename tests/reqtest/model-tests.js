@@ -240,6 +240,40 @@ define([
             });
         });//it
 
+        it("Create a Layer (without coordinates) Unit Test", function (done) {
+            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                console.log('in it', meridian);
+                meridian.sandbox.external.postMessageToParent = function (params) {
+                    if (params.channel == 'map.status.ready') {
+                        // map goes first
+                        var map = renderer.getMap(),
+                            payload = {
+                                name: "Test Name 1",  // can't check name, because it isn't saved in OL
+                                overlayId: "testOverlayId1"
+                            },
+                            beforeLayerCount = map.layers.length, // layer count prior to the channel emit
+                            afterLayerCount,
+                            actualLayer;
+                        //test goes here
+                        map.events.register("addlayer", map, function(){
+                            afterLayerCount = map.layers.length; // layer count prior to the channel emit
+                            expect(afterLayerCount).to.be.above(beforeLayerCount); // confirmation that a layer was created
+                            map.layers[map.layers.length-1];  //  last layer added
+                            actualLayer = map.layers[map.layers.length-1];
+                            expect(actualLayer).to.exist;
+                            expect(actualLayer.layerId).to.equal(payload.overlayId);  // actual layerId should equal the payload overlayId
+                            done();
+                        });
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }});  // manual publish to the channel
+                    }
+                };
+                cmapiMain.initialize.call(meridian, meridian);
+                var $fixtures = $('#fixtures');
+                meridian.html = $fixtures.html;
+                renderer.initialize.call(meridian, meridian);
+            });
+        });//it
+
         //Capture Remove Layer
         it("Remove a Layer Unit Test", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
@@ -286,6 +320,72 @@ define([
                         });
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }}); // manual publish to the channel
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.remove', message: payload }}); // manual publish to the channel
+                    }
+                };
+                cmapiMain.initialize.call(meridian, meridian);
+                var $fixtures = $('#fixtures');
+                meridian.html = $fixtures.html;
+                renderer.initialize.call(meridian, meridian);
+                done();
+            });
+        });//it
+
+        it("Remove a Layer (multiple layer added) Unit Test", function (done) {
+            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                console.log('in it', meridian);
+                meridian.sandbox.external.postMessageToParent = function (params) {
+                    if (params.channel == 'map.status.ready') {
+                        // map goes first
+                        var map = renderer.getMap(),
+                            payload = {
+                                overlayId: "testOverlayId1"
+                            },
+                            payload2 = [
+                                {
+                                    "0": {overlayId: "testOverlayId1"},
+                                    "1": {overlayId: "testOverlayId2"}
+                                }
+                            ],
+                            beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+                            afterLayerCreateCount,
+                            afterLayerRemoveCount;
+                        console.debug(beforeLayerCreateCount);
+                        //test goes here
+                        function layerCheck(layerExists, params) {
+                            var searchTerm = "testOverlayId1",
+                                index = -1,
+                                mapLayers = params;
+                            for(var i= 0, len = mapLayers.length; i < len; i++) {
+                                if(mapLayers[i].layerId === searchTerm) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            if (layerExists) {
+                                expect(index).to.not.equal(-1);
+                                console.debug('Layer exists, create layer successful');
+                            } else {
+                                expect(index).to.equal(-1); // confirm that no layers contain layerId of testOverlayId1
+                                console.debug('Layer does not exist, remove layer successful');
+                            }
+                        }
+                        meridian.sandbox.on('map.layer.create', function(params) {
+                            afterLayerCreateCount = map.layers.length;
+                            console.log('LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL');
+                            console.debug(afterLayerCreateCount);
+                            console.debug(map);
+                            expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+                            expect(map.layers[map.layers.length-1]["layerId"]).to.equal(payload.overlayId); // confirms that Id is the overlayId value from the payload
+                            layerCheck(true, map.layers);
+                        });
+                        meridian.sandbox.on('map.layer.delete', function(params) {
+                            afterLayerRemoveCount = map.layers.length;
+                            expect(afterLayerCreateCount).to.be.above(afterLayerRemoveCount);  // confirms the layer with overlayId value from payload was removed
+                            layerCheck(false, map.layers);
+                        });
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload2 }}); // manual publish to the channel
+
+                        //meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.remove', message: payload }}); // manual publish to the channel
                     }
                 };
                 cmapiMain.initialize.call(meridian, meridian);
@@ -433,6 +533,7 @@ define([
                             console.debug('Layer exists, create layer successful with expected overlayId');
                         });
                         meridian.sandbox.on('map.features.plot', function(params) {
+
                             expect( map.layers[index]["features"].length).is.above(0); // confirm feature added to layer
                             var plottedFeature = map.layers[index]["features"][0]; // confirm featureId exists / despite not in payload
                             expect("featureId" in plottedFeature).is.true;
@@ -445,16 +546,18 @@ define([
                             // expected payload Lon is 10, actual Lat should be somewhat close (factoring in mathematical conversion)
                             expect(actualLon).to.be.above(9.999999999).and.below(10.000000001);
                             console.debug("The actual longitude value for the plotted feature is within 9 decimal places of the expected value");
-                            var actualp1 = map.layers[index]["features"][0]["data"]["p1"];
-                            //var expectedp1 = payload["feature"]["features"][0]["properties"]["p1"];
-                            var expectedp1 = payload.feature.features[0].properties.p1;
-                            expect(actualp1).to.equal(expectedp1);
+                            var actualp1 = plottedFeature["attributes"]["p1"],
+                                actualSH = plottedFeature["attributes"]["height"],
+                                actualSW = plottedFeature["attributes"]["width"],
+                                actualSI = plottedFeature["attributes"]["icon"];
+                            expect(actualp1).to.equal(payload.feature.features[0].properties.p1);
                             console.debug("The actual p1 value for the plotted feature is equal to the expected p1 value for the plotted feature");
-                            //actualSH =
-                            expect(actualSH).to.equal(payload.features[0].style.height)
-                            //actualSW =
-                            //actualSI =
-
+                            expect(actualSH).to.equal(payload.feature.features[0].style.height);
+                            console.debug("The actual style.height value for the plotted feature is equal to the expected style.height value for the plotted feature");
+                            expect(actualSW).to.equal(payload.feature.features[0].style.width);
+                            console.debug("The actual style.width value for the plotted feature is equal to the expected style.width value for the plotted feature");
+                            expect(actualSI).to.equal(payload.feature.features[0].style.icon);
+                            console.debug("The actual style.icon value for the plotted feature is equal to the expected style.icon value for the plotted feature");
                             done();
                         });
                         meridian.sandbox.external.receiveMessage({data:{channel:'map.feature.plot', message: payload }}); // manual publish to the channel
