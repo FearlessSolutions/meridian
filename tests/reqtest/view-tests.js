@@ -85,11 +85,13 @@ define([
                                 afterZoom_state = map.getZoom();
                                 // EXPECT: We expect the Present (After) Zoom value to be one greater than Before we emitted Zoom In.
                                 expect(afterZoom_state).to.equal(beforeZoom_state + 1);
+                                console.log("After: ", map.getZoom());
                                 done();
                             });
                             var beforeZoom_state = map.getZoom();
-                                // EXPECT: We expect the Initial Zoom value to be 0.
-                                expect(beforeZoom_state).to.equal(0);
+                                // EXPECT: We expect the Initial Zoom value to be 4.
+                                expect(beforeZoom_state).to.equal(4);
+                            console.log("Before: ", map.getZoom());
                             meridian.sandbox.external.receiveMessage({data:{channel:'map.view.zoom.in', message: {} }});  // manual publish to the channel
                         }
                     };
@@ -137,27 +139,17 @@ define([
 
             it("Zoom Out Edge Case: Should Set Zoom to Zero, then see what happens when Zoom Out is emitted.", function (done) {
                 this.timeout(5000);
-                var shouldBeUndefined = true;
+                var passed = true;
+
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         if (params.channel == 'map.status.ready') {
                             var map = renderer.getMap();
                             map.setCenter([2, 2], 2);
-                            var afterZoom_state;
 
                             map.events.register("zoomend", map, function(){
-                                afterZoom_state = map.getZoom();
-                                // EXPECT: We expect the afterZoom_state to not exist - let alone call zoomend to begin with;
-                                // It should not get to this point, as we set the Zoom level to 0 at the start,
-                                // and if zoomend is called, a zoom has occurred, and afterZoom_state is no longer undefined.
-                                //    expect(afterZoom_state).to.not.be.ok;
-                                done();
+                                passed = false;
                             });
-
-                            var beforeZoom_state = map.getZoom();
-                            // EXPECT: We expect the Zoom State to Equal 2; the number manually set above in map.setCenter.
-                            // Note: This number represents the farthest Zoom-Out level possible for this setup.
-                            expect(beforeZoom_state).to.equal(2);
 
                             meridian.sandbox.external.receiveMessage({
                                 data:{
@@ -165,6 +157,15 @@ define([
                                     message: {}
                                 }
                             });
+
+                            setTimeout(function(){
+                                // EXPECT: We wait 500ms, then expect passed to not have failed us.
+                                // If it failed, zoomend would have registered.
+                                // In this case, 2 is the maximum Zoom Out value for our 700x700 setup.
+                                // If after we set zoom to 2 via map.setCenter, we try to emit a Zoom Out, it should not register.
+                                expect(passed).to.be.equal(true);
+                                done();
+                            },500);
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
