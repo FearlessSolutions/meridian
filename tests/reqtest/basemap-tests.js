@@ -114,7 +114,6 @@ define([
                 renderer.initialize.call(meridian, meridian);
             });
         });//it
-
     });//describe
 });
 
