@@ -21,11 +21,13 @@ define([
     return {
         initialize: function() {
             var datagridTemplate = Handlebars.compile(datagridHBS),
-                html = datagridTemplate();
-
+                html = datagridTemplate(),
+                replaceUrl = /background: url\('(\.\.\/)?images\/header-columns-bg.gif'\) repeat-x center bottom;/g;
             this.sandbox.utils.addCSS(slickgrid_baseCSS, 'slickgrid_base');
-            this.sandbox.utils.addCSS(slickgrid_defaultCSS, 'slickgrid_default');
-            this.sandbox.utils.addCSS(slickgrid_pagerCSS, 'slickgrid_pager');
+            this.sandbox.utils.addCSS(slickgrid_defaultCSS //Replace unused and troublesome reference
+                .replace(replaceUrl, ''), 'slickgrid_default');
+            this.sandbox.utils.addCSS(slickgrid_pagerCSS//Replace unused and troublesome reference
+                .replace(replaceUrl, ''), 'slickgrid_pager');
             this.sandbox.utils.addCSS(datagridCSS, 'display-datagrid-component-style');
 
             this.html(html);
