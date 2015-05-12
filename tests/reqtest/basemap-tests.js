@@ -70,50 +70,53 @@ define([
 
         });//end of beforeEach
 
-        // Capture the Basemap change
-        it("Change the Basemap Unit Test", function (done) {
-            require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                console.log('in it', meridian);
-                meridian.sandbox.external.postMessageToParent = function (params) {
-                    if (params.channel == 'map.status.ready') {
-                        // map goes first
-                        var map = renderer.getMap(),
-                            payload = {
-                                "basemap": "imagery"
-                            },
-                            initialBasemap = {
-                                "basemap": "landscape"
-                            },
-                            expectedBasemap = {  // expected value result after map.basemap.change emitted
-                                "basemap": "imagery"
-                            },
-                            actualBasemap, mapUrl;
-                        //test goes here
-                        expect(payload).to.exist; // payload exists
-                        expect(payload).to.be.an('object'); // payload is an object
-                        meridian.sandbox.on('map.basemap.change', function(params) {
-                            expectedBasemap;
-                            actualBasemap = params;
-                            expect(actualBasemap).to.exist; // payload is neither null or undefined
-                            expect(actualBasemap).to.be.an('object'); // payload is an object
-                            expect(initialBasemap).to.not.equal(actualBasemap);
-                            console.debug('The actual basemap is not equal to the initial basemap -- a basemap change occured');
-                            expect(actualBasemap).to.deep.equal(expectedBasemap);
-                            console.debug('The actual basemap is equal to the expected basemap');
-                            mapUrl = map["baseLayer"]["url"].indexOf("USGSImageryOnly");
-                            expect(mapUrl).to.not.equal(-1);  // indexOf is -1 when the value does not occur in the string (false)
-                            console.debug("The basemap is using a tilecache for imagery -- successful");  // This checks a specific property value that contains a substring as a URL when the basemap change is successful
-                            done();
-                        });
-                        meridian.sandbox.external.receiveMessage({data:{channel:'map.basemap.change', message: payload }});  // manual publish to the channel
-                    }
-                };
-                cmapiMain.initialize.call(meridian, meridian);
-                var $fixtures = $('#fixtures');
-                meridian.html = $fixtures.html;
-                renderer.initialize.call(meridian, meridian);
-            });
-        });//it
+        describe('map.basemap.change', function () {
+
+            // Capture the Basemap change
+            it("Change the Basemap Unit Test", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    console.log('in it', meridian);
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        if (params.channel == 'map.status.ready') {
+                            // map goes first
+                            var map = renderer.getMap(),
+                                payload = {
+                                    "basemap": "imagery"
+                                },
+                                initialBasemap = {
+                                    "basemap": "landscape"
+                                },
+                                expectedBasemap = {  // expected value result after map.basemap.change emitted
+                                    "basemap": "imagery"
+                                },
+                                actualBasemap, mapUrl;
+                            //test goes here
+                            expect(payload).to.exist; // payload exists
+                            expect(payload).to.be.an('object'); // payload is an object
+                            meridian.sandbox.on('map.basemap.change', function(params) {
+                                expectedBasemap;
+                                actualBasemap = params;
+                                expect(actualBasemap).to.exist; // payload is neither null or undefined
+                                expect(actualBasemap).to.be.an('object'); // payload is an object
+                                expect(initialBasemap).to.not.equal(actualBasemap);
+                                console.debug('The actual basemap is not equal to the initial basemap -- a basemap change occured');
+                                expect(actualBasemap).to.deep.equal(expectedBasemap);
+                                console.debug('The actual basemap is equal to the expected basemap');
+                                mapUrl = map["baseLayer"]["url"].indexOf("USGSImageryOnly");
+                                expect(mapUrl).to.not.equal(-1);  // indexOf is -1 when the value does not occur in the string (false)
+                                console.debug("The basemap is using a tilecache for imagery -- successful");  // This checks a specific property value that contains a substring as a URL when the basemap change is successful
+                                done();
+                            });
+                            meridian.sandbox.external.receiveMessage({data:{channel:'map.basemap.change', message: payload }});  // manual publish to the channel
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    var $fixtures = $('#fixtures');
+                    meridian.html = $fixtures.html;
+                    renderer.initialize.call(meridian, meridian);
+                });
+            });//it
+        });//describe
     });//describe
 });
 
