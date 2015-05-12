@@ -18,7 +18,7 @@ define([
 
 //start your test here.
 //mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
-    describe('CMAPI Map.View Unit Test Channels', function () {
+    describe('View Channels', function () {
         var upload, cmapiMain, renderer, exitBeforeEach, meridian;
 
         //Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
