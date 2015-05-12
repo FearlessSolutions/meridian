@@ -340,16 +340,11 @@ define([
                             payload = {
                                 overlayId: "testOverlayId1"
                             },
-                            payload2 = [
-                                {
-                                    "0": {overlayId: "testOverlayId1"},
-                                    "1": {overlayId: "testOverlayId2"}
-                                }
-                            ],
                             beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
                             afterLayerCreateCount,
-                            afterLayerRemoveCount;
-                        console.debug(beforeLayerCreateCount);
+                            afterLayerRemoveCount,
+                            anotherLayer;
+                        console.debug('Layer count before layer is created ' + beforeLayerCreateCount);
                         //test goes here
                         function layerCheck(layerExists, params) {
                             var searchTerm = "testOverlayId1",
@@ -366,16 +361,16 @@ define([
                                 console.debug('Layer exists, create layer successful');
                             } else {
                                 expect(index).to.equal(-1); // confirm that no layers contain layerId of testOverlayId1
+                                console.debug('Layer count after remove layer emit ' + map.layers.length );
                                 console.debug('Layer does not exist, remove layer successful');
                             }
                         }
                         meridian.sandbox.on('map.layer.create', function(params) {
+                            anotherLayer = new OpenLayers.Layer.Vector( "OpenLayers Vector", {layerId: 'testOverlayId2'} );
+                            map.addLayer(anotherLayer);
                             afterLayerCreateCount = map.layers.length;
-                            console.log('LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL');
-                            console.debug(afterLayerCreateCount);
-                            console.debug(map);
+                            console.debug('Layer count after layer creation & additional layer ' + afterLayerCreateCount);
                             expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
-                            expect(map.layers[map.layers.length-1]["layerId"]).to.equal(payload.overlayId); // confirms that Id is the overlayId value from the payload
                             layerCheck(true, map.layers);
                         });
                         meridian.sandbox.on('map.layer.delete', function(params) {
@@ -383,9 +378,8 @@ define([
                             expect(afterLayerCreateCount).to.be.above(afterLayerRemoveCount);  // confirms the layer with overlayId value from payload was removed
                             layerCheck(false, map.layers);
                         });
-                        meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload2 }}); // manual publish to the channel
-
-                        //meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.remove', message: payload }}); // manual publish to the channel
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.create', message: payload }}); // manual publish to the channel
+                        meridian.sandbox.external.receiveMessage({data:{channel:'map.overlay.remove', message: payload }}); // manual publish to the channel
                     }
                 };
                 cmapiMain.initialize.call(meridian, meridian);
