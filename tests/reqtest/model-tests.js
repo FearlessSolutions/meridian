@@ -154,10 +154,7 @@ define([
                 renderer.initialize.call(meridian, meridian);
             });
         });//it
-        // Capture the Zoom-out
-        // ZOOMOUT START HERE
 
-        //ZOOMOUT END HERE
         // Capture the Zoom to Max Extent
         it("Map Zoom to Max Extent Unit Test", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
