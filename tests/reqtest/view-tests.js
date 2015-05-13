@@ -328,13 +328,8 @@ define([
             describe('map.view.center.overlay', function () {
             it("Base Test: Map View Center Overlay", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
-                    console.debug(meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-
-
                             var map = renderer.getMap(),
                                 beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
                                 afterLayerCreateCount,
@@ -407,17 +402,15 @@ define([
                                     "zoom": false,
                                     "readOnly": false
                                 },
-                                index;
+                                index,
+                                plotSuccess = false;
 
-                            //console.debug("Payload! ", payload[0].name, ", ", payload[0].feature.features[0].geometry.coordinates);
-                            //console.debug("Payload! ", payload[1].name, ", ", payload[1].feature.features[0].geometry.coordinates);
-                            //console.debug("Payload! ", payload[2].name, ", ", payload[2].feature.features[0].geometry.coordinates);
-
+                            map.setCenter([2, 2], 5);
 
                             // Verify Layer Creation
-
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 afterLayerCreateCount = map.layers.length;
+                                // EXPECT: Where we expect that our layer count has in fact increased.
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 index = -1;
                                 var searchTerm = "testOverlayId1",
@@ -431,69 +424,43 @@ define([
                             });
 
                             // Verify Features Plotted
-
                             meridian.sandbox.on('map.features.plot', function (params) {
-                                //console.debug(map.layers[index]);
-                                var testA = map.layers[index]["features"][0]["geometry"]["bounds"].transform(map.projection, map.projectionWGS84);
-                                var actualLat = testA["left"];
-                                var actualLon = testA["top"];
-                                console.debug("Map: ", map.layers[index]);
-                                console.debug("actualLat! ", actualLat);
-                                console.debug("actualLon! ", actualLon);
-                                //console.log ("GetBounds: ", map.layers[index]["features"][0]["geometry"].getBounds());
-                                //  console.log ("GetBounds: ", map.layers[index]["features"][0].cluster[2]["geometry"].getBounds());
-                                console.log("Data Extent: ", map.layers[index].getDataExtent());
-                                //console.log(testOverlayId1.features[0].geometry.getVertices()[0] );
-                                // console.log(map.getCenter().transform(map.projection, map.projectionWGS84));
-
-                                //console.debug(map.layers[index]["features"][0]["geometry"]["bounds"].transform(map.projection, map.projectionWGS84));
-                            });
-                            //  meridian.sandbox.external.receiveMessage({data:{channel:'map.feature.plot', message: payload[0] }}); // manual publish to the channel
-                            //  meridian.sandbox.external.receiveMessage({data:{channel:'map.feature.plot', message: payload[1] }}); // manual publish to the channel
-
-
-                            map.events.register("zoomend", map, function () {
-                                console.log("Zoom Successful.");
-                                afterZoom_state = map.getZoom();
-                                afterCenter_pos = map.getCenter();
-                                console.debug('This is the zoom level after the emit has been published ' + afterZoom_state);
-                                console.debug('This is the center position after the emit has been published ' + afterCenter_pos);
-                                // expect(map.afterZoom_state).to.equal(5);
-
-                                //afterZoom_state = map.getZoom();
-                                //afterCenter_pos = map.getCenter();
-                                //expect(beforeZoom_state).to.exist;  // payload is neither null nor undefined
-                                //expect(afterZoom_state).to.exist;  // payload is neither null nor undefined
-                                //console.debug('This is the zoom level after the emit has been published ' + afterZoom_state);
-                                //expect(beforeZoom_state).to.not.equal(afterZoom_state);  // compare of the zoom level
-                                //console.debug('This is the center position after the emit has been published ' + afterCenter_pos);
-                                //expect(beforeCenter_pos).to.not.equal(afterCenter_pos); // compare of the center position
-                                //console.debug('The initial zoom level ' + beforeZoom_state + ' is greater than the post-zoom-to-max-extent zoom level ' + afterZoom_state + ', therefore, it correctly zoomed out');
-                                //expect(beforeZoom_state).to.be.above(afterZoom_state);
-                                done();
+                          plotSuccess = true;
                             });
 
-
-                            var beforeZoom_state = map.getZoom();
-                            var beforeCenter_pos = map.getCenter();
-                            console.debug('This is the initial map zoom level ' + beforeZoom_state);
-                            console.debug('This is the initial center position ' + beforeCenter_pos);
+                            // EXPECT: Where we expect the initial Zoom Value and Coordinates to match the values we
+                            // have entered further up the code via map.setCenter([2,2], 5). This is to demonstrate
+                            // that the upcoming view center overlay emit will alter these values.
+                            expect(map.getCenter().lon).to.be.equal(2);
+                            expect(map.getCenter().lat).to.be.equal(2);
+                            expect(plotSuccess).to.be.equal(true);
 
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.feature.plot',
                                     message: payload
                                 }
-                            }); // manual publish to the channel
-
+                            });
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.view.center.overlay', message: {
                                         "overlayId": "testOverlayId1"
                                     }
                                 }
-                            });  // manual publish to the channel
+                            });
 
+                            setTimeout(function () {
+                                                    // EXPECT: We wait 500ms, then expect the Zoom and coordinates
+                                                    // to have changed properly to a centered point between the
+                                                    // features on overlay "testOverlayId1".
+                                                    // Note: These values will change depending on the bounds given
+                                                    // for our Map frame's width and height in the Mocha Index.html file.
+                                                    // We also ensure a plot emit registers to begin with via plotSuccess check.
+                                                    expect(map.getZoom()).to.be.equal(4);
+                                                    expect((map.getCenter().transform(map.projection, map.projectionWGS84)).lon).to.be.above(19.9998).and.below(20);
+                                                    expect((map.getCenter().transform(map.projection, map.projectionWGS84)).lat).to.be.above(32.146700).and.below(32.1468);
+                                                    expect(plotSuccess).to.be.equal(true);
+                                                }, 500);
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
@@ -503,13 +470,14 @@ define([
                     done();
                 });
             });//it
-        }); // map.view.center.overlay
 
+
+        }); // map.view.center.overlay
+        //
         describe('map.clear', function () {
 
             it("Base Test: Map.Clear", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         if (params.channel == 'map.status.ready') {
                             // map goes first
@@ -589,7 +557,7 @@ define([
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 afterLayerCreateCount = map.layers.length;
                                 // EXPECT: We expect the Layer count to have increased on layer creation.
-                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);
                                 index = -1;
                                 var searchTerm = "testOverlayId1",
                                     mapLayers = map.layers;
@@ -599,8 +567,6 @@ define([
                                         break;
                                     }
                                 }
-                            });
-                            meridian.sandbox.on('map.features.plot', function (params) {
                             });
 
                             meridian.sandbox.external.receiveMessage({
@@ -633,7 +599,9 @@ define([
                 });
             });//it
 
-        });
+        }); // describe
+
+
     });//describe
 
 
