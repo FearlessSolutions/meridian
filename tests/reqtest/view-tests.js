@@ -325,11 +325,14 @@ define([
         }); // map.view.center.bounds
 
 
-            describe('map.view.center.overlay', function () {
+        describe('map.view.center.overlay', function () {
             it("Base Test: Map View Center Overlay", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    console.log('in it', meridian);
+                    console.debug(meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         if (params.channel == 'map.status.ready') {
+                            // map goes first
                             var map = renderer.getMap(),
                                 beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
                                 afterLayerCreateCount,
@@ -470,14 +473,13 @@ define([
                     done();
                 });
             });//it
-
-
         }); // map.view.center.overlay
-        //
+
         describe('map.clear', function () {
 
             it("Base Test: Map.Clear", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         if (params.channel == 'map.status.ready') {
                             // map goes first
@@ -557,7 +559,7 @@ define([
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 afterLayerCreateCount = map.layers.length;
                                 // EXPECT: We expect the Layer count to have increased on layer creation.
-                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);
+                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 index = -1;
                                 var searchTerm = "testOverlayId1",
                                     mapLayers = map.layers;
@@ -567,6 +569,8 @@ define([
                                         break;
                                     }
                                 }
+                            });
+                            meridian.sandbox.on('map.features.plot', function (params) {
                             });
 
                             meridian.sandbox.external.receiveMessage({
@@ -599,9 +603,7 @@ define([
                 });
             });//it
 
-        }); // describe
-
-
+        });
     });//describe
 
 

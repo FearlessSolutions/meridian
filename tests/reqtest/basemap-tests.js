@@ -71,7 +71,6 @@ define([
         });//end of beforeEach
 
         describe('map.basemap.change', function () {
-
             // Capture the Basemap change
             it("Base Test: Change the Basemap", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
@@ -156,7 +155,7 @@ define([
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
-        });//describe
+        });//map.basemap.change
     });//describe
 });
 
