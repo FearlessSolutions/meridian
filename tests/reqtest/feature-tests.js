@@ -407,6 +407,124 @@ define([
                     //done();
                 });
             });//it
+
+
+            //
+            //
+            //it("Base Test: Feature Plot Batch - DEFUNCT", function (done) {
+            //
+            //    // This Unit Test (And Channel) might be irrelevant, as it doesn't seem to provide any real advantages
+            //    // over the basic map.feature.plot channel. You can plot multiple points there, and also define the
+            //    // same amount of data.
+            //
+            //    require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+            //        console.log('in it', meridian);
+            //        meridian.sandbox.external.postMessageToParent = function (params) {
+            //            if (params.channel == 'map.status.ready') {
+            //
+            //                var map = renderer.getMap(),
+            //                    payload = {
+            //                        //    PROBLEM: It doesn't like "features" being an Array. It expects Features to be an object.
+            //                        "features": [
+            //                            {
+            //                                "type": "Feature",
+            //                                "geometry": {
+            //                                    "type": "Point",
+            //                                    "coordinates": [
+            //                                        -10,
+            //                                        10
+            //                                    ]
+            //                                },
+            //                                "properties": {
+            //                                    "p1": "pp1"
+            //                                },
+            //                                "style": {
+            //                                    "height": 24,
+            //                                    "width": 24,
+            //                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+            //                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+            //                                }
+            //                            },
+            //                            {
+            //                                "type": "Feature",
+            //                                "geometry": {
+            //                                    "type": "Point",
+            //                                    "coordinates": [
+            //                                        50,
+            //                                        10
+            //                                    ]
+            //                                },
+            //                                "properties": {
+            //                                    "p1": "pp1"
+            //                                },
+            //                                "style": {
+            //                                    "height": 24,
+            //                                    "width": 24,
+            //                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+            //                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+            //                                }
+            //                            },
+            //                            {
+            //                                "type": "Feature",
+            //                                "geometry": {
+            //                                    "type": "Point",
+            //                                    "coordinates": [
+            //                                        10,
+            //                                        50
+            //                                    ]
+            //                                },
+            //                                "properties": {
+            //                                    "p1": "pp1"
+            //                                },
+            //                                "style": {
+            //                                    "height": 24,
+            //                                    "width": 24,
+            //                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+            //                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+            //                                }
+            //                            }
+            //                        ],
+            //                        "overlayId": "testOverlayId1",
+            //                        "format": "geojson",
+            //                        "zoom": false,
+            //                        "readOnly": false
+            //                },
+            //                    beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+            //                    afterLayerCreateCount,
+            //                    index;
+            //                //test goes here
+            //                meridian.sandbox.on('map.layer.create', function(params) {
+            //                    afterLayerCreateCount = map.layers.length;
+            //                    expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+            //                    index = -1;
+            //                    var searchTerm = "testOverlayId1",
+            //                        mapLayers = map.layers;
+            //                    for(var i= 0, len = mapLayers.length; i < len; i++) {
+            //                        if(mapLayers[i].layerId === searchTerm) {
+            //                            index = i;
+            //                            break;
+            //                        }
+            //                    }
+            //                    expect(index).to.not.equal(-1); // confirms map.feature.plot added a layer and one with the overlayId, 'testOverlayId1'
+            //                    console.debug('Layer exists, create layer successful with expected overlayId');
+            //                });
+            //                meridian.sandbox.on('map.features.plot', function(params) {
+            //                    // PSEUDOCODE: Maybe tick up a "plottedCount" variable.
+            //                      done();
+            //                });
+            //                meridian.sandbox.external.receiveMessage({data:{channel:'map.feature.plot', message: payload }}); // manual publish to the channel
+            //                    // PSEUDOCODE: Wait maybe 500ms, then run expectations to see;
+            //                    // A. Does the map currently have the proper number of features specified in the Payload?
+            //                    // B. Do the coordinates between plotted points and Payload match?
+            //            }
+            //        };
+            //        cmapiMain.initialize.call(meridian, meridian);
+            //        var $fixtures = $('#fixtures');
+            //        meridian.html = $fixtures.html;
+            //        renderer.initialize.call(meridian, meridian);
+            //    });
+            //});//it
+
         });//map.feature.plot
     });//describe
 });
