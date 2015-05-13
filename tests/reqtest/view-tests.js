@@ -323,7 +323,320 @@ define([
                 });
             });//it
         }); // map.view.center.bounds
+
+
+            describe('map.view.center.overlay', function () {
+            it("Base Test: Map View Center Overlay", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    console.log('in it', meridian);
+                    console.debug(meridian);
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        if (params.channel == 'map.status.ready') {
+                            // map goes first
+
+
+                            var map = renderer.getMap(),
+                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+                                afterLayerCreateCount,
+                                payload = {
+                                    "overlayId": "testOverlayId1",
+                                    "name": "Test Name 1",
+                                    "format": "geojson",
+                                    "feature": {
+                                        "type": "FeatureCollection",
+                                        "features": [
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        -10,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            },
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        50,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            },
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        10,
+                                                        50
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "zoom": false,
+                                    "readOnly": false
+                                },
+                                index;
+
+                            //console.debug("Payload! ", payload[0].name, ", ", payload[0].feature.features[0].geometry.coordinates);
+                            //console.debug("Payload! ", payload[1].name, ", ", payload[1].feature.features[0].geometry.coordinates);
+                            //console.debug("Payload! ", payload[2].name, ", ", payload[2].feature.features[0].geometry.coordinates);
+
+
+                            // Verify Layer Creation
+
+                            meridian.sandbox.on('map.layer.create', function (params) {
+                                afterLayerCreateCount = map.layers.length;
+                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+                                index = -1;
+                                var searchTerm = "testOverlayId1",
+                                    mapLayers = map.layers;
+                                for (var i = 0, len = mapLayers.length; i < len; i++) {
+                                    if (mapLayers[i].layerId === searchTerm) {
+                                        index = i;
+                                        break;
+                                    }
+                                }
+                            });
+
+                            // Verify Features Plotted
+
+                            meridian.sandbox.on('map.features.plot', function (params) {
+                                //console.debug(map.layers[index]);
+                                var testA = map.layers[index]["features"][0]["geometry"]["bounds"].transform(map.projection, map.projectionWGS84);
+                                var actualLat = testA["left"];
+                                var actualLon = testA["top"];
+                                console.debug("Map: ", map.layers[index]);
+                                console.debug("actualLat! ", actualLat);
+                                console.debug("actualLon! ", actualLon);
+                                //console.log ("GetBounds: ", map.layers[index]["features"][0]["geometry"].getBounds());
+                                //  console.log ("GetBounds: ", map.layers[index]["features"][0].cluster[2]["geometry"].getBounds());
+                                console.log("Data Extent: ", map.layers[index].getDataExtent());
+                                //console.log(testOverlayId1.features[0].geometry.getVertices()[0] );
+                                // console.log(map.getCenter().transform(map.projection, map.projectionWGS84));
+
+                                //console.debug(map.layers[index]["features"][0]["geometry"]["bounds"].transform(map.projection, map.projectionWGS84));
+                            });
+                            //  meridian.sandbox.external.receiveMessage({data:{channel:'map.feature.plot', message: payload[0] }}); // manual publish to the channel
+                            //  meridian.sandbox.external.receiveMessage({data:{channel:'map.feature.plot', message: payload[1] }}); // manual publish to the channel
+
+
+                            map.events.register("zoomend", map, function () {
+                                console.log("Zoom Successful.");
+                                afterZoom_state = map.getZoom();
+                                afterCenter_pos = map.getCenter();
+                                console.debug('This is the zoom level after the emit has been published ' + afterZoom_state);
+                                console.debug('This is the center position after the emit has been published ' + afterCenter_pos);
+                                // expect(map.afterZoom_state).to.equal(5);
+
+                                //afterZoom_state = map.getZoom();
+                                //afterCenter_pos = map.getCenter();
+                                //expect(beforeZoom_state).to.exist;  // payload is neither null nor undefined
+                                //expect(afterZoom_state).to.exist;  // payload is neither null nor undefined
+                                //console.debug('This is the zoom level after the emit has been published ' + afterZoom_state);
+                                //expect(beforeZoom_state).to.not.equal(afterZoom_state);  // compare of the zoom level
+                                //console.debug('This is the center position after the emit has been published ' + afterCenter_pos);
+                                //expect(beforeCenter_pos).to.not.equal(afterCenter_pos); // compare of the center position
+                                //console.debug('The initial zoom level ' + beforeZoom_state + ' is greater than the post-zoom-to-max-extent zoom level ' + afterZoom_state + ', therefore, it correctly zoomed out');
+                                //expect(beforeZoom_state).to.be.above(afterZoom_state);
+                                done();
+                            });
+
+
+                            var beforeZoom_state = map.getZoom();
+                            var beforeCenter_pos = map.getCenter();
+                            console.debug('This is the initial map zoom level ' + beforeZoom_state);
+                            console.debug('This is the initial center position ' + beforeCenter_pos);
+
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.feature.plot',
+                                    message: payload
+                                }
+                            }); // manual publish to the channel
+
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.view.center.overlay', message: {
+                                        "overlayId": "testOverlayId1"
+                                    }
+                                }
+                            });  // manual publish to the channel
+
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    var $fixtures = $('#fixtures');
+                    meridian.html = $fixtures.html;
+                    renderer.initialize.call(meridian, meridian);
+                    done();
+                });
+            });//it
+        }); // map.view.center.overlay
+
+        describe('map.clear', function () {
+
+            it("Base Test: Map.Clear", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    console.log('in it', meridian);
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        if (params.channel == 'map.status.ready') {
+                            // map goes first
+                            var map = renderer.getMap(),
+                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+                                afterLayerCreateCount,
+                                payload = {
+                                    "overlayId": "testOverlayId1",
+                                    "name": "Test Name 1",
+                                    "format": "geojson",
+                                    "feature": {
+                                        "type": "FeatureCollection",
+                                        "features": [
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        -20,
+                                                        20
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            },
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        0,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            },
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        10,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "zoom": false,
+                                    "readOnly": false
+                                }
+
+                            meridian.sandbox.on('map.layer.create', function (params) {
+                                afterLayerCreateCount = map.layers.length;
+                                // EXPECT: We expect the Layer count to have increased on layer creation.
+                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+                                index = -1;
+                                var searchTerm = "testOverlayId1",
+                                    mapLayers = map.layers;
+                                for (var i = 0, len = mapLayers.length; i < len; i++) {
+                                    if (mapLayers[i].layerId === searchTerm) {
+                                        index = i;
+                                        break;
+                                    }
+                                }
+                            });
+                            meridian.sandbox.on('map.features.plot', function (params) {
+                            });
+
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.feature.plot',
+                                    message: payload
+                                }
+                            }); // manual publish to the channel
+
+
+                            // EXPECT: We expect there to be a Feature in the features array at position 0, and further, we pull a coordinate from that Feature's data.
+                            expect(map.layers[index]["features"][0]["geometry"]['bounds'].transform(map.projection, map.projectionWGS84)["left"]).to.equal(-20.000000000000398);
+
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.clear',
+                                    message: {}
+                                }
+                            }); // manual publish to the channel
+
+                            // EXPECT: After testing the existence of added feature(s) and afterwards call map.clear, we now expect the map.layers Index to no longer exist, and be wiped from the map.clear call. No more Features, no more OverlayID.
+                            expect(map.layers[index]).to.not.be.ok;
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    var $fixtures = $('#fixtures');
+                    meridian.html = $fixtures.html;
+                    renderer.initialize.call(meridian, meridian);
+                    done();
+                });
+            });//it
+
+        });
     });//describe
+
+
 });
 
 
