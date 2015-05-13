@@ -71,7 +71,7 @@ define([
         });//end of beforeEach
 
         // Capture Feature Plot
-        it("Feature Plot Unit Test (coordinates, p1, style)", function (done) {
+        it("Base Test: Feature Plot (coordinates, p1, style)", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
                 meridian.sandbox.external.postMessageToParent = function (params) {
@@ -167,7 +167,7 @@ define([
             });
         });//it
 
-        it("Feature Plot Unit Test (featureId)", function (done) {
+        it("Base Test: Feature Plot (featureId)", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
                 meridian.sandbox.external.postMessageToParent = function (params) {
@@ -245,7 +245,7 @@ define([
                 renderer.initialize.call(meridian, meridian);
             });
         });//it
-        it("Feature Plot (Feature in layer created prior to plot emit) Unit Test", function (done) {
+        it("Edge case: Feature Plot (Feature in layer created prior to plot emit)", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
                 meridian.sandbox.external.postMessageToParent = function (params) {
@@ -314,7 +314,7 @@ define([
                 renderer.initialize.call(meridian, meridian);
             });
         });//it
-        it("Feature Plot (Feature exists in default layer when layerId is not declared in the payload) Unit Test", function (done) {
+        it("Edge case: Feature Plot (Feature exists in default layer when layerId is not declared in the payload)", function (done) {
             require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                 console.log('in it', meridian);
                 meridian.sandbox.external.postMessageToParent = function (params) {

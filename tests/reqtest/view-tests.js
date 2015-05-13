@@ -72,7 +72,7 @@ define([
 
         describe('map.view.zoom.in', function () {
             // Capture the Zoom-in
-            it("Zoom In: Should Zoom In by 1.", function (done) {
+            it("Base Test: Zoom In (Should Zoom In by 1)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         if (params.channel == 'map.status.ready') {
@@ -107,7 +107,7 @@ define([
         }); // map.view.zoom
         describe('map.view.zoom.out', function () {
 
-            it("Zoom Out: Should Set a Zoom level manually, then Zoom Out by 1.", function (done) {
+            it("Base Test: Zoom Out (Set zoom level manually, then zoom out by 1)", function (done) {
                 this.timeout(5000);
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -142,7 +142,7 @@ define([
                 });
             });//it
 
-            it("Zoom Out Edge Case: Should Set Zoom to Zero, then see what happens when Zoom Out is emitted.", function (done) {
+            it("Edge Case: Set zoom level to zero, check zoom level after the channel emit", function (done) {
                 this.timeout(5000);
                 var passed = true;
 
@@ -183,7 +183,7 @@ define([
         describe('map.view.zoom.max.extent', function () {
 
             // Capture the Zoom to Max Extent
-            it("Map Zoom to Max Extent Unit Test", function (done) {
+            it("Base Test: Map Zoom to Max Extent", function (done) {
                 this.timeout(5000);
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -213,9 +213,42 @@ define([
                 });
             });//it
         }); // map.view.zoom.max.extent
+        describe('map.view.center.location', function () {
+            it("Base Test: Map Zoom to Center Location (Check coordinates match expected results after channel emit)", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    console.log('in it', meridian);
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        if (params.channel == 'map.status.ready') {
+                            var map = renderer.getMap();
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.view.center.location', message: {
+                                        "location": {
+                                            "lat": 30,
+                                            "lon": 30
+                                        }
+                                    }
+                                }
+                            });  // manual publish to the channel
+                            var payloadCoords = map.getCenter().transform(map.projection, map.projectionWGS84);
+                            console.debug("Post-Emited Raw Coordinates: " + map.getCenter());
+                            console.debug("Converted Longitude: " + payloadCoords.lon);
+                            console.debug("Converted Latitude: " + payloadCoords.lat);
+                            chai.expect(payloadCoords.lon).to.be.above(29.99999999).and.below(30.00000001);
+                            chai.expect(payloadCoords.lat).to.be.above(29.99999999).and.below(30.00000001);
+                            done();
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    var $fixtures = $('#fixtures');
+                    meridian.html = $fixtures.html;
+                    renderer.initialize.call(meridian, meridian);
+                });
+            });//it
+        });//map.view.center.location
         describe('map.view.center.bounds', function () {
             // Capture the Center Bounds
-            it("Map Center to Bounds Unit Test", function (done) {
+            it("Base Test: Map Center to Bounds", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -237,10 +270,10 @@ define([
                             expect(payload).to.exist; // payload exists
                             expect(payload).to.be.an('object'); // payload is an object
                             var expectedBounds_values = {  // expected values of the bounds result after map.view.center.bounds emitted
-                                bottom: 42.50188756945924,
-                                left: -102.20312499999488,
-                                right: -100.79687499999713,
-                                top: 43.53004857001649
+                                bottom: 30.76711104806655,
+                                left: -116.88085937499952,
+                                right: -86.11914062499609,
+                                top: 53.23679754234628
                             }
                             //test goes here
                             //map.setCenter(new OpenLayers.LonLat(38.860830, -77.059307), 5); // setCenter must go here to display the error in the mocha HTML error log
@@ -290,40 +323,6 @@ define([
                 });
             });//it
         }); // map.view.center.bounds
-        describe('map.view.center.location', function () {
-            it("Payload of Lat 30 / Lon 30 should convert and match post-conversion.", function () {
-                chai.should();
-                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
-                    meridian.sandbox.external.postMessageToParent = function (params) {
-                        if (params.channel == 'map.status.ready') {
-                            var map = renderer.getMap();
-                            meridian.sandbox.external.receiveMessage({
-                                data: {
-                                    channel: 'map.view.center.location', message: {
-                                        "location": {
-                                            "lat": 30,
-                                            "lon": 30
-                                        }
-                                    }
-                                }
-                            });  // manual publish to the channel
-
-                            var payloadCoords = map.getCenter().transform(map.projection, map.projectionWGS84);
-                            console.debug("Post-Emited Raw Coordinates: " + map.getCenter());
-                            console.debug("Converted Longitude: " + payloadCoords.lon);
-                            console.debug("Converted Latitude: " + payloadCoords.lat);
-                            chai.expect(payloadCoords.lon).to.be.above(29.99999999).and.below(30.00000001);
-                            chai.expect(payloadCoords.lat).to.be.above(29.99999999).and.below(30.00000001);
-                        }
-                    };
-                    cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
-                    renderer.initialize.call(meridian, meridian);
-                });
-            });//it
-        });//map.view.center.bounds
     });//describe
 });
 

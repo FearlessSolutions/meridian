@@ -73,7 +73,47 @@ define([
         describe('map.basemap.change', function () {
 
             // Capture the Basemap change
-            it("Change the Basemap Unit Test", function (done) {
+            it("Base Test: Change the Basemap", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    console.log('in it', meridian);
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        if (params.channel == 'map.status.ready') {
+                            // map goes first
+                            var map = renderer.getMap(),
+                                payload = {
+                                    "basemap": "imagery"
+                                },
+                                initialBasemap = {
+                                    "basemap": "landscape"
+                                },
+                                expectedBasemap = {  // expected value result after map.basemap.change emitted
+                                    "basemap": "imagery"
+                                },
+                                actualBasemap, mapUrl;
+                            //test goes here
+                            expect(payload).to.exist; // payload exists
+                            expect(payload).to.be.an('object'); // payload is an object
+                            meridian.sandbox.on('map.basemap.change', function(params) {
+                                expectedBasemap;
+                                actualBasemap = params;
+                                expect(actualBasemap).to.exist; // payload is neither null or undefined
+                                expect(actualBasemap).to.be.an('object'); // payload is an object
+                                expect(initialBasemap).to.not.equal(actualBasemap);
+                                console.debug('The actual basemap is not equal to the initial basemap -- a basemap change occured');
+                                expect(actualBasemap).to.deep.equal(expectedBasemap);
+                                console.debug('The actual basemap is equal to the expected basemap');
+                                done();
+                            });
+                            meridian.sandbox.external.receiveMessage({data:{channel:'map.basemap.change', message: payload }});  // manual publish to the channel
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    var $fixtures = $('#fixtures');
+                    meridian.html = $fixtures.html;
+                    renderer.initialize.call(meridian, meridian);
+                });
+            });//it
+            it("Edge case: Confirm the baselayer.url has changed", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {

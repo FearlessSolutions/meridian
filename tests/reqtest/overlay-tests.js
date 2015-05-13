@@ -71,9 +71,8 @@ define([
         });//end of beforeEach
 
         describe('map.overlay.create', function () {
-
             // Capture the Create Layer
-            it("Create a Layer (with overlayId) Unit Test", function (done) {
+            it("Base Test: Create a Layer (with overlayId)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -118,7 +117,7 @@ define([
                 });
             });//it
 
-            it("Create a Layer (without overlayId) Unit Test", function (done) {
+            it("Edge case: Create a Layer (without overlayId)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -162,7 +161,7 @@ define([
                 });
             });//it
 
-            it("Create a Layer (without coordinates) Unit Test", function (done) {
+            it("Edge case: Create a Layer (without coordinates)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -203,9 +202,8 @@ define([
         }); // map.layer.create group
 
         describe('map.overlay.remove', function () {
-
             //Capture Remove Layer
-            it("Remove a Layer Unit Test", function (done) {
+            it("Base Test: Remove a Layer", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -271,7 +269,7 @@ define([
                 });
             });//it
 
-            it("Remove a Layer (multiple layer added) Unit Test", function (done) {
+            it("Edge case: Remove a Layer (multiple layer added)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -346,7 +344,7 @@ define([
         describe('map.overlay.hide', function () {
 
             // Capture Hide Layer
-            it("Hide Layer Unit Test", function (done) {
+            it("Base Test: Hide Layer", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -392,7 +390,7 @@ define([
                 });
             });//it
 
-            it("Hide Layer (multiple layers added) Unit Test", function (done) {
+            it("Edge case: Hide Layer (multiple layers added)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -447,7 +445,7 @@ define([
         describe('map.overlay.show', function () {
 
             // Capture Show Layer
-            it("Show Layer Unit Test", function (done) {
+            it("Base Test: Show Layer", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -501,7 +499,7 @@ define([
                 });
             });//it
 
-            it("Show Layer (multiple layers added) Unit Test", function (done) {
+            it("Edge case: Show Layer (multiple layers added)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
@@ -560,7 +558,6 @@ define([
                     var $fixtures = $('#fixtures');
                     meridian.html = $fixtures.html;
                     renderer.initialize.call(meridian, meridian);
-
                 });
             });//it
         });// map.overlay.show
