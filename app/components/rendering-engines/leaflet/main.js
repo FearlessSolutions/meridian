@@ -21,11 +21,11 @@ define([], function (){
         require([
             './components/rendering-engines/leaflet/map/core',
             'text!./components/rendering-engines/leaflet/libs/leaflet.css', 
-            'text!./components/rendering-engines/leaflet/leaflet.css', 
+            'text!./components/rendering-engines/leaflet/renderer.css', 
             'text!./components/rendering-engines/leaflet/libs/draw/leaflet.draw.css',
             'text!./components/rendering-engines/leaflet/libs/markerCluster/MarkerCluster.css',
             'text!./components/rendering-engines/leaflet/libs/markerCluster/MarkerCluster.Default.css',
-            'text!./components/rendering-engines/leaflet/leaflet.hbs',
+            'text!./components/rendering-engines/leaflet/renderer.hbs',
             './components/rendering-engines/leaflet/map-api-publisher',
             './components/rendering-engines/leaflet/map-api-subscriber',
             'handlebars'
