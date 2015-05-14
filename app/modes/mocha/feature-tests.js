@@ -119,10 +119,8 @@ define([
                                     actualSH = plottedFeature["attributes"]["height"],
                                     actualSW = plottedFeature["attributes"]["width"],
                                     actualSI = plottedFeature["attributes"]["icon"];
-                                expect("featureId" in plottedFeature).is.true;
-                                // expected payload Lat is -5, actual Lat should be somewhat close (factoring in mathematical conversion)
-                                expect(actualLat).to.be.below(-4.999999999).and.above(-5.000000001);
-                                // expected payload Lon is 10, actual Lat should be somewhat close (factoring in mathematical conversion)
+                                expect("featureId" in plottedFeature).is.true; // expected payload Lat is -5, actual Lat should be somewhat close (factoring in mathematical conversion)
+                                expect(actualLat).to.be.below(-4.999999999).and.above(-5.000000001); // expected payload Lon is 10, actual Lat should be somewhat close (factoring in mathematical conversion)
                                 expect(actualLon).to.be.above(9.999999999).and.below(10.000000001);
                                 expect(actualp1).to.equal(payload.feature.features[0].properties.p1);
                                 expect(actualSH).to.equal(payload.feature.features[0].style.height);
@@ -217,8 +215,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
@@ -230,7 +227,8 @@ define([
                             payload2,
                             actualLayer,
                             beforeLayerCreateCount,
-                            afterLayerCreateCount;
+                            afterLayerCreateCount,
+                            confirmPlot;
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap(),
                                 payload = {
@@ -283,7 +281,7 @@ define([
                                     }); // manual publish to the channel
                                 });
                             meridian.sandbox.on('map.features.plot', function (params) {
-                                var confirmPlot = map.layers[map.layers.length - 1];
+                                confirmPlot = map.layers[map.layers.length - 1];
                                 expect(confirmPlot["features"].length).is.above(0); // confirm feature added to layer
                                 done();
                             });
@@ -296,8 +294,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
@@ -367,8 +364,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it

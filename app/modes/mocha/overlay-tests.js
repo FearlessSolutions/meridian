@@ -94,7 +94,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $(fixtures).html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
@@ -137,7 +137,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $(fixtures).html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
@@ -175,7 +175,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $(fixtures).html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
@@ -190,7 +190,11 @@ define([
                             payload,
                             beforeLayerCreateCount,
                             afterLayerCreateCount,
-                            afterLayerRemoveCount;
+                            afterLayerRemoveCount,
+                            index,
+                            mapLayers,
+                            i,
+                            len;
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap(),
                                 payload = {
@@ -198,11 +202,10 @@ define([
                                 },
                                 beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             function layerCheck(layerExists, params) {
-                                var searchTerm = "testOverlayId1",
                                     index = -1,
                                     mapLayers = params;
-                                for (var i = 0, len = mapLayers.length; i < len; i++) {
-                                    if (mapLayers[i].layerId === searchTerm) {
+                                for (i = 0, len = mapLayers.length; i < len; i++) {
+                                    if (mapLayers[i].layerId === 'testOverlayId1') {
                                         index = i;
                                         break;
                                     }
@@ -239,7 +242,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $(fixtures).html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                     done();
                 });
@@ -253,7 +256,11 @@ define([
                             beforeLayerCreateCount,
                             afterLayerCreateCount,
                             afterLayerRemoveCount,
-                            anotherLayer;
+                            anotherLayer,
+                            index,
+                            mapLayers,
+                            i,
+                            len;
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap(),
                                 payload = {
@@ -261,11 +268,10 @@ define([
                                 },
                                 beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             function layerCheck(layerExists, params) {
-                                var searchTerm = "testOverlayId1",
                                     index = -1,
                                     mapLayers = params;
-                                for (var i = 0, len = mapLayers.length; i < len; i++) {
-                                    if (mapLayers[i].layerId === searchTerm) {
+                                for (i = 0, len = mapLayers.length; i < len; i++) {
+                                    if (mapLayers[i].layerId === 'testOverlayId1') {
                                         index = i;
                                         break;
                                     }
@@ -303,7 +309,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $(fixtures).html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                     done();
                 });
@@ -350,7 +356,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $(fixtures).html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
@@ -397,7 +403,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $(fixtures).html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
@@ -448,7 +454,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $(fixtures).html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                     done();
                 });
@@ -505,12 +511,11 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $(fixtures).html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
         });// map.overlay.show
-
     });//describe
 });
 

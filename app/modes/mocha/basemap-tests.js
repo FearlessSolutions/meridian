@@ -59,20 +59,22 @@ define([
             it('Base Test: Change the Basemap', function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            initialBasemap,
+                            expectedBasemap,
+                            actualBasemap;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
-                                    basemap: 'imagery'
+                                    "basemap": "imagery"
                                 },
                                 initialBasemap = {
-                                    basemap: 'landscape'
+                                    "basemap": "landscape"
                                 },
                                 expectedBasemap = {  // expected value result after map.basemap.change emitted
-                                    basemap: 'imagery'
-                                },
-                                actualBasemap, mapUrl;
-                            //test goes here
+                                    "basemap": "imagery"
+                                };
                             expect(payload).to.exist; // payload exists
                             expect(payload).to.be.an('object'); // payload is an object
                             meridian.sandbox.on('map.basemap.change', function(params) {
@@ -88,30 +90,30 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
             it('Edge case: Confirm the baselayer.url has changed', function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    var $fixtures = $('#fixtures');
-
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            initialBasemap,
+                            expectedBasemap,
+                            actualBasemap,
+                            mapUrl;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
-                                    basemap: 'imagery'
+                                    "basemap": "imagery"
                                 },
                                 initialBasemap = {
-                                    basemap: 'landscape'
+                                    "basemap": "landscape"
                                 },
                                 expectedBasemap = {  // expected value result after map.basemap.change emitted
-                                    basemap: 'imagery'
-                                },
-                                actualBasemap, mapUrl;
-                            //test goes here
+                                    "basemap": "imagery"
+                                };
                             expect(payload).to.exist; // payload exists
                             expect(payload).to.be.an('object'); // payload is an object
                             meridian.sandbox.on('map.basemap.change', function(params) {
@@ -129,7 +131,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it

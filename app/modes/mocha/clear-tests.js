@@ -133,7 +133,6 @@ var expect = chai.expect;
                                 "zoom": false,
                                 "readOnly": false
                             };
-
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 var afterLayerCreateCount = map.layers.length,
                                     mapLayers,
@@ -156,7 +155,6 @@ var expect = chai.expect;
                                     message: payload
                                 }
                             }); // manual publish to the channel
-
                             // EXPECT: We expect there to be a Feature in the features array at position 0, and further, we pull a coordinate from that Feature's data.
                             expect(map.layers[index]["features"][0]["geometry"]['bounds'].transform(map.projection, map.projectionWGS84)["left"]).to.equal(-20.000000000000398);
 
