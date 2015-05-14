@@ -35,8 +35,8 @@ define([
                     
                     currentFeature.featureId = geoJSONFeature.id || '';
                     currentFeature.attributes.dataService = geoJSONFeature.dataService || '';
-                    currentFeature.style = geoJSONFeature.style;
-                    currentFeature.style.display = geoJSONFeature.style = null;
+                    //currentFeature.style = geoJSONFeature.style;
+                    //currentFeature.style.display = geoJSONFeature.style || null;
                     //currentFeature.style.display = geoJSONFeature.style.display = null;
 
                     // Handle default styles if none defined

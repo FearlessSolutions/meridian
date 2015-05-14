@@ -500,23 +500,14 @@ define([
 
                                 setTimeout(function() {
                                     console.log(map.layers[9]["features"][0]["featureId"]);
-                                    //console.log(map.layers[9]["features"][0]["style"]["display"]);
-                                    //map.layers[9].features[0].style = { display:'none' };
-                                    //console.log(map.layers[9]["features"][0]["style"]["display"]);
-                                    //map.layers[9].features[0].style = null;
-                                    //map.layers[9].redraw();
+                                    //map.layers[9].features[0].style = 'none';
+
+                                    map.layers[9].features[0].style.display;
+                                    map.layers[9].features[0].style.display = 'none';
+                                    map.layers[9].redraw();
                                 }, 500);
-                                //map.layers[9].features[0]["style"][]
-                                //console.log(map.layers[9]["features"][0]["featureId"]);
-                                //map.layers[9].refresh({force:true});
-                                map.layers[9].redraw();
 
                                 //map.layers[9].features[0].style.display = 'none'; // hide
-
-
-
-
-
                                 done();
                                 //meridian.sandbox.external.receiveMessage({
                                 //    data: {
