@@ -14,7 +14,7 @@ var expect = chai.expect;
 //start your test here.
 //mocha needs to see describe globally. If you try putting it in a function, it wont execute. (Unless my test wasn't good.)
     describe('Clear Channels', function () {
-        var cmapiMain, renderer, exitBeforeEach, meridian;
+        var exitBeforeEach, meridian;
 
         //Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
         beforeEach(function (done) {
@@ -62,8 +62,6 @@ var expect = chai.expect;
                             beforeLayerCreateCount,
                             payload;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-
                             map = renderer.getMap(),
                             beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
                             payload = {

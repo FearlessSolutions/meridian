@@ -57,14 +57,12 @@ define([
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,
                             payload,
-                            mapLayers,
                             i,
                             len,
                             beforeLayerCreateCount,
                             afterLayerCreateCount,
                             index;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
                             map = renderer.getMap(),
                                 payload = {
                                     "overlayId": "testOverlayId1",
@@ -98,7 +96,7 @@ define([
                                     "zoom": false,
                                     "readOnly": false
                                 },
-                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                                 meridian.sandbox.on('map.layer.create', function (params) {
                                     afterLayerCreateCount = map.layers.length,
                                     // EXPECT: We expect the Layer count to have increased on layer creation.
@@ -150,7 +148,6 @@ define([
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,
                             payload,
-                            mapLayers,
                             i,
                             len,
                             beforeLayerCreateCount,
@@ -197,9 +194,8 @@ define([
                                     // EXPECT: We expect the Layer count to have increased on layer creation.
                                     expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                     index = -1;
-                                    mapLayers = map.layers;
-                                    for (i = 0, len = mapLayers.length; i < len; i++) {
-                                        if (mapLayers[i].layerId === "testOverlayId1") {
+                                    for (i = 0, len = map.layers.length; i < len; i++) {
+                                        if (map.layers[i].layerId === "testOverlayId1") {
                                             index = i;
                                             break;
                                         }
@@ -236,7 +232,6 @@ define([
                             beforeLayerCreateCount,
                             afterLayerCreateCount;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
                             map = renderer.getMap(),
                                 payload = {
                                     overlayId: "layerCreatedBeforePlotEmit1"
