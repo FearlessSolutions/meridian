@@ -33,3 +33,5 @@ app-built
 
 # Logs
 *.log
+
+nginx.conf
