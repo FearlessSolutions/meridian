@@ -500,10 +500,12 @@ define([
 
                                 setTimeout(function() {
                                     console.log(map.layers[9]["features"][0]["featureId"]);
-                                    //map.layers[9].features[0].style = 'none';
+                                    console.log(map);
+                                    map.layers[9].features[0].style = 'none';
+                                    map.layers[9].features[0].style = '';
 
-                                    map.layers[9].features[0].style.display;
-                                    map.layers[9].features[0].style.display = 'none';
+                                    //map.layers[9].features[0].style.display;
+                                    //map.layers[9].features[0].style.display = 'none';
                                     map.layers[9].redraw();
                                 }, 500);
 
