@@ -56,6 +56,20 @@ define([
                 "content" : "Query a series of data stores of your choice and have the data plotted on the map."
             },
             {
+                "componentName" : "drawToggleButton",
+                "placement" : "right",
+                "width" : "250px",
+                "title": "Draw Tool",
+                "content" : "Draw a rectangle on the map."
+            },
+            {
+                "componentName" : "bookmarkToggleButton",
+                "placement" : "right",
+                "width" : "250px",
+                "title": "Bookmarks",
+                "content" : "Opens a view for your bookmarks."
+            },
+            {
                 "componentName" : "dataGridToggleButton",
                 "placement" : "right",
                 "width" : "250px",
@@ -98,11 +112,11 @@ define([
                 content : 'Upload CSV, KML, or geoJSON files to the map.'
             },
             {
-                "componentName" : "downloadButton",
+                "componentName" : "export-picker-toggle",
                 "placement" : "right",
                 "width" : "250px",
-                "title": "Download Data",
-                "content" : "Download all data found in the map in CSV format."
+                "title": "Export Data",
+                "content" : "Export your data to different places, including to files."
             },
             {
                 "componentName" : "basemapGalleryToggleButton",

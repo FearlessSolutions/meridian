@@ -12,7 +12,8 @@ define([
         $supportModalBody,
         $supportCloseButton,
         $supportButton,
-        $aboutCloseButton;
+        $aboutCloseButton,
+        mediator;
 
     var exposed = {
         init: function(thisContext, thisMediator) {
@@ -33,7 +34,6 @@ define([
 
                 if(contentLoaded === false){
                     contentLoaded = true;
-                    console.log("Loading bootstro!");
                     //Add the bootstro attributes to the components found in the supportConfiguration file.
                     bootstroStepCount = 0;
                     context.sandbox.utils.each(context.sandbox.supportConfiguration.components, function(i, item) {

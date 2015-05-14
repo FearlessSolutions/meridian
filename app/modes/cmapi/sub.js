@@ -10,9 +10,9 @@ define([
     var exposed = {
         init: function(configIn) {
             config = configIn;
-            $selector = $("#sub-channel");
-            $subButton = $("#sub-button");
-            $console = $("#sub-console");
+            $selector = $('#sub-channel');
+            $subButton = $('#sub-button');
+            $console = $('#sub-console');
 
             for(var channel in config.channels){
                 var valid = config.channels[channel].valid,
@@ -26,16 +26,16 @@ define([
                 $selector.append(html);
             }
 
-            $selector.on("change", function(e){
+            $selector.on('change', function(e){
                 updateButtonText($selector.val());
             });
             $selector.change(); //check if starting on error
 
-            $subButton.on("click", function(){
+            $subButton.on('click', function(){
                 toggleChannel($selector.val());
             });
 
-            window.addEventListener("message", receiveMessage, false); //TODO: third param?
+            window.addEventListener('message', receiveMessage, false); //TODO: third param?
             toggleChannel('map.status.ready');
         },
         receiveMessage: receiveMessage
@@ -44,7 +44,7 @@ define([
     return exposed;
 
     function receiveMessage(event) {
-        console.debug("Got message", event);
+        console.debug('Got message', event);
         if(subChannels[event.data.channel]){
             var html = "<p><b>" + event.data.channel + "</b>: ";
             html += JSON.stringify(event.data.message) + "</p>";
@@ -56,18 +56,18 @@ define([
         $thisOption = $selector.find("option[value='" + channel +"']");
         if(subChannels[channel]){
             subChannels[channel] = false;
-            $thisOption.removeClass("subscribed");
+            $thisOption.removeClass('subscribed');
         }else{
             subChannels[channel] = true;
-            $thisOption.addClass("subscribed");
+            $thisOption.addClass('subscribed');
         }
         updateButtonText(channel);
     }
     function updateButtonText(channel){
         if(subChannels[channel]){
-            $subButton.text("Unsubscribe");
+            $subButton.text('Unsubscribe');
         }else{
-            $subButton.text("Subscribe");
+            $subButton.text('Subscribe');
         }
     }
 });
