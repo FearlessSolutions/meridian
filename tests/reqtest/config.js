@@ -88,7 +88,8 @@ require(['chai', 'mocha', 'jquery'], function(chai) {
         './overlay-tests.js',
         './feature-tests.js',
         './view-tests.js',
-        './clear-tests.js'
+        './clear-tests.js',
+        './defunct-tests.js'
     ], function(require) {
         mocha.run();
     });
