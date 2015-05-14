@@ -436,7 +436,7 @@ define([
                             // that the upcoming view center overlay emit will alter these values.
                             expect(map.getCenter().lon).to.be.equal(2);
                             expect(map.getCenter().lat).to.be.equal(2);
-                            expect(plotSuccess).to.be.equal(true);
+
 
                             meridian.sandbox.external.receiveMessage({
                                 data: {
@@ -474,6 +474,8 @@ define([
                 });
             });//it
         }); // map.view.center.overlay
+
+
 
         describe('map.view.center.feature', function () {
             // Capture the Center Bounds
@@ -541,7 +543,7 @@ define([
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
-        }); // map.view.center.bounds
+        }); // map.view.center.feature
 
     });//describe
 
