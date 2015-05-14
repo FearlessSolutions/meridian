@@ -9,17 +9,13 @@ define([
 //Unless there is a way of including the require.js file and the config file in the command
 //prompt, I only see this working in the browser.
 
-    var assert = chai.assert,
-        expect = chai.expect,
-        should = chai.should(); // Note that should has to be executed
-    function iThrowError() {
-        throw new Error("Error thrown");
-    }
+    var expect = chai.expect;
 
 //start your test here.
 //mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
     describe('Feature Channels', function () {
-        var cmapiMain, renderer, exitBeforeEach, meridian;
+        var exitBeforeEach,
+            meridian;
 
         //Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
         beforeEach(function (done) {
@@ -42,43 +38,34 @@ define([
                 .use('test/extensions/test-external-pubsub-extension/test-external-pubsub-extension') // added new
                 .use('extensions/state-manager-extension/state-manager-extension')
                 .use('extensions/data-storage-extension/data-storage-extension')
-                // .use('extensions/splash-screen-extension/splash-screen-extension')
                 .use('extensions/snapshot-extension/snapshot-extension')
                 .use('extensions/map-configuration-extension/map-configuration-extension')
                 .use('extensions/user-settings-extension/user-settings-extension')
                 .use('extensions/support-configuration-extension/support-configuration-extension')
                 .use('extensions/icon-extension/icon-extension')
-                // .use('extensions/locator-extension/locator-query-extension')
                 .use('extensions/exports/export-utils/export-utils')
-                // .use('extensions/exports/geojson-extension/geojson-extension')
-                // .use('extensions/exports/csv-extension/csv-extension')
-                // .use('extensions/exports/kml-extension/kml-extension')
-                // .use('extensions/exports/googlemaps-extension/googlemaps-extension')
-                // .use('extensions/data-services/mock-extension/mock-extension')
-                // .use('extensions/data-services/fake-extension/fake-extension')
                 .use('extensions/cmapi-extension/cmapi-extension')  // added for cmapi
-                // .use('extensions/upload-data-extension/upload-data-extension')
                 .start({components: 'body'})
                 .then(function () {
-                    console.log('in then', meridian);
-                    //start test
-                    //must wait until aura starts before doing anything test related.
-                    //If not, meridian variable will be undefined.
                     exitBeforeEach();
-
                 });//end of then
-
         });//end of beforeEach
-
         describe('map.feature.plot', function () {
             // Capture Feature Plot
             it("Base Test: Feature Plot (coordinates, p1, style)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            mapLayers,
+                            i,
+                            len,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount,
+                            index;
                         if (params.channel == 'map.status.ready') {
                             // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
                                     "overlayId": "testOverlayId1",
                                     "featureId": "theCMAPIfeatureId_loc",
@@ -112,50 +99,37 @@ define([
                                     "readOnly": false
                                 },
                                 beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCreateCount,
-                                index;
-                            //test goes here
-                            meridian.sandbox.on('map.layer.create', function (params) {
-                                afterLayerCreateCount = map.layers.length;
-                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
-                                index = -1;
-                                var searchTerm = "testOverlayId1",
-                                    mapLayers = map.layers;
-                                for (var i = 0, len = mapLayers.length; i < len; i++) {
-                                    if (mapLayers[i].layerId === searchTerm) {
-                                        index = i;
-                                        break;
+                                meridian.sandbox.on('map.layer.create', function (params) {
+                                    afterLayerCreateCount = map.layers.length,
+                                    // EXPECT: We expect the Layer count to have increased on layer creation.
+                                    expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+                                    index = -1;
+                                    for (i = 0, len = map.layers.length; i < len; i++) {
+                                        if (map.layers[i].layerId === "testOverlayId1") {
+                                            index = i;
+                                            break;
+                                        }
                                     }
-                                }
-                                expect(index).to.not.equal(-1); // confirms map.feature.plot added a layer and one with the overlayId, 'testOverlayId1'
-                                console.debug('Layer exists, create layer successful with expected overlayId');
-                            });
+                                });
                             meridian.sandbox.on('map.features.plot', function (params) {
-
                                 expect(map.layers[index]["features"].length).is.above(0); // confirm feature added to layer
-                                var plottedFeature = map.layers[index]["features"][0]; // confirm featureId exists / despite not in payload
-                                expect("featureId" in plottedFeature).is.true;
-                                var convertedCoords = map.layers[index]["features"][0]["geometry"]['bounds'].transform(map.projection, map.projectionWGS84),
+                                var plottedFeature = map.layers[index]["features"][0], // confirm featureId exists / despite not in payload
+                                    convertedCoords = map.layers[index]["features"][0]["geometry"]['bounds'].transform(map.projection, map.projectionWGS84),
                                     actualLat = convertedCoords["left"],
-                                    actualLon = convertedCoords["top"];
-                                // expected payload Lat is -5, actual Lat should be somewhat close (factoring in mathematical conversion)
-                                expect(actualLat).to.be.below(-4.999999999).and.above(-5.000000001);
-                                console.debug("The actual latitude value for the plotted feature is within 9 decimal places of the expected value");
-                                // expected payload Lon is 10, actual Lat should be somewhat close (factoring in mathematical conversion)
-                                expect(actualLon).to.be.above(9.999999999).and.below(10.000000001);
-                                console.debug("The actual longitude value for the plotted feature is within 9 decimal places of the expected value");
-                                var actualp1 = plottedFeature["attributes"]["p1"],
+                                    actualLon = convertedCoords["top"],
+                                    actualp1 = plottedFeature["attributes"]["p1"],
                                     actualSH = plottedFeature["attributes"]["height"],
                                     actualSW = plottedFeature["attributes"]["width"],
                                     actualSI = plottedFeature["attributes"]["icon"];
+                                expect("featureId" in plottedFeature).is.true;
+                                // expected payload Lat is -5, actual Lat should be somewhat close (factoring in mathematical conversion)
+                                expect(actualLat).to.be.below(-4.999999999).and.above(-5.000000001);
+                                // expected payload Lon is 10, actual Lat should be somewhat close (factoring in mathematical conversion)
+                                expect(actualLon).to.be.above(9.999999999).and.below(10.000000001);
                                 expect(actualp1).to.equal(payload.feature.features[0].properties.p1);
-                                console.debug("The actual p1 value for the plotted feature is equal to the expected p1 value for the plotted feature");
                                 expect(actualSH).to.equal(payload.feature.features[0].style.height);
-                                console.debug("The actual style.height value for the plotted feature is equal to the expected style.height value for the plotted feature");
                                 expect(actualSW).to.equal(payload.feature.features[0].style.width);
-                                console.debug("The actual style.width value for the plotted feature is equal to the expected style.width value for the plotted feature");
                                 expect(actualSI).to.equal(payload.feature.features[0].style.icon);
-                                console.debug("The actual style.icon value for the plotted feature is equal to the expected style.icon value for the plotted feature");
                                 done();
                             });
                             meridian.sandbox.external.receiveMessage({
@@ -167,18 +141,23 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
             it("Base Test: Feature Plot (featureId)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            mapLayers,
+                            i,
+                            len,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount,
+                            index;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
                                     "overlayId": "testOverlayId1",
                                     "featureId": "theCMAPIfeatureId_loc",
@@ -188,7 +167,7 @@ define([
                                         "type": "FeatureCollection",
                                         "features": [
                                             {
-                                                //"id": "featureId_applicationuses",
+                                                //"id": "featureId_applications",
                                                 "type": "Feature",
                                                 "geometry": {
                                                     "type": "Point",
@@ -213,32 +192,24 @@ define([
                                     "readOnly": false
                                 },
                                 beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCreateCount,
-                                index;
-                            //test goes here
-                            meridian.sandbox.on('map.layer.create', function (params) {
-                                afterLayerCreateCount = map.layers.length;
-                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
-                                index = -1;
-                                var searchTerm = "testOverlayId1",
+                                meridian.sandbox.on('map.layer.create', function (params) {
+                                    afterLayerCreateCount = map.layers.length,
+                                    // EXPECT: We expect the Layer count to have increased on layer creation.
+                                    expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+                                    index = -1;
                                     mapLayers = map.layers;
-                                for (var i = 0, len = mapLayers.length; i < len; i++) {
-                                    if (mapLayers[i].layerId === searchTerm) {
-                                        index = i;
-                                        break;
+                                    for (i = 0, len = mapLayers.length; i < len; i++) {
+                                        if (mapLayers[i].layerId === "testOverlayId1") {
+                                            index = i;
+                                            break;
+                                        }
                                     }
-                                }
-                                expect(index).to.not.equal(-1); // confirms map.feature.plot added a layer and one with the overlayId, 'testOverlayId1'
-                                console.debug('Layer exists, create layer successful with expected overlayId');
-                            });
+                                });
                             meridian.sandbox.on('map.features.plot', function (params) {
-                                console.debug(map);
                                 expect(map.layers[index]["features"].length).is.above(0); // confirm feature added to layer
-                                var plottedFeature = map.layers[index]["features"][0]; // confirm featureId exists / despite not in payload
-                                expect("featureId" in plottedFeature).is.true;
-                                console.debug('featureId property added to feature');
-                                // application use of feature id (location @ featureId_applicationuses) is not the same as CMAPI spec, THIS WILL CAUSE TEST TO FAIL
-                                expect(payload.featureId).to.equal(plottedFeature["featureId"]);
+                                expect("featureId" in map.layers[index]["features"][0]).is.true; // Expect featureId in plotted feature is true.
+                                // application use of feature id (location @ featureId_applications) is not the same as CMAPI spec, THIS WILL CAUSE TEST TO FAIL
+                                expect(payload.featureId).to.equal((map.layers[index]["features"][0])["featureId"]);
                                 done();
                             });
                             meridian.sandbox.external.receiveMessage({
@@ -257,11 +228,16 @@ define([
             });//it
             it("Edge case: Feature Plot (Feature in layer created prior to plot emit)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            payload2,
+                            actualLayer,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount;
                         if (params.channel == 'map.status.ready') {
                             // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
                                     overlayId: "layerCreatedBeforePlotEmit1"
                                 },
@@ -297,27 +273,23 @@ define([
                                     "readOnly": false
                                 },
                                 beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCreateCount,
-                                actualLayer;
-                            //test goes here
-                            meridian.sandbox.on('map.layer.create', function (params) {
-                                afterLayerCreateCount = map.layers.length;
-                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount); // confirmation that a layer was created
-                                map.layers[map.layers.length - 1];  //  last layer added
-                                actualLayer = map.layers[map.layers.length - 1];
-                                expect(actualLayer).to.exist;
-                                expect(actualLayer.layerId).to.equal(payload.overlayId);  // actual layerId should equal the payload overlayId
-                                meridian.sandbox.external.receiveMessage({
-                                    data: {
-                                        channel: 'map.feature.plot',
-                                        message: payload2
-                                    }
-                                }); // manual publish to the channel
-                            });
+                                meridian.sandbox.on('map.layer.create', function (params) {
+                                    afterLayerCreateCount = map.layers.length;
+                                    expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount); // confirmation that a layer was created
+                                    map.layers[map.layers.length - 1];  //  last layer added
+                                    actualLayer = map.layers[map.layers.length - 1];
+                                    expect(actualLayer).to.exist;
+                                    expect(actualLayer.layerId).to.equal(payload.overlayId);  // actual layerId should equal the payload overlayId
+                                    meridian.sandbox.external.receiveMessage({
+                                        data: {
+                                            channel: 'map.feature.plot',
+                                            message: payload2
+                                        }
+                                    }); // manual publish to the channel
+                                });
                             meridian.sandbox.on('map.features.plot', function (params) {
                                 var confirmPlot = map.layers[map.layers.length - 1];
                                 expect(confirmPlot["features"].length).is.above(0); // confirm feature added to layer
-                                console.debug('Feature was added to layer that was created prior to the plot emit');
                                 done();
                             });
                             meridian.sandbox.external.receiveMessage({
@@ -336,11 +308,15 @@ define([
             });//it
             it("Edge case: Feature Plot (Feature exists in default layer when layerId is not declared in the payload)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            var map,
+                                payload,
+                                actualLayer,
+                                confirmPlot,
+                                beforeLayerCreateCount,
+                                afterLayerCreateCount;
+                            map = renderer.getMap(),
                                 payload = {
                                     "overlayId": "",
                                     "name": "Test Name 1",
@@ -374,22 +350,17 @@ define([
                                     "readOnly": false
                                 },
                                 beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCreateCount,
-                                actualLayer;
-                            //test goes here
-                            meridian.sandbox.on('map.layer.create', function (params) {
-                                afterLayerCreateCount = map.layers.length;
-                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount); // confirmation that a layer was created
-                                map.layers[map.layers.length - 1];  //  last layer added
-                                actualLayer = map.layers[map.layers.length - 1];
-                                expect(actualLayer).to.exist;
-                                expect(actualLayer.layerId).to.equal('cmapi');  // actual layerId should equal the default layerId, 'cmapi'
-                                console.debug('The defaultId, cmapi, was assigned to the created layer, since the payload did not provide one');
-                            });
+                                meridian.sandbox.on('map.layer.create', function (params) {
+                                    afterLayerCreateCount = map.layers.length;
+                                    expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount); // confirmation that a layer was created
+                                    map.layers[map.layers.length - 1];  //  last layer added
+                                    actualLayer = map.layers[map.layers.length - 1];
+                                    expect(actualLayer).to.exist;
+                                    expect(actualLayer.layerId).to.equal('cmapi');  // actual layerId should equal the default layerId, 'cmapi'
+                                });
                             meridian.sandbox.on('map.features.plot', function (params) {
-                                var confirmPlot = map.layers[map.layers.length - 1];  // grab layer that has cmapi layerId
+                                confirmPlot = map.layers[map.layers.length - 1];  // grab layer that has cmapi layerId
                                 expect(confirmPlot["features"][0]["featureId"]).to.equal(payload.feature.features[0].id); // confirm feature added to default layer
-                                console.debug('Feature was added to default layer, cmapi');
                                 done();
                             });
                             meridian.sandbox.external.receiveMessage({
@@ -404,7 +375,6 @@ define([
                     var $fixtures = $('#fixtures');
                     meridian.html = $fixtures.html;
                     renderer.initialize.call(meridian, meridian);
-                    //done();
                 });
             });//it
 

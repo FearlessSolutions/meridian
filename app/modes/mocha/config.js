@@ -2,7 +2,7 @@ require.config({
     baseUrl: window.location.origin, //This makes it so that all modes start at the same place.
     waitSeconds: 30,
     paths: {
-        aura: '/bower_components/aura/lib',
+        aura: 'bower_components/aura/lib',
         handlebars: 'bower_components/handlebars/handlebars',
         underscore: 'bower_components/underscore/underscore',
         jquery: 'bower_components/jquery/dist/jquery',

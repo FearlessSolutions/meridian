@@ -9,17 +9,11 @@ define([
 //Unless there is a way of including the require.js file and the config file in the command
 //prompt, I only see this working in the browser.
 
-    var assert = chai.assert,
-        expect = chai.expect,
-        should = chai.should(); // Note that should has to be executed
-    function iThrowError() {
-        throw new Error("Error thrown");
-    }
-
 //start your test here.
 //mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
     describe('Defunct Channels', function () {
-        var cmapiMain, renderer, exitBeforeEach, meridian;
+        var exitBeforeEach,
+            meridian;
 
         //Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
         beforeEach(function (done) {
@@ -42,22 +36,13 @@ define([
                 .use('test/extensions/test-external-pubsub-extension/test-external-pubsub-extension') // added new
                 .use('extensions/state-manager-extension/state-manager-extension')
                 .use('extensions/data-storage-extension/data-storage-extension')
-                // .use('extensions/splash-screen-extension/splash-screen-extension')
                 .use('extensions/snapshot-extension/snapshot-extension')
                 .use('extensions/map-configuration-extension/map-configuration-extension')
                 .use('extensions/user-settings-extension/user-settings-extension')
                 .use('extensions/support-configuration-extension/support-configuration-extension')
                 .use('extensions/icon-extension/icon-extension')
-                // .use('extensions/locator-extension/locator-query-extension')
                 .use('extensions/exports/export-utils/export-utils')
-                // .use('extensions/exports/geojson-extension/geojson-extension')
-                // .use('extensions/exports/csv-extension/csv-extension')
-                // .use('extensions/exports/kml-extension/kml-extension')
-                // .use('extensions/exports/googlemaps-extension/googlemaps-extension')
-                // .use('extensions/data-services/mock-extension/mock-extension')
-                // .use('extensions/data-services/fake-extension/fake-extension')
                 .use('extensions/cmapi-extension/cmapi-extension')  // added for cmapi
-                // .use('extensions/upload-data-extension/upload-data-extension')
                 .start({components: 'body'})
                 .then(function () {
                     console.log('in then', meridian);
@@ -65,9 +50,7 @@ define([
                     //must wait until aura starts before doing anything test related.
                     //If not, meridian variable will be undefined.
                     exitBeforeEach();
-
                 });//end of then
-
         });//end of beforeEach
 
         describe('map.view.center.data', function () {
@@ -271,8 +254,6 @@ define([
             it("Base Test: Map Feature Show - DEFUNCT", function (done) {
 
             });
-
         });//map.feature.show
     });//describe
 });
-
