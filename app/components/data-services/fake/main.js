@@ -5,7 +5,7 @@ define([
     dataServiceFake,  
     dataServiceFakeMediator
 ) {
-
+    
     return {
         initialize: function() {
             dataServiceFakeMediator.init(this);

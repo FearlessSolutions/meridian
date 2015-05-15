@@ -1,12 +1,12 @@
 exports.verifyUser = function(req, res, next){
-    var peerCert = req.connection.getPeerCertificate();
-    if (!peerCert || !peerCert.subject || !peerCert.subject.CN){
+    var headers = req.headers;
+    if (!headers || headers.ssl_client_verify !== 'SUCCESS' || !headers.ssl_client_s_dn){
         res.status(403);
         res.send("Must have a pkcs12 certificate in your browser");
         return;
     }
 
-    res.set('Parsed-User', peerCert.subject.CN);
+    res.set('Parsed-User', headers.ssl_client_s_dn.split('/CN=')[1]);
     next();
 };
 

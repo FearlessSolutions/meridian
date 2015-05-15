@@ -4,7 +4,7 @@ body.dialog-open .modal-backdrop {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 10000;
   background-color: #000000;
   display: none;
 }

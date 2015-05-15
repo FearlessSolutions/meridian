@@ -5,7 +5,6 @@ define([
 
     var exposed = {
         initialize: function(app) {
-
             var CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
             
             var utils = {
@@ -113,7 +112,7 @@ define([
                     return str.indexOf(suffix, str.length - suffix.length) !== -1;
                 },
                 getCurrentNodeJSEndpoint: function() {
-                    return "https://" + window.location.host;
+                    return "https://" + window.location.host + '/rest';
                 },
                 UUID: function(){
                     var r,

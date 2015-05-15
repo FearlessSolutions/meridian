@@ -2,8 +2,7 @@ require.config({
     baseUrl: window.location.origin, //This makes it so that all modes start at the same place.
     waitSeconds: 30,
     paths: {
-        sinon: './libs/sinon-1.14.1.js',
-        aura: '/bower_components/aura/lib',
+        aura: 'bower_components/aura/lib',
         handlebars: 'bower_components/handlebars/handlebars',
         underscore: 'bower_components/underscore/underscore',
         jquery: 'bower_components/jquery/dist/jquery',
@@ -29,8 +28,7 @@ require.config({
         togeojson: 'libs/togeojson/togeojson',
         coordinateConverter: 'libs/coordinate-converter/cc',
         mocha: 'libs/mocha/mocha',
-        chai: 'libs/mocha/chai'//,
-//        components: 'components'
+        chai: 'libs/mocha/chai'
     },
     shim:{
         aura: {
@@ -84,11 +82,12 @@ require(['chai', 'mocha', 'jquery'], function(chai) {
     mocha.setup('bdd');
     require([
         //TODO add tests that you want to run here
-        //'./basemap-tests.js',
-        //'./overlay-tests.js',
-        './feature-tests.js',
-        //'./view-tests.js',
-        //'./clear-tests.js'
+        './modes/mocha/basemap-tests',
+        './modes/mocha/overlay-tests',
+        './modes/mocha/feature-tests',
+        './modes/mocha/view-tests',
+        './modes/mocha/clear-tests',
+        './modes/mocha/defunct-tests'
     ], function(require) {
         mocha.run();
     });

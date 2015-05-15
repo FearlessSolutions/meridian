@@ -7,7 +7,6 @@ define([
     var exposed = {
         init: function(thisContext) {
             context = thisContext;
-            mediator = thisMediator;
             context.$('#splashScreen')
                 .modal({backdrop: 'static', keyboard: false})
                 .on('hidden.bs.modal', function () {

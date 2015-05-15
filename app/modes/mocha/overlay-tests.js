@@ -9,17 +9,12 @@ define([
 //Unless there is a way of including the require.js file and the config file in the command
 //prompt, I only see this working in the browser.
 
-    var assert = chai.assert,
-        expect = chai.expect,
-        should = chai.should(); // Note that should has to be executed
-    function iThrowError() {
-        throw new Error("Error thrown");
-    }
+    var expect = chai.expect;
 
 //start your test here.
 //mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
     describe('Overlay Channels', function () {
-        var cmapiMain, renderer, exitBeforeEach, meridian;
+        var exitBeforeEach, meridian;
 
         //Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
         beforeEach(function (done) {
@@ -42,57 +37,45 @@ define([
                 .use('test/extensions/test-external-pubsub-extension/test-external-pubsub-extension') // added new
                 .use('extensions/state-manager-extension/state-manager-extension')
                 .use('extensions/data-storage-extension/data-storage-extension')
-                // .use('extensions/splash-screen-extension/splash-screen-extension')
                 .use('extensions/snapshot-extension/snapshot-extension')
                 .use('extensions/map-configuration-extension/map-configuration-extension')
                 .use('extensions/user-settings-extension/user-settings-extension')
                 .use('extensions/support-configuration-extension/support-configuration-extension')
                 .use('extensions/icon-extension/icon-extension')
-                // .use('extensions/locator-extension/locator-query-extension')
                 .use('extensions/exports/export-utils/export-utils')
-                // .use('extensions/exports/geojson-extension/geojson-extension')
-                // .use('extensions/exports/csv-extension/csv-extension')
-                // .use('extensions/exports/kml-extension/kml-extension')
-                // .use('extensions/exports/googlemaps-extension/googlemaps-extension')
-                // .use('extensions/data-services/mock-extension/mock-extension')
-                // .use('extensions/data-services/fake-extension/fake-extension')
                 .use('extensions/cmapi-extension/cmapi-extension')  // added for cmapi
-                // .use('extensions/upload-data-extension/upload-data-extension')
                 .start({components: 'body'})
                 .then(function () {
-                    console.log('in then', meridian);
                     //start test
                     //must wait until aura starts before doing anything test related.
                     //If not, meridian variable will be undefined.
                     exitBeforeEach();
-
                 });//end of then
-
         });//end of beforeEach
 
         describe('map.overlay.create', function () {
             // Capture the Create Layer
             it("Base Test: Create a Layer (with overlayId)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCount,
+                            afterLayerCount,
+                            actualLayer;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
-                                    name: "Test Name 1",  // can't check name, because it isn't saved in OL
-                                    overlayId: "testOverlayId1",
-                                    coords: {
-                                        minLat: "7.602108",
-                                        minLon: "-13.908691",
-                                        maxLat: "11.587669",
-                                        maxLon: "-8.283691"
+                                    "name": "Test Name 1",  // can't check name, because it isn't saved in OL
+                                    "overlayId": "testOverlayId1",
+                                    "coords": {
+                                        "minLat": "7.602108",
+                                        "minLon": "-13.908691",
+                                        "maxLat": "11.587669",
+                                        "maxLon": "-8.283691"
                                     }
-                                },
-                                beforeLayerCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCount,
-                                actualLayer;
-                            //test goes here
+                            },
+                            beforeLayerCount = map.layers.length; // layer count prior to the channel emit
                             map.events.register("addlayer", map, function () {
                                 afterLayerCount = map.layers.length; // layer count prior to the channel emit
                                 expect(afterLayerCount).to.be.above(beforeLayerCount); // confirmation that a layer was created
@@ -111,33 +94,32 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
 
             it("Edge case: Create a Layer (without overlayId)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCount,
+                            afterLayerCount,
+                            actualLayer;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
-                                    name: "Test Name 1",  // can't check name, because it isn't saved in OL
-                                    overlayId: "",
-                                    coords: {
-                                        minLat: "7.602108",
-                                        minLon: "-13.908691",
-                                        maxLat: "11.587669",
-                                        maxLon: "-8.283691"
+                                    "name": "Test Name 1",  // can't check name, because it isn't saved in OL
+                                    "overlayId": "",
+                                    "coords": {
+                                        "minLat": "7.602108",
+                                        "minLon": "-13.908691",
+                                        "maxLat": "11.587669",
+                                        "maxLon": "-8.283691"
                                     }
                                 },
-                                beforeLayerCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCount,
-                                actualLayer;
-                            //test goes here
+                                beforeLayerCount = map.layers.length; // layer count prior to the channel emit
                             map.events.register("addlayer", map, function () {
                                 afterLayerCount = map.layers.length; // layer count prior to the channel emit
                                 expect(afterLayerCount).to.be.above(beforeLayerCount); // confirmation that a layer was created
@@ -155,27 +137,26 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
 
             it("Edge case: Create a Layer (without coordinates)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCount,
+                            afterLayerCount,
+                            actualLayer;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
                                     name: "Test Name 1",  // can't check name, because it isn't saved in OL
                                     overlayId: "testOverlayId1"
                                 },
-                                beforeLayerCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCount,
-                                actualLayer;
-                            //test goes here
+                                beforeLayerCount = map.layers.length; // layer count prior to the channel emit
                             map.events.register("addlayer", map, function () {
                                 afterLayerCount = map.layers.length; // layer count prior to the channel emit
                                 expect(afterLayerCount).to.be.above(beforeLayerCount); // confirmation that a layer was created
@@ -194,8 +175,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
@@ -205,37 +185,37 @@ define([
             //Capture Remove Layer
             it("Base Test: Remove a Layer", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount,
+                            afterLayerRemoveCount,
+                            index,
+                            mapLayers,
+                            i,
+                            len;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
                                     overlayId: "testOverlayId1"
                                 },
-                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCreateCount,
-                                afterLayerRemoveCount;
-                            //test goes here
+                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             function layerCheck(layerExists, params) {
-                                var searchTerm = "testOverlayId1",
                                     index = -1,
                                     mapLayers = params;
-                                for (var i = 0, len = mapLayers.length; i < len; i++) {
-                                    if (mapLayers[i].layerId === searchTerm) {
+                                for (i = 0, len = mapLayers.length; i < len; i++) {
+                                    if (mapLayers[i].layerId === 'testOverlayId1') {
                                         index = i;
                                         break;
                                     }
                                 }
                                 if (layerExists) {
                                     expect(index).to.not.equal(-1);
-                                    console.debug('Layer exists, create layer successful');
                                 } else {
                                     expect(index).to.equal(-1); // confirm that no layers contain layerId of testOverlayId1
-                                    console.debug('Layer does not exist, remove layer successful');
                                 }
                             }
-
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 afterLayerCreateCount = map.layers.length;
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
@@ -262,8 +242,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                     done();
                 });
@@ -271,45 +250,42 @@ define([
 
             it("Edge case: Remove a Layer (multiple layer added)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount,
+                            afterLayerRemoveCount,
+                            anotherLayer,
+                            index,
+                            mapLayers,
+                            i,
+                            len;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
                                     overlayId: "testOverlayId1"
                                 },
-                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCreateCount,
-                                afterLayerRemoveCount,
-                                anotherLayer;
-                            console.debug('Layer count before layer is created ' + beforeLayerCreateCount);
-                            //test goes here
+                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             function layerCheck(layerExists, params) {
-                                var searchTerm = "testOverlayId1",
                                     index = -1,
                                     mapLayers = params;
-                                for (var i = 0, len = mapLayers.length; i < len; i++) {
-                                    if (mapLayers[i].layerId === searchTerm) {
+                                for (i = 0, len = mapLayers.length; i < len; i++) {
+                                    if (mapLayers[i].layerId === 'testOverlayId1') {
                                         index = i;
                                         break;
                                     }
                                 }
                                 if (layerExists) {
                                     expect(index).to.not.equal(-1);
-                                    console.debug('Layer exists, create layer successful');
                                 } else {
                                     expect(index).to.equal(-1); // confirm that no layers contain layerId of testOverlayId1
-                                    console.debug('Layer count after remove layer emit ' + map.layers.length);
-                                    console.debug('Layer does not exist, remove layer successful');
                                 }
                             }
-
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 anotherLayer = new OpenLayers.Layer.Vector("OpenLayers Vector", {layerId: 'testOverlayId2'});
                                 map.addLayer(anotherLayer);
                                 afterLayerCreateCount = map.layers.length;
-                                console.debug('Layer count after layer creation & additional layer ' + afterLayerCreateCount);
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 layerCheck(true, map.layers);
                             });
@@ -333,8 +309,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                     done();
                 });
@@ -342,29 +317,27 @@ define([
         }); // map.overlay.remove
 
         describe('map.overlay.hide', function () {
-
             // Capture Hide Layer
             it("Base Test: Hide Layer", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount,
+                            targetLayer;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
                                     overlayId: "testOverlayId1"
                                 },
-                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCreateCount,
-                                targetLayer;
-                            //test goes here
+                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 afterLayerCreateCount = map.layers.length;
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 targetLayer = map.layers[map.layers.length - 1];
                                 expect(targetLayer.layerId).to.equal(payload.overlayId); // confirms that Id is the overlayId value from the payload
                                 expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId1 is visible
-                                console.debug("The visibility of this layer is currently set to " + targetLayer.getVisibility());
                                 meridian.sandbox.external.receiveMessage({
                                     data: {
                                         channel: 'map.overlay.hide',
@@ -372,7 +345,6 @@ define([
                                     }
                                 });
                                 expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is not visible
-                                console.debug("The visibility of this layer is currently set to " + targetLayer.getVisibility());
                                 done();
                             });
                             meridian.sandbox.external.receiveMessage({
@@ -384,27 +356,26 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
 
             it("Edge case: Hide Layer (multiple layers added)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount,
+                            targetLayer,
+                            anotherLayer;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
                                     overlayId: "testOverlayId1"
                                 },
-                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCreateCount,
-                                targetLayer,
-                                anotherLayer;
-                            //test goes here
+                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 anotherLayer = new OpenLayers.Layer.Vector("OpenLayers Vector", {layerId: 'testOverlayId2'});
                                 map.addLayer(anotherLayer);
@@ -413,7 +384,6 @@ define([
                                 targetLayer = map.layers[map.layers.length - 2];
                                 expect(targetLayer.layerId).to.equal(payload.overlayId); // confirms that Id is the overlayId value from the payload
                                 expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId1 is visible
-                                console.debug("The visibility of layer 'testOverlayId1' is currently set to " + targetLayer.getVisibility());
                                 meridian.sandbox.external.receiveMessage({
                                     data: {
                                         channel: 'map.overlay.hide',
@@ -421,10 +391,7 @@ define([
                                     }
                                 });
                                 expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is not visible
-                                console.debug("The visibility of layer 'testOverlayId1' is currently set to " + targetLayer.getVisibility());
-                                console.log(anotherLayer.getVisibility());
                                 expect(anotherLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId2 is visible after the emit
-                                console.debug("The visibility of layer 'testOverlayId2' was not changed by the map.overlay.hide emit");
                                 done();
                             });
                             meridian.sandbox.external.receiveMessage({
@@ -436,36 +403,33 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
         }); // map.overlay.hide
         describe('map.overlay.show', function () {
-
             // Capture Show Layer
             it("Base Test: Show Layer", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount,
+                            targetLayer;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
                                     overlayId: "testOverlayId1"
                                 },
-                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCreateCount,
-                                targetLayer;
-                            //test goes here
+                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 afterLayerCreateCount = map.layers.length;
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 targetLayer = map.layers[map.layers.length - 1];
                                 expect(targetLayer.layerId).to.equal(payload.overlayId); // confirms that Id is the overlayId value from the payload
                                 expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId1 is visible
-                                console.debug("The visibility of this layer is currently set to " + targetLayer.getVisibility());
                                 meridian.sandbox.external.receiveMessage({
                                     data: {
                                         channel: 'map.overlay.hide',
@@ -473,7 +437,6 @@ define([
                                     }
                                 });
                                 expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is not visible
-                                console.debug('The visibility of this layer is currently set to ' + targetLayer.getVisibility());
                                 meridian.sandbox.external.receiveMessage({
                                     data: {
                                         channel: 'map.overlay.show',
@@ -481,7 +444,6 @@ define([
                                     }
                                 });
                                 expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer.show emit is successful
-                                console.debug('Show layer successful ' + targetLayer.getVisibility());
                             });
                             meridian.sandbox.external.receiveMessage({
                                 data: {
@@ -492,8 +454,7 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                     done();
                 });
@@ -501,19 +462,19 @@ define([
 
             it("Edge case: Show Layer (multiple layers added)", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    console.log('in it', meridian);
                     meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount,
+                            targetLayer,
+                            anotherLayer;
                         if (params.channel == 'map.status.ready') {
-                            // map goes first
-                            var map = renderer.getMap(),
+                            map = renderer.getMap(),
                                 payload = {
                                     overlayId: "testOverlayId1"
                                 },
-                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                afterLayerCreateCount,
-                                targetLayer,
-                                anotherLayer;
-                            //test goes here
+                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 anotherLayer = new OpenLayers.Layer.Vector("OpenLayers Vector", {layerId: 'testOverlayId2'});
                                 map.addLayer(anotherLayer);
@@ -522,7 +483,6 @@ define([
                                 targetLayer = map.layers[map.layers.length - 2];
                                 expect(targetLayer.layerId).to.equal(payload.overlayId); // confirms that Id is the overlayId value from the payload
                                 expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId1 is visible
-                                console.debug("The visibility of targetOverlayId1 layer is currently set to " + targetLayer.getVisibility());
                                 meridian.sandbox.external.receiveMessage({
                                     data: {
                                         channel: 'map.overlay.hide',
@@ -530,10 +490,8 @@ define([
                                     }
                                 });
                                 anotherLayer.setVisibility(false);
-                                console.log(anotherLayer.getVisibility());
                                 expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is not visible
                                 expect(anotherLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is visible
-                                console.debug('The visibility of targetOverlayId1 layer is currently set to ' + targetLayer.getVisibility());
                                 meridian.sandbox.external.receiveMessage({
                                     data: {
                                         channel: 'map.overlay.show',
@@ -541,9 +499,7 @@ define([
                                     }
                                 });
                                 expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer.show emit is successful
-                                console.debug('Show layer successful ' + targetLayer.getVisibility());
                                 expect(anotherLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId2 remains hidden after the emit
-                                console.debug("The visibility of layer 'testOverlayId2' was not changed by the map.overlay.hide emit");
                                 done();
                             });
                             meridian.sandbox.external.receiveMessage({
@@ -555,13 +511,11 @@ define([
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
-                    var $fixtures = $('#fixtures');
-                    meridian.html = $fixtures.html;
+                    meridian.html = $('#fixtures').html;
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
         });// map.overlay.show
-
     });//describe
 });
 

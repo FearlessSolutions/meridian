@@ -28,5 +28,10 @@ data/
 # Certificates
 server/certs/
 
+# Built files
+app-built
+
 # Logs
 *.log
+
+nginx.conf
