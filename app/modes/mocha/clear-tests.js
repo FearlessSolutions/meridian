@@ -4,29 +4,24 @@ define([
     'aura/aura',
     'mocha'
 ], function(chai, configuration, Aura) {
-
-//This doesnt work on the command line by doing $ mocha <thisFile>
-//Unless there is a way of including the require.js file and the config file in the command
-//prompt, I only see this working in the browser.
-
 var expect = chai.expect;
 
-//start your test here.
-//mocha needs to see describe globally. If you try putting it in a function, it wont execute. (Unless my test wasn't good.)
+    //start your test here.
+    //mocha needs to see describe globally. If you try putting it in a function, it wont execute. (Unless my test wasn't good.)
     describe('Clear Channels', function () {
-        var exitBeforeEach, meridian;
+        var exitBeforeEach,
+            meridian;
 
         //Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
         beforeEach(function (done) {
             exitBeforeEach = done;//Aura.then() function wont have access to done. I store it here and then call it.
             meridian = Aura({
-                appName: 'Meridian',
-                mediator: {maxListeners: 50},
-                version: '1.0.0',
-                releaseDate: '02/27/2015',
-                cmapiVersion: '1.2.0',
-                debug: true,
-                sources: {default: 'components'}
+                appName: configuration.appName,
+                sources: {default: 'components'},
+                mediator: configuration.mediator,
+                version: configuration.version,
+                releaseDate: configuration.releaseDate,
+                cmapiVersion: configuration.cmapiVersion
             });
             //these extensions have .hbs files being loaded. Unless we host the test/index.html
             //it will throw the following error: Cross origin requests are only supported for protocol schemes.
@@ -54,7 +49,7 @@ var expect = chai.expect;
         });//end of beforeEach
 
         describe('map.clear', function () {
-            it("Base Test: Clear map data", function (done) {
+            it('Base Test: Clear map data', function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var index = -1,
@@ -62,8 +57,8 @@ var expect = chai.expect;
                             beforeLayerCreateCount,
                             payload;
                         if (params.channel == 'map.status.ready') {
-                            map = renderer.getMap(),
-                            beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+                            map = renderer.getMap();
+                            beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             payload = {
                                 "overlayId": "testOverlayId1",
                                 "name": "Test Name 1",

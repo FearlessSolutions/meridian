@@ -1,9 +1,8 @@
 define([
 ], function() {
-
     var callbacks;
 
-    var exposed = {
+    return {
         initialize: function(app) {
             callbacks = [];
 
@@ -28,7 +27,4 @@ define([
             }
         }
     };
-
-    return exposed;
-
 });

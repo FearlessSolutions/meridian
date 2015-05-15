@@ -4,11 +4,6 @@ define([
     'aura/aura',
     'mocha'
 ], function(chai, configuration, Aura) {
-
-//This doesnt work on the command line by doing $ mocha <thisFile>
-//Unless there is a way of including the require.js file and the config file in the command
-//prompt, I only see this working in the browser.
-
     var assert = chai.assert,
         expect = chai.expect,
         should = chai.should(); // Note that should has to be executed

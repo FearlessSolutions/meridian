@@ -40,10 +40,7 @@ define([], function() {
   Logger.prototype.write = function(output, args){
     var parameters = Array.prototype.slice.call(args);
     parameters.unshift(this.name + ":");
-      if (parameters[2]!=='mouse.position.change') {
-          output.apply(console, parameters);
-      }
-
+    output.apply(console, parameters);
   };
 
   Logger.prototype.log = function() {

@@ -4,29 +4,25 @@ define([
     'aura/aura',
     'mocha'
 ], function(chai, configuration, Aura) {
-
-//This doesnt work on the command line by doing $ mocha <thisFile>
-//Unless there is a way of including the require.js file and the config file in the command
-//prompt, I only see this working in the browser.
-
     var expect = chai.expect;
 
-//start your test here.
-//mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
+    //start your test here.
+    //mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
     describe('View Channels', function () {
-        var exitBeforeEach, meridian;
+        var exitBeforeEach,
+            meridian;
 
         //Read up on hooks: there might be a way of doing this outside the describe for a cleaner look.
         beforeEach(function (done) {
             exitBeforeEach = done;//Aura.then() function wont have access to done. I store it here and then call it.
             meridian = Aura({
-                appName: 'Meridian',
-                mediator: {maxListeners: 50},
-                version: '1.0.0',
-                releaseDate: '02/27/2015',
-                cmapiVersion: '1.2.0',
                 debug: true,
-                sources: {default: 'components'}
+                appName: configuration.appName,
+                sources: {default: 'components'},
+                mediator: configuration.mediator,
+                version: configuration.version,
+                releaseDate: configuration.releaseDate,
+                cmapiVersion: configuration.cmapiVersion
             });
             //these extensions have .hbs files being loaded. Unless we host the test/index.html
             //it will throw the following error: Cross origin requests are only supported for protocol schemes.
@@ -55,15 +51,16 @@ define([
 
         describe('map.view.zoom.in', function () {
             // Capture the Zoom-in
-            it("Base Test: Zoom In (Should Zoom In by 1)", function (done) {
+            it('Base Test: Zoom In (Should Zoom In by 1)', function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,
                             beforeZoom_state,
                             afterZoom_state;
+
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
-                            map.events.register("zoomend", map, function () {
+                            map.events.register('zoomend', map, function () {
                                 afterZoom_state = map.getZoom();
                                 // EXPECT: We expect the Present (After) Zoom value to be one greater than Before we emitted Zoom In.
                                 expect(afterZoom_state).to.equal(beforeZoom_state + 1);
@@ -87,17 +84,18 @@ define([
             });//it
         }); // map.view.zoom
         describe('map.view.zoom.out', function () {
-            it("Base Test: Zoom Out (Set zoom level manually, then zoom out by 1)", function (done) {
+            it('Base Test: Zoom Out (Set zoom level manually, then zoom out by 1)', function (done) {
                 this.timeout(5000);
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,
                             beforeZoom_state,
                             afterZoom_state;
+
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             map.setCenter([2, 2], 5);
-                            map.events.register("zoomend", map, function () {
+                            map.events.register('zoomend', map, function () {
                                 afterZoom_state = map.getZoom();
                                 // EXPECT: We expect the Present (After) Zoom value to be one less than Before we emitted Zoom Out.
                                 expect(afterZoom_state).to.equal(beforeZoom_state - 1);  // compare of the zoom level here
@@ -120,7 +118,7 @@ define([
                 });
             });//it
 
-            it("Edge Case: Set zoom level to zero, check zoom level after the channel emit", function (done) {
+            it('Edge Case: Set zoom level to zero, check zoom level after the channel emit', function (done) {
                 this.timeout(5000);
                 var passed = true,
                     map;
@@ -129,7 +127,7 @@ define([
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             map.setCenter([2, 2], 2);
-                            map.events.register("zoomend", map, function () {
+                            map.events.register('zoomend', map, function () {
                                 passed = false;
                             });
                             meridian.sandbox.external.receiveMessage({
@@ -156,17 +154,18 @@ define([
         }); // map.view.zoom.out
         describe('map.view.zoom.max.extent', function () {
             // Capture the Zoom to Max Extent
-            it("Base Test: Map Zoom to Max Extent", function (done) {
+            it('Base Test: Map Zoom to Max Extent', function (done) {
                 this.timeout(5000);
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,
                             beforeZoom_state,
                             afterZoom_state;
+
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             map.setCenter(new OpenLayers.LonLat(2.860830, -6.059307), 5);
-                            map.events.register("zoomend", map, function(){
+                            map.events.register('zoomend', map, function(){
                                 afterZoom_state = map.getZoom();
                                 // EXPECT: We expect that after the emit, our Zoom Level should be BELOW the beforeZoom_state.
                                 // NOTE: The MaxExtent number can change depending on the map's size.
@@ -187,19 +186,20 @@ define([
             });//it
         }); // map.view.zoom.max.extent
         describe('map.view.center.location', function () {
-            it("Base Test: Map Zoom to Center Location (Check coordinates match expected results after channel emit)", function (done) {
+            it('Base Test: Map Zoom to Center Location (Check coordinates match expected results after channel emit)', function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,
                             payloadCoords;
+
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.view.center.location', message: {
-                                        "location": {
-                                            "lat": 30,
-                                            "lon": 30
+                                        location: {
+                                            lat: 30,
+                                            lon: 30
                                         }
                                     }
                                 }
@@ -218,7 +218,7 @@ define([
         });//map.view.center.location
         describe('map.view.center.bounds', function () {
             // Capture the Center Bounds
-            it("Base Test: Map Center to Bounds", function (done) {
+            it('Base Test: Map Center to Bounds', function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,
@@ -228,17 +228,17 @@ define([
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             payload = {
-                                "bounds": {
-                                    "southWest": {
-                                        "lat": 34.5,
-                                        "lon": -124
+                                bounds: {
+                                    southWest: {
+                                        lat: 34.5,
+                                        lon: -124
                                     },
-                                    "northEast": {
-                                        "lat": 50.5,
-                                        "lon": -79
+                                    northEast: {
+                                        lat: 50.5,
+                                        lon: -79
                                     }
                                 }
-                            }
+                            };
                             expect(payload).to.exist; // payload exists
                             expect(payload).to.be.an('object'); // payload is an object
                             expectedBounds_values = {  // expected values of the bounds result after map.view.center.bounds emitted
@@ -246,9 +246,9 @@ define([
                                 left: -116.88085937499952,
                                 right: -86.11914062499609,
                                 top: 53.23679754234628
-                            }
+                            };
                             //map.setCenter(new OpenLayers.LonLat(38.860830, -77.059307), 5); // setCenter must go here to display the error in the mocha HTML error log
-                            map.events.register("moveend", map, function () { // zoomend does not seem to work for this channel emit
+                            map.events.register('moveend', map, function () { // zoomend does not seem to work for this channel emit
                                 actualBounds_values = map.getExtent().transform(map.projection, map.projectionWGS84); // gets the extent and converts back to lat/lon, this value will change if a different projection is used
                                 expect(actualBounds_values).to.exist;           // actualBounds_values exists
                                 expect(actualBounds_values).to.be.an('object'); // actualBounds_values is an object
@@ -279,7 +279,7 @@ define([
         }); // map.view.center.bounds
 
         describe('map.view.center.overlay', function () {
-            it("Base Test: Map View Center Overlay", function (done) {
+            it('Base Test: Map View Center Overlay', function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,
@@ -288,88 +288,93 @@ define([
                             afterLayerCreateCount,
                             index,
                             plotSuccess = false;
+
                         if (params.channel == 'map.status.ready') {
-                            map = renderer.getMap(),
-                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
-                                payload = {
-                                    "overlayId": "testOverlayId1",
-                                    "name": "Test Name 1",
-                                    "format": "geojson",
-                                    "feature": {
-                                        "type": "FeatureCollection",
-                                        "features": [
-                                            {
-                                                "type": "Feature",
-                                                "geometry": {
-                                                    "type": "Point",
-                                                    "coordinates": [
-                                                        -10,
-                                                        10
-                                                    ]
-                                                },
-                                                "properties": {
-                                                    "p1": "pp1"
-                                                },
-                                                "style": {
-                                                    "height": 24,
-                                                    "width": 24,
-                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-                                                }
+                            map = renderer.getMap();
+                            beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
+                            payload = {
+                                "overlayId": "testOverlayId1",
+                                "name": "Test Name 1",
+                                "format": "geojson",
+                                "feature": {
+                                    "type": "FeatureCollection",
+                                    "features": [
+                                        {
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [
+                                                    -10,
+                                                    10
+                                                ]
                                             },
-                                            {
-                                                "type": "Feature",
-                                                "geometry": {
-                                                    "type": "Point",
-                                                    "coordinates": [
-                                                        50,
-                                                        10
-                                                    ]
-                                                },
-                                                "properties": {
-                                                    "p1": "pp1"
-                                                },
-                                                "style": {
-                                                    "height": 24,
-                                                    "width": 24,
-                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-                                                }
+                                            "properties": {
+                                                "p1": "pp1"
                                             },
-                                            {
-                                                "type": "Feature",
-                                                "geometry": {
-                                                    "type": "Point",
-                                                    "coordinates": [
-                                                        10,
-                                                        50
-                                                    ]
-                                                },
-                                                "properties": {
-                                                    "p1": "pp1"
-                                                },
-                                                "style": {
-                                                    "height": 24,
-                                                    "width": 24,
-                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-                                                }
+                                            "style": {
+                                                "height": 24,
+                                                "width": 24,
+                                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
                                             }
-                                        ]
-                                    },
-                                    "zoom": false,
-                                    "readOnly": false
-                                }
+                                        },
+                                        {
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [
+                                                    50,
+                                                    10
+                                                ]
+                                            },
+                                            "properties": {
+                                                "p1": "pp1"
+                                            },
+                                            "style": {
+                                                "height": 24,
+                                                "width": 24,
+                                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                            }
+                                        },
+                                        {
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [
+                                                    10,
+                                                    50
+                                                ]
+                                            },
+                                            "properties": {
+                                                "p1": "pp1"
+                                            },
+                                            "style": {
+                                                "height": 24,
+                                                "width": 24,
+                                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "zoom": false,
+                                "readOnly": false
+                            };
                             map.setCenter([2, 2], 5);
                             // Verify Layer Creation
                             meridian.sandbox.on('map.layer.create', function (params) {
+                                var searchTerm = 'testOverlayId1',
+                                    mapLayers = map.layers,
+                                    i,
+                                    len;
+
                                 afterLayerCreateCount = map.layers.length;
                                 // EXPECT: Where we expect that our layer count has in fact increased.
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 index = -1;
-                                var searchTerm = "testOverlayId1",
-                                    mapLayers = map.layers;
-                                for (var i = 0, len = mapLayers.length; i < len; i++) {
+
+                                for (i = 0, len = mapLayers.length; i < len; i++) {
                                     if (mapLayers[i].layerId === searchTerm) {
                                         index = i;
                                         break;
@@ -395,14 +400,14 @@ define([
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.view.center.overlay', message: {
-                                        "overlayId": "testOverlayId1"
+                                        overlayId: 'testOverlayId1'
                                     }
                                 }
                             });
                             setTimeout(function () {
                                 // EXPECT: We wait 500ms, then expect the Zoom and coordinates
                                 // to have changed properly to a centered point between the
-                                // features on overlay "testOverlayId1".
+                                // features on overlay 'testOverlayId1'.
                                 // Note: These values will change depending on the bounds given
                                 // for our Map frame's width and height in the Mocha Index.html file.
                                 // We also ensure a plot emit registers to begin with via plotSuccess check.
