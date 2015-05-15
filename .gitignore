@@ -34,4 +34,4 @@ app-built
 # Logs
 *.log
 
-#ngin.conf
+nginx.conf
