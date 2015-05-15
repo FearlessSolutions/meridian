@@ -1,7 +1,6 @@
 define([
     './../map-api-publisher',
     './../libs/markerCluster/leaflet.markercluster-src',
-    './../libs/wmts/leaflet-tilelayer-wmts-src.js',
     './../libs/leaflet-featureidgroup-src'
 ], function(publisher) {
     // Setup context for storing the context of 'this' from the component's main.js 
@@ -33,7 +32,7 @@ define([
             });
 
             createViewLayers();
-            createDrawLayer()
+            createDrawLayer();
         },
         plotFeatures: function(params){
             context.sandbox.util.each(params.data, function(index, obj){
@@ -74,12 +73,11 @@ define([
         },
 
         createVectorLayer: function(params) {
-
             if(context.sandbox.stateManager.map.visualMode === 'cluster'){
                 clusterLayers.addLayer(params.layerId, new L.MarkerClusterGroup({
                         maxClusterRadius: config.clustering.thresholds.clustering.distance
                     })
-                ); 
+                );
 
             } else if( context.sandbox.stateManager.map.visualMode === 'heatmap'){
                 
@@ -425,10 +423,9 @@ define([
                     baseLayer = L.tileLayer(basemap.leafUrl); //TODO config.basemap === basemap? or maybe a second paramater?
                     break;
                 case "wmts":
-                    baseLayer = L.TileLayer.WMTS(basemap.url, {
+                    baseLayer = L.tileLayer(basemap.leafUrl, {
                         layer: basemap.layer || null,
                         style: basemap.style, //Don't see this?
-                        tilematrixSet: basemap.matrixSet || config.projection,
                         format: basemap.format || 'image/jpeg',
                         tileSize: basemap.tileWidth || config.defaultTileWidth//the plugin uses only one size for both width and height.
                     });

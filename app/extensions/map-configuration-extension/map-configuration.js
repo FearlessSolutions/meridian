@@ -43,6 +43,7 @@ define([
         "basemap" : "imagery",
         "type" : "wmts",
         "url" : "http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/WMTS",
+        "leafUrl" : "http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}",
         "thumbnail" : "/extensions/map-configuration-extension/images/basemaps/satellite.png",
         "label" : "USGS Imagery",
         "wrapDateLine": true
