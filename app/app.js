@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: window.location.origin, //This makes it so that all modes start at the same place.
+    baseUrl: location.href, //This makes it so that all modes start at the same place.
     waitSeconds: 30,
     paths: {
         aura: 'bower_components/aura/lib',
