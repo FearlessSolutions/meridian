@@ -15,7 +15,7 @@ define([
          * -Set up a mock cmapi "dataService'
          * @param app
          */
-        "initialize": function(app) {
+        initialize: function(app) {
             app.sandbox.utils.addCSS(cmapiCSS, 'cmapi-extension-style');
 
             //Set up parent channels

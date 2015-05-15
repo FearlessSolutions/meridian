@@ -4,8 +4,7 @@ define([
     'handlebars'
 ], function (
     splashScreenCSS, 
-    splashScreen, 
-    splashScreenMediator
+    splashScreen
 ) {
 
     return {
