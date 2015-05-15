@@ -1458,35 +1458,66 @@ L.Projection.LonLat = {
 
 
 /*
- * L.CRS is a base object for all defined CRS (Coordinate Reference Systems) in Leaflet.
+ * L.CRS is the base object for all defined CRS (Coordinate Reference Systems) in Leaflet.
  */
 
 L.CRS = {
-	latLngToPoint: function (latlng, zoom) { // (LatLng, Number) -> Point
+	// converts geo coords to pixel ones
+	latLngToPoint: function (latlng, zoom) {
 		var projectedPoint = this.projection.project(latlng),
 		    scale = this.scale(zoom);
 
 		return this.transformation._transform(projectedPoint, scale);
 	},
 
-	pointToLatLng: function (point, zoom) { // (Point, Number[, Boolean]) -> LatLng
+	// converts pixel coords to geo coords
+	pointToLatLng: function (point, zoom) {
 		var scale = this.scale(zoom),
 		    untransformedPoint = this.transformation.untransform(point, scale);
 
 		return this.projection.unproject(untransformedPoint);
 	},
 
+	// converts geo coords to projection-specific coords (e.g. in meters)
 	project: function (latlng) {
 		return this.projection.project(latlng);
 	},
 
+	// converts projected coords to geo coords
+	unproject: function (point) {
+		return this.projection.unproject(point);
+	},
+
+	// defines how the world scales with zoom
 	scale: function (zoom) {
 		return 256 * Math.pow(2, zoom);
 	},
 
-	getSize: function (zoom) {
-		var s = this.scale(zoom);
-		return L.point(s, s);
+	// returns the bounds of the world in projected coords if applicable
+	getProjectedBounds: function (zoom) {
+		if (this.infinite) { return null; }
+
+		var b = this.projection.bounds,
+		    s = this.scale(zoom),
+		    min = this.transformation.transform(b.min, s),
+		    max = this.transformation.transform(b.max, s);
+
+		return L.bounds(min, max);
+	},
+
+	// whether a coordinate axis wraps in a given range (e.g. longitude from -180 to 180); depends on CRS
+	// wrapLng: [min, max],
+	// wrapLat: [min, max],
+
+	// if true, the coordinate space will be unbounded (infinite in all directions)
+	// infinite: false,
+
+	// wraps geo coords in certain ranges if applicable
+	wrapLatLng: function (latlng) {
+		var lng = this.wrapLng ? L.Util.wrapNum(latlng.lng, this.wrapLng, true) : latlng.lng,
+		    lat = this.wrapLat ? L.Util.wrapNum(latlng.lat, this.wrapLat, true) : latlng.lat;
+
+		return L.latLng(lat, lng);
 	}
 };
 
@@ -1501,7 +1532,9 @@ L.CRS.Simple = L.extend({}, L.CRS, {
 
 	scale: function (zoom) {
 		return Math.pow(2, zoom);
-	}
+	},
+
+	infinite: true
 });
 
 
@@ -1514,13 +1547,14 @@ L.CRS.EPSG3857 = L.extend({}, L.CRS, {
 	code: 'EPSG:3857',
 
 	projection: L.Projection.SphericalMercator,
-	transformation: new L.Transformation(0.5 / Math.PI, 0.5, -0.5 / Math.PI, 0.5),
+	transformation: (function () {
+		var scale = 0.5 / (Math.PI * L.Projection.SphericalMercator.R);
+		return new L.Transformation(scale, 0.5, -scale, 0.5);
+	}()),
 
-	project: function (latlng) { // (LatLng) -> Point
-		var projectedPoint = this.projection.project(latlng),
-		    earthRadius = 6378137;
-		return projectedPoint.multiplyBy(earthRadius);
-	}
+	wrapLng: [-180, 180]
+
+	
 });
 
 L.CRS.EPSG900913 = L.extend({}, L.CRS.EPSG3857, {
@@ -1536,7 +1570,9 @@ L.CRS.EPSG4326 = L.extend({}, L.CRS, {
 	code: 'EPSG:4326',
 
 	projection: L.Projection.LonLat,
-	transformation: new L.Transformation(1 / 360, 0.5, -1 / 360, 0.5)
+	transformation: new L.Transformation(1 / 180, 1, -1 / 180, 0.5),
+
+	wrapLng: [-180, 180]
 });
 
 
@@ -2410,7 +2446,9 @@ L.Projection.Mercator = {
 };
 
 
-
+/*
+ * L.CRS.EPSG3857 (World Mercator) CRS implementation.
+ */
 L.CRS.EPSG3395 = L.extend({}, L.CRS, {
 	code: 'EPSG:3395',
 
@@ -2422,7 +2460,9 @@ L.CRS.EPSG3395 = L.extend({}, L.CRS, {
 		    scale = 0.5 / (Math.PI * r);
 
 		return new L.Transformation(scale, 0.5, -scale, 0.5);
-	}())
+	}()),
+
+	wrapLng: [-180, 180]
 });
 
 
