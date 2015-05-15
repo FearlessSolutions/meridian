@@ -2,12 +2,15 @@
  Leaflet, a JavaScript library for mobile-friendly interactive maps. http://leafletjs.com
  (c) 2010-2013, Vladimir Agafonkin
  (c) 2010-2011, CloudMade
+ This version includes all of the TileLayer & Projections refactoring that will be eventually implemented
+ in newer versions of leaflet after 0.7.3.
+ For more information on what was added, please visit https://github.com/Leaflet/Leaflet/pull/2247.
 */
 (function (window, document, undefined) {
 var oldL = window.L,
     L = {};
 
-L.version = '0.7.3';
+L.version = '0.7.3-custom';
 
 // define Leaflet for Node module pattern loaders, including Browserify
 if (typeof module === 'object' && typeof module.exports === 'object') {
