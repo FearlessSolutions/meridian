@@ -92,19 +92,20 @@ define([
             //singlePointLayer.addLayer(layerId, new L.featureGroup());
 
             if(context.sandbox.stateManager.map.visualMode === 'cluster'){
-                //clusterLayers.addLayer(layerId, new L.MarkerClusterGroup({ //TODO uncomment this. It works.
-                //        maxClusterRadius: function(zoom, layer) { //{config.clustering.thresholds.clustering.distance,
-                //            return 80;
-                //        },
-                //        iconCreateFunction: function(cluster){
-                //            return getClusterStyle(cluster, layerId);
-                //        },
-                //        shouldCluster: false,
-                //        disableClusteringAtZoom: 1
-                //    })
-                //);
+                clusterLayers.addLayer(layerId, new L.MarkerClusterGroup({ //TODO uncomment this. It works.
+                        maxClusterRadius: function(zoom, layer) { //{config.clustering.thresholds.clustering.distance,
+                            //return 80;
+                            return config.clustering.thresholds.clustering.distance;
+                        },
+                        iconCreateFunction: function(cluster){
+                            return getClusterStyle(cluster, layerId);
+                        }//,
+                        //shouldCluster: false,
+                        //disableClusteringAtZoom: 1
+                    })
+                );
 
-                clusterLayers.addLayer(layerId, new L.featureGroup()); //TODO remove this after fixing
+                //clusterLayers.addLayer(layerId, new L.featureGroup()); //TODO remove this after fixing
             } else if( context.sandbox.stateManager.map.visualMode === 'heatmap'){
                 
             } else {
