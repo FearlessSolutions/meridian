@@ -47,7 +47,11 @@ define([
             sendError(channel, message, 'Channel not supported');
 		},
 		mapFeatureHide: function(message, channel) {
-            sendError(channel, message, 'Channel not supported');
+            if(message === '') {
+                sendError(channel, message, 'No message payload supplied');
+            }else{
+                hideFeatures(message);
+            }
         },
 		mapFeatureShow: function(message) {
             sendError(channel, message, 'Channel not supported');
@@ -92,6 +96,14 @@ define([
                 layerId: layerId
             });
         }
+    }
+    function hideFeatures(message) {
+        var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId;
+        //plot feature(s) from payload
+        mediator.hideFeatures({
+            layerId: layerId,
+            data: message.feature.features
+        });
     }
 
     return exposed;

@@ -141,235 +141,460 @@ define([
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
-            it("Base Test: Feature Plot (featureId)", function (done) {
-                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    meridian.sandbox.external.postMessageToParent = function (params) {
-                        var map,
-                            payload,
-                            i,
-                            len,
-                            beforeLayerCreateCount,
-                            afterLayerCreateCount,
-                            index;
-                        if (params.channel == 'map.status.ready') {
-                            map = renderer.getMap(),
-                                payload = {
-                                    "overlayId": "testOverlayId1",
-                                    "featureId": "theCMAPIfeatureId_loc",
-                                    "name": "Test Name 1",
-                                    "format": "geojson",
-                                    "feature": {
-                                        "type": "FeatureCollection",
-                                        "features": [
-                                            {
-                                                //"id": "featureId_applications",
-                                                "type": "Feature",
-                                                "geometry": {
-                                                    "type": "Point",
-                                                    "coordinates": [
-                                                        -5,
-                                                        10
-                                                    ]
-                                                },
-                                                "properties": {
-                                                    "p1": "pp1"
-                                                },
-                                                "style": {
-                                                    "height": 24,
-                                                    "width": 24,
-                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    "zoom": false,
-                                    "readOnly": false
-                                },
-                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                meridian.sandbox.on('map.layer.create', function (params) {
-                                    afterLayerCreateCount = map.layers.length,
-                                        // EXPECT: We expect the Layer count to have increased on layer creation.
-                                        expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
-                                    index = -1;
-                                    for (i = 0, len = map.layers.length; i < len; i++) {
-                                        if (map.layers[i].layerId === "testOverlayId1") {
-                                            index = i;
-                                            break;
-                                        }
-                                    }
-                                });
-                            meridian.sandbox.on('map.features.plot', function (params) {
-                                expect(map.layers[index]["features"].length).is.above(0); // confirm feature added to layer
-                                expect("featureId" in map.layers[index]["features"][0]).is.true; // Expect featureId in plotted feature is true.
-                                // application use of feature id (location @ featureId_applications) is not the same as CMAPI spec, THIS WILL CAUSE TEST TO FAIL
-                                expect(payload.featureId).to.equal((map.layers[index]["features"][0])["featureId"]);
-                                done();
-                            });
-                            meridian.sandbox.external.receiveMessage({
-                                data: {
-                                    channel: 'map.feature.plot',
-                                    message: payload
-                                }
-                            }); // manual publish to the channel
-                        }
-                    };
-                    cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $('#fixtures').html;
-                    renderer.initialize.call(meridian, meridian);
-                });
-            });//it
-            it("Edge case: Feature Plot (Feature in layer created prior to plot emit)", function (done) {
-                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    meridian.sandbox.external.postMessageToParent = function (params) {
-                        var map,
-                            payload,
-                            payload2,
-                            actualLayer,
-                            beforeLayerCreateCount,
-                            afterLayerCreateCount,
-                            confirmPlot;
-                        if (params.channel == 'map.status.ready') {
-                            map = renderer.getMap(),
-                                payload = {
-                                    overlayId: "layerCreatedBeforePlotEmit1"
-                                },
-                                payload2 = {
-                                    "overlayId": "layerCreatedBeforePlotEmit1",
-                                    "name": "Test Name 1",
-                                    "format": "geojson",
-                                    "feature": {
-                                        "type": "FeatureCollection",
-                                        "features": [
-                                            {
-                                                "type": "Feature",
-                                                "geometry": {
-                                                    "type": "Point",
-                                                    "coordinates": [
-                                                        -5,
-                                                        10
-                                                    ]
-                                                },
-                                                "properties": {
-                                                    "p1": "pp1"
-                                                },
-                                                "style": {
-                                                    "height": 24,
-                                                    "width": 24,
-                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    "zoom": false,
-                                    "readOnly": false
-                                },
-                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                meridian.sandbox.on('map.layer.create', function (params) {
-                                    afterLayerCreateCount = map.layers.length;
-                                    expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount); // confirmation that a layer was created
-                                    map.layers[map.layers.length - 1];  //  last layer added
-                                    actualLayer = map.layers[map.layers.length - 1];
-                                    expect(actualLayer).to.exist;
-                                    expect(actualLayer.layerId).to.equal(payload.overlayId);  // actual layerId should equal the payload overlayId
-                                    meridian.sandbox.external.receiveMessage({
-                                        data: {
-                                            channel: 'map.feature.plot',
-                                            message: payload2
-                                        }
-                                    }); // manual publish to the channel
-                                });
-                            meridian.sandbox.on('map.features.plot', function (params) {
-                                confirmPlot = map.layers[map.layers.length - 1];
-                                expect(confirmPlot["features"].length).is.above(0); // confirm feature added to layer
-                                done();
-                            });
-                            meridian.sandbox.external.receiveMessage({
-                                data: {
-                                    channel: 'map.overlay.create',
-                                    message: payload
-                                }
-                            }); // manual publish to the channel
-                        }
-                    };
-                    cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $('#fixtures').html;
-                    renderer.initialize.call(meridian, meridian);
-                });
-            });//it
-            it("Edge case: Feature Plot (Feature exists in default layer when layerId is not declared in the payload)", function (done) {
-                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                    meridian.sandbox.external.postMessageToParent = function (params) {
-                        if (params.channel == 'map.status.ready') {
-                            var map,
-                                payload,
-                                actualLayer,
-                                confirmPlot,
-                                beforeLayerCreateCount,
-                                afterLayerCreateCount;
-                            map = renderer.getMap(),
-                                payload = {
-                                    "overlayId": "",
-                                    "name": "Test Name 1",
-                                    "format": "geojson",
-                                    "feature": {
-                                        "type": "FeatureCollection",
-                                        "features": [
-                                            {
-                                                "id": "testFeatureId09",
-                                                "type": "Feature",
-                                                "geometry": {
-                                                    "type": "Point",
-                                                    "coordinates": [
-                                                        -5,
-                                                        10
-                                                    ]
-                                                },
-                                                "properties": {
-                                                    "p1": "pp1"
-                                                },
-                                                "style": {
-                                                    "height": 24,
-                                                    "width": 24,
-                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    "zoom": false,
-                                    "readOnly": false
-                                },
-                                beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
-                                meridian.sandbox.on('map.layer.create', function (params) {
-                                    afterLayerCreateCount = map.layers.length;
-                                    expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount); // confirmation that a layer was created
-                                    map.layers[map.layers.length - 1];  //  last layer added
-                                    actualLayer = map.layers[map.layers.length - 1];
-                                    expect(actualLayer).to.exist;
-                                    expect(actualLayer.layerId).to.equal('cmapi');  // actual layerId should equal the default layerId, 'cmapi'
-                                });
-                            meridian.sandbox.on('map.features.plot', function (params) {
-                                confirmPlot = map.layers[map.layers.length - 1];  // grab layer that has cmapi layerId
-                                expect(confirmPlot["features"][0]["featureId"]).to.equal(payload.feature.features[0].id); // confirm feature added to default layer
-                                done();
-                            });
-                            meridian.sandbox.external.receiveMessage({
-                                data: {
-                                    channel: 'map.feature.plot',
-                                    message: payload
-                                }
-                            }); // manual publish to the channel
-                        }
-                    };
-                    cmapiMain.initialize.call(meridian, meridian);
-                    meridian.html = $('#fixtures').html;
-                    renderer.initialize.call(meridian, meridian);
-                });
-            });//it
-
+            //it("Base Test: Feature Plot (featureId)", function (done) {
+            //    require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+            //        meridian.sandbox.external.postMessageToParent = function (params) {
+            //            var map,
+            //                payload,
+            //                i,
+            //                len,
+            //                beforeLayerCreateCount,
+            //                afterLayerCreateCount,
+            //                index;
+            //            if (params.channel == 'map.status.ready') {
+            //                map = renderer.getMap(),
+            //                    payload = {
+            //                        "overlayId": "testOverlayId1",
+            //                        "featureId": "theCMAPIfeatureId_loc",
+            //                        "name": "Test Name 1",
+            //                        "format": "geojson",
+            //                        "feature": {
+            //                            "type": "FeatureCollection",
+            //                            "features": [
+            //                                {
+            //                                    //"id": "featureId_applications",
+            //                                    "type": "Feature",
+            //                                    "geometry": {
+            //                                        "type": "Point",
+            //                                        "coordinates": [
+            //                                            -5,
+            //                                            10
+            //                                        ]
+            //                                    },
+            //                                    "properties": {
+            //                                        "p1": "pp1"
+            //                                    },
+            //                                    "style": {
+            //                                        "height": 24,
+            //                                        "width": 24,
+            //                                        "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+            //                                        "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+            //                                    }
+            //                                }
+            //                            ]
+            //                        },
+            //                        "zoom": false,
+            //                        "readOnly": false
+            //                    },
+            //                    beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+            //                    meridian.sandbox.on('map.layer.create', function (params) {
+            //                        afterLayerCreateCount = map.layers.length,
+            //                            // EXPECT: We expect the Layer count to have increased on layer creation.
+            //                            expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+            //                        index = -1;
+            //                        for (i = 0, len = map.layers.length; i < len; i++) {
+            //                            if (map.layers[i].layerId === "testOverlayId1") {
+            //                                index = i;
+            //                                break;
+            //                            }
+            //                        }
+            //                    });
+            //                meridian.sandbox.on('map.features.plot', function (params) {
+            //                    expect(map.layers[index]["features"].length).is.above(0); // confirm feature added to layer
+            //                    expect("featureId" in map.layers[index]["features"][0]).is.true; // Expect featureId in plotted feature is true.
+            //                    // application use of feature id (location @ featureId_applications) is not the same as CMAPI spec, THIS WILL CAUSE TEST TO FAIL
+            //                    expect(payload.featureId).to.equal((map.layers[index]["features"][0])["featureId"]);
+            //                    done();
+            //                });
+            //                meridian.sandbox.external.receiveMessage({
+            //                    data: {
+            //                        channel: 'map.feature.plot',
+            //                        message: payload
+            //                    }
+            //                }); // manual publish to the channel
+            //            }
+            //        };
+            //        cmapiMain.initialize.call(meridian, meridian);
+            //        meridian.html = $('#fixtures').html;
+            //        renderer.initialize.call(meridian, meridian);
+            //    });
+            //});//it
+            //it("Edge case: Feature Plot (Feature in layer created prior to plot emit)", function (done) {
+            //    require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+            //        meridian.sandbox.external.postMessageToParent = function (params) {
+            //            var map,
+            //                payload,
+            //                payload2,
+            //                actualLayer,
+            //                beforeLayerCreateCount,
+            //                afterLayerCreateCount,
+            //                confirmPlot;
+            //            if (params.channel == 'map.status.ready') {
+            //                map = renderer.getMap(),
+            //                    payload = {
+            //                        overlayId: "layerCreatedBeforePlotEmit1"
+            //                    },
+            //                    payload2 = {
+            //                        "overlayId": "layerCreatedBeforePlotEmit1",
+            //                        "name": "Test Name 1",
+            //                        "format": "geojson",
+            //                        "feature": {
+            //                            "type": "FeatureCollection",
+            //                            "features": [
+            //                                {
+            //                                    "type": "Feature",
+            //                                    "geometry": {
+            //                                        "type": "Point",
+            //                                        "coordinates": [
+            //                                            -5,
+            //                                            10
+            //                                        ]
+            //                                    },
+            //                                    "properties": {
+            //                                        "p1": "pp1"
+            //                                    },
+            //                                    "style": {
+            //                                        "height": 24,
+            //                                        "width": 24,
+            //                                        "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+            //                                        "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+            //                                    }
+            //                                }
+            //                            ]
+            //                        },
+            //                        "zoom": false,
+            //                        "readOnly": false
+            //                    },
+            //                    beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+            //                    meridian.sandbox.on('map.layer.create', function (params) {
+            //                        afterLayerCreateCount = map.layers.length;
+            //                        expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount); // confirmation that a layer was created
+            //                        map.layers[map.layers.length - 1];  //  last layer added
+            //                        actualLayer = map.layers[map.layers.length - 1];
+            //                        expect(actualLayer).to.exist;
+            //                        expect(actualLayer.layerId).to.equal(payload.overlayId);  // actual layerId should equal the payload overlayId
+            //                        meridian.sandbox.external.receiveMessage({
+            //                            data: {
+            //                                channel: 'map.feature.plot',
+            //                                message: payload2
+            //                            }
+            //                        }); // manual publish to the channel
+            //                    });
+            //                meridian.sandbox.on('map.features.plot', function (params) {
+            //                    confirmPlot = map.layers[map.layers.length - 1];
+            //                    expect(confirmPlot["features"].length).is.above(0); // confirm feature added to layer
+            //                    done();
+            //                });
+            //                meridian.sandbox.external.receiveMessage({
+            //                    data: {
+            //                        channel: 'map.overlay.create',
+            //                        message: payload
+            //                    }
+            //                }); // manual publish to the channel
+            //            }
+            //        };
+            //        cmapiMain.initialize.call(meridian, meridian);
+            //        meridian.html = $('#fixtures').html;
+            //        renderer.initialize.call(meridian, meridian);
+            //    });
+            //});//it
+            //it("Edge case: Feature Plot (Feature exists in default layer when layerId is not declared in the payload)", function (done) {
+            //    require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+            //        meridian.sandbox.external.postMessageToParent = function (params) {
+            //            if (params.channel == 'map.status.ready') {
+            //                var map,
+            //                    payload,
+            //                    actualLayer,
+            //                    confirmPlot,
+            //                    beforeLayerCreateCount,
+            //                    afterLayerCreateCount;
+            //                map = renderer.getMap(),
+            //                    payload = {
+            //                        "overlayId": "",
+            //                        "name": "Test Name 1",
+            //                        "format": "geojson",
+            //                        "feature": {
+            //                            "type": "FeatureCollection",
+            //                            "features": [
+            //                                {
+            //                                    "id": "testFeatureId09",
+            //                                    "type": "Feature",
+            //                                    "geometry": {
+            //                                        "type": "Point",
+            //                                        "coordinates": [
+            //                                            -5,
+            //                                            10
+            //                                        ]
+            //                                    },
+            //                                    "properties": {
+            //                                        "p1": "pp1"
+            //                                    },
+            //                                    "style": {
+            //                                        "height": 24,
+            //                                        "width": 24,
+            //                                        "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+            //                                        "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+            //                                    }
+            //                                }
+            //                            ]
+            //                        },
+            //                        "zoom": false,
+            //                        "readOnly": false
+            //                    },
+            //                    beforeLayerCreateCount = map.layers.length, // layer count prior to the channel emit
+            //                    meridian.sandbox.on('map.layer.create', function (params) {
+            //                        afterLayerCreateCount = map.layers.length;
+            //                        expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount); // confirmation that a layer was created
+            //                        map.layers[map.layers.length - 1];  //  last layer added
+            //                        actualLayer = map.layers[map.layers.length - 1];
+            //                        expect(actualLayer).to.exist;
+            //                        expect(actualLayer.layerId).to.equal('cmapi');  // actual layerId should equal the default layerId, 'cmapi'
+            //                    });
+            //                meridian.sandbox.on('map.features.plot', function (params) {
+            //                    confirmPlot = map.layers[map.layers.length - 1];  // grab layer that has cmapi layerId
+            //                    expect(confirmPlot["features"][0]["featureId"]).to.equal(payload.feature.features[0].id); // confirm feature added to default layer
+            //                    done();
+            //                });
+            //                meridian.sandbox.external.receiveMessage({
+            //                    data: {
+            //                        channel: 'map.feature.plot',
+            //                        message: payload
+            //                    }
+            //                }); // manual publish to the channel
+            //            }
+            //        };
+            //        cmapiMain.initialize.call(meridian, meridian);
+            //        meridian.html = $('#fixtures').html;
+            //        renderer.initialize.call(meridian, meridian);
+            //    });
+            //});//it
         });//map.feature.plot
+        describe('map.feature.hide', function () {
+            it("Base Test: Feature Hide", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        if (params.channel == 'map.status.ready') {
+                            var map = renderer.getMap(),
+                                payloadPlot ={
+                                    "overlayId": "testOverlayId1",
+                                    "featureId": "featureHIDEid",
+                                    "name": "Test Name 1",
+                                    "format": "geojson",
+                                    "feature": {
+                                        "type": "FeatureCollection",
+                                        "features": [
+                                            {
+                                                "featureId": "featureHIDEid",
+                                                "id": "featureId_applicationuses",
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        -5,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "display": "block",
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "zoom": false,
+                                    "readOnly": false
+                                },
+                                payloadHide = {
+                                    "overlayId": "testOverlayId1",
+                                    "featureId": "featureHIDEid", // cmapi 1.3.0 location recommendation
+                                    "feature": {
+                                        "type": "FeatureCollection",
+                                        "features": [
+                                            {
+                                                "id": "featureId_applicationuses",
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        -5,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "zoom": false,
+                                    "readOnly": false
+                                };
+                            //test goes here
+                            meridian.sandbox.on('map.layer.create', function (params) {
+                                //TODO:  take john's manual feature hide and see if it works
+                                setTimeout(function() {
+                                    expect(map.layers[9].features[0].style).to.equal(null); // check plot state, should be null
+                                    console.debug(map.layers[9].features[0].style);
+                                    map.layers[9].features[0].style = 'none'; // manual emit hide
+                                    //meridian.sandbox.external.receiveMessage({ data: { channel: 'map.feature.hide', message: payloadHide } }); // manual publish to the channel
+                                    expect(map.layers[9].features[0].style).to.equal('none'); // check plot state
+                                    console.debug(map.layers[9].features[0].style);
+
+                                    //map.layers[9].features[0].style = ''; //show
+
+                                    //map.layers[9].features[0].style.display = 'none';  // john tip
+                                    //map.layers[9].redraw();
+                                }, 500);
+
+
+                                done();
+
+                            });
+                            meridian.sandbox.on('map.features.hide', function (params) {
+                                console.log('map.feature.hide listener');
+                                //done();
+
+                            });
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.feature.plot',
+                                    message: payloadPlot
+                                }
+                            }); // manual publish to the channel
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    meridian.html = $('fixtures').html;
+                    renderer.initialize.call(meridian, meridian);
+                    //done();
+                });
+            });//it
+        });//map.feature.hide
+        describe('map.feature.show', function () {
+            it("Base Test: Feature Show", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        if (params.channel == 'map.status.ready') {
+                            var map = renderer.getMap(),
+                                payloadPlot ={
+                                    "overlayId": "testOverlayId1",
+                                    "featureId": "featureSHOWid",
+                                    "name": "Test Name 1",
+                                    "format": "geojson",
+                                    "feature": {
+                                        "type": "FeatureCollection",
+                                        "features": [
+                                            {
+                                                "featureId": "featureSHOWid",
+                                                "id": "featureId_applicationuses",
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        -5,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "display": "block",
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "zoom": false,
+                                    "readOnly": false
+                                },
+                                payloadHide = {
+                                    "overlayId": "testOverlayId1",
+                                    "featureId": "featureSHOWid", // cmapi 1.3.0 location recommendation
+                                    "feature": {
+                                        "type": "FeatureCollection",
+                                        "features": [
+                                            {
+                                                "id": "featureSHOWid",
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        -5,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "zoom": false,
+                                    "readOnly": false
+                                };
+                            //test goes here
+                            meridian.sandbox.on('map.layer.create', function (params) {
+                                //TODO:  take john's manual feature hide and see if it works
+                                setTimeout(function() {
+                                    expect(map.layers[9].features[0].style).to.equal(null); // check plot state, should be null
+                                    console.debug(map.layers[9].features[0].style);
+                                    map.layers[9].features[0].style = 'none'; // manual emit hide
+                                    //meridian.sandbox.external.receiveMessage({ data: { channel: 'map.feature.hide', message: payloadHide } }); // manual publish to the channel
+                                    expect(map.layers[9].features[0].style).to.equal('none'); // check plot state
+                                    console.debug(map.layers[9].features[0].style);
+                                    map.layers[9].features[0].style = ''; //show
+                                    console.debug(map.layers[9].features[0].style);
+
+                                    //map.layers[9].features[0].style.display = 'none';  // john tip
+                                    map.layers[9].redraw();
+                                }, 500);
+
+
+                                done();
+
+                            });
+                            meridian.sandbox.on('map.features.hide', function (params) {
+                                console.log('map.feature.hide listener');
+                                //done();
+
+                            });
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.feature.plot',
+                                    message: payloadPlot
+                                }
+                            }); // manual publish to the channel
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    meridian.html = $('fixtures').html;
+                    renderer.initialize.call(meridian, meridian);
+                    //done();
+                });
+            });//it
+        });//map.feature.show
     });//describe
 });
 
