@@ -121,6 +121,7 @@ define([
                     geometry.location.lat
                 ]
             },
+            type: 'Feature',
             properties: data,
             bbox: {
                 minLat: geometry.viewport.southwest.lat,
