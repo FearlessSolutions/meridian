@@ -455,7 +455,7 @@ define([
                                     //map.layers[9].features[0].style = ''; //show
 
                                     //map.layers[9].features[0].style.display = 'none';  // john tip
-                                    //map.layers[9].redraw();
+                                    map.layers[9].redraw();
                                 }, 500);
 
 
