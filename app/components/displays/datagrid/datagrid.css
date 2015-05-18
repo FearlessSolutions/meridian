@@ -97,3 +97,10 @@ div[data-aura-component='displays/datagrid'] #test-area{
     font-weight: bold;
     /*font-s*/
 }
+
+div[data-aura-component='displays/datagrid'] .slick-header-columns {
+    background-image: none;
+}
+div[data-aura-component='displays/datagrid'] .slick-pager {
+    background-image: none;
+}
