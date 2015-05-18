@@ -36,7 +36,7 @@ define([
                 center: [0,0],
                 zoom: 4,
                 minZoom: 2,
-                maxZoom: context.sandbox.mapConfiguration.maxAutoZoomLevel,
+                // maxZoom: context.sandbox.mapConfiguration.maxAutoZoomLevel,
                 inertia: true,
                 inertiaDeceleration: 3000,
                 inertiaMaxSpeed: 1500,
@@ -199,17 +199,13 @@ define([
          * Zoom In
          */
         zoomIn: function() {
-            mapNavigation.zoomIn({
-                "map": map
-            });
+            mapNavigation.zoomIn();
         },
         /**
          * Zoom Out
          */
         zoomOut: function() {
-            mapNavigation.zoomOut({
-                "map": map
-            });
+            mapNavigation.zoomOut();
         },
         /**
          * Zoom to Extent
@@ -221,7 +217,6 @@ define([
          */
         zoomToExtent: function(params) {
             mapNavigation.zoomToExtent({
-                "map": map,
                 "minLon": params.minLon,
                 "minLat": params.minLat,
                 "maxLon": params.maxLon,

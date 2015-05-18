@@ -57,6 +57,9 @@ define([
 
                 if(context.sandbox.stateManager.map.visualMode === 'cluster'){
                     if(clusterLayers.hasLayerId(params.layerId) === false){
+                        exposed.createVectorLayer({       
+                            'layerId': params.layerId      
+                        });
                     }
                     clusterLayers.addDataToLayer(params.layerId, geo);
                 }
