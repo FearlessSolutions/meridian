@@ -230,7 +230,6 @@ define([
          */
         zoomToLayer: function(params) {
             mapNavigation.zoomToLayer({
-                "map": map,
                 "layerId": params.layerId
             });
         },
@@ -242,7 +241,6 @@ define([
          */
         zoomToFeatures: function(params) {
             mapNavigation.zoomToFeatures({
-                "map": map,
                 "layerId": params.layerId,
                 "featureIds": params.featureIds
             });
@@ -265,7 +263,6 @@ define([
          */
         setCenter: function(params) {
             mapNavigation.setCenter({
-                "map": map,
                 "lat": params.lat,
                 "lon": params.lon
             });

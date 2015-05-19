@@ -20,6 +20,7 @@ define([
         init: function(thisContext, thisMap) {
             context = thisContext;
             map = thisMap;
+            //layer used to store editable layers.
             drawnItemsLayer = {};
             basemapLayers = {};
             featureStyles = {};
@@ -426,12 +427,7 @@ define([
                     baseLayer = L.tileLayer(basemap.leafUrl); //TODO config.basemap === basemap? or maybe a second paramater?
                     break;
                 case "wmts":
-                    baseLayer = L.tileLayer(basemap.leafUrl, {
-                        layer: basemap.layer || null,
-                        style: basemap.style, //Don't see this?
-                        format: basemap.format || 'image/jpeg',
-                        tileSize: basemap.tileWidth || config.defaultTileWidth//the plugin uses only one size for both width and height.
-                    });
+                    baseLayer = L.tileLayer(basemap.leafUrl);
                     break;
                 default:
                     context.sandbox.logger.error('Did not load basemap. No support for basemap type:', basemap.type);
