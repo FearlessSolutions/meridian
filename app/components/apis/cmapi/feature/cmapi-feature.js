@@ -80,10 +80,11 @@ define([
             });    
         }
         var test = message.feature.features;
+        console.debug(test.length);
 
-        for (var  i = 0; i < test.length; i++) {
-            message.feature.features[i].id = message.feature.features[i].id + context.sandbox.sessionId;
-            break;
+        for (var  i = 0, rowLen = message.feature.features.length; i < rowLen; i++) {
+            message.feature.features[i]['id'] = message.feature.features[i]['id'] + context.sandbox.sessionId;
+            console.log(i + 'test');
         }
         //plot feature(s) from payload
         mediator.plotFeatures({

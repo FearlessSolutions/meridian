@@ -87,6 +87,26 @@ define([
                                                 icon: 'https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png',
                                                 iconLarge: 'https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png'
                                             }
+                                        },
+                                        {
+                                            id: 'featureId2_',
+                                            type: 'Feature',
+                                            geometry: {
+                                                type: 'Point',
+                                                coordinates: [
+                                                    -7,
+                                                    12
+                                                ]
+                                            },
+                                            properties: {
+                                                p1: 'pp1'
+                                            },
+                                            style: {
+                                                height: 24,
+                                                width: 24,
+                                                icon: 'https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png',
+                                                iconLarge: 'https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png'
+                                            }
                                         }
                                     ]
                                 },
