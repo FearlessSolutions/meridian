@@ -100,6 +100,7 @@ define([
                         "type":"FeatureCollection",
                         "features":[
                             {
+                                "id": "testSessionID",
                                 "type": "Feature",
                                 "geometry": {
                                     "type": "Point",

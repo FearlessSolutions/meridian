@@ -79,11 +79,20 @@ define([
                 selectable: false //TODO remove when select is re-implemented
             });    
         }
-        
+        var test = message.feature.features;
+
+        for (var  i = 0; i < test.length; i++) {
+            message.feature.features[i].id = message.feature.features[i].id + context.sandbox.sessionId;
+            break;
+        }
         //plot feature(s) from payload
         mediator.plotFeatures({
             layerId: layerId,
             data: message.feature.features
+            //data: message.feature.features[{
+            //    type: "test"
+            //}]
+
         });    
 
         //zoom to feature if specified in payload
