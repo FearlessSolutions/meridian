@@ -22,6 +22,7 @@ define([
             var layerId = params.layerId,
                 name = params.name,
                 coords = params.coords,
+                shapeId = context.sandbox.utils.UUID();
                 thumnailURL;
 
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
@@ -31,7 +32,7 @@ define([
                     thumnailURL = context.sandbox.snapshot.thumbnailURL(coords);
 
                     publisher.createLayer({
-                        layerId: layerId + '_aoi',
+                        layerId: layerId,
                         name: name + '_aoi',
                         initialVisibility: true,
                         styleMap: {
@@ -45,18 +46,13 @@ define([
                         }
                     });
 
-                    publisher.setLayerIndex({
-                        layerId: layerId + '_aoi',
-                        layerIndex: 0
-                    });
-
                     publisher.plotFeatures({
-                        layerId: layerId + '_aoi',
+                        layerId: layerId,
                         data: [{
-                            layerId: layerId + '_aoi',
-                            featureId: '_aoi',
+                            layerId: layerId,
+                            featureId: shapeId,
                             dataService: '',
-                            id: '_aoi',
+                            id: shapeId + '_aoi',
                             geometry: {
                                 type: 'Polygon',
                                 coordinates: [[
