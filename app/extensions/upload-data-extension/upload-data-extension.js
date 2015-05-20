@@ -11,22 +11,11 @@ define([
 
     var exposed = {
         initialize: function(app) {
-            var datasource;
             context = app;
             DATASOURCE_NAME = configuration.DATASOURCE_NAME;
 
             app.sandbox.utils.addCSS(uploadDataInfoWinCSS, 'upload-data-extension-style');
 
-            //Add datasource information to the sandbox
-            if(!app.sandbox.datasources){
-                app.sandbox.datasources = [];
-            }
-
-            datasource = {
-                DATASOURCE_NAME: configuration.DATASOURCE_NAME,
-                DISPLAY_NAME: configuration.DISPLAY_NAME
-            };
-            app.sandbox.datasources.push(datasource);
 
             if (!app.sandbox.dataServices) {
                 app.sandbox.dataServices = {};

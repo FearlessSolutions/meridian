@@ -71,11 +71,13 @@ define([
          * @param callback
          */
         checkFileHead: function(datasetIds, callback){
-            var suffix = '?ids=' + datasetIds.join();
+            var suffix = $.param({
+                ids: datasetIds
+            });
 
             context.sandbox.utils.ajax({
                 type: 'HEAD' ,
-                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.*' + suffix,
+                url: context.sandbox.utils.getCurrentNodeJSEndpoint() + '/export/file?' + suffix,
                 cache: false
             })
                 .done(function(responseText, status, jqXHR) {
@@ -96,9 +98,19 @@ define([
                     }, null);
                 });
         },
-        getFileExportUrl: function(datasetIds, fileType){
-            var suffix = '?ids=' + datasetIds.join();
-            return context.sandbox.utils.getCurrentNodeJSEndpoint() + '/results.' + fileType + suffix;
+        getFileExportUrl: function(datasetIds, filename, fileType){
+            var query;
+
+            //Make sure the file ends with the correct type, case insensitive
+            if(! context.sandbox.utils.endsWith(filename.toLowerCase(), '.' + fileType.toLowerCase())){
+                filename += '.' + fileType;
+            }
+            query = $.param({
+                filename: filename,
+                ids: datasetIds
+            });
+
+            return context.sandbox.utils.getCurrentNodeJSEndpoint() + '/export/file/' + fileType + '?' + query;
         },
         verifyOnlyPointsInLayer: function(layerIds){
             var valid = true;
@@ -120,6 +132,14 @@ define([
             });
 
             return valid;
+        },
+        /**
+         * Make sure that the given filename could be saved
+         * @param filename
+         * @returns {Array|{index: number, input: string}|*}
+         */
+        validateFilename: function(filename){
+            return filename.match(/[\\/:*?"<>|&]/) ? false : true;
         },
         verifyFeatureIsPoint: function(feature){
             return feature.attributes.geometry.type === 'Point' ;
