@@ -66,9 +66,8 @@ define([
     function plotFeatures(message) {
         var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId,
             featureIndex,
-            uuid,
-            sessionId,
-            fId;
+            fId,
+            sessionId = context.sandbox.sessionId;
 
         //check if layer exsist, if not create it
         if(!context.sandbox.dataStorage.datasets[layerId]) {
@@ -84,20 +83,18 @@ define([
             });    
         }
 
-        //for (var  i = 0, fLen = message.feature.features.length; i < fLen; i++) {
-        //    message.feature.features[i]['id'] = message.feature.features[i]['id'] + context.sandbox.sessionId;
-        //    console.log(i + 'test');
-        //}
-        // .each version
         featureIndex = message.feature.features;
-        sessionId = context.sandbox.sessionId;
-        uuid = context.sandbox.utils.UUID();
 
-        context.sandbox.utils.each(featureIndex, function(index) {
-            fId = featureIndex[index]['properties']['featureId'];
-            fId = fId || uuid;
-            fId = fId + sessionId;
-            console.debug(fId);
+        context.sandbox.utils.each(featureIndex, function(index, feature) {
+            if(!feature.properties){
+                feature.properties = {};
+            }
+
+            fId = feature.properties.featureId || context.sandbox.utils.UUID();
+            fId += sessionId;
+            feature.properties.featureId = fId;
+
+            console.log(feature.properties.featureId);
         });
 
         //plot feature(s) from payload
