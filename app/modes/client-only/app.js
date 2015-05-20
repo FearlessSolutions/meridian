@@ -93,14 +93,18 @@ require(['jquery', 'aura/aura', 'meridian-config'], function($, Aura, configurat
     .use('extensions/session-extension/session-extension')
     .use('extensions/external-pubsub-extension/external-pubsub-extension')
     .use('extensions/state-manager-extension/state-manager-extension')
-    .use('extensions/data-storage-extension/data-storage-extension')
+    .use('extensions/data-storage-client-extension/data-storage-client-extension')
     .use('extensions/map-configuration-extension/map-configuration-extension')
     .use('extensions/user-settings-extension/user-settings-extension')
     .use('extensions/icon-extension/icon-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
 
-    .start({ components: 'body' })
+     .start({ components: 'body' })
     .then(function(){
+        $('#left-side-menu').css('display','table').animate({
+            left: "0px"
+          }, 500);
+        $('#loading').remove();
     });
 
 });

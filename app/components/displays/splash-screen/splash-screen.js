@@ -2,7 +2,7 @@ define([
     'bootstrap'
 ], function () {
 
-    var context;
+    var context, mediator;
 	
     var exposed = {
         init: function(thisContext) {
