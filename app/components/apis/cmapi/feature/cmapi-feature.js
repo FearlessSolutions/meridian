@@ -64,7 +64,11 @@ define([
     };
 
     function plotFeatures(message) {
-        var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId;
+        var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId,
+            featureIndex,
+            uuid,
+            sessionId,
+            fId;
 
         //check if layer exsist, if not create it
         if(!context.sandbox.dataStorage.datasets[layerId]) {
@@ -79,21 +83,27 @@ define([
                 selectable: false //TODO remove when select is re-implemented
             });    
         }
-        var test = message.feature.features;
-        console.debug(test.length);
 
-        for (var  i = 0, rowLen = message.feature.features.length; i < rowLen; i++) {
-            message.feature.features[i]['id'] = message.feature.features[i]['id'] + context.sandbox.sessionId;
-            console.log(i + 'test');
-        }
+        //for (var  i = 0, fLen = message.feature.features.length; i < fLen; i++) {
+        //    message.feature.features[i]['id'] = message.feature.features[i]['id'] + context.sandbox.sessionId;
+        //    console.log(i + 'test');
+        //}
+        // .each version
+        featureIndex = message.feature.features;
+        sessionId = context.sandbox.sessionId;
+        uuid = context.sandbox.utils.UUID();
+
+        context.sandbox.utils.each(featureIndex, function(index) {
+            fId = featureIndex[index]['properties']['featureId'];
+            fId = fId || uuid;
+            fId = fId + sessionId;
+            console.debug(fId);
+        });
+
         //plot feature(s) from payload
         mediator.plotFeatures({
             layerId: layerId,
             data: message.feature.features
-            //data: message.feature.features[{
-            //    type: "test"
-            //}]
-
         });    
 
         //zoom to feature if specified in payload

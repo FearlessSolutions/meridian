@@ -62,14 +62,12 @@ define([
                             map = renderer.getMap();
                             payload = {
                                 overlayId: 'testOverlayId1',
-                                featureId: 'theCMAPIfeatureId_loc',
                                 name: 'Test Name 1',
                                 format: 'geojson',
                                 feature: {
                                     type: 'FeatureCollection',
                                     features: [
                                         {
-                                            id: 'featureId_',
                                             type: 'Feature',
                                             geometry: {
                                                 type: 'Point',
@@ -79,6 +77,7 @@ define([
                                                 ]
                                             },
                                             properties: {
+                                                featureId:'featureId01_',
                                                 p1: 'pp1'
                                             },
                                             style: {
@@ -89,7 +88,6 @@ define([
                                             }
                                         },
                                         {
-                                            id: 'featureId2_',
                                             type: 'Feature',
                                             geometry: {
                                                 type: 'Point',
@@ -99,6 +97,7 @@ define([
                                                 ]
                                             },
                                             properties: {
+                                                featureId: '',
                                                 p1: 'pp1'
                                             },
                                             style: {
