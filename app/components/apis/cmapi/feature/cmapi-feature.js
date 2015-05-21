@@ -93,6 +93,7 @@ define([
             fId = feature.properties.featureId || context.sandbox.utils.UUID();
             fId += sessionId;
             feature.properties.featureId = fId;
+            //feature.id = fId;
 
             console.log(feature.properties.featureId);
         });
