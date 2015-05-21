@@ -216,7 +216,7 @@ define([
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
-            it('Edge Case: Feature Plot (no featureId, sessionId string check)', function (done) {
+            it('Edge case: Feature Plot (no featureId, sessionId string check)', function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,

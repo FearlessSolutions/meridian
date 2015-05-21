@@ -118,7 +118,7 @@ define([
                 });
             });//it
 
-            it('Edge Case: Set zoom level to zero, check zoom level after the channel emit', function (done) {
+            it('Edge case: Set zoom level to zero, check zoom level after the channel emit', function (done) {
                 this.timeout(5000);
                 var passed = true,
                     map;
