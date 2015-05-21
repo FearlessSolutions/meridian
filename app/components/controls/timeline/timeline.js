@@ -31,21 +31,6 @@ define([
 
                     thumnailURL = context.sandbox.snapshot.thumbnailURL(coords);
 
-                    publisher.createLayer({
-                        layerId: layerId + '_aoi',//this has to be diff to layerId for logic to work.
-                        name: name + '_aoi',
-                        initialVisibility: true,
-                        styleMap: {
-                            default: {
-                                strokeColor: '#000',
-                                strokeOpacity: 0.3,
-                                strokeWidth: 2,
-                                fillColor: 'gray',
-                                fillOpacity: 0.3
-                            }
-                        }
-                    });
-
                     publisher.plotFeatures({
                         layerId: layerId,
                         data: [{
