@@ -22,7 +22,7 @@ define([
             var layerId = params.layerId,
                 name = params.name,
                 coords = params.coords,
-                shapeId = context.sandbox.utils.UUID();
+                shapeId = context.sandbox.utils.UUID(),
                 thumnailURL;
 
             if(context.sandbox.dataStorage.datasets[params.layerId]) {
@@ -32,7 +32,7 @@ define([
                     thumnailURL = context.sandbox.snapshot.thumbnailURL(coords);
 
                     publisher.createLayer({
-                        layerId: layerId,
+                        layerId: layerId + '_aoi',//this has to be diff to layerId for logic to work.
                         name: name + '_aoi',
                         initialVisibility: true,
                         styleMap: {
