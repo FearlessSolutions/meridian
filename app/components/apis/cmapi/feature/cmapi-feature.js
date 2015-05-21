@@ -89,13 +89,12 @@ define([
             if(!feature.properties){
                 feature.properties = {};
             }
-
             fId = feature.properties.featureId || context.sandbox.utils.UUID();
             fId += sessionId;
-            feature.properties.featureId = fId;
-            //feature.id = fId;
 
-            console.log(feature.properties.featureId);
+            feature.id = fId;
+            feature.properties.featureId = fId;
+            feature.dataService = context.sandbox.cmapi.DATASOURCE_NAME;
         });
 
         //plot feature(s) from payload
