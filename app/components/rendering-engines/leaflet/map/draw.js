@@ -1,9 +1,7 @@
 define([
     './../map-api-publisher',
-    './layers',
     './../libs/draw/leaflet.draw-src'
 ], function(publisher) {
-    // Setup context for storing the context of 'this' from the component's main.js 
     var context,
         map,
         drawControl;
@@ -12,6 +10,7 @@ define([
         /**
          * Initialize Draw.js
          * @param  {object} thisContext Aura's sandboxed 'this'
+         * @param {object} Reference to the Map object.
          */
         init: function(thisContext, thisMap) {
             context = thisContext;
@@ -30,38 +29,8 @@ define([
         /**
          * Activate Drawing
          * @param  {object} params Parameters JSON
-         * @param {object} map the map object
-         * @param {string} params.layerId the layerId
-         * @param {integer} params.sides the number of sides on the polygon
-         * @param {boolean} params.irregular true if sides can be of differing length
          */
-        startDrawing: function(params) {
-            
-            // TODO: add switch for points and lines, along with the polygon support
-            // var polygonSides,
-            //     polygonIrregular,
-            //     drawLayer = map.getLayersBy('layerId', params.layerId)[0];
-
-            // if(!drawControl) {
-            //     polygonSides = params.sides || 4;
-            //     polygonIrregular = params.irregular || true;
-
-            //     drawControl = new OpenLayers.Control.DrawFeature(
-            //         drawLayer,
-            //         OpenLayers.Handler.RegularPolygon, {
-            //             "handlerOptions": {
-            //                 "sides": polygonSides,
-            //                 "irregular": polygonIrregular
-            //             }
-            //         }
-            //     );
-
-            //     drawControl.id = 'drawControl';
-            //     map.addControls([drawControl]);
-            // }
-            
-            // drawControl.activate();
-
+        enableDrawing: function(params) {
             // var options = {
             //         rectangle:{
             //             shapeOptions:{
@@ -72,16 +41,17 @@ define([
             //             }
             //         }
             // };
-            var a = new L.Draw.Rectangle(map, context.sandbox.mapConfiguration.shapeStyles.rectangle).enable();
-            // map.on('draw:drawstop', function(e){
-            //     alert('stopped drawing');
-            //     console.debug(e);
-            //     a.addTo(drawnItemsLayer);
-            // });
-
-
-
-
+            drawControl = new L.Draw.Rectangle(map, context.sandbox.mapConfiguration.shapeStyles.rectangle);
+            drawControl.enable();
+        },
+        /**
+         * Deactivate Drawing
+         * @param  {object} params Parameters JSON
+         */
+        disableDrawing: function(params) {
+            if(drawControl){
+                drawControl.disable();
+            }
         }
     };
     return exposed;

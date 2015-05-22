@@ -20,8 +20,6 @@ define([
         init: function(thisContext, thisMap) {
             context = thisContext;
             map = thisMap;
-            //layer used to store editable layers.
-            drawnItemsLayer = {};
             basemapLayers = {};
             featureStyles = {};
             clusterStyles = {};
@@ -32,8 +30,8 @@ define([
                 basemap: config.defaultBaseMap
             });
 
-            createViewLayers();
-            createDrawLayer();
+            createLayerGroups();
+            
         },
         plotFeatures: function(params){
             context.sandbox.util.each(params.data, function(index, obj){
@@ -50,21 +48,24 @@ define([
                         }
                     },
                     style: function(feature){
+                        //this need to be more dynamic when other shapes are allowed, 
+                        //unless all shapes will have the same style.
                         return config.shapeStyles.rectangle.shapeOptions;
                     }
                 });
 
 
-
-                if(context.sandbox.stateManager.map.visualMode === 'cluster'){
-                    if(clusterLayers.hasLayerId(params.layerId) === false){
-                        exposed.createVectorLayer({       
-                            'layerId': params.layerId      
-                        });
-                    }
-                    clusterLayers.addDataToLayer(params.layerId, geo);
+                if(params.layerId === 'static_shape'){
+                    addLayerWithId(drawnItemsLayer, params.layerId, geo);
+                }
+                else if(params.layerId === 'static_geolocator'){
+                    addLayerWithId(singlePointLayer, params.layerId, geo);
+                }
+                else if(context.sandbox.stateManager.map.visualMode === 'cluster'){
+                    addLayerWithId(clusterLayers, params.layerId, geo);
                 }
                 else if(context.sandbox.stateManager.map.visualMode === 'heatmap'){
+                    addLayerWithId(heatLayers, params.layerId, geo);
 
                 } else{//for single points
 
@@ -73,18 +74,23 @@ define([
             });
         },
         clearDrawing: function(params){
-            drawnItemsLayer.clearLayers();
+            //drawnItemsLayer.clearLayers();
         },
-
-        createVectorLayer: function(params) {
-            if(context.sandbox.stateManager.map.visualMode === 'cluster'){
+        //Create layer with given layer id and add it in the corresponding layer group.
+        createLayer: function(params) {
+            if(params.layerId === 'static_shape'){
+                drawnItemsLayer.addLayer(params.layerId, new L.FeatureGroup());
+            }
+            else if(params.layerId === 'static_geolocator'){
+                singlePointLayer.addLayer(params.layerId, new L.FeatureGroup());
+            }
+            else if(context.sandbox.stateManager.map.visualMode === 'cluster'){
                 clusterLayers.addLayer(params.layerId, new L.MarkerClusterGroup({
                         maxClusterRadius: config.clustering.thresholds.clustering.distance
                     })
                 );
-
             } else if( context.sandbox.stateManager.map.visualMode === 'heatmap'){
-                
+
             } else {
 
             }
@@ -415,7 +421,6 @@ define([
                 context.sandbox.stateManager.map.visualMode = params.mode;
             }
         }
-
     };
 
     function loadBasemaps(){
@@ -439,14 +444,28 @@ define([
         });
     }
 
-    function createViewLayers(){
+    //creates layergroup if layerId is not found.
+    function addLayerWithId(layer, layerId, data){
+        if(layer.hasLayerId(layerId) === false){
+            exposed.createLayer({       
+                'layerId': layerId      
+            });
+        }
+        layer.addDataToLayer(layerId, data);
+        console.debug('layer: ', layer);
+    }
+
+    function createLayerGroups(){
         singlePointLayer = new L.featureIdGroup();
         clusterLayers = new L.featureIdGroup();
         heatLayers = new L.featureIdGroup();
+        drawnItemsLayer = new L.featureIdGroup();
+       
 
         map.addLayer(clusterLayers);
         map.addLayer(heatLayers);
         map.addLayer(singlePointLayer);
+        map.addLayer(drawnItemsLayer);
 
         // var geolocatorParams,
         //     geolocatorLayer,
@@ -527,12 +546,7 @@ define([
         // });
     }
 
-    function createDrawLayer(){
-        drawnItemsLayer = new L.FeatureGroup();
-        map.addLayer(drawnItemsLayer);
-        return drawnItemsLayer;
-    }
-
+    
     /**
      * Add mouse position listener
      * @param params

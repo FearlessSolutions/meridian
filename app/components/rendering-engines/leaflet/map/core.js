@@ -271,17 +271,14 @@ define([
          * Start Drawing on Static Drawing Layer
          */
         startDrawing: function() {
-            mapDraw.startDrawing({
-                "map": map,
-            });
+            mapDraw.enableDrawing();
         },
         /**
          * Clear Features on Static Drawing Layer
          */
         clearDrawing: function() {
-            mapLayers.clearDrawing({
-                "map": map,
-            });
+            mapDraw.disableDrawing();
+            mapLayers.clearDrawing();
         },
         /**
          * Create Layer
@@ -298,7 +295,6 @@ define([
                     "layerId": params.layerId
                 };
             layerOptions.map = map;
-            //mapClustering.addClusteringToLayerOptions(layerOptions);
 
             // If a symbolizers were provided, overwrite the default symbolizers from clustering
             if(params.symbolizers) {
@@ -313,15 +309,8 @@ define([
             if(params.selectable) {
                 layerOptions.selectable = params.selectable;
             }
-           // console.debug(params.layerId);
-            //console.debug(params.layerId.indexOf("_aoi"));
-
-            if(params.layerId.indexOf("_aoi") !== -1){
-                //remove the _aoi at the end of the layerId
-                var tempStr = params.layerId.split('_aoi');
-                layerOptions.layerId = tempStr[0];
-            }
-            mapLayers.createVectorLayer(layerOptions);
+           
+            mapLayers.createLayer(layerOptions);
             // mapLayers.addEventListenersToLayer({
             //     "map": map,
             //     "layer": newLayer,

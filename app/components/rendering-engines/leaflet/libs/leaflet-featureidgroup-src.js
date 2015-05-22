@@ -24,23 +24,13 @@ L.FeatureIdGroup = L.FeatureGroup.extend({
 	addDataToLayer: function(layerId, dataLayer){
 		//cant reference variable inside the for-loop.
 		var featureGroup = this._featuresById;
-
 		//get the encapsulating layer and use its native addLayer to
 		//include the provided layer.
 		this._layersById[layerId].addLayer(dataLayer);
 
 		if(dataLayer instanceof L.GeoJSON){
 			dataLayer.eachLayer(function(geo){
-				if(geo.feature.geometry.type !== 'Point'){
-					//shapes have featureId as _aoi. using layerId for now since only one shape
-					//can be drawn by layer. When mutiple shapes can be drawn, we need to send different ids
-					//for each shape. 
-					featureGroup[layerId] = geo;	
-				}
-				else{
-					featureGroup[geo.feature.featureId] = geo;
-				}
-				
+				featureGroup[geo.feature.featureId] = geo;
 			});
 		}
 
