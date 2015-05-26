@@ -68,24 +68,18 @@ define([
             featureIndex,
             fId,
             sessionId = context.sandbox.sessionId,
-            DATASOURCE_NAME = 'cmapi',
-            //new
             newData = [],
-            keys = context.sandbox.cmapi.keys,
             newKeys = {};
 
         //check if layer exist, if not create it
         if(!context.sandbox.dataStorage.datasets[layerId]) {
             //create new layer with overlayId provided
-
             context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
             context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
             context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
 
             mediator.createLayer({
                 layerId: layerId,
-                //selectable: false //TODO remove when select is re-implemented
-                // new
                 name: message.name || layerId,
                 selectable: true,
                 coords: message.coords
@@ -107,40 +101,39 @@ define([
             }
             fId = feature.properties.featureId || context.sandbox.utils.UUID();
             fId += sessionId;
+
             var newValue = {
-                // original
-                //fId = feature.properties.featureId || context.sandbox.utils.UUID();
-                //fId += sessionId;
-                //
-                //feature.id = fId;
-                //feature.properties.featureId = fId;
-                //feature.dataService = context.sandbox.cmapi.DATASOURCE_NAME;
                 dataService: context.sandbox.cmapi.DATASOURCE_NAME,
                 layerId: message.overlayId,
                 id: fId,
                 geometry: feature.geometry,
                 type: feature.type,
                 properties: feature.properties,
-                lat: feature.geometry.coordinates[1],
-                lon: feature.geometry.coordinates[0],
                 featureId: fId
             }
-            //console.debug(newValue);
 
-            if(keys){
-                //For each of the keys required, if that property exists in the feature, hoist it
-                //and give it the specified header name
-                context.sandbox.utils.each(keys, function(index, keyMetadata){
-                    if(feature.properties[keyMetadata.property] !== undefined){
-                        newValue[keyMetadata.property] = feature.properties[keyMetadata.property];
-                        if(!newKeys[keyMetadata.property]){
-                            newKeys[keyMetadata.property] = keyMetadata;
-                        }
+            context.sandbox.utils.each(feature.properties, function(key, value){
+                newValue[key] = value;
+
+                if(!newKeys[key]){
+                    newKeys[key] = {
+                        property: key,
+                        displayName: key,
+                        weight: 50
                     }
-                });
-            }
+                }
+            });
 
-            //featureIndex[dataindex].dataService = 'cmapi';
+            delete newValue.layerId;
+
+            if(feature.geometry.type === 'Point') {
+                // Adding fields for lat/lon for other components to use
+                newValue.lat = feature.geometry.coordinates[1];
+                newValue.lon = feature.geometry.coordinates[0];
+            } else {
+                newValue.lat = 'N/A';
+                newValue.lon = 'N/A';
+            }
 
             context.sandbox.dataStorage.addData({
                 datasetId: layerId,
@@ -166,7 +159,6 @@ define([
         //plot feature(s) from payload
         mediator.plotFeatures({
             layerId: layerId,
-            //data: message.feature.features
             data: newData
         });    
 
