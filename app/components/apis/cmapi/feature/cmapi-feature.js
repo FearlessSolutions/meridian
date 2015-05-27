@@ -104,7 +104,7 @@ define([
 
             var newValue = {
                 dataService: context.sandbox.cmapi.DATASOURCE_NAME,
-                layerId: message.overlayId,
+                layerId: layerId,
                 id: fId,
                 geometry: feature.geometry,
                 type: feature.type,
