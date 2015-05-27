@@ -9,6 +9,7 @@ define([
         $maxLat,
         $minLon,
         $minLat,
+        tempQueryShapes,
         isActive;
 
     var exposed = {
@@ -20,6 +21,7 @@ define([
             $minLat = context.$('.query-form #query-location-minLat');
             $maxLon = context.$('.query-form #query-location-maxLon');
             $maxLat = context.$('.query-form #query-location-maxLat');
+            tempQueryShapes = [];
 
             $modal.modal({
                 backdrop: 'static',
@@ -145,8 +147,6 @@ define([
             } else {
                 //TODO Publish that the menu is opening (if it is)
                 $modal.modal('toggle');
-
-                publisher.removeBBox();
                 exposed.populateCoordinates(context.sandbox.stateManager.getMapExtent());
             }
         },
@@ -156,6 +156,30 @@ define([
         },
         bboxAdded: function(params) {
             if (isActive) {
+                //keep track of the shapes drawn for the query.
+                tempQueryShapes.push(params.shapeId);
+                //plot the shape so it can appear in the map while the user inputs
+                //more information on the query tool/ or add additional shapes (future feature).
+                publisher.plotFeatures({
+                    layerId: 'static_shape',
+                    data: [{
+                        layerId: 'static_shape',
+                        featureId: params.shapeId,
+                        dataService: '',
+                        id: params.shapeId,
+                        geometry: {
+                            type: 'Polygon',
+                            coordinates: [[
+                                [params.minLon, params.maxLat],
+                                [params.maxLon, params.maxLat],
+                                [params.maxLon, params.minLat],
+                                [params.minLon, params.minLat]
+                            ]]
+                        },
+                        type: 'Feature'
+                    }]
+                });
+
                 $modal.modal('show');
                 exposed.populateCoordinates(params);
             };
@@ -199,7 +223,9 @@ define([
 
     function closeMenu(){
         $modal.modal('hide');
-        publisher.removeBBox();
+        publisher.removeShapes({
+            "shapes": tempQueryShapes
+        });
     }
 
     return exposed;

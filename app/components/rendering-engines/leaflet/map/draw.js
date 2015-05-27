@@ -17,8 +17,10 @@ define([
             map = thisMap;
 
             map.on('draw:created', function(e){
+                var uniqueId = context.sandbox.utils.UUID();
                 // e.layer.addTo(params.drawnItemsLayer);
                 publisher.stopDrawing({
+                    shapeId: uniqueId + '_aoi',
                     minLon: e.layer.getBounds().getWest(),
                     minLat: e.layer.getBounds().getSouth(),
                     maxLon: e.layer.getBounds().getEast(),

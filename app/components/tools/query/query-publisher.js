@@ -12,11 +12,14 @@ define([
         publishOpening: function(params){
             context.sandbox.emit('menu.opening', params);
         },
+        plotFeatures: function(params) {
+            context.sandbox.emit('map.features.plot', params);
+        },
         drawBBox: function() {
             context.sandbox.emit('map.draw.start');
         },
-        removeBBox: function() {
-            context.sandbox.emit('map.draw.clear');
+        removeShapes: function() {
+            context.sandbox.emit('map.draw.removeShape', params);
         },
         executeQuery: function(params) {
             context.sandbox.emit('query.execute', params);

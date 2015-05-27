@@ -796,7 +796,7 @@
         }
 
         //if no precision is provided, set precision to 2.
-        precision = precision ? precision: 2;
+        precision = precision ? precision: null;
 
         // remove 500,000 meter offset for longitude
         xUTM = parseFloat(UTMEasting) - EASTING_OFFSET; 
