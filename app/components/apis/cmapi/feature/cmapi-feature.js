@@ -70,8 +70,9 @@ define([
             sessionId = context.sandbox.sessionId,
             newData = [],
             newKeys = {};
+        layerId += sessionId;
 
-        //check if layer exist, if not create it
+        //check if layer exists, if not create it
         if(!context.sandbox.dataStorage.datasets[layerId]) {
             //create new layer with overlayId provided
             context.sandbox.dataStorage.datasets[layerId] = new Backbone.Collection();
@@ -81,7 +82,8 @@ define([
             mediator.createLayer({
                 layerId: layerId,
                 name: message.name || layerId,
-                selectable: true,
+                selectable: false,
+                //selectable: true, //TODO This will only work if 1) we keep renderer as is, and save it to server OR 2) we change the renderer
                 coords: message.coords
             });    
         }
@@ -96,21 +98,21 @@ define([
         featureIndex = message.feature.features;
 
         context.sandbox.utils.each(featureIndex, function(dataindex, feature) {
+            var newValue;
             if(!feature.properties){
                 feature.properties = {};
             }
             fId = feature.properties.featureId || context.sandbox.utils.UUID();
-            fId += sessionId;
+            fId += sessionId; //Make it unique over different sessions.
 
-            var newValue = {
+            newValue = {
                 dataService: context.sandbox.cmapi.DATASOURCE_NAME,
-                layerId: layerId,
                 id: fId,
                 geometry: feature.geometry,
                 type: feature.type,
                 properties: feature.properties,
                 featureId: fId
-            }
+            };
 
             context.sandbox.utils.each(feature.properties, function(key, value){
                 newValue[key] = value;
@@ -123,8 +125,6 @@ define([
                     }
                 }
             });
-
-            delete newValue.layerId;
 
             if(feature.geometry.type === 'Point') {
                 // Adding fields for lat/lon for other components to use

@@ -36,6 +36,7 @@ define([
          */
 		"map.overlay.create": function(message) {
             var layerId =  message.overlayId || defaultLayerId;
+            layerId += context.sandbox.sessionId;
 
             //TODO Selectable functionality was removed. Add it back.
 			if(message === '') {
