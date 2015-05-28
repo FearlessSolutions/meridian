@@ -63,7 +63,7 @@ define([
                             map = renderer.getMap();
                             payload = {
                                 name: 'Test Name 1',  // can't check name, because it isn't saved in OL
-                                overlayId: 'testOverlayId1',
+                                overlayId: 'basetestCreateLayer',
                                 coords: {
                                     minLat: '7.602108',
                                     minLon: '-13.908691',
@@ -152,7 +152,7 @@ define([
                             map = renderer.getMap();
                             payload = {
                                 name: 'Test Name 1',  // can't check name, because it isn't saved in OL
-                                overlayId: 'testOverlayId1'
+                                overlayId: 'edgecaseCreateLayer_nocoords'
                             };
                             beforeLayerCount = map.layers.length; // layer count prior to the channel emit
 
@@ -197,7 +197,7 @@ define([
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             payload = {
-                                overlayId: 'testOverlayId1'
+                                overlayId: 'basetestRemoveLayer'
                             };
                             beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             function layerCheck(layerExists, params) {
@@ -205,7 +205,7 @@ define([
                                 mapLayers = params;
 
                                 for (i = 0, len = mapLayers.length; i < len; i++) {
-                                    if (mapLayers[i].layerId === 'testOverlayId1') {
+                                    if (mapLayers[i].layerId === 'basetestRemoveLayer') {
                                         index = i;
                                         break;
                                     }
@@ -219,7 +219,7 @@ define([
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 afterLayerCreateCount = map.layers.length;
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
-                                expect(map.layers[map.layers.length - 1]['layerId']).to.equal(payload.overlayId); // confirms that Id is the overlayId value from the payload
+                                expect(map.layers[map.layers.length - 1]['layerId']).to.equal(payload.overlayId + meridian.sandbox.sessionId); // confirms that Id is the overlayId value from the payload
                                 layerCheck(true, map.layers);
                             });
                             meridian.sandbox.on('map.layer.delete', function (params) {
@@ -264,7 +264,7 @@ define([
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             payload = {
-                                overlayId: 'testOverlayId1'
+                                overlayId: 'edgecaseRemoveLayer_multiplelayeradded'
                             };
                             beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             function layerCheck(layerExists, params) {
@@ -272,7 +272,7 @@ define([
                                 mapLayers = params;
 
                                 for (i = 0, len = mapLayers.length; i < len; i++) {
-                                    if (mapLayers[i].layerId === 'testOverlayId1') {
+                                    if (mapLayers[i].layerId === 'edgecaseRemoveLayer_multiplelayeradded') {
                                         index = i;
                                         break;
                                     }
@@ -330,7 +330,7 @@ define([
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             payload = {
-                                overlayId: 'baseTestHIDE_LAYER'
+                                overlayId: 'baseTestHideLayer'
                             };
                             beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
 
@@ -339,7 +339,7 @@ define([
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 targetLayer = map.layers[map.layers.length - 1];
                                 expect(targetLayer.layerId).to.equal(payload.overlayId + meridian.sandbox.sessionId); // confirms that Id is the overlayId value from the payload
-                                expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId1 is visible
+                                expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer baseTestHideLayer is visible
                                 setTimeout(function() {
                                     meridian.sandbox.external.receiveMessage({
                                         data: {
@@ -347,7 +347,7 @@ define([
                                             message: payload
                                         }
                                     });
-                                    expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is not visible
+                                    expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer baseTestHideLayer is not visible
                                 },500);
                                 done();
                             });
@@ -377,7 +377,7 @@ define([
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             payload = {
-                                overlayId: 'edgecaseHIDE_LAYER_MULTI'
+                                overlayId: 'edgecaseHideLayer_multiplelayeradded'
                             };
                             beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
 
@@ -388,15 +388,15 @@ define([
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 targetLayer = map.layers[map.layers.length - 2];
                                 expect(targetLayer.layerId).to.equal(payload.overlayId + meridian.sandbox.sessionId); // confirms that Id is the overlayId value from the payload
-                                //expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId1 is visible
-                                //meridian.sandbox.external.receiveMessage({
-                                //    data: {
-                                //        channel: 'map.overlay.hide',
-                                //        message: payload
-                                //    }
-                                //});
-                                //expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is not visible
-                                //expect(anotherLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId2 is visible after the emit
+                                expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer edgecaseHideLayer_multiplelayeradded is visible
+                                meridian.sandbox.external.receiveMessage({
+                                    data: {
+                                        channel: 'map.overlay.hide',
+                                        message: payload
+                                    }
+                                });
+                                expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer edgecaseHideLayer_multiplelayeradded is not visible
+                                expect(anotherLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId2 is visible after the emit
                                 done();
                             });
                             meridian.sandbox.external.receiveMessage({
@@ -426,7 +426,7 @@ define([
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             payload = {
-                                overlayId: 'testOverlayId1'
+                                overlayId: 'basetestShowLayer'
                             };
                             beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
 
@@ -435,14 +435,14 @@ define([
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 targetLayer = map.layers[map.layers.length - 1];
                                 expect(targetLayer.layerId).to.equal(payload.overlayId); // confirms that Id is the overlayId value from the payload
-                                expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId1 is visible
+                                expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer basetestShowLayer is visible
                                 meridian.sandbox.external.receiveMessage({
                                     data: {
                                         channel: 'map.overlay.hide',
                                         message: payload
                                     }
                                 });
-                                expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is not visible
+                                expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer basetestShowLayer is not visible
                                 meridian.sandbox.external.receiveMessage({
                                     data: {
                                         channel: 'map.overlay.show',
@@ -478,7 +478,7 @@ define([
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             payload = {
-                                overlayId: 'testOverlayId1'
+                                overlayId: 'edgecaseShowLayer_multiplelayeradded'
                             };
                             beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
 
@@ -489,24 +489,24 @@ define([
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 targetLayer = map.layers[map.layers.length - 2];
                                 expect(targetLayer.layerId).to.equal(payload.overlayId + meridian.sandbox.sessionId); // confirms that Id is the overlayId value from the payload
-                                //expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer testOverlayId1 is visible
-                                //meridian.sandbox.external.receiveMessage({
-                                //    data: {
-                                //        channel: 'map.overlay.hide',
-                                //        message: payload
-                                //    }
-                                //});
-                                //anotherLayer.setVisibility(false);
-                                //expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is not visible
-                                //expect(anotherLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId1 is visible
-                                //meridian.sandbox.external.receiveMessage({
-                                //    data: {
-                                //        channel: 'map.overlay.show',
-                                //        message: payload
-                                //    }
-                                //});
-                                //expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer.show emit is successful
-                                //expect(anotherLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId2 remains hidden after the emit
+                                expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer edgecaseShowLayer_multiplelayeradded is visible
+                                meridian.sandbox.external.receiveMessage({
+                                    data: {
+                                        channel: 'map.overlay.hide',
+                                        message: payload
+                                    }
+                                });
+                                anotherLayer.setVisibility(false);
+                                expect(targetLayer.getVisibility()).to.be.false; // confirms that the layer edgecaseShowLayer_multiplelayeradded is not visible
+                                expect(anotherLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId2 is visible
+                                meridian.sandbox.external.receiveMessage({
+                                    data: {
+                                        channel: 'map.overlay.show',
+                                        message: payload
+                                    }
+                                });
+                                expect(targetLayer.getVisibility()).to.be.true; // confirms that the layer.show emit is successful
+                                expect(anotherLayer.getVisibility()).to.be.false; // confirms that the layer testOverlayId2 remains hidden after the emit
                                 done();
                             });
                             meridian.sandbox.external.receiveMessage({
