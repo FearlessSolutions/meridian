@@ -58,7 +58,7 @@ define([
                     //var retData = dataStorage.datasets[featureId];
 
                     app.sandbox.utils.each(dataStorage.datasets, function(key, value) {
-                        console.log(value.id);
+                        console.log(value);
                         console.log(featureId);
                     });
 
