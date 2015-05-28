@@ -144,7 +144,6 @@ define([
                             beforeLayerCreateCount,
                             sessionId = meridian.sandbox.sessionId,
                             expectedLayerId;
-
                         payload = {
                             overlayId: 'testOverlayId1',
                             name: 'Test Name 1',
@@ -178,7 +177,6 @@ define([
                             readOnly: false
                         };
                         expectedLayerId = payload.overlayId + sessionId;
-
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
 
@@ -220,7 +218,6 @@ define([
                             beforeLayerCreateCount,
                             sessionId = meridian.sandbox.sessionId,
                             expectedLayerId;
-
                         payload = {
                             overlayId: 'testOverlayId1',
                             name: 'Test Name 1',
@@ -253,7 +250,6 @@ define([
                             readOnly: false
                         };
                         expectedLayerId = payload.overlayId + sessionId;
-
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
 
@@ -292,7 +288,8 @@ define([
                             beforeLayerCreateCount,
                             confirmPlot,
                             sessionId = meridian.sandbox.sessionId,
-                            expectedLayerId;
+                            expectedLayerId,
+                            actualLayer;
 
                         payload = {
                             overlayId: 'layerCreatedBeforePlotEmit1'
@@ -329,14 +326,12 @@ define([
                             readOnly: false
                         };
                         expectedLayerId = payload.overlayId + sessionId;
-
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
 
                             beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             meridian.sandbox.on('map.layer.create', function (params) {
-                                var actualLayer = map.getLayersBy('layerId', expectedLayerId)[0];
-
+                                actualLayer = map.getLayersBy('layerId', expectedLayerId)[0];
                                 expect(map.layers.length).to.be.above(beforeLayerCreateCount); // confirmation that a layer was created
                                 expect(actualLayer).to.exist;
                                 expect(actualLayer.layerId).to.equal(expectedLayerId);  // actual layerId should equal the payload overlayId
@@ -407,9 +402,7 @@ define([
                             zoom: false,
                             readOnly: false
                         };
-
                         expectedLayerId = meridian.sandbox.cmapi.defaultLayerId + sessionId;
-
                         if (params.channel == 'map.status.ready') {
                             beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             meridian.sandbox.on('map.layer.create', function (params) {
@@ -418,8 +411,6 @@ define([
                                 expect(layer).to.exist;  // actual layerId should equal the default layerId, 'cmapi'
                             });
                             meridian.sandbox.on('map.features.plot', function (params) {
-                                console.debug(layer.features[0]);
-                                console.debug(layer.features[0].featureId);
                                 expect(layer.features[0].featureId).to.equal(payload.feature.features[0].properties.featureId + sessionId); // confirm feature by Id that it has been added to default layer and matches Id from payload
                                 done();
                             });
