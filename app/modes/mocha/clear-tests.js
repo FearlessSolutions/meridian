@@ -136,8 +136,6 @@ var expect = chai.expect;
                                 var afterLayerCreateCount = map.layers.length;
                                 // EXPECT: We expect the Layer count to have increased on layer creation.
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
-                                console.log('DDDDDDDDDDDDDDDDDDDD');
-                                console.debug(map);
                             });
                             meridian.sandbox.external.receiveMessage({
                                 data: {
