@@ -455,7 +455,6 @@ define([
                                                     "p1": "pp1"
                                                 },
                                                 "style": {
-                                                    "display": "block",
                                                     "height": 24,
                                                     "width": 24,
                                                     "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
