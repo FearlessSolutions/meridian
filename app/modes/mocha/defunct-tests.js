@@ -53,70 +53,178 @@ define([
 
         });//map.view.center.data
         describe('map.view.center.feature', function () {
-            it("Base Test: Map View Center Feature - DEFUNCT", function (done) {
-                //require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                //    meridian.sandbox.external.postMessageToParent = function (params) {
-                //        if (params.channel == 'map.status.ready') {
-                //            // map goes first
-                //            var map = renderer.getMap();
-                //            var payload = {
-                //                "overlayId": "testOverlayId1",
-                //                "featureId": "f1",  // CRITICAL PART OF GETTING THE TEST TO FUNCTION
-                //                "name": "Test Name 1",
-                //                "format": "geojson",
-                //                "feature": {
-                //                    "type": "FeatureCollection",
-                //                    "features": [
-                //                        {
-                //                            "type": "Feature",
-                //                            "geometry": {
-                //                                "type": "Point",
-                //                                "coordinates": [
-                //                                    -5,
-                //                                    10
-                //                                ]
-                //                            },
-                //                            "properties": {
-                //                                "p1": "pp1"
-                //                            },
-                //                            "style": {
-                //                                "height": 24,
-                //                                "width": 24,
-                //                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-                //                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-                //                            }
-                //                        }
-                //                    ]
-                //                },
-                //                "zoom": false,
-                //                "readOnly": false
-                //            }
-                //            var expectedBounds_values = { // Fill this with expected Feature Location data
-                //            }
-                //
-                //            map.events.register("moveend", map, function () { // zoomend does not seem to work for this channel emit
-                //
-                //                // EXPECT: We expect here that the Feature is located at the designated FeatureID
-                //                // EXPECT: We expect here that the designated Feature matches some preset coordinates
-                //                // EXPECT: We expect that the map is positioned centrally around said feature.
-                //                done();
-                //            });
-                //
-                //            meridian.sandbox.external.receiveMessage({
-                //                data: {
-                //                    channel: 'map.view.center.bounds',
-                //                    message: payload
-                //                }
-                //            });
-                //        }
-                //    };
-                //    cmapiMain.initialize.call(meridian, meridian);
-                //    var $fixtures = $('#fixtures');
-                //    meridian.html = $fixtures.html;
-                //    renderer.initialize.call(meridian, meridian);
-                //});
+            it("DEFUNCT: View Center Feature", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount,
+                            index,
+                            plotSuccess = false;
+                        expect = chai.expect;
+                        if (params.channel == 'map.status.ready') {
+                            map = renderer.getMap(),
+                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
+                            payload = {
+                                "overlayId": "testOverlayId1",
+                                "name": "Test Name 1",
+                                "format": "geojson",
+                                "feature": {
+                                    "type": "FeatureCollection",
+                                    "features": [
+                                        {
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [
+                                                    -10,
+                                                    10
+                                                ]
+                                            },
+                                            "properties": {
+                                                featureId:'featureId01_',
+                                                "p1": "pp1"
+                                            },
+                                            "style": {
+                                                "height": 24,
+                                                "width": 24,
+                                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                            }
+                                        },
+                                        {
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [
+                                                    50,
+                                                    -40
+                                                ]
+                                            },
+                                            "properties": {
+                                                "p1": "pp1"
+                                            },
+                                            "style": {
+                                                "height": 24,
+                                                "width": 24,
+                                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                            }
+                                        },
+                                        {
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [
+                                                    10,
+                                                    50
+                                                ]
+                                            },
+                                            "properties": {
+                                                "p1": "pp1"
+                                            },
+                                            "style": {
+                                                "height": 24,
+                                                "width": 24,
+                                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "zoom": false,
+                                "readOnly": false
+                            }
+                            map.setCenter([2, 2], 5);
+                            // Verify Layer Creation
+                            meridian.sandbox.on('map.layer.create', function (params) {
+                                afterLayerCreateCount = map.layers.length;
+                                //  console.log("On Layer Create:", (map.getLayersBy('layerId', map.layers[9].layerId)[0]).getDataExtent());
+                                // EXPECT: Where we expect that our layer count has in fact increased.
+                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+                                index = -1;
+                                var searchTerm = "testOverlayId1",
+                                    mapLayers = map.layers;
+                                for (var i = 0, len = mapLayers.length; i < len; i++) {
+                                    if (mapLayers[i].layerId === searchTerm) {
+                                        index = i;
+                                        break;
+                                    }
+                                }
+                            });
+                            // Verify Features Plotted
+                            meridian.sandbox.on('map.features.plot', function (params) {
+                                plotSuccess = true;
+                                //      console.debug(map.layers);
+                                //     console.log("Plotted Feature: ", map.layers[index]['features'][0]) // confirm featureId exists / despite not in payload
+                                //        console.log ("Converted Coords: ", map.layers[index]['features'][0]['geometry']['bounds'].transform(map.projection, map.projectionWGS84))
+                            });
+                            //   console.log("After Extent", map.getZoomForExtent());
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.feature.plot',
+                                    message: payload
+                                }
+                            });
+                            //meridian.sandbox.external.receiveMessage({
+                            //    data: {
+                            //        channel: 'map.view.center.overlay', message: {
+                            //            "overlayId": "testOverlayId1"
+                            //        }
+                            //    }
+                            //});
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.view.center.feature', message: {
+                                        "overlayId": 'testOverlayId1',
+                                        "featureId": "featureId01_"
+                                    }
+                                }
+                            });
+                            setTimeout(function () {
+                                // EXPECT: We wait 500ms, then expect the Zoom and coordinates
+                                // to have changed properly to a centered point between the
+                                // features on overlay "testOverlayId1".
+                                // Note: These values will change depending on the bounds given
+                                // for our Map frame's width and height in the Mocha Index.html file.
+                                // We also ensure a plot emit registers to begin with via plotSuccess check.
+                                var selectedLayer = map.getLayersBy('layerId', 'testOverlayId1')[0],
+                                    feat = (selectedLayer.features),
+                                    featId = (feat[0].attributes.featureId),
+                                    i;
+                                // EXPECT: We expect that plotting features from the Payload was successful.
+                                expect(plotSuccess).to.be.equal(true);
+                                console.log("Selected Layer", selectedLayer);
+                                console.log("Feat", feat);
+                                console.log("FeatId", featId);
+                                console.log("Get Data Extent", selectedLayer.getDataExtent());
+                                if(feat) {
+                                    for (i=0, len = feat.length; i < len; i++) {
+                                        if(!feat[i].getVisibility() || !feat[i].onScreen()){
+                                            break;
+                                        }
+                                    }
+                                    // EXPECT: We expect that iterating through all existing features does not produce
+                                    // a feature failing to be map visible to the user.
+                                }
+                                // EXPECT: We expect that the selected feature is located in the center of the map.
+                                // EXPECT: We
+                                //        var featureExtent = feature.geometry.getBounds();
+                                //       bounds.extend(featureExtent);
+                                // EXPECT: That the Data Extent is similar to the actual full map visible extent.
+                                //      expect((map.getExtent().containsBounds(selectedLayer.getDataExtent()))).to.be.true;
+                            }, 500);
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    meridian.html = $('#fixtures').html;
+                    renderer.initialize.call(meridian, meridian);
+                    done();
+                });
             });//it
         });//map.view.center.feature
+
         describe('map.feature.plot.batch', function () {
             it("Base Test: Feature Plot Batch - DEFUNCT", function (done) {
 
