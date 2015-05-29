@@ -174,7 +174,9 @@ define([
         }
     }
     function hideFeatures(message) {
-        var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId;
+        var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId,
+            sessionId = context.sandbox.sessionId;
+            layerId += sessionId;
         //plot feature(s) from payload
         mediator.hideFeatures({
             layerId: layerId,
