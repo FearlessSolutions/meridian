@@ -106,6 +106,7 @@ define([
                                     "coordinates": [0.0, 10.0]
                                 },
                                 "properties": {
+                                    "featureId": "featureId01_",
                                     "p1": "pp1"
                                 },
                                 "style": {

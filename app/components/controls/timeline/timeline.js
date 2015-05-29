@@ -122,6 +122,7 @@ define([
             }
         },
         hideTimeline: function(params) {
+            snapshotMenu.hideAllMenus();
             $timeline.hide();
         },
         showTimeline: function(params) {
@@ -130,6 +131,7 @@ define([
 		},
 		clear: function() {
 			context.$('#timeline-container').html('');
+            snapshotMenu.hideAllMenus();
             $timeline.hide();
             mediator.closeTimeline();
 		},
@@ -307,7 +309,9 @@ define([
                 exposed.deleteSnapshot({
                     layerId: layerId
                 });
-
+                snapshotMenu.hideMenu({
+                    layerId: layerId
+                });
                 delete context.sandbox.dataStorage.datasets[layerId]; //TODO this should be implemented in each datasource instead; catches snapshot menu call for now.
             }
         },
@@ -393,8 +397,8 @@ define([
                 channel: 'map.layer.hide'
             });
             snapshotMenu.enableOption({
-                "layerId": params.layerId,
-                "channel": "map.zoom.toLayer"
+                layerId: params.layerId,
+                channel: 'map.zoom.toLayer'
             });
         },
         layerToggleOff: function(params) {
@@ -434,7 +438,7 @@ define([
                     layerId: params.layerId,
                     channel: 'bookmark.create'
                 });
-            };
+            }
         }
     };
 

@@ -52,6 +52,9 @@ server {
     location ^~ /cmapi {
         root /home/chris/workspace/meridian/app/modes;
     }
+    location ^~ /mocha {
+        root /home/chris/workspace/meridian/app/modes;
+    }
 
     #Proxy everything sent through rest
     location /rest/ {

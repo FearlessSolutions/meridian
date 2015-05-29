@@ -4,13 +4,8 @@ define([
     'aura/aura',
     'mocha'
 ], function(chai, configuration, Aura) {
-
-//This doesnt work on the command line by doing $ mocha <thisFile>
-//Unless there is a way of including the require.js file and the config file in the command
-//prompt, I only see this working in the browser.
-
-//start your test here.
-//mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
+    //start your test here.
+    //mocha needs to see describe globally. If you try putting it in a function, it wont excecute. (Unless my test wasn't good.)
     describe('Defunct Channels', function () {
         var exitBeforeEach,
             meridian;
@@ -19,13 +14,12 @@ define([
         beforeEach(function (done) {
             exitBeforeEach = done;//Aura.then() function wont have access to done. I store it here and then call it.
             meridian = Aura({
-                appName: 'Meridian',
-                mediator: {maxListeners: 50},
-                version: '1.0.0',
-                releaseDate: '02/27/2015',
-                cmapiVersion: '1.2.0',
-                debug: true,
-                sources: {default: 'components'}
+                appName: configuration.appName,
+                sources: {default: 'components'},
+                mediator: configuration.mediator,
+                version: configuration.version,
+                releaseDate: configuration.releaseDate,
+                cmapiVersion: configuration.cmapiVersion
             });
             //these extensions have .hbs files being loaded. Unless we host the test/index.html
             //it will throw the following error: Cross origin requests are only supported for protocol schemes.
@@ -45,7 +39,6 @@ define([
                 .use('extensions/cmapi-extension/cmapi-extension')  // added for cmapi
                 .start({components: 'body'})
                 .then(function () {
-                    console.log('in then', meridian);
                     //start test
                     //must wait until aura starts before doing anything test related.
                     //If not, meridian variable will be undefined.
@@ -62,7 +55,6 @@ define([
         describe('map.view.center.feature', function () {
             it("Base Test: Map View Center Feature - DEFUNCT", function (done) {
                 //require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                //    console.log('in it', meridian);
                 //    meridian.sandbox.external.postMessageToParent = function (params) {
                 //        if (params.channel == 'map.status.ready') {
                 //            // map goes first
@@ -136,7 +128,6 @@ define([
             //    // same amount of data.
             //
             //    require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-            //        console.log('in it', meridian);
             //        meridian.sandbox.external.postMessageToParent = function (params) {
             //            if (params.channel == 'map.status.ready') {
             //
@@ -224,7 +215,6 @@ define([
             //                        }
             //                    }
             //                    expect(index).to.not.equal(-1); // confirms map.feature.plot added a layer and one with the overlayId, 'testOverlayId1'
-            //                    console.debug('Layer exists, create layer successful with expected overlayId');
             //                });
             //                meridian.sandbox.on('map.features.plot', function(params) {
             //                    // PSEUDOCODE: Maybe tick up a "plottedCount" variable.
