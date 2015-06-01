@@ -245,9 +245,6 @@ define([
             newData.push(fId);
         });
 
-        // Clear data out from memory
-        //message = [];  // not sure why intellij says it's unused
-
         //plot feature(s) from payload
         mediator.showFeatures({
             layerId: layerId,
