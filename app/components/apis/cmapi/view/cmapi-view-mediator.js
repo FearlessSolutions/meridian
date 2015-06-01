@@ -21,10 +21,15 @@ define([
             context.sandbox.emit('map.zoom.out', args);
         },
         zoomToMaxExtent: function(args) {
+            console.log("BOOM");
             context.sandbox.emit('map.zoom.maxExtent', args);
         },
         zoomToLayer: function(args) {
             context.sandbox.emit('map.zoom.toLayer', args);
+        },
+        zoomToFeatures: function(args) {
+            console.log("BOOM");
+            context.sandbox.emit('map.view.center.feature', args);
         },
         centerOnBounds: function(args) {
             context.sandbox.emit('map.zoom.toLocation', args);

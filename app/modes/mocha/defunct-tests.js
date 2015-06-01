@@ -47,9 +47,9 @@ define([
         });//end of beforeEach
 
         describe('map.view.center.data', function () {
-            it("Base Test: Map View Center Data - DEFUNCT", function (done) {
-
-            });
+            //it("Base Test: Map View Center Data - DEFUNCT", function (done) {
+            //
+            //});
 
         });//map.view.center.data
         describe('map.view.center.feature', function () {
@@ -194,20 +194,28 @@ define([
                                     featId = (feat[0].attributes.featureId),
                                     i;
                                 // EXPECT: We expect that plotting features from the Payload was successful.
-                                expect(plotSuccess).to.be.equal(true);
-                                console.log("Selected Layer", selectedLayer);
-                                console.log("Feat", feat);
-                                console.log("FeatId", featId);
-                                console.log("Get Data Extent", selectedLayer.getDataExtent());
-                                if(feat) {
-                                    for (i=0, len = feat.length; i < len; i++) {
-                                        if(!feat[i].getVisibility() || !feat[i].onScreen()){
-                                            break;
-                                        }
-                                    }
-                                    // EXPECT: We expect that iterating through all existing features does not produce
-                                    // a feature failing to be map visible to the user.
-                                }
+
+
+                                //
+                                //expect(plotSuccess).to.be.equal(true);
+                                //console.log("Selected Layer", selectedLayer);
+                                //console.log("Feat", feat);
+                                //console.log("FeatId", featId);
+                                //console.log("Get Data Extent", selectedLayer.getDataExtent());
+                                //bounds = new OpenLayers.Bounds();
+                                //bounds.extend(new OpenLayers.LonLat(4,5));
+                                //if(feat) {
+                                //    for (i=0, len = feat.length; i < len; i++) {
+                                //        if(!feat[i].getVisibility() || !feat[i].onScreen()){
+                                //            break;
+                                //        }
+                                //    }
+                                //    // EXPECT: We expect that iterating through all existing features does not produce
+                                //    // a feature failing to be map visible to the user.
+                                //}
+
+
+
                                 // EXPECT: We expect that the selected feature is located in the center of the map.
                                 // EXPECT: We
                                 //        var featureExtent = feature.geometry.getBounds();
@@ -226,9 +234,9 @@ define([
         });//map.view.center.feature
 
         describe('map.feature.plot.batch', function () {
-            it("Base Test: Feature Plot Batch - DEFUNCT", function (done) {
-
-            });
+            //it("Base Test: Feature Plot Batch - DEFUNCT", function (done) {
+            //
+            //});
             //it("Base Test: Feature Plot Batch - DEFUNCT", function (done) {
             //
             //    // This Unit Test (And Channel) might be irrelevant, as it doesn't seem to provide any real advantages
@@ -343,15 +351,15 @@ define([
 
         });//map.feature.plot.batch
         describe('map.feature.hide', function () {
-            it("Base Test: Map Feature Hide - DEFUNCT", function (done) {
-
-            });
+            //it("Base Test: Map Feature Hide - DEFUNCT", function (done) {
+            //
+            //});
 
         });//map.feature.hide
         describe('map.feature.show', function () {
-            it("Base Test: Map Feature Show - DEFUNCT", function (done) {
-
-            });
+            //it("Base Test: Map Feature Show - DEFUNCT", function (done) {
+            //
+            //});
         });//map.feature.show
     });//describe
 });

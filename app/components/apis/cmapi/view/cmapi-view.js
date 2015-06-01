@@ -57,41 +57,79 @@ define([
                 zoom: null //defaulting auto zoom to null since we dont support zooming into a certain range
             });
 		},
-		mapViewCenterFeature: function(message) {
-            //check for required fields (featureId)
-            if(message !== undefined && message !== '' && !('featureId' in message)) {
-                sendError('map.view.center.feature', message, 'message must include a featureId');
-                return;
-            }
 
-            try{
-                context.sandbox.dataStorage.getFeatureById(message, function(data) {
-                    var extent;
-                    //If the feature is a point, set center; else, zoom to extent
-                    if(data.geometry){
-                        if(data.geometry.type === 'Point') {
-                            mediator.setCenter({
-                                lon: data.geometry.coordinates[1],
-                                lat: data.geometry.coordinates[0]
-                            });
-                        } else { //if feature is any other geometry 
-                            extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
-                            mediator.centerOnBounds(extent);
-                        }
-                    } else {
-                        context.sandbox.external.postMessageToParent({
-                            channel: 'map.view.center.feature',
-                            message: 'message failure - feature not found'
-                        });
-                    }
-                 });
-            } catch (error){
-                context.sandbox.external.postMessageToParent({
-                    channel: 'map.view.center.feature',
-                    message: 'message failure - feature not found'
+
+
+        mapViewCenterFeature: function(message) {
+            console.log('vcf');
+         //   mediator.zoomToMaxExtent();
+                mediator.zoomToFeatures({
+                    layerId: message.overlayId ? message.overlayId : defaultLayerId,
+                   featureIds: message.featureId ? message.featureId : 'f1'
                 });
-            }           
-		},
+
+        },
+
+        //
+        //mapViewCenterFeature: function(message) {
+        //    console.log("cmapi-view vcf");
+        //    console.debug(mediator);
+        //    //console.log("Zumba, ", mediator.zoomToLayer());
+        //    //console.log("Dumba, ", mediator.zoomToLayer);
+        //    console.debug(message);
+        //    //mediator.zoomToLayer({
+        //    //    layerId: message.overlayId ? message.overlayId : defaultLayerId,
+        //    //    zoom: null //defaulting auto zoom to null since we dont support zooming into a certain range
+        //    //});
+        //    mediator.zoomToFeatures({
+        //        layerId: message.overlayId ? message.overlayId : defaultLayerId,
+        //       featureIds: message.featureId ? message.featureId : 'f1'
+        //    });
+        //    console.debug(context.sandbox);
+        //
+        //    mediator.setCenter({
+        //       lon: -20,
+        //        lat: -20
+        //    });
+        //},
+
+
+
+            //mapViewCenterFeature: function(message) {
+         //   //check for required fields (featureId)
+         //   if(message !== undefined && message !== '' && !('featureId' in message)) {
+         //       sendError('map.view.center.feature', message, 'message must include a featureId');
+         //       return;
+         //   }
+        //
+         //   try{
+         //       context.sandbox.dataStorage.getFeatureById(message, function(data) {
+         //           var extent;
+         //           //If the feature is a point, set center; else, zoom to extent
+         //           if(data.geometry){
+         //               if(data.geometry.type === 'Point') {
+         //                   mediator.setCenter({
+         //                       lon: data.geometry.coordinates[1],
+         //                       lat: data.geometry.coordinates[0]
+         //                   });
+         //               } else { //if feature is any other geometry
+         //                   extent = context.sandbox.cmapi.getMaxExtent(data.geometry.coordinates);
+         //                   mediator.centerOnBounds(extent);
+         //               }
+         //           } else {
+         //               context.sandbox.external.postMessageToParent({
+         //                   channel: 'map.view.center.feature',
+         //                   message: 'message failure - feature not found'
+         //               });
+         //           }
+         //        });
+         //   } catch (error){
+         //       context.sandbox.external.postMessageToParent({
+         //           channel: 'map.view.center.feature',
+         //           message: 'message failure - feature not found'
+         //       });
+         //   }
+		//},
 		mapViewCenterLocation: function(message) {
 			if('location' in message && 'lat' in message.location && 'lon' in message.location){
 				mediator.setCenter(message.location);
