@@ -55,20 +55,10 @@ define([
                 getFeatureById: function(params, callback) {
                     var featureId = params.featureId;
 
-                    //var retData = dataStorage.datasets[featureId];
-
-                    app.sandbox.utils.each(dataStorage.datasets, function(key, value) {
-                        console.log(value);
-                        console.log(featureId);
-                    });
-
-                    return $.ajax({
-                        type: 'GET',
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + featureId
-                    }).done(function(data) {
-                        callback(data);
-                    }).error(function(error) {
-                       callback(error, null);
+                    app.sandbox.utils.each(dataStorage.datasets, function(dKey, dSet) {
+                        if(dSet._byId[featureId]){
+                            callback((dSet._byId[featureId]).attributes);
+                        }
                     });
                 },
                 getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
