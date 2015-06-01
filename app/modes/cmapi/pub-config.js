@@ -106,7 +106,7 @@ define([
                                     "coordinates": [0.0, 10.0]
                                 },
                                 "properties": {
-                                    "featureId": "featureId01_",
+                                    "featureId": "f1",
                                     "p1": "pp1"
                                 },
                                 "style": {
@@ -161,14 +161,18 @@ define([
                 valid: true,
                 sample: {
                     "overlayId": "testOverlayId1",
-                    "featureId": "f1"
+                    "featureIds": [
+                        "f1"
+                    ]
                 }
             },
             "map.feature.show": {
                 valid: true,
                 sample: {
                     "overlayId": "testOverlayId1",
-                    "featureId": "f1",
+                    "featureIds": [
+                        "f1"
+                        ],
                     "zoom": false
                 }
             },

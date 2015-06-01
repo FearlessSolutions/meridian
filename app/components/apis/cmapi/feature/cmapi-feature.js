@@ -54,7 +54,11 @@ define([
             }
         },
 		mapFeatureShow: function(message) {
-            sendError(channel, message, 'Channel not supported');
+            if(message === '') {
+                sendError(channel, message, 'No message payload supplied');
+            }else{
+                showFeatures(message);
+            }
         },
 		mapFeatureSelected: function(message) {
             sendError('map.feature.selected', message, 'Channel not supported');
@@ -175,13 +179,89 @@ define([
     }
     function hideFeatures(message) {
         var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId,
+            featureIndex,
+            fId,
+            newData = [],
             sessionId = context.sandbox.sessionId;
             layerId += sessionId;
+
+        context.sandbox.stateManager.setLayerStateById({
+            layerId: layerId,
+            state: {
+                dataTransferState: 'running'
+            }
+        });
+
+        featureIndex = message.featureIds;
+        context.sandbox.utils.each(featureIndex, function(dataindex, feature) {
+            fId = feature + sessionId;
+
+
+            context.sandbox.dataStorage.addData({
+                datasetId: layerId,
+                data: fId
+            });
+
+            newData.push(fId);
+        });
+
+        // Clear data out from memory
+        message = [];  // not sure why intellij says it's unused
+
         //plot feature(s) from payload
         mediator.hideFeatures({
             layerId: layerId,
-            data: message.feature.features
+            featureIds: newData,
+            exclusive: false
         });
+
+    }
+
+    function showFeatures(message) {
+        var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId,
+            featureIndex,
+            fId,
+            newData = [],
+            sessionId = context.sandbox.sessionId;
+        layerId += sessionId;
+
+        context.sandbox.stateManager.setLayerStateById({
+            layerId: layerId,
+            state: {
+                dataTransferState: 'running'
+            }
+        });
+
+        featureIndex = message.featureIds;
+        context.sandbox.utils.each(featureIndex, function(dataindex, feature) {
+            fId = feature + sessionId;
+
+
+            context.sandbox.dataStorage.addData({
+                datasetId: layerId,
+                data: fId
+            });
+
+            newData.push(fId);
+        });
+
+        // Clear data out from memory
+        //message = [];  // not sure why intellij says it's unused
+
+        //plot feature(s) from payload
+        mediator.showFeatures({
+            layerId: layerId,
+            featureIds: newData,
+            exclusive: false
+        });
+
+        //zoom to feature if specified in payload
+        if(message.zoom) {
+            mediator.zoomToFeatures({
+                layerId: layerId
+            });
+        }
+
     }
 
     return exposed;
