@@ -111,7 +111,6 @@ define([
          * Zoom to Max Extent
          */
         zoomToMaxExtent: function() {
-            console.log('vcf corejs');
             mapNavigation.zoomToMaxExtent({
                 "map": map
             });
@@ -122,7 +121,6 @@ define([
          * @param {string} params.layerId - id of layer
          */
         zoomToLayer: function(params) {
-            console.log("Zoom to layer");
             mapNavigation.zoomToLayer({
                 "map": map,
                 "layerId": params.layerId

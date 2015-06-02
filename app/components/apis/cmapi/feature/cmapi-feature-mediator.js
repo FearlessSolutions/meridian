@@ -27,10 +27,7 @@ define([
         },
         showFeatures: function(args) {
             context.sandbox.emit('map.features.show', args);
-        },
-        //zoomToFeatures: function(args){
-        //    context.sandbox.emit('map.zoom.toFeatures', args);
-        //}
+        }
     };
 
 });

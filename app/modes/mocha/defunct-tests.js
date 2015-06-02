@@ -61,8 +61,11 @@ define([
                             beforeLayerCreateCount,
                             afterLayerCreateCount,
                             index,
+                            selectedLayer,
+                            feat,
                             plotSuccess = false;
                         expect = chai.expect;
+
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap(),
                                 beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
@@ -140,7 +143,6 @@ define([
                             // Verify Layer Creation
                             meridian.sandbox.on('map.layer.create', function (params) {
                                 afterLayerCreateCount = map.layers.length;
-                                //  console.log("On Layer Create:", (map.getLayersBy('layerId', map.layers[9].layerId)[0]).getDataExtent());
                                 // EXPECT: Where we expect that our layer count has in fact increased.
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
                                 index = -1;
@@ -156,24 +158,15 @@ define([
                             // Verify Features Plotted
                             meridian.sandbox.on('map.features.plot', function (params) {
                                 plotSuccess = true;
-                                //      console.debug(map.layers);
-                                //     console.log("Plotted Feature: ", map.layers[index]['features'][0]) // confirm featureId exists / despite not in payload
-                                //        console.log ("Converted Coords: ", map.layers[index]['features'][0]['geometry']['bounds'].transform(map.projection, map.projectionWGS84))
-                            });
-                            //   console.log("After Extent", map.getZoomForExtent());
+                          });
+
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.feature.plot',
                                     message: payload
                                 }
                             });
-                            //meridian.sandbox.external.receiveMessage({
-                            //    data: {
-                            //        channel: 'map.view.center.overlay', message: {
-                            //            "overlayId": "testOverlayId1"
-                            //        }
-                            //    }
-                            //});
+
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.view.center.feature', message: {
@@ -183,45 +176,18 @@ define([
                                 }
                             });
                             setTimeout(function () {
-                                // EXPECT: We wait 500ms, then expect the Zoom and coordinates
-                                // to have changed properly to a centered point between the
-                                // features on overlay "testOverlayId1".
-                                // Note: These values will change depending on the bounds given
-                                // for our Map frame's width and height in the Mocha Index.html file.
-                                // We also ensure a plot emit registers to begin with via plotSuccess check.
-                                var selectedLayer = map.getLayersBy('layerId', 'testOverlayId1')[0],
-                                    feat = (selectedLayer.features),
-                                    featId = (feat[0].attributes.featureId),
-                                    i;
-                                // EXPECT: We expect that plotting features from the Payload was successful.
-
-
-                                //
-                                //expect(plotSuccess).to.be.equal(true);
-                                //console.log("Selected Layer", selectedLayer);
-                                //console.log("Feat", feat);
-                                //console.log("FeatId", featId);
-                                //console.log("Get Data Extent", selectedLayer.getDataExtent());
-                                //bounds = new OpenLayers.Bounds();
-                                //bounds.extend(new OpenLayers.LonLat(4,5));
-                                //if(feat) {
-                                //    for (i=0, len = feat.length; i < len; i++) {
-                                //        if(!feat[i].getVisibility() || !feat[i].onScreen()){
-                                //            break;
-                                //        }
-                                //    }
-                                //    // EXPECT: We expect that iterating through all existing features does not produce
-                                //    // a feature failing to be map visible to the user.
-                                //}
-
-
+                                selectedLayer = map.getLayersBy('layerId', 'testOverlayId1')[0],
+                                feat = (selectedLayer.features);
 
                                 // EXPECT: We expect that the selected feature is located in the center of the map.
-                                // EXPECT: We
-                                //        var featureExtent = feature.geometry.getBounds();
-                                //       bounds.extend(featureExtent);
-                                // EXPECT: That the Data Extent is similar to the actual full map visible extent.
-                                //      expect((map.getExtent().containsBounds(selectedLayer.getDataExtent()))).to.be.true;
+                                // We do this by expecting our selected feature's left and right bounds to be equivalent;
+                                // By expecting our selected feature's top and bottom bounds to be equivalent;
+                                // And finally expecting those coordinates to match up perfectly with our map's present center.
+
+                                expect(feat[0].geometry.getBounds().left).to.be.equal(feat[0].geometry.getBounds().right);
+                                expect(feat[0].geometry.getBounds().top).to.be.equal(feat[0].geometry.getBounds().bottom);
+                                expect(map.getCenter().lon).to.be.equal(feat[0].geometry.getBounds().left);
+                                expect(map.getCenter().lat).to.be.equal(feat[0].geometry.getBounds().top);
                             }, 500);
                         }
                     };
