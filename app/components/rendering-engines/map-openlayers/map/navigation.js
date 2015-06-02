@@ -57,7 +57,7 @@ define([
             if(layer) {
                 // TODO: make it also work in cluster mode (to check through the features in clusters)
 
-                var selectedLayer = params.map.getLayersBy('layerId', 'testOverlayId1')[0];
+                var selectedLayer = params.map.getLayersBy('layerId', params.layerId)[0];
                 var feature = null;
                 for(var i=0, len=selectedLayer.features.length; i<len; ++i) {
                     if(selectedLayer.features[i].attributes.featureId == params.featureIds) {
