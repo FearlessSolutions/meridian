@@ -10,7 +10,7 @@ define([
             context = thisContext;
         },
         zoomIn: function(params) {
-       //     params.map.zoomIn();
+            params.map.zoomIn();
         },
         zoomOut: function(params) {
             params.map.zoomOut();
