@@ -29,6 +29,7 @@ define([
 
             $clearButton.on('click', function(e) {
                 mediator.publishClear();
+                context.sandbox.dataStorage.clear();
             });
         },
         open: function(params) {
