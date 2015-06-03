@@ -58,7 +58,7 @@ define([
                             layer;
 
                         payload = {
-                            overlayId: 'testOverlayId1',
+                            overlayId: 'basetestFeaturePlot',
                             name: 'Test Name 1',
                             format: 'geojson',
                             feature: {
@@ -145,7 +145,7 @@ define([
                             sessionId = meridian.sandbox.sessionId,
                             expectedLayerId;
                         payload = {
-                            overlayId: 'testOverlayId1',
+                            overlayId: 'basetestFeaturePlot_featureid',
                             name: 'Test Name 1',
                             format: 'geojson',
                             feature: {
@@ -219,7 +219,7 @@ define([
                             sessionId = meridian.sandbox.sessionId,
                             expectedLayerId;
                         payload = {
-                            overlayId: 'testOverlayId1',
+                            overlayId: 'edgecaseFeaturePlot_nofeatureid',
                             name: 'Test Name 1',
                             format: 'geojson',
                             feature: {
@@ -427,8 +427,288 @@ define([
                     renderer.initialize.call(meridian, meridian);
                 });
             });//it
-
         });//map.feature.plot
+        describe('map.feature.hide', function () {
+            it("Base Test: Feature Hide", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        if (params.channel == 'map.status.ready') {
+                            var map = renderer.getMap(),
+                                feature,
+                                payloadPlot ={
+                                    "overlayId": "basetestFeatureHide",
+                                    "name": "Test Name 1",
+                                    "format": "geojson",
+                                    "feature": {
+                                        "type": "FeatureCollection",
+                                        "features": [
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        -5,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "featureId": "featureHIDEid01",
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            },
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        0,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "featureId": "featureHIDEid02",
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "zoom": false,
+                                    "readOnly": false
+                                },
+                                payloadHide = {
+                                    "overlayId": "basetestFeatureHide",
+                                    "featureIds": [
+                                        "featureHIDEid01",
+                                        "featureHIDEid02"
+                                    ]
+                                };
+                            meridian.sandbox.on('map.features.plot', function (params) {
+                                feature = map.getLayersBy('layerId', 'basetestFeatureHide' + meridian.sandbox.sessionId)[0].features[0];
+                                expect(feature.getVisibility()).to.equal(true); // check plot state, should be true
+                                meridian.sandbox.external.receiveMessage({ data: { channel: 'map.feature.hide', message: payloadHide } }); // manual publish to the channel
+                            });
+                            meridian.sandbox.on('map.features.hide', function (params) {
+                                expect(feature.getVisibility()).to.equal(false); // check plot state, should be false when the feature(s) are hidden
+                                done();
+                            });
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.feature.plot',
+                                    message: payloadPlot
+                                }
+                            }); // manual publish to the channel
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    meridian.html = $('fixtures').html;
+                    renderer.initialize.call(meridian, meridian);
+                });
+            });//it
+        });//map.feature.hide
+        describe('map.feature.show', function () {
+            it("Base Test: Feature Show", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        if (params.channel == 'map.status.ready') {
+                            var map = renderer.getMap(),
+                                feature,
+                                payloadPlot = {
+                                    "overlayId": "basetestFeatureShow",
+                                    "name": "Test Name 1",
+                                    "format": "geojson",
+                                    "feature": {
+                                        "type": "FeatureCollection",
+                                        "features": [
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        -5,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "featureId": "featureSHOW_01",
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            },
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        0,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "featureId": "featureSHOW_02",
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "zoom": false,
+                                    "readOnly": false
+                                },
+                                payloadShow = {
+                                    "overlayId": "basetestFeatureShow",
+                                    "featureIds": [
+                                        "featureSHOW_01",
+                                        "featureSHOW_02"
+                                    ]
+                                };
+                            meridian.sandbox.on('map.features.plot', function (params) {
+                                feature = map.getLayersBy('layerId', 'basetestFeatureShow' + meridian.sandbox.sessionId)[0].features[0];
+                                expect(feature.getVisibility()).to.equal(true); // check plot state, should be true
+                                meridian.sandbox.external.receiveMessage({ data: { channel: 'map.feature.hide', message: payloadShow } }); // manual publish to the channel
+                            });
+                            meridian.sandbox.on('map.features.hide', function (params) {
+                                expect(feature.getVisibility()).to.equal(false); // check plot state, should be false when the feature(s) are hidden
+                                meridian.sandbox.external.receiveMessage({ data: { channel: 'map.feature.show', message: payloadShow } }); // manual publish to the channel
+                            });
+                            meridian.sandbox.on('map.features.show', function (params) {
+                                expect(feature.getVisibility()).to.equal(true); // check plot state, should be true when the feature(s) are made visible
+                                done();
+                            });
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.feature.plot',
+                                    message: payloadPlot
+                                }
+                            }); // manual publish to the channel
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    meridian.html = $('fixtures').html;
+                    renderer.initialize.call(meridian, meridian);
+                });
+            });//it
+            it("Edge case: Zoom to Feature Show", function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        if (params.channel == 'map.status.ready') {
+                            var map = renderer.getMap(),
+                                feature,
+                                zoomLevelBefore,
+                                zoomLevelAfter,
+                                payloadPlot = {
+                                    "overlayId": "basetestFeatureShow",
+                                    "name": "Test Name 1",
+                                    "format": "geojson",
+                                    "feature": {
+                                        "type": "FeatureCollection",
+                                        "features": [
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        -5,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "featureId": "featureSHOW_01",
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            },
+                                            {
+                                                "type": "Feature",
+                                                "geometry": {
+                                                    "type": "Point",
+                                                    "coordinates": [
+                                                        0,
+                                                        10
+                                                    ]
+                                                },
+                                                "properties": {
+                                                    "featureId": "featureSHOW_02",
+                                                    "p1": "pp1"
+                                                },
+                                                "style": {
+                                                    "height": 24,
+                                                    "width": 24,
+                                                    "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                    "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "zoom": false,
+                                    "readOnly": false
+                                },
+                                payloadShow = {
+                                    "overlayId": "basetestFeatureShow",
+                                    "featureIds": [
+                                        "featureSHOW_01",
+                                        "featureSHOW_02"
+                                    ],
+                                    "zoom": true
+                                };
+                            map.events.register('zoomend', map, function () {
+                                zoomLevelAfter = map.getZoom();
+                                expect(zoomLevelAfter).to.be.above(zoomLevelBefore);  // confirms zoom level changed and zoom occured
+                                done();
+                            });
+                            meridian.sandbox.on('map.features.plot', function (params) {
+                                feature = map.getLayersBy('layerId', 'basetestFeatureShow' + meridian.sandbox.sessionId)[0].features[0];
+                                expect(feature.getVisibility()).to.equal(true); // check plot state, should be true
+                                zoomLevelBefore = map.getZoom();
+                                meridian.sandbox.external.receiveMessage({ data: { channel: 'map.feature.hide', message: payloadShow } }); // manual publish to the channel
+                            });
+                            meridian.sandbox.on('map.features.hide', function (params) {
+                                expect(feature.getVisibility()).to.equal(false); // check plot state, should be false when the feature(s) are hidden
+                                meridian.sandbox.external.receiveMessage({ data: { channel: 'map.feature.show', message: payloadShow } }); // manual publish to the channel
+                            });
+                            meridian.sandbox.on('map.features.show', function (params) {
+                                expect(feature.getVisibility()).to.equal(true); // check plot state, should be true when the feature(s) are made visible
+                            });
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.feature.plot',
+                                    message: payloadPlot
+                                }
+                            }); // manual publish to the channel
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    meridian.html = $('fixtures').html;
+                    renderer.initialize.call(meridian, meridian);
+                });
+            });//it
+        });//map.feature.show
     });//describe
 });
 

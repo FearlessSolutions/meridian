@@ -232,18 +232,6 @@ define([
             //        renderer.initialize.call(meridian, meridian);
             //    });
             //});//it
-
         });//map.feature.plot.batch
-        describe('map.feature.hide', function () {
-            it("Base Test: Map Feature Hide - DEFUNCT", function (done) {
-
-            });
-
-        });//map.feature.hide
-        describe('map.feature.show', function () {
-            it("Base Test: Map Feature Show - DEFUNCT", function (done) {
-
-            });
-        });//map.feature.show
     });//describe
 });
