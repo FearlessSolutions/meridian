@@ -35,10 +35,14 @@ define([
                     
                     currentFeature.featureId = geoJSONFeature.id || '';
                     currentFeature.attributes.dataService = geoJSONFeature.dataService || '';
+                    //currentFeature.style = geoJSONFeature.style;
+                    //currentFeature.style.display = geoJSONFeature.style || null;
+                    //currentFeature.style.display = geoJSONFeature.style.display = null;
 
                     // Handle default styles if none defined
                     if(!currentFeature.attributes.icon) {
                         iconData = context.sandbox.icons.getIconForFeature(geoJSONFeature);
+                        //currentFeature.style = iconData.style;
                         currentFeature.attributes.icon = iconData.icon;
                         currentFeature.attributes.height = iconData.height;
                         currentFeature.attributes.width = iconData.width;

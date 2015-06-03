@@ -55,12 +55,13 @@ var expect = chai.expect;
                         var index = -1,
                             map,
                             beforeLayerCreateCount,
-                            payload;
+                            payload,
+                            layerToClear;
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
                             beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             payload = {
-                                "overlayId": "testOverlayId1",
+                                "overlayId": "basetestMapClear",
                                 "name": "Test Name 1",
                                 "format": "geojson",
                                 "feature": {
@@ -76,6 +77,7 @@ var expect = chai.expect;
                                                 ]
                                             },
                                             "properties": {
+                                                "featureId":"feature_001",
                                                 "p1": "pp1"
                                             },
                                             "style": {
@@ -95,6 +97,7 @@ var expect = chai.expect;
                                                 ]
                                             },
                                             "properties": {
+                                                "featureId":"feature_002",
                                                 "p1": "pp1"
                                             },
                                             "style": {
@@ -114,6 +117,7 @@ var expect = chai.expect;
                                                 ]
                                             },
                                             "properties": {
+                                                "featureId":"feature_003",
                                                 "p1": "pp1"
                                             },
                                             "style": {
@@ -129,20 +133,9 @@ var expect = chai.expect;
                                 "readOnly": false
                             };
                             meridian.sandbox.on('map.layer.create', function (params) {
-                                var afterLayerCreateCount = map.layers.length,
-                                    mapLayers,
-                                    i,
-                                    len;
+                                var afterLayerCreateCount = map.layers.length;
                                 // EXPECT: We expect the Layer count to have increased on layer creation.
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
-                                index = -1;
-                                mapLayers = map.layers;
-                                for (i = 0, len = mapLayers.length; i < len; i++) {
-                                    if (mapLayers[i].layerId === "testOverlayId1") {
-                                        index = i;
-                                        break;
-                                    }
-                                }
                             });
                             meridian.sandbox.external.receiveMessage({
                                 data: {
@@ -151,8 +144,8 @@ var expect = chai.expect;
                                 }
                             }); // manual publish to the channel
                             // EXPECT: We expect there to be a Feature in the features array at position 0, and further, we pull a coordinate from that Feature's data.
-                            expect(map.layers[index]["features"][0]["geometry"]['bounds'].transform(map.projection, map.projectionWGS84)["left"]).to.equal(-20.000000000000398);
-
+                            layerToClear = map.getLayersBy('layerId', 'basetestMapClear' + meridian.sandbox.sessionId)[0];
+                            expect(layerToClear["features"][0]["geometry"]['bounds'].transform(map.projection, map.projectionWGS84)["left"]).to.equal(-20.000000000000398);
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.clear',

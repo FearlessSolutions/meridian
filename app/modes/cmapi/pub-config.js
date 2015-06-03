@@ -157,14 +157,18 @@ define([
                 valid: true,
                 sample: {
                     "overlayId": "testOverlayId1",
-                    "featureId": "f1"
+                    "featureIds": [
+                        "f1"
+                    ]
                 }
             },
             "map.feature.show": {
                 valid: true,
                 sample: {
                     "overlayId": "testOverlayId1",
-                    "featureId": "f1",
+                    "featureIds": [
+                        "f1"
+                        ],
                     "zoom": false
                 }
             },

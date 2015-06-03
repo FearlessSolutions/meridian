@@ -69,7 +69,6 @@ define([
                 featureIds: fId
             });
         },
-
 		mapViewCenterLocation: function(message) {
 			if('location' in message && 'lat' in message.location && 'lon' in message.location){
 				mediator.setCenter(message.location);
