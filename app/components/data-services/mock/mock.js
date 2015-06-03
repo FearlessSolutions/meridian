@@ -215,7 +215,8 @@ define([
         var queryId = params.queryId || data[0].properties.queryId,
             newData = [],
             keys = context.sandbox.dataServices[DATASOURCE_NAME].keys,
-            newKeys = {};
+            newKeys = {},
+            layerId;
 
         layerId = params.queryId || data[0].properties.queryId;
 
