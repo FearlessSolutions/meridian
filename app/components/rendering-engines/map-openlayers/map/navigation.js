@@ -64,7 +64,7 @@ define([
                 selectedLayer = params.map.getLayersBy('layerId', params.layerId)[0];
                 feature = null;
                 for(i=0, len=selectedLayer.features.length; i<len; ++i) {
-                    if(selectedLayer.features[i].attributes.featureId == params.featureIds) {
+                    if(selectedLayer.features[i].featureId == params.featureIds) {
                         feature = selectedLayer.features[i];
                         break;
                     }

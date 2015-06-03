@@ -106,6 +106,7 @@ define([
                                     "coordinates": [0.0, 10.0]
                                 },
                                 "properties": {
+                                    "featureId": "f1",
                                     "p1": "pp1"
                                 },
                                 "style": {
@@ -152,10 +153,6 @@ define([
                     "readOnly":false
                 }
             },
-            /*"map.feature.plot": {
-                valid: true,
-                sample: {"overlayId": "testOverlayId1","name": "Test Name 1","format": "geojson","feature": {"type": "FeatureCollection","features": [{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[100,0],[101,0],[101,1],[100,1],[100,0]]},"properties":{"style":{"lineStyle":{"color":{"r":255,"g":0,"b":255,"a":0.5}},"polyStyle":{"color":{"r":0,"g":255,"b":0,"a":0.25}},"name":"test polygon","id":"tp13456","description":"polygon pop-up text"}}},{"type":"Feature","geometry":{"type":"Line","coordinates":[[80,3],[81,3],[81,5],[82,2]]},"properties":{"style":{"lineStyle":{"color":{"r":0,"g":255,"b":255,"a":0.5}}}},"name":"crossingLine","id":"0x45632","description":"this is a line you don’t want to cross"}]},"zoom": false,"dataZoom": false,"readOnly": false}
-            },*/
             "map.feature.hide": {
                 valid: true,
                 sample: {
@@ -192,7 +189,9 @@ define([
             "map.view.center.feature": {
                 valid: true,
                 sample: {
+                    "overlayId": "testOverlayId1",
                     "featureId": "f1"
+
                 }
             },
             "map.view.center.location": {

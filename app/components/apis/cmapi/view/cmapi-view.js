@@ -57,16 +57,17 @@ define([
                 zoom: null //defaulting auto zoom to null since we dont support zooming into a certain range
             });
 		},
-
-
-
         mapViewCenterFeature: function(message) {
-         //   mediator.zoomToMaxExtent();
-                mediator.zoomToFeatures({
-                    layerId: message.overlayId ? message.overlayId : defaultLayerId,
-                   featureIds: message.featureId ? message.featureId : 'f1'
-                });
+            var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId,
+                fId,
+                sessionId = context.sandbox.sessionId;
+            layerId += sessionId;
+            fId = message.featureId + sessionId;
 
+            mediator.zoomToFeatures({
+                layerId: layerId,
+                featureIds: fId
+            });
         },
 
 		mapViewCenterLocation: function(message) {
