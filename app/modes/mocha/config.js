@@ -86,8 +86,8 @@ require(['chai', 'mocha', 'jquery'], function(chai) {
         './modes/mocha/overlay-tests',
         './modes/mocha/feature-tests',
         './modes/mocha/view-tests',
-        //'./modes/mocha/clear-tests', //TODO fix with new feature and layer ids
-        './modes/mocha/defunct-tests'
+        './modes/mocha/clear-tests'//,
+        //'./modes/mocha/defunct-tests'
     ], function(require) {
         mocha.run();
     });

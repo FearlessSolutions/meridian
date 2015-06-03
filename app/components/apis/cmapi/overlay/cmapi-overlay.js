@@ -58,7 +58,6 @@ define([
                 context.sandbox.dataStorage.datasets[layerId].dataService = context.sandbox.cmapi.DATASOURCE_NAME;
                 context.sandbox.dataStorage.datasets[layerId].layerName = message.name || layerId;
 
-
                 mediator.publishCreateLayer({
                     layerId: layerId,
                     name: message.name,
@@ -84,6 +83,7 @@ define([
          */
 		"map.overlay.remove": function(message) {
             var layerId =  message.overlayId || defaultLayerId;
+            layerId += context.sandbox.sessionId;
 
             mediator.publishRemoveLayer({
                 layerId: layerId
@@ -97,6 +97,7 @@ define([
          */
 		"map.overlay.hide": function(message) {
             var layerId =  message.overlayId || defaultLayerId;
+            layerId += context.sandbox.sessionId;
 
             context.sandbox.stateManager.layers[layerId].visible = false;
 			mediator.publishHideLayer({
@@ -111,6 +112,7 @@ define([
          */
 		"map.overlay.show": function(message) {
             var layerId =  message.overlayId || defaultLayerId;
+            layerId += context.sandbox.sessionId;
 
             context.sandbox.stateManager.layers[layerId].visible = true;
 			mediator.publishShowLayer({

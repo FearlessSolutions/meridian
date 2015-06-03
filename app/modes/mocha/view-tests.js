@@ -278,22 +278,25 @@ define([
             });//it
         }); // map.view.center.bounds
 
-        describe('map.view.center.overlay - DEFUNCT', function () {
-            it('Base Test: Map View Center Overlay', function (done) {
+        describe('map.view.center.overlay', function () {
+            it("Base Test: Map View Center Overlay", function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,
                             payload,
                             beforeLayerCreateCount,
                             afterLayerCreateCount,
-                            index,
-                            plotSuccess = false;
-
+                            plotSuccess = false,
+                            selectedLayer,
+                            feat,
+                            featsVis,
+                            i,
+                            len;
                         if (params.channel == 'map.status.ready') {
-                            map = renderer.getMap();
-                            beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
+                            map = renderer.getMap(),
+                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             payload = {
-                                "overlayId": "testOverlayId1",
+                                "overlayId": "basetestMapViewCenterOverlay",
                                 "name": "Test Name 1",
                                 "format": "geojson",
                                 "feature": {
@@ -309,6 +312,7 @@ define([
                                                 ]
                                             },
                                             "properties": {
+                                                "featureId":"feature001",
                                                 "p1": "pp1"
                                             },
                                             "style": {
@@ -324,10 +328,11 @@ define([
                                                 "type": "Point",
                                                 "coordinates": [
                                                     50,
-                                                    10
+                                                    -40
                                                 ]
                                             },
                                             "properties": {
+                                                "featureId":"feature002",
                                                 "p1": "pp1"
                                             },
                                             "style": {
@@ -347,6 +352,7 @@ define([
                                                 ]
                                             },
                                             "properties": {
+                                                "featureId":"feature003",
                                                 "p1": "pp1"
                                             },
                                             "style": {
@@ -360,16 +366,14 @@ define([
                                 },
                                 "zoom": false,
                                 "readOnly": false
-                            };
+                            }
+
                             map.setCenter([2, 2], 5);
-                            // Verify Layer Creation
-                            meridian.sandbox.on('map.layer.create', function (params) {
+                            // Verify Layer Creation / Features Plotted
+                            meridian.sandbox.on('map.features.plot', function (params) {
                                 afterLayerCreateCount = map.layers.length;
                                 // EXPECT: Where we expect that our layer count has in fact increased.
                                 expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
-                            });
-                            // Verify Features Plotted
-                            meridian.sandbox.on('map.features.plot', function (params) {
                                 plotSuccess = true;
                             });
                             // EXPECT: Where we expect the initial Zoom Value and Coordinates to match the values we
@@ -377,7 +381,6 @@ define([
                             // that the upcoming view center overlay emit will alter these values.
                             expect(map.getCenter().lon).to.be.equal(2);
                             expect(map.getCenter().lat).to.be.equal(2);
-
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.feature.plot',
@@ -387,22 +390,39 @@ define([
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.view.center.overlay', message: {
-                                        overlayId: 'testOverlayId1'
+                                        "overlayId": "basetestMapViewCenterOverlay"
                                     }
                                 }
                             });
-                            setTimeout(function () {
-                                // EXPECT: We wait 500ms, then expect the Zoom and coordinates
+                            map.events.register('moveend', map, function () {
+                                // SetTimout replaced with events.register error was still occuring in the console
+                                // EXPECT: the Zoom and coordinates
                                 // to have changed properly to a centered point between the
-                                // features on overlay 'testOverlayId1'.
+                                // features on overlay "basetestMapViewCenterOverlay".
                                 // Note: These values will change depending on the bounds given
                                 // for our Map frame's width and height in the Mocha Index.html file.
                                 // We also ensure a plot emit registers to begin with via plotSuccess check.
-                                //expect(map.getZoom()).to.be.equal(4); //TODO this might not always be true. Use bounds methods to figure out fitting.
-                                //expect((map.getCenter().transform(map.projection, map.projectionWGS84)).lon).to.be.closeTo(19.9999, 0.0002); //TODO use actual methods
-                                //expect((map.getCenter().transform(map.projection, map.projectionWGS84)).lat).to.be.closeTo(32.14675, 0.000051); //TODO use actual methods
+
+                                selectedLayer = map.getLayersBy('layerId', 'basetestMapViewCenterOverlay' + meridian.sandbox.sessionId)[0];
+                                feat = (selectedLayer.features),
+                                    featsVis = true;
+                                // EXPECT: We expect that plotting features from the Payload was successful.
                                 expect(plotSuccess).to.be.equal(true);
-                            }, 500);
+                                if (feat) {
+                                    for (i = 0, len = feat.length; i < len; i++) {
+                                        if (!feat[i].getVisibility() || !feat[i].onScreen()) {
+                                            featsVis = false;
+                                            break;
+                                        }
+                                    }
+                                    // EXPECT: We expect that iterating through all existing features does not produce
+                                    // a feature failing to be map visible to the user.
+                                    expect(featsVis).to.be.true;
+                                }
+
+                                // EXPECT: That the Data Extent is similar to the actual full map visible extent.
+                                expect((map.getExtent().containsBounds(selectedLayer.getDataExtent()))).to.be.true;
+                            }); // end register moveend
                         }
                     };
                     cmapiMain.initialize.call(meridian, meridian);
