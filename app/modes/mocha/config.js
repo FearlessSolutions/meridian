@@ -82,11 +82,11 @@ require(['chai', 'mocha', 'jquery'], function(chai) {
     mocha.setup('bdd');
     require([
         //TODO add tests that you want to run here
-        //'./modes/mocha/basemap-tests',
-        //'./modes/mocha/overlay-tests',
-        //'./modes/mocha/feature-tests',
-        './modes/mocha/view-tests'//,
-        //'./modes/mocha/clear-tests',
+        './modes/mocha/basemap-tests',
+        './modes/mocha/overlay-tests',
+        './modes/mocha/feature-tests',
+        './modes/mocha/view-tests',
+        './modes/mocha/clear-tests'//,
         //'./modes/mocha/defunct-tests'
     ], function(require) {
         mocha.run();
