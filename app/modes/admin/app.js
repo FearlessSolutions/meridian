@@ -19,6 +19,7 @@ require.config({
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
         jqueryUI: 'libs/jquery-ui-1.11.2.custom/jquery-ui.min', // Custom build, check file's header to see what it includes
+        slickLib: 'libs/SlickGrid-master', // Custom build, check file's header to see what it includes
         slickcore: 'libs/SlickGrid-master/slick.core',
         slickgrid: 'libs/SlickGrid-master/slick.grid',
         slickdataview: 'libs/SlickGrid-master/slick.dataview',
