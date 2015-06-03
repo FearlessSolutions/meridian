@@ -53,20 +53,24 @@ define([
         zoomToFeatures: function(params) {
             var layer = params.map.getLayersBy('layerId', params.layerId)[0],
                 bounds = new OpenLayers.Bounds(),
-                featuresFound = false;
+                selectedLayer,
+                feature,
+                i,
+                len,
+                featureExtent;
             if(layer) {
                 // TODO: make it also work in cluster mode (to check through the features in clusters)
 
-                var selectedLayer = params.map.getLayersBy('layerId', params.layerId)[0];
-                var feature = null;
-                for(var i=0, len=selectedLayer.features.length; i<len; ++i) {
+                selectedLayer = params.map.getLayersBy('layerId', params.layerId)[0];
+                feature = null;
+                for(i=0, len=selectedLayer.features.length; i<len; ++i) {
                     if(selectedLayer.features[i].attributes.featureId == params.featureIds) {
                         feature = selectedLayer.features[i];
                         break;
                     }
                 }
                 if(feature) {
-                    var featureExtent = feature.geometry.getBounds();
+                    featureExtent = feature.geometry.getBounds();
                     bounds.extend(featureExtent);
                 }
                 params.map.zoomToExtent(bounds);
