@@ -1,7 +1,8 @@
 define([
     'text!./snapshot-menu.hbs',
+    'text!./client-only-snapshot-menu.hbs',
     'handlebars'
-], function (snapshotMenuHBS) {
+], function (snapshotMenuHBS, clientOnlyMenuHBS) {
     var context, mediator;
 
     var exposed = {
@@ -12,11 +13,19 @@ define([
         createMenu: function(params){
             var layerId = params.layerId,
                 $currentMenu,
-                snapshotMenuTemplate = Handlebars.compile(snapshotMenuHBS);
-            var snapshotMenuHTML = snapshotMenuTemplate({
+                snapshotMenuTemplate, snapshotMenuHTML; 
+
+            //override menu if override provided
+            if(context.options.menuOverride && context.options.menuOverride === true){
+                 snapshotMenuTemplate = Handlebars.compile(clientOnlyMenuHBS);  
+            }else{
+                snapshotMenuTemplate = Handlebars.compile(snapshotMenuHBS); 
+            }
+
+            snapshotMenuHTML = snapshotMenuTemplate({
                 "layerId": layerId
             });
-
+                     
             context.$('#timeline').after(snapshotMenuHTML);
 
             $currentMenu = context.$('#snapshot-' + layerId + '-settings-menu');

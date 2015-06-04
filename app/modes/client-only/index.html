@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <title>Meridian Map</title>
         <link rel="stylesheet" href="/libs/bootstrap-3.2.0/css/bootstrap.css">
+        <link rel="stylesheet" href="/libs/toastr-2.0.1/toastr.css">
         <link rel="stylesheet" href="/styles/main.css">
 
         <script data-main="./app" src="/bower_components/requirejs/require.js"></script>
@@ -13,14 +14,16 @@
         <div id="mapContainer">
             <div data-aura-component="apis/cmapi"></div>
             <div data-aura-component="rendering-engines/map-openlayers"></div>
+            <div data-aura-component="controls/timeline" data-aura-menu-override="true"></div>
+            <div data-aura-component="tools/draw"></div>
+            <div data-aura-component="tools/support"></div>
+            <div data-aura-component="controls/user-settings"></div>
 
             <div id="left-side-menu">
                 <div class="menu-button-group">
                     <div data-aura-component="controls/draw-toggle"></div>
                     <div data-aura-component="controls/datagrid-toggle"></div>
                     <div data-aura-component="controls/clear-toggle"></div>
-                <div data-aura-component="controls/upload-data-toggle"></div>
-                <div data-aura-component="controls/export-picker-toggle"></div>
                 <div data-aura-component="controls/basemap-gallery-toggle"></div>
                 <div data-aura-component="controls/timeline-toggle"></div>
                 <div data-aura-component="controls/user-settings-toggle"></div>
@@ -28,10 +31,9 @@
             </div>
             <div class="tab-handle">||</div>
         </div>
-
+        <div data-aura-component="displays/notifications"></div>
             <div id="footer-container">
                 <span class="footer-left col-sm-4 col-md-4 hidden-xs">
-                    <!-- <div data-aura-component="displays/mouse-position"></div> -->
                 </span>
                 <span class="footer-center col-xs-12 col-sm-4 col-md-4">
                     <div class="footer-center-container">
@@ -40,10 +42,9 @@
                     </div>
                 </span>
                 <span class="footer-right col-sm-4 col-md-4 hidden-xs">
-                    <!-- <div data-aura-component="displays/event-counter"></div> -->
                 </span>
             </div>
-
         </div>
+        <div data-aura-component="displays/datagrid"></div>
     </body>
 </html>
