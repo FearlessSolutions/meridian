@@ -152,7 +152,6 @@ define([
             context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(feature), function(styleKey, styleValue){
                 newValue.properties[styleKey] = styleValue;
             });
-
             newData.push(newValue);
         });
 
@@ -196,12 +195,10 @@ define([
         context.sandbox.utils.each(featureIndex, function(dataindex, feature) {
             fId = feature + sessionId;
 
-
             context.sandbox.dataStorage.addData({
                 datasetId: layerId,
                 data: fId
             });
-
             newData.push(fId);
         });
 
@@ -214,7 +211,6 @@ define([
             featureIds: newData,
             exclusive: false
         });
-
     }
 
     function showFeatures(message) {
@@ -235,7 +231,6 @@ define([
         featureIndex = message.featureIds;
         context.sandbox.utils.each(featureIndex, function(dataindex, feature) {
             fId = feature + sessionId;
-
 
             context.sandbox.dataStorage.addData({
                 datasetId: layerId,
@@ -258,7 +253,6 @@ define([
                 layerId: layerId
             });
         }
-
     }
 
     return exposed;
