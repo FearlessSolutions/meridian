@@ -556,10 +556,6 @@ define([
                                 // By expecting our selected feature's top and bottom bounds to be equivalent;
                                 // And finally expecting those coordinates to match up perfectly with our map's present center.
 
-                                console.debug(map.getCenter().lon);
-                                console.debug(feat[0].geometry.getBounds().left);
-                                console.debug(feat[0].geometry.getBounds().top);
-                                console.debug(feat[0].geometry.getBounds().bottom);
                                 expect(feat[0].geometry.getBounds().left).to.be.equal(feat[0].geometry.getBounds().right);
                                 expect(feat[0].geometry.getBounds().top).to.be.equal(feat[0].geometry.getBounds().bottom);
                                 expect(map.getCenter().lon).to.be.equal(feat[0].geometry.getBounds().left);
