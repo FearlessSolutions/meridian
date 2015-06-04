@@ -38,7 +38,11 @@ define([
             }
         },
         mapFeaturePlotBatch: function(message, channel) {
-            sendError(channel, message, 'Channel not supported');
+            if(message === '') {
+                sendError(channel, message, 'No message payload supplied');
+            }else{
+                plotFeatures(message);
+            }
         },
         mapFeaturePlotUrl: function(message, channel) {
             sendError(channel, message, 'Channel not supported');
