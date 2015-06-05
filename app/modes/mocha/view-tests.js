@@ -293,8 +293,8 @@ define([
                             i,
                             len;
                         if (params.channel == 'map.status.ready') {
-                            map = renderer.getMap(),
-                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
+                            map = renderer.getMap();
+                            beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             payload = {
                                 "overlayId": "basetestMapViewCenterOverlay",
                                 "name": "Test Name 1",
@@ -366,7 +366,7 @@ define([
                                 },
                                 "zoom": false,
                                 "readOnly": false
-                            }
+                            };
 
                             map.setCenter([2, 2], 5);
                             // Verify Layer Creation / Features Plotted
@@ -390,7 +390,7 @@ define([
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.view.center.overlay', message: {
-                                        "overlayId": "basetestMapViewCenterOverlay"
+                                        overlayId: 'basetestMapViewCenterOverlay'
                                     }
                                 }
                             });
@@ -433,7 +433,7 @@ define([
             });//it
         }); // map.view.center.overlay
         describe('map.view.center.feature', function () {
-            it("Base Test: Map View Center Feature", function (done) {
+            it('Base Test: Map View Center Feature', function (done) {
                 require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
                     meridian.sandbox.external.postMessageToParent = function (params) {
                         var map,
@@ -446,8 +446,8 @@ define([
                         expect = chai.expect;
 
                         if (params.channel == 'map.status.ready') {
-                            map = renderer.getMap(),
-                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
+                            map = renderer.getMap();
+                            beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             payload = {
                                 "overlayId": "basetestMapViewCenterFeature",
                                 "name": "Test Name 1",
@@ -517,9 +517,9 @@ define([
                                         }
                                     ]
                                 },
-                                "zoom": false,
-                                "readOnly": false
-                            }
+                                zoom: false,
+                                readOnly: false
+                            };
                             map.setCenter([2, 2], 5);
                             // Verify Layer Creation
                             meridian.sandbox.on('map.layer.create', function (params) {
@@ -542,14 +542,14 @@ define([
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.view.center.feature', message: {
-                                        "overlayId": "basetestMapViewCenterFeature",
-                                        "featureId": "featureId01_"
+                                        overlayId: 'basetestMapViewCenterFeature',
+                                        featureId: 'featureId01_'
                                     }
                                 }
                             });
                             map.events.register('moveend', map, function () {
                                 selectedLayer = map.getLayersBy('layerId', 'basetestMapViewCenterFeature' + meridian.sandbox.sessionId)[0];
-                                feat = (selectedLayer.features);
+                                feat = selectedLayer.features;
 
                                 // EXPECT: We expect that the selected feature is located in the center of the map.
                                 // We do this by expecting our selected feature's left and right bounds to be equivalent;

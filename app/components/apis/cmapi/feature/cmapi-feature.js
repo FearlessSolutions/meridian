@@ -1,8 +1,8 @@
 define([
-    './cmapi-feature-mediator'
+	'./cmapi-feature-mediator'
 ], function (mediator) {
-    var context,
-        defaultLayerId,
+	var context,
+		defaultLayerId,
         sendError,
         emit,
         exposed,
@@ -30,45 +30,45 @@ define([
 
     //Map channels to functions, and error if a channel is not supported
     receiveChannels= {
-        mapFeaturePlot: function(message) { // TODO: if featureId already exists, remove it and replot
+		mapFeaturePlot: function(message) { // TODO: if featureId already exists, remove it and replot
             if(message === '') {
                 sendError(channel, message, 'No message payload supplied');
             }else{
                 plotFeatures(message);
             }
-        },
+		},
         mapFeaturePlotBatch: function(message, channel) {
             sendError(channel, message, 'Channel not supported');
         },
-        mapFeaturePlotUrl: function(message, channel) {
+		mapFeaturePlotUrl: function(message, channel) {
             sendError(channel, message, 'Channel not supported');
         },
-        mapFeatureUnplot: function(message, channel) {
+		mapFeatureUnplot: function(message, channel) {
             sendError(channel, message, 'Channel not supported');
-        },
-        mapFeatureHide: function(message, channel) {
+		},
+		mapFeatureHide: function(message, channel) {
             if(message === '') {
                 sendError(channel, message, 'No message payload supplied');
             }else{
                 hideFeatures(message);
             }
         },
-        mapFeatureShow: function(message) {
+		mapFeatureShow: function(message) {
             if(message === '') {
                 sendError(channel, message, 'No message payload supplied');
             }else{
                 showFeatures(message);
             }
         },
-        mapFeatureSelected: function(message) {
+		mapFeatureSelected: function(message) {
             sendError('map.feature.selected', message, 'Channel not supported');
-        },
-        mapFeatureDeselected: function(message) {
+		},
+		mapFeatureDeselected: function(message) {
             sendError('map.feature.deselected', message, 'Channel not supported');
-        },
-        mapFeatureUpdate: function(message) {
+		},
+		mapFeatureUpdate: function(message) {
             sendError('map.feature.update', message, 'Channel not supported');
-        }
+		}
     };
 
     function plotFeatures(message) {
@@ -152,6 +152,7 @@ define([
             context.sandbox.utils.each(context.sandbox.icons.getIconForFeature(feature), function(styleKey, styleValue){
                 newValue.properties[styleKey] = styleValue;
             });
+
             newData.push(newValue);
         });
 
@@ -182,7 +183,7 @@ define([
             fId,
             newData = [],
             sessionId = context.sandbox.sessionId;
-        layerId += sessionId;
+            layerId += sessionId;
 
         context.sandbox.stateManager.setLayerStateById({
             layerId: layerId,
@@ -199,6 +200,7 @@ define([
                 datasetId: layerId,
                 data: fId
             });
+
             newData.push(fId);
         });
 

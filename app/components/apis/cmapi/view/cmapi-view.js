@@ -59,14 +59,13 @@ define([
 		},
         mapViewCenterFeature: function(message) {
             var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId,
-                fId,
                 sessionId = context.sandbox.sessionId;
+
             layerId += sessionId;
-            fId = message.featureId + sessionId;
 
             mediator.zoomToFeatures({
                 layerId: layerId,
-                featureIds: fId
+                featureIds: [message.featureId + sessionId]
             });
         },
 		mapViewCenterLocation: function(message) {
