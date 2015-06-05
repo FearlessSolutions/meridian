@@ -1,49 +1,28 @@
-define([], function (){
-    var exposed = {
+define([
+    './map/core',
+    'text!./map-openlayers.css',
+    'text!./map-openlayers.hbs',
+    './map-api-publisher',
+    './map-api-subscriber',
+    'handlebars'], function (mapCore,
+                             olMapRendererCSS,
+                             olMapRendererHBS,
+                             olMapRendererPublisher,
+                             olMapRendererSubscriber){
+    return {
         initialize: function() {
-            if(this.sandbox.mapConfiguration.defaultMapEngine === 'OpenLayers') {
-                requireStuff(this);
-            }
-
-            this.sandbox.on('map.renderer.change', function(params) {
-                if(params.provider === 'OpenLayers') {
-                    requireStuff(this);
-                } else {
-                    // Destroy OL Map
-                }
-            });
-        }
-    };
-
-    function requireStuff(thisContext) {
-        var context = thisContext;
-        
-        //Require modules needed for OpenLayers
-        require([
-            './components/rendering-engines/map-openlayers/map/core',
-            'text!./components/rendering-engines/map-openlayers/map-openlayers.css', 
-            'text!./components/rendering-engines/map-openlayers/map-openlayers.hbs',
-            './components/rendering-engines/map-openlayers/map-api-publisher',
-            './components/rendering-engines/map-openlayers/map-api-subscriber',
-            'handlebars'
-        ], function(
-            mapCore,
-            olMapRendererCSS,
-            olMapRendererHBS,
-            olMapRendererPublisher,
-            olMapRendererSubscriber
-        ){
-            context.sandbox.utils.addCSS(olMapRendererCSS, 'rendering-engines-map-openlayers-component-style');
+            var context = this;
+            this.sandbox.utils.addCSS(olMapRendererCSS, 'rendering-engines-map-openlayers-component-style');
 
             var olMapRendererTemplate = Handlebars.compile(olMapRendererHBS);
             var html = olMapRendererTemplate();
-            context.html(html);
+            this.html(html);
 
             mapCore.init(context);
-            olMapRendererPublisher.init(context);
             olMapRendererSubscriber.init(context);
-        });
-    }
-
-    return exposed;
+            olMapRendererPublisher.init(context);
+            context.sandbox.stateManager.map.status.setReady(true);
+        },
+        getMap: mapCore.getMap
+    };
 });

@@ -26,7 +26,7 @@ server {
 
     # Serve all static content this way, with no proxy to node
     # Default
-    location ~* \.(html|css|js|hbs|txt|png|jpeg) {
+    location ~* \.(html|css|js|hbs|txt|png|jpeg|woff|ttf) {
         root /home/chris/workspace/meridian/app;
     }
 
@@ -50,6 +50,9 @@ server {
 
     # CMAPI test harness
     location ^~ /cmapi {
+        root /home/chris/workspace/meridian/app/modes;
+    }
+    location ^~ /mocha {
         root /home/chris/workspace/meridian/app/modes;
     }
 
