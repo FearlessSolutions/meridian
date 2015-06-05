@@ -34,7 +34,6 @@ exports.init = function(context){
                 if (!page || page.length === 0){
                     res.status(204);
                     res.send();
-                    return;
                 } else {
                     save.writeGeoJSON(userName, sessionId, queryId, source, page, function (err, results) {
                         if (err) {
