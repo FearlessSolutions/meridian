@@ -30,6 +30,7 @@ define([
             context.sandbox.on('map.zoom.maxExtent', mapCore.zoomToMaxExtent);
             context.sandbox.on('map.zoom.toLocation', mapCore.zoomToExtent);
             context.sandbox.on('map.zoom.toFeatures', mapCore.zoomToFeatures);
+            context.sandbox.on('map.view.center.feature', mapCore.zoomToFeatures);
             context.sandbox.on('map.zoom.toLayer', mapCore.zoomToLayer);
             context.sandbox.on('data.clear.all', mapCore.clear);
         },
@@ -54,6 +55,7 @@ define([
             context.sandbox.off('map.zoom.maxExtent', mapCore.zoomToMaxExtent);
             context.sandbox.off('map.zoom.toLocation', mapCore.zoomToLocation);
             context.sandbox.off('map.zoom.toFeatures', mapCore.zoomToFeatures);
+            context.sandbox.off('map.view.center.feature', mapCore.zoomToFeatures);
             context.sandbox.off('map.zoom.toLayer', mapCore.zoomToLayer);
             context.sandbox.off('data.clear.all', mapCore.clear);
         }

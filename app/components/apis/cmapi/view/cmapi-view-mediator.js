@@ -26,6 +26,9 @@ define([
         zoomToLayer: function(args) {
             context.sandbox.emit('map.zoom.toLayer', args);
         },
+        zoomToFeatures: function(args) {
+            context.sandbox.emit('map.view.center.feature', args);
+        },
         centerOnBounds: function(args) {
             context.sandbox.emit('map.zoom.toLocation', args);
         }

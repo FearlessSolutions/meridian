@@ -93,7 +93,7 @@ define([
                 selectable: false,
                 //selectable: true, //TODO This will only work if 1) we keep renderer as is, and save it to server OR 2) we change the renderer
                 coords: message.coords
-            });    
+            });
         }
 
         context.sandbox.stateManager.setLayerStateById({
@@ -168,7 +168,7 @@ define([
         mediator.plotFeatures({
             layerId: layerId,
             data: newData
-        });    
+        });
 
         //zoom to feature if specified in payload
         if(message.zoom) {
@@ -196,7 +196,6 @@ define([
         context.sandbox.utils.each(featureIndex, function(dataindex, feature) {
             fId = feature + sessionId;
 
-
             context.sandbox.dataStorage.addData({
                 datasetId: layerId,
                 data: fId
@@ -214,7 +213,6 @@ define([
             featureIds: newData,
             exclusive: false
         });
-
     }
 
     function showFeatures(message) {
@@ -235,7 +233,6 @@ define([
         featureIndex = message.featureIds;
         context.sandbox.utils.each(featureIndex, function(dataindex, feature) {
             fId = feature + sessionId;
-
 
             context.sandbox.dataStorage.addData({
                 datasetId: layerId,
@@ -258,7 +255,6 @@ define([
                 layerId: layerId
             });
         }
-
     }
 
     return exposed;

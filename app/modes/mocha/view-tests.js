@@ -293,8 +293,8 @@ define([
                             i,
                             len;
                         if (params.channel == 'map.status.ready') {
-                            map = renderer.getMap(),
-                                beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
+                            map = renderer.getMap();
+                            beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
                             payload = {
                                 "overlayId": "basetestMapViewCenterOverlay",
                                 "name": "Test Name 1",
@@ -366,7 +366,7 @@ define([
                                 },
                                 "zoom": false,
                                 "readOnly": false
-                            }
+                            };
 
                             map.setCenter([2, 2], 5);
                             // Verify Layer Creation / Features Plotted
@@ -390,7 +390,7 @@ define([
                             meridian.sandbox.external.receiveMessage({
                                 data: {
                                     channel: 'map.view.center.overlay', message: {
-                                        "overlayId": "basetestMapViewCenterOverlay"
+                                        overlayId: 'basetestMapViewCenterOverlay'
                                     }
                                 }
                             });
@@ -432,6 +432,144 @@ define([
                 });
             });//it
         }); // map.view.center.overlay
+        describe('map.view.center.feature', function () {
+            it('Base Test: Map View Center Feature', function (done) {
+                require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
+                    meridian.sandbox.external.postMessageToParent = function (params) {
+                        var map,
+                            payload,
+                            beforeLayerCreateCount,
+                            afterLayerCreateCount,
+                            selectedLayer,
+                            feat,
+                            plotSuccess = false;
+                        expect = chai.expect;
+
+                        if (params.channel == 'map.status.ready') {
+                            map = renderer.getMap();
+                            beforeLayerCreateCount = map.layers.length; // layer count prior to the channel emit
+                            payload = {
+                                "overlayId": "basetestMapViewCenterFeature",
+                                "name": "Test Name 1",
+                                "format": "geojson",
+                                "feature": {
+                                    "type": "FeatureCollection",
+                                    "features": [
+                                        {
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [
+                                                    -10,
+                                                    10
+                                                ]
+                                            },
+                                            "properties": {
+                                                "featureId": "featureId01_",
+                                                "p1": "pp1"
+                                            },
+                                            "style": {
+                                                "height": 24,
+                                                "width": 24,
+                                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                            }
+                                        },
+                                        {
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [
+                                                    50,
+                                                    -40
+                                                ]
+                                            },
+                                            "properties": {
+                                                "featureId": "featureId02_",
+                                                "p1": "pp1"
+                                            },
+                                            "style": {
+                                                "height": 24,
+                                                "width": 24,
+                                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                            }
+                                        },
+                                        {
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [
+                                                    10,
+                                                    50
+                                                ]
+                                            },
+                                            "properties": {
+                                                "featureId": "featureId03_",
+                                                "p1": "pp1"
+                                            },
+                                            "style": {
+                                                "height": 24,
+                                                "width": 24,
+                                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
+                                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
+                                            }
+                                        }
+                                    ]
+                                },
+                                zoom: false,
+                                readOnly: false
+                            };
+                            map.setCenter([2, 2], 5);
+                            // Verify Layer Creation
+                            meridian.sandbox.on('map.layer.create', function (params) {
+                                afterLayerCreateCount = map.layers.length;
+                                // EXPECT: Where we expect that our layer count has in fact increased.
+                                expect(afterLayerCreateCount).to.be.above(beforeLayerCreateCount);  // after should be greater than before, confirms layer was created
+                            });
+                            // Verify Features Plotted
+                            meridian.sandbox.on('map.features.plot', function (params) {
+                                plotSuccess = true;
+                            });
+
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.feature.plot',
+                                    message: payload
+                                }
+                            });
+
+                            meridian.sandbox.external.receiveMessage({
+                                data: {
+                                    channel: 'map.view.center.feature', message: {
+                                        overlayId: 'basetestMapViewCenterFeature',
+                                        featureId: 'featureId01_'
+                                    }
+                                }
+                            });
+                            map.events.register('moveend', map, function () {
+                                selectedLayer = map.getLayersBy('layerId', 'basetestMapViewCenterFeature' + meridian.sandbox.sessionId)[0];
+                                feat = selectedLayer.features;
+
+                                // EXPECT: We expect that the selected feature is located in the center of the map.
+                                // We do this by expecting our selected feature's left and right bounds to be equivalent;
+                                // By expecting our selected feature's top and bottom bounds to be equivalent;
+                                // And finally expecting those coordinates to match up perfectly with our map's present center.
+
+                                expect(feat[0].geometry.getBounds().left).to.be.equal(feat[0].geometry.getBounds().right);
+                                expect(feat[0].geometry.getBounds().top).to.be.equal(feat[0].geometry.getBounds().bottom);
+                                expect(map.getCenter().lon).to.be.equal(feat[0].geometry.getBounds().left);
+                                expect(map.getCenter().lat).to.be.equal(feat[0].geometry.getBounds().top);
+                            });
+                        }
+                    };
+                    cmapiMain.initialize.call(meridian, meridian);
+                    meridian.html = $('#fixtures').html;
+                    renderer.initialize.call(meridian, meridian);
+                    done();
+                });
+            });//it
+        });//map.view.center.feature
     });//describe
 });
 
