@@ -108,7 +108,7 @@ require(['jquery',
     .use('extensions/session-extension/session-extension')
     .use('extensions/external-pubsub-extension/external-pubsub-extension')
     .use('extensions/state-manager-extension/state-manager-extension')
-    .use('extensions/data-storage-client-extension/data-storage-client-extension')
+    .use('extensions/data-storage-extension/data-storage-extension')
     .use('extensions/splash-screen-extension/splash-screen-extension')
     .use('extensions/snapshot-extension/snapshot-extension')
     .use('extensions/map-configuration-extension/map-configuration-extension')
