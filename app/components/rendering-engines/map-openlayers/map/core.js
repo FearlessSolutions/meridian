@@ -133,7 +133,6 @@ define([
          * @param {array} params.featureIds - array of featureIds
          */
         zoomToFeatures: function(params) {
-
             mapNavigation.zoomToFeatures({
                 "map": map,
                 "layerId": params.layerId,

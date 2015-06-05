@@ -35,7 +35,8 @@ define([
          * @param params
          */
         zoomToLayer: function(params) {
-            var layer = params.map.getLayersBy('layerId', (params.layerId))[0];
+            var layer = params.map.getLayersBy('layerId', params.layerId)[0];
+
             if(layer && layer.getDataExtent()) {
                 params.map.zoomToExtent(layer.getDataExtent());
             } else {
@@ -53,27 +54,43 @@ define([
         zoomToFeatures: function(params) {
             var layer = params.map.getLayersBy('layerId', params.layerId)[0],
                 bounds = new OpenLayers.Bounds(),
-                selectedLayer,
-                feature,
-                i,
-                len,
-                featureExtent;
+                featuresFound = false;
+
             if(layer) {
                 // TODO: make it also work in cluster mode (to check through the features in clusters)
+                context.sandbox.utils.each(params.featureIds, function(index, featureId) {
+                    var feature = layer.getFeatureBy('featureId', featureId),
+                        featureExtent;
 
-                selectedLayer = params.map.getLayersBy('layerId', params.layerId)[0];
-                feature = null;
-                for(i=0, len=selectedLayer.features.length; i<len; ++i) {
-                    if(selectedLayer.features[i].featureId == params.featureIds) {
-                        feature = selectedLayer.features[i];
-                        break;
+                    if(feature) {
+                        featureExtent = feature.geometry.getBounds();
+                        bounds.extend(featureExtent);
+                        featuresFound = true;
+                    } else {
+                        // feature is likely in a cluster
+                        context.sandbox.utils.each(layer.features, function(k1, v1) {
+                            if(v1.cluster) {
+                                context.sandbox.utils.each(v1.cluster, function(k2, singleFeature) {
+                                    if(singleFeature.featureId === featureId) {
+                                        featureExtent = singleFeature.geometry.getBounds();
+                                        bounds.extend(featureExtent);
+                                        featuresFound = true;
+                                    }
+                                });
+                            }
+                        });
                     }
+                });
+
+                if(featuresFound) {
+                    params.map.zoomToExtent(bounds);
+                } else {
+                    publisher.publishMessage({
+                        messageType: 'warning',
+                        messageTitle: 'Zoom to Features',
+                        messageText: 'Features not found.'
+                    });
                 }
-                if(feature) {
-                    featureExtent = feature.geometry.getBounds();
-                    bounds.extend(featureExtent);
-                }
-                params.map.zoomToExtent(bounds);
             } else {
                 publisher.publishMessage({
                     messageType: 'warning',
@@ -82,8 +99,6 @@ define([
                 });
             }
         },
-
-
         /**
          * Pan to given point and zoom to zoom-level-8
          * @param params

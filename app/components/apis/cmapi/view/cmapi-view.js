@@ -53,20 +53,19 @@ define([
         },
         mapViewCenterOverlay: function(message) {
             mediator.zoomToLayer({
-                layerId: message.overlayId ? (message.overlayId+=context.sandbox.sessionId) : defaultLayerId,
+                layerId: message.overlayId ? (message.overlayId += context.sandbox.sessionId) : (defaultLayerId + context.sandbox.sessionId),
                 zoom: null //defaulting auto zoom to null since we dont support zooming into a certain range
             });
         },
         mapViewCenterFeature: function(message) {
             var layerId = message.overlayId || context.sandbox.cmapi.defaultLayerId,
-                fId,
                 sessionId = context.sandbox.sessionId;
+
             layerId += sessionId;
-            fId = message.featureId + sessionId;
 
             mediator.zoomToFeatures({
                 layerId: layerId,
-                featureIds: fId
+                featureIds: [message.featureId + sessionId]
             });
         },
 		mapViewCenterLocation: function(message) {
