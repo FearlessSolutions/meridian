@@ -177,6 +177,7 @@ define([
                             readOnly: false
                         };
                         expectedLayerId = payload.overlayId + sessionId;
+
                         if (params.channel == 'map.status.ready') {
                             map = renderer.getMap();
 
@@ -218,6 +219,7 @@ define([
                             beforeLayerCreateCount,
                             sessionId = meridian.sandbox.sessionId,
                             expectedLayerId;
+
                         payload = {
                             overlayId: 'edgecaseFeaturePlot_nofeatureid',
                             name: 'Test Name 1',
