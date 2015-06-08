@@ -9,7 +9,7 @@ define([
         $cancelButton,
         $clearButton;
 
-    var exposed = {
+    return {
         init: function(thisContext, thisMediator) {
             context = thisContext;
             mediator = thisMediator;
@@ -18,9 +18,9 @@ define([
             $clearButton = context.$('#accept-clear');
 
             $modal.modal({
-                "backdrop": true,
-                "keyboard": true,
-                "show": false
+                backdrop: true,
+                keyboard: true,
+                show: false
              });
 
             $cancelButton.on('click', function(e) {
@@ -33,15 +33,13 @@ define([
             });
         },
         open: function(params) {
-            mediator.publishOpening({"componentOpening": MENU_DESIGNATION});
+            mediator.publishOpening({componentOpening: MENU_DESIGNATION});
             $modal.modal('show');
         },
         clear: function(){
             closeMenu();
         }
     };
-
-    return exposed;
 
     /**
       * Closes the clear menu.

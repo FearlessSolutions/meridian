@@ -2,19 +2,19 @@ define([
     'bootstrap'
 ], function () {
 
-    var context, mediator;
-	
-    var exposed = {
+    return {
         init: function(thisContext) {
             context = thisContext;
             context.$('#splashScreen')
-                .modal({backdrop: 'static', keyboard: false})
+                .modal({
+                    backdrop: 'static',
+                    keyboard: false
+                })
                 .on('hidden.bs.modal', function () {
                     context.sandbox.utils.preferences.set('splashScreenHidden', true);
                 });  
         }
     };
 
-    return exposed;
 
 });

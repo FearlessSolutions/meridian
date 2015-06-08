@@ -23,7 +23,7 @@ define([
             }
 
             snapshotMenuHTML = snapshotMenuTemplate({
-                "layerId": layerId
+                layerId: layerId
             });
                      
             context.$('#timeline').after(snapshotMenuHTML);
@@ -31,7 +31,7 @@ define([
             $currentMenu = context.$('#snapshot-' + layerId + '-settings-menu');
 
             //layer starts off showing points. Show layer option in the menu should start out disabled.
-            context.$('#snapshot-' + layerId + '-settings-menu a[data-channel="map.layer.show"]').parent('li').addClass('disabled');
+            $currentMenu.find('a[data-channel="map.layer.show"]').parent('li').addClass('disabled');
 
             context.$('#snapshot-' + layerId + '-settings').on("click", function (e) {
                 var $settingsButton = context.$(this);
@@ -42,11 +42,11 @@ define([
                     // hide all open snapshot menus
                     context.$('.snapshot-menu').hide();
                     //open menu
-                    context.$('#snapshot-' + layerId + '-settings-menu')
-                        .data("invokedOn", context.$(e.target))
+                    $currentMenu
+                        .data('invokedOn', context.$(e.target))
                         .show()
                         .css({
-                            position: "absolute",
+                            position: 'absolute',
                             left: getLeftLocation($settingsButton, $currentMenu),
                             top: getTopLocation($settingsButton, $currentMenu)
                         });
@@ -59,10 +59,10 @@ define([
             });
 
             // close menu on hover out
-            context.$('#snapshot-' + layerId + '-settings-menu').hover(
+            $currentMenu.hover(
                 function(){return;},
                 function(){
-                    exposed.hideMenu({"layerId": layerId});
+                    exposed.hideMenu({layerId: layerId});
                 });
             // set menu item callback control
             context.$('#snapshot-' + layerId + '-settings-menu li a').click(function(){
@@ -71,14 +71,14 @@ define([
 
                 channel = this.getAttribute('data-channel');
                 layerState = context.sandbox.stateManager.getLayerStateById({
-                    "layerId": layerId
+                    layerId: layerId
                 });
 
                 if(channel !== 'query.stop') {
                     exposed.menuCallback({
-                        "menuChannel": channel,
-                        "payload": {
-                            "layerId": layerId
+                        menuChannel: channel,
+                        payload: {
+                            layerId: layerId
                         }  
                     });
                 } else {
@@ -89,9 +89,9 @@ define([
                         layerState.dataTransferState !== 'finished'
                     ){
                         exposed.menuCallback({
-                        "menuChannel": channel,
-                        "payload": {
-                            "layerId": layerId
+                        menuChannel: channel,
+                        payload: {
+                            layerId: layerId
                         }  
                     });
                     }
@@ -138,9 +138,6 @@ define([
             .off('click')
             .on( 'click', function (e) {
                 context.$(this).hide();
-        
-                var $invokedOn = context.$(this).data("invokedOn");
-                var $selectedMenu = context.$(e.target);
         });
     }
 

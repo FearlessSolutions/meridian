@@ -96,8 +96,6 @@ define([
                         if(!propertyEntryArray){
                             columns[newMetadata.property] = [newMetadata];
                             binaryInsert(newMetadata);
-
-                            return;
                         }else{
 
                             //Check to see what the old weight is. If the new one is higher, replace it (delete and re-insert)
