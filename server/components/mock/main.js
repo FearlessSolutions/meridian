@@ -30,23 +30,22 @@ exports.init = function(context){
         mock.query(minLat, maxLat, minLon, maxLon, start, pageSize, throttleMs, function(page){
             var persistData;
 
-            if (!page || page.length === 0){
-                res.status(204);
-                res.send();
-                return;
-            }
-
             persistData = function(){
-                save.writeGeoJSON(userName, sessionId, queryId, source, page, function(err, results){
-                    if (err){
-                        res.status(500);
-                        res.send(err);
-
-                    } else {
-                        res.status(200);
-                        res.send(page);
-                    }
-                });
+                if (!page || page.length === 0){
+                    res.status(204);
+                    res.send();
+                    return;
+                } else {
+                    save.writeGeoJSON(userName, sessionId, queryId, source, page, function (err, results) {
+                        if (err) {
+                            res.status(500);
+                            res.send(err);
+                        } else {
+                            res.status(200);
+                            res.send(page);
+                        }
+                    });
+                }
             };
 
             if (parseInt(start) === 0){

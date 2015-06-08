@@ -19,7 +19,6 @@ require.config({
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
         jqueryUI: 'libs/jquery-ui-1.11.2.custom/jquery-ui.min', // Custom build, check file's header to see what it includes
-        slickLib: 'libs/SlickGrid-master', // Custom build, check file's header to see what it includes
         slickcore: 'libs/SlickGrid-master/slick.core',
         slickgrid: 'libs/SlickGrid-master/slick.grid',
         slickdataview: 'libs/SlickGrid-master/slick.dataview',
@@ -27,7 +26,9 @@ require.config({
         slickpager: 'libs/SlickGrid-master/controls/slick.pager',
         moment: 'libs/momentjs-2.8.3/moment.min',
         togeojson: 'libs/togeojson/togeojson',
-        coordinateConverter: 'libs/coordinate-converter/cc'
+        coordinateConverter: 'libs/coordinate-converter/cc',
+        mocha: 'libs/mocha/mocha',
+        chai: 'libs/mocha/chai'
     },
     shim:{
         aura: {
@@ -77,31 +78,17 @@ require.config({
     }
 });
 
-require(['jquery', 'aura/aura', 'meridian-config', 'jqueryCssWatch'], function($, Aura, configuration) {
-    // Listen to CSSWatch trigger (fired from datagrid/main.js)
-    $(document).on('css-change', '#datagridContainer', function(event, change){
-        $('#mapContainer').css('height', 'calc(100% - ' + change.height + ')');
-        $('div[data-aura-component="rendering-engines/map-openlayers"], #map').css('height', '100%');
-        window.dispatchEvent(new Event('resize')); // Trigger OpenLayers to redraw the map
-    });
-
-    Aura({
-        debug: true,
-        appName: configuration.appName,
-        sources: {default: 'components'},
-        mediator: configuration.mediator,
-        version: configuration.version,
-        releaseDate: configuration.releaseDate,
-        cmapiVersion: configuration.cmapiVersion
-    })
-    .use('extensions/system-configuration-extension/system-configuration-extension')
-    .use('extensions/utils-extension/utils-extension')
-    .use('extensions/ajax-handler-extension/ajax-handler-extension')
-    .use('extensions/session-extension/session-extension')
-
-    .start({ components: 'body' })
-    .then(function(){
+require(['chai', 'mocha', 'jquery'], function(chai) {
+    mocha.setup('bdd');
+    require([
+        //TODO add tests that you want to run here
+        './modes/mocha/basemap-tests',
+        './modes/mocha/overlay-tests',
+        './modes/mocha/feature-tests',
+        './modes/mocha/view-tests',
+        //'./modes/mocha/clear-tests', //TODO fix with new feature and layer ids
+        './modes/mocha/defunct-tests'
+    ], function(require) {
+        mocha.run();
     });
 });
-
-

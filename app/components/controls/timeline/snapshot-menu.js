@@ -127,6 +127,9 @@ define([
         },
         hideMenu: function(params) {
             context.$('#snapshot-' + params.layerId + '-settings-menu').hide();
+        },
+        hideAllMenus: function(){
+            context.$('.dropdown-menu').hide();
         }
     };
 
