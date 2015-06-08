@@ -12,6 +12,7 @@ define([
             context.sandbox.on('data.clear.all', queryTool.clear);
             context.sandbox.on('menu.opening', queryTool.handleMenuOpening);
             context.sandbox.on('data.requery', queryTool.populateQueryFromParams);
+            context.sandbox.on('query.execute', queryTool.validateBookmark);
         },
         publishMessage: function(params) {
             context.sandbox.emit('message.publish', params); 
@@ -36,6 +37,9 @@ define([
         },
         openQueryTool: function(params) {
             context.sandbox.emit('query.tool.open');
+        },
+        createBookmark: function(params) {
+            context.sandbox.emit('bookmark.create', params);
         }
     };	
 

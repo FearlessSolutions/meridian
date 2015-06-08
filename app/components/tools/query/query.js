@@ -9,6 +9,7 @@ define([
         $maxLat,
         $minLon,
         $minLat,
+        $chkboxBookmark,
         isActive;
 
     var exposed = {
@@ -22,6 +23,7 @@ define([
             $minLat = context.$('.query-form #query-location-minLat');
             $maxLon = context.$('.query-form #query-location-maxLon');
             $maxLat = context.$('.query-form #query-location-maxLat');
+            $chkboxBookmark = context.$('#chkboxBookmark');
 
             $modal.modal({
                 backdrop: 'static',
@@ -29,7 +31,7 @@ define([
                 show: false
             });
        
-            context.$('.query-form button[type="submit"]').on('click', function(event) {
+            context.$('.modal-footer button[type="submit"]').on('click', function(event) {
                 event.preventDefault();                
                 var minLon = $minLon.val() || '',
                     minLat = $minLat.val() || '',
@@ -111,7 +113,7 @@ define([
                 return false;
             });
 
-            context.$('.query-form button[type="cancel"]').on('click', function(event) {
+            context.$('.modal-footer button[type="cancel"]').on('click', function(event) {
                 event.preventDefault();
                 exposed.clearQueryForm();
                 mediator.closeQueryTool();
@@ -130,6 +132,7 @@ define([
             });
         },
         open: function(params) {
+            $chkboxBookmark.prop('checked', false);
             isActive = true;
             var drawOnDefault = true;
             if(context.sandbox.queryConfiguration && 
@@ -172,7 +175,6 @@ define([
                 context.$('#query-name').val('');
                 context.$('#query-justification').val('');
                 context.$('#query-source').val('mock');
-
                 context.$('.has-error').removeClass('has-error');            
         },
         clear: function(){
@@ -192,6 +194,11 @@ define([
            context.$('#query-name').val(params.queryName);
            context.$('#query-justification').val(params.justification);
            context.$('#query-source').val(params.queryType);
+        },
+        validateBookmark: function(params) {
+            if ($chkboxBookmark.is(':checked')) {
+                mediator.createBookmark(params);
+            }
         }
     };
 

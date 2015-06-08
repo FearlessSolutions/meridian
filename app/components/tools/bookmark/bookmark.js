@@ -62,7 +62,7 @@ define([
             $bookmarkModal.modal('hide');
         },
         saveBMtoLS: function(params) {
-            var bookmarkId = params.layerId,
+            var bookmarkId = params.queryId || params.layerId,
                 storedBookmarks = context.sandbox.utils.preferences.get('storedBookmarks');
             if(!storedBookmarks){
                 storedBookmarks = {};
@@ -76,6 +76,7 @@ define([
                 });
             } else {
                 // saves to bookmarks
+                //context.sandbox.util.get(context.sandbox.dataStorage.datasets(bookmarkId, function(data) {
                 context.sandbox.dataStorage.getMetadataById(bookmarkId, function(data) {
                     var bbox = data.queryBbox;
                     storedBookmarks[bookmarkId] = {
