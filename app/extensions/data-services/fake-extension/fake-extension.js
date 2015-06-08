@@ -42,6 +42,7 @@ define([
 
                         return fakeTemplate({
                             thumbnail: app.sandbox.icons.getIconForFeature(fullFeature).iconLarge || app.sandbox.icons.getIconForFeature(fullFeature).icon,
+                            datasource: config.DATASOURCE_NAME,
                             classification: attributes.classification,
                             name: attributes.name,
                             attributes: attributes,
