@@ -12,23 +12,23 @@ define([
             mediator.init(context, exposed);
         },
         receive: function(channel, message) {
-            clear();
+           mediator.publishClear();
         },
         clear: function(){
-            var queryId;
-
-            for(queryId in context.sandbox.dataStorage.datasets){
-                if(context.sandbox.dataStorage.datasets[queryId].dataService === context.sandbox.cmapi.DATASOURCE_NAME){
-                    delete context.sandbox.dataStorage.datasets[queryId];
-                }
-            }
-
-            context.sandbox.ajax.clear();
+            clear();
         }
     };
 
     function clear(){
-        mediator.publishClear();
+        var queryId;
+
+        for(queryId in context.sandbox.dataStorage.datasets){
+            if(context.sandbox.dataStorage.datasets[queryId].dataService === context.sandbox.cmapi.DATASOURCE_NAME){
+                delete context.sandbox.dataStorage.datasets[queryId];
+            }
+        }
+
+        context.sandbox.ajax.clear();
     }
 
     return exposed;

@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: window.location.origin, //This makes it so that all modes start at the same place.
+    baseUrl: '/', //This makes it so that all modes start at the same place.
     waitSeconds: 30,
     paths: {
         aura: 'bower_components/aura/lib',
@@ -78,7 +78,6 @@ require.config({
 });
 
 require(['jquery', 'aura/aura', 'meridian-config', 'jqueryCssWatch'], function($, Aura, configuration) {
-    // Listen to CSSWatch trigger (fired from datagrid/main.js)
     $(document).on('css-change', '#datagridContainer', function(event, change){
         $('#mapContainer').css('height', 'calc(100% - ' + change.height + ')');
         $('div[data-aura-component="rendering-engines/map-openlayers"], #map').css('height', '100%');
@@ -98,10 +97,24 @@ require(['jquery', 'aura/aura', 'meridian-config', 'jqueryCssWatch'], function($
     .use('extensions/utils-extension/utils-extension')
     .use('extensions/ajax-handler-extension/ajax-handler-extension')
     .use('extensions/session-extension/session-extension')
+    .use('extensions/external-pubsub-extension/external-pubsub-extension')
+    .use('extensions/state-manager-extension/state-manager-extension')
+    .use('extensions/data-storage-client-extension/data-storage-client-extension')
+    .use('extensions/map-configuration-extension/map-configuration-extension')
+    .use('extensions/user-settings-extension/user-settings-extension')
+    .use('extensions/support-configuration-extension/support-configuration-extension')
+    .use('extensions/snapshot-extension/snapshot-extension')
+    .use('extensions/icon-extension/icon-extension')
+    .use('extensions/cmapi-extension/cmapi-extension')
 
-    .start({ components: 'body' })
+     .start({ components: 'body' })
     .then(function(){
+        $('#left-side-menu').css('display','table').animate({
+            left: '0'
+          }, 500);
+        $('#loading').remove();
     });
+
 });
 
 

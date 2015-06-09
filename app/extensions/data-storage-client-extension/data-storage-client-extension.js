@@ -55,34 +55,10 @@ define([
                 getFeatureById: function(params, callback) {
                     var featureId = params.featureId;
 
-                    return $.ajax({
-                        type: 'GET',
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/' + featureId
-                    }).done(function(data) {
-                        callback(data);
-                    }).error(function(error) {
-                       callback(error, null);
-                    });
-                },
-                getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
-                    return app.sandbox.utils.ajax({
-                        type: 'GET',
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/query/' + queryId + '/session/' + sessionId +
-                            '?start=' + start + '&size=' + size
-                    }).done(function(data) {
-                        callback(null, data);
-                    }).error(function(error) {
-                        callback(error, null);
-                    });
-                },
-                getMetadataById: function(queryId, callback){
-                    app.sandbox.utils.ajax({
-                        type: 'GET',
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + queryId,
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        success: callback
+                    app.sandbox.utils.each(dataStorage.datasets, function(dKey, dSet) {
+                        if(dSet._byId[featureId]){
+                            callback((dSet._byId[featureId]).attributes);
+                        }
                     });
                 },
                 /**
