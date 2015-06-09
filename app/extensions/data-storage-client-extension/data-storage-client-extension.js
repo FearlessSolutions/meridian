@@ -61,27 +61,6 @@ define([
                         }
                     });
                 },
-                getResultsByQueryAndSessionId: function(queryId, sessionId, start, size, callback) {
-                    return app.sandbox.utils.ajax({
-                        type: 'GET',
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/feature/query/' + queryId + '/session/' + sessionId +
-                            '?start=' + start + '&size=' + size
-                    }).done(function(data) {
-                        callback(null, data);
-                    }).error(function(error) {
-                        callback(error, null);
-                    });
-                },
-                getMetadataById: function(queryId, callback){
-                    app.sandbox.utils.ajax({
-                        type: 'GET',
-                        url: app.sandbox.utils.getCurrentNodeJSEndpoint() + '/metadata/query/' + queryId,
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        success: callback
-                    });
-                },
                 /**
                  * Insert new keys into sortedPropertiesArray, and note them in columns
                  * @param params
