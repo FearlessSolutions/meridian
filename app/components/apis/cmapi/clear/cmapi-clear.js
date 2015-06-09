@@ -12,7 +12,7 @@ define([
             mediator.init(context, exposed);
         },
         receive: function(channel, message) {
-            clear();
+           mediator.publishClear();
         },
         clear: function(){
             clear();
@@ -29,7 +29,6 @@ define([
         }
 
         context.sandbox.ajax.clear();
-        mediator.publishClear();
     }
 
     return exposed;

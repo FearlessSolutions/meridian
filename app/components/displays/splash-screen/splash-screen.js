@@ -4,7 +4,7 @@ define([
 
     return {
         init: function(thisContext) {
-            context = thisContext;
+            var context = thisContext;
             context.$('#splashScreen')
                 .modal({
                     backdrop: 'static',

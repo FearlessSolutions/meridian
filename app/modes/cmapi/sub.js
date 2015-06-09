@@ -53,7 +53,7 @@ define([
     }
 
     function toggleChannel(channel){
-        $thisOption = $selector.find("option[value='" + channel +"']");
+        var $thisOption = $selector.find("option[value='" + channel +"']");
         if(subChannels[channel]){
             subChannels[channel] = false;
             $thisOption.removeClass('subscribed');

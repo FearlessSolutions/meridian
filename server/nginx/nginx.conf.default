@@ -44,7 +44,10 @@ server {
     location ^~ /dashboard {
         root /home/chris/workspace/meridian/app/modes;
     }
-    location ^~ /admin: {
+    location ^~ /admin {
+        root /home/chris/workspace/meridian/app/modes;
+    }
+    location ^~ /client-only {
         root /home/chris/workspace/meridian/app/modes;
     }
 

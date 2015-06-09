@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: window.location.origin, //This makes it so that all modes start at the same place.
+    baseUrl: '/', //This makes it so that all modes start at the same place.
     waitSeconds: 30,
     paths: {
         aura: 'bower_components/aura/lib',
@@ -19,6 +19,7 @@ require.config({
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
         jqueryUI: 'libs/jquery-ui-1.11.2.custom/jquery-ui.min', // Custom build, check file's header to see what it includes
+        slickLib: 'libs/SlickGrid-master', // Custom build, check file's header to see what it includes
         slickcore: 'libs/SlickGrid-master/slick.core',
         slickgrid: 'libs/SlickGrid-master/slick.grid',
         slickdataview: 'libs/SlickGrid-master/slick.dataview',
@@ -76,7 +77,12 @@ require.config({
     }
 });
 
-require(['jquery', 'aura/aura', 'meridian-config'], function($, Aura, configuration) {
+require(['jquery', 'aura/aura', 'meridian-config', 'jqueryCssWatch'], function($, Aura, configuration) {
+    $(document).on('css-change', '#datagridContainer', function(event, change){
+        $('#mapContainer').css('height', 'calc(100% - ' + change.height + ')');
+        $('div[data-aura-component="rendering-engines/map-openlayers"], #map').css('height', '100%');
+        window.dispatchEvent(new Event('resize')); // Trigger OpenLayers to redraw the map
+    });
 
     Aura({
         debug: true,
@@ -96,13 +102,15 @@ require(['jquery', 'aura/aura', 'meridian-config'], function($, Aura, configurat
     .use('extensions/data-storage-client-extension/data-storage-client-extension')
     .use('extensions/map-configuration-extension/map-configuration-extension')
     .use('extensions/user-settings-extension/user-settings-extension')
+    .use('extensions/support-configuration-extension/support-configuration-extension')
+    .use('extensions/snapshot-extension/snapshot-extension')
     .use('extensions/icon-extension/icon-extension')
     .use('extensions/cmapi-extension/cmapi-extension')
 
      .start({ components: 'body' })
     .then(function(){
         $('#left-side-menu').css('display','table').animate({
-            left: "0px"
+            left: '0'
           }, 500);
         $('#loading').remove();
     });
