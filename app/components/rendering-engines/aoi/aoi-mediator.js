@@ -7,9 +7,9 @@ define([
         init: function(thisContext){
             context = thisContext;
             context.sandbox.on('map.layer.create', aoi.createAOI);
-            //context.sandbox.on('map.layer.hide', aoi.hideLayer);
-            //context.sandbox.on('map.layer.show', aoi.showLayer);
-            //context.sandbox.on('map.layer.delete', aoi.deleteLayer);
+            context.sandbox.on('map.layer.hide', aoi.hideAOILayer);
+            context.sandbox.on('map.layer.show', aoi.showAOILayer);
+            context.sandbox.on('map.layer.delete', aoi.deleteAOILayer);
             context.sandbox.on('map.features.plot', aoi.updateAOI);
         },
             createLayer: function(params){
@@ -21,13 +21,13 @@ define([
             plotFeatures: function(params){
                 context.sandbox.emit('map.features.plot', params);
             },
-        hideLayer: function(params) {
+        hideAOILayer: function(params) {
             context.sandbox.emit('map.layer.hide', params);
         },
-        showLayer: function(params) {
+        showAOILayer: function(params) {
             context.sandbox.emit('map.layer.show', params);
         },
-        deleteLayer: function(params) {
+        deleteAOILayer: function(params) {
             context.sandbox.emit('map.layer.delete', params);
         }
         };

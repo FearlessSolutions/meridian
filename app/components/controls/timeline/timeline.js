@@ -315,7 +315,7 @@ define([
                 delete context.sandbox.dataStorage.datasets[layerId]; //TODO this should be implemented in each datasource instead; catches snapshot menu call for now.
             }
         },
-        showSnapshotLayerGroup: function(params) {//TODO this needs to be cleaned up. No reason to have multiple instnaces of the same logic.
+        showSnapshotLayerGroup: function(params) {//TODO this needs to be cleaned up. No reason to have multiple instances of the same logic.
             exposed.showDataLayer({
                 layerId: params.layerId
             });
@@ -326,7 +326,7 @@ define([
                 layerId: params.layerId
             });
         },
-        hideSnapshotLayerGroup: function(params) { //TODO this needs to be cleaned up. No reason to have multiple instnaces of the same logic.
+        hideSnapshotLayerGroup: function(params) { //TODO this needs to be cleaned up. No reason to have multiple instances of the same logic.
             exposed.hideDataLayer({
                 layerId: params.layerId
             });

@@ -74,9 +74,9 @@ define([
             //    createNewAOIFeature(layerId, coords);
             //}
         },
-        updateAOI: function(args){
-            var layerId = args.layerId,
-                coords = args.coords;
+        updateAOI: function(params){
+            var layerId = params.layerId,
+                coords = params.coords;
 
             if(!layerId ||
                 !context.sandbox.dataStorage.datasets[layerId] ||
@@ -93,20 +93,22 @@ define([
         showAOILayer: function(params) {
             if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
                 context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
-                mediator.showLayer({layerId: params.layerId + '_aoi'});
+                mediator.showAOILayer({layerId: params.layerId + '_aoi'});
             }
         },
         hideAOILayer: function(params) {
             if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
                 context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
-                mediator.hideLayer({layerId: params.layerId + '_aoi'});
+                mediator.hideAOILayer({layerId: params.layerId + '_aoi'});
             }
         },
         deleteAOILayer: function(params) {
-            var layerId = params.layerId;
-
-            delete context.sandbox.stateManager.layers[layerId + '_aoi'];
-            mediator.deleteLayer({layerId: layerId + '_aoi'});
+            if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
+                var layerId = params.layerId;
+                delete context.sandbox.stateManager.layers[layerId + '_aoi'];
+                mediator.deleteAOILayer({layerId: layerId + '_aoi'});
+                delete context.sandbox.dataStorage.datasets[layerId]; //TODO this should be implemented in each datasource instead; catches snapshot menu call for now.
+            };
         }
     };
 
