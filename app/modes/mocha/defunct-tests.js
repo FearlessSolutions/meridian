@@ -47,80 +47,16 @@ define([
         });//end of beforeEach
 
         describe('map.view.center.data', function () {
-            it("Base Test: Map View Center Data - DEFUNCT", function (done) {
-
-            });
+            //it("Base Test: Map View Center Data - DEFUNCT", function (done) {
+            //
+            //});
 
         });//map.view.center.data
-        describe('map.view.center.feature', function () {
-            it("Base Test: Map View Center Feature - DEFUNCT", function (done) {
-                //require(['components/apis/cmapi/main', 'components/rendering-engines/map-openlayers/main'], function (cmapiMain, renderer) {
-                //    meridian.sandbox.external.postMessageToParent = function (params) {
-                //        if (params.channel == 'map.status.ready') {
-                //            // map goes first
-                //            var map = renderer.getMap();
-                //            var payload = {
-                //                "overlayId": "testOverlayId1",
-                //                "featureId": "f1",  // CRITICAL PART OF GETTING THE TEST TO FUNCTION
-                //                "name": "Test Name 1",
-                //                "format": "geojson",
-                //                "feature": {
-                //                    "type": "FeatureCollection",
-                //                    "features": [
-                //                        {
-                //                            "type": "Feature",
-                //                            "geometry": {
-                //                                "type": "Point",
-                //                                "coordinates": [
-                //                                    -5,
-                //                                    10
-                //                                ]
-                //                            },
-                //                            "properties": {
-                //                                "p1": "pp1"
-                //                            },
-                //                            "style": {
-                //                                "height": 24,
-                //                                "width": 24,
-                //                                "icon": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png",
-                //                                "iconLarge": "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/256/Map-Marker-Marker-Outside-Chartreuse.png"
-                //                            }
-                //                        }
-                //                    ]
-                //                },
-                //                "zoom": false,
-                //                "readOnly": false
-                //            }
-                //            var expectedBounds_values = { // Fill this with expected Feature Location data
-                //            }
-                //
-                //            map.events.register("moveend", map, function () { // zoomend does not seem to work for this channel emit
-                //
-                //                // EXPECT: We expect here that the Feature is located at the designated FeatureID
-                //                // EXPECT: We expect here that the designated Feature matches some preset coordinates
-                //                // EXPECT: We expect that the map is positioned centrally around said feature.
-                //                done();
-                //            });
-                //
-                //            meridian.sandbox.external.receiveMessage({
-                //                data: {
-                //                    channel: 'map.view.center.bounds',
-                //                    message: payload
-                //                }
-                //            });
-                //        }
-                //    };
-                //    cmapiMain.initialize.call(meridian, meridian);
-                //    var $fixtures = $('#fixtures');
-                //    meridian.html = $fixtures.html;
-                //    renderer.initialize.call(meridian, meridian);
-                //});
-            });//it
-        });//map.view.center.feature
-        describe('map.feature.plot.batch', function () {
-            it("Base Test: Feature Plot Batch - DEFUNCT", function (done) {
 
-            });
+        describe('map.feature.plot.batch', function () {
+            //it("Base Test: Feature Plot Batch - DEFUNCT", function (done) {
+            //
+            //});
             //it("Base Test: Feature Plot Batch - DEFUNCT", function (done) {
             //
             //    // This Unit Test (And Channel) might be irrelevant, as it doesn't seem to provide any real advantages
@@ -232,18 +168,6 @@ define([
             //        renderer.initialize.call(meridian, meridian);
             //    });
             //});//it
-
         });//map.feature.plot.batch
-        describe('map.feature.hide', function () {
-            it("Base Test: Map Feature Hide - DEFUNCT", function (done) {
-
-            });
-
-        });//map.feature.hide
-        describe('map.feature.show', function () {
-            it("Base Test: Map Feature Show - DEFUNCT", function (done) {
-
-            });
-        });//map.feature.show
     });//describe
 });

@@ -795,8 +795,8 @@
             precision = parseInt(precision, 10);
         }
 
-        //if no precision is provided, set precision to 2.
-        precision = precision ? precision: 2;
+        //if no precision is provided, set precision to null.
+        precision = precision ? precision: null;
 
         // remove 500,000 meter offset for longitude
         xUTM = parseFloat(UTMEasting) - EASTING_OFFSET; 
@@ -1187,15 +1187,15 @@
             // even number zone
             nSqrs = "FGHJKLMNPQRSTUVABCDE".indexOf(gridLetter2);
         }
-
         zoneStart = zoneBase[letNorth];
-        appxNorth = segBase[letNorth] + nSqrs / 10;
+       appxNorth = segBase[letNorth] + nSqrs / 10;
+
         if (appxNorth < zoneStart) {
             appxNorth += 2;
         }
 
-        easting = appxEast * 100000 + east * Math.pow(10, 5 - east.toString().length);
-        northing = appxNorth * 1000000 + north * Math.pow(10, 5 - north.toString().length);
+        easting = appxEast * 100000 + east * Math.pow(10, 5 - mgrsPrecision);
+        northing = appxNorth * 1000000 + north * Math.pow(10, 5 - mgrsPrecision);
 
         if (typeof output === 'string' && output.toLowerCase() === 'object'){
             utm = {};
@@ -1208,7 +1208,6 @@
         }else {
              throw new Error("mgrsToUtm(): Incorrect output type specified. Required: string or object.");
         }
-
         return utm;
     };
 
@@ -1259,6 +1258,7 @@
         return cc.utmToDd(utm.zoneNumber+utm.zoneLetter, utm.easting, utm.northing, output, precision);
     };
 
+
     /*
      * Converts MGRS to DMS.
      * MGRS: Military Grid Reference System.
@@ -1305,9 +1305,7 @@
         if(MGRSgridLetters.length < 2 || MGRSgridLetters.length > 2){
             throw new Error('mgrsToDms(): Incorrect Grid Square Id. Must be two letters.');
         }
-
         utm = cc.mgrsToUtm(MGRSZone, MGRSgridLetters, MGRSnumbers, 'object');
-
         return cc.utmToDms(utm.zoneNumber+utm.zoneLetter, utm.easting, utm.northing, output, digits);
     }
 
