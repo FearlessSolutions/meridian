@@ -86,8 +86,6 @@ define([
 		},
 		clear: function() {
 			context.$('#timeline-container').html('');
-            snapshotMenu.hideAllMenus();
-            $timeline.hide();
             mediator.closeTimeline();
 		},
         updateCount: function(params) {
