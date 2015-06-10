@@ -33,19 +33,19 @@
         <section class="col-md-10 container">
 
           <h2 id="startedQuickly" class="page-header">Getting Started Quickly</h2>
-            <p>You will need a valid certificate to be imported into the browser before being able to access Meridian. Download the certificate by clicking here: <a href="https://github.com/ozone-development/meridian/blob/develop/user.p12?raw=true">user.p12</a></p>
+            <p>You will need a valid certificate to be imported into the browser before being able to access Meridian. Download the certificate by clicking here: <a href="https://github.com/ozone-development/meridian/blob/develop/server/certs/client.p12?raw=true">client.p12</a></p>
               <ul>
-                <li>Password: ‘password’</li>
+                <li>The is no password for the certificate.</li>
                 <li>Chrome Instructions: Settings>Show Advanced Settings>(HTTPS/SSL)Manage certificates>Import</li>
                 <li>FireFox Instructions: Options>Advanced>Certificates>View Certificates>Import</li>
                 <li>You might need to restart the browser after importing the certificate.</li>
               </ul>
 
-          <h4 class="page-header" id="accessMeridian">Access Meridian</h3>
+          <h4 class="page-header" id="accessMeridian">Access Meridian</h4>
             <p>Quickly access Meridian by clicking this link: <a href="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/index.html">Meridian</a>.</p>
             
 
-          <h4 class="page-header" id="embedMeridian">Embed Meridian</h3>
+          <h4 class="page-header" id="embedMeridian">Embed Meridian</h4>
             <p>To embed Meridian, please include the following <code>iframe</code> tag on any 
             HTML page source code:</p>
             <p><code>&ltiframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/"&gt&lt/iframe&gt</code></p>
@@ -53,7 +53,7 @@
             <iframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/basic/index.html" style="height:400px; width:100%"></iframe>
 
           <br>
-          <h2 id="requirements" class="page-header">Local Meridian Setup</h3>
+          <h2 id="requirements" class="page-header">Local Meridian Setup</h2>
             <p>To host the database locally (which will be populated with mock data), you will need to have Node.js installed, have it in the project path, and have the ElasticSearch we provide running. If you would like the Grunt task to automatically start ElasticSearch (instead of you doing it manually), follow the <a href="./index.html#withGrunt">Grunt Support Setup instructions</a>.</p>
             <p> Instructions can also be found on our <a href="//github.com/ozone-development/meridian">Github</a> page.</p>
 
@@ -62,7 +62,14 @@
               <ul>
                 <li><a href="//git-scm.com/book/en/Git-Basics-Getting-a-Git-Repository#Cloning-an-Existing-Repository"> How to clone an existing repository using Git</a>.</li>
               </ul>
-            <p>  
+            <p>
+          <h4 class="page-header" id="nginxSetup">NGINX</h4>
+            <p>Download and install <a href="http://nginx.org/en/download.html">NGINX</a> (mainline version).</p>
+            <p>In the <code>/conf</code> folder of your NGINX installation, you will need to open the <code>nginx.conf</code> file and insert a line of code inside the bracket <code>http {</code> that points to the
+                internal <code>nginx.conf</code> located in the meridian application.</p>
+            <p>e.g. <code>http {
+                    include C:/Dev/meridian/server/nginx/nginx.conf;
+                    }</code></p>
           
           <h4 class="page-header">Grunt</h4>
             <p>The project uses Grunt for task management. Use of Grunt is optional, but highly recommended.</p>
@@ -97,6 +104,15 @@
                   <ul>
                     <li><strong>For windows users:</strong> Make sure to use the <code>Windows SDK 7.1 Command Prompt</code> as Administrator and set the command prompt environment to x86 by running <code>setenv /x86</code>. The command prompt can be found in the Start Menu after the SDK has been installed.</li>
                   </ul>
+                <li>Start NGINX:</li>
+                 <ul>
+                     <li><strong>For windows users:</strong>
+                         <ul>
+                             <li>Run <code>nginx.exe</code></li>
+                             <li>Open the Task Manager to make sure <code>nginx.exe</code> is running.</li>
+                         </ul>
+                     </li>
+                 </ul>
                 <li>Start Elastic Search:</li>
                   <ul>
                     <li>Run <code>bin/elasticsearch</code> on Unix, or <code>bin/elasticsearch.bat</code> on Windows.</li>
@@ -162,8 +178,8 @@
             <ul class="nav affix">
               <li><a href="#startedQuickly">Getting Started Quickly</a>
                 <ul class="nav">
-                  <li><a href="#accessMeridian">Access Meridian</a></li>
-                  <li><a href="#embedMeridian">Embed Meridian</a></li>
+                    <li><a href="#accessMeridian">Access Meridian</a></li>
+                    <li><a href="#embedMeridian">Embed Meridian</a></li>
                 </ul>
               </li>
               <li><a href="#requirements">Local Meridian Setup</a></li>
