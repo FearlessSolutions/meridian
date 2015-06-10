@@ -63,7 +63,7 @@
                 <li><a href="//git-scm.com/book/en/Git-Basics-Getting-a-Git-Repository#Cloning-an-Existing-Repository"> How to clone an existing repository using Git</a>.</li>
               </ul>
             <p>
-          <h4 class="page-header" id="nginxSetup">NGINX</h4>
+          <h4 class="page-header">NGINX</h4>
             <p>Download and install <a href="http://nginx.org/en/download.html">NGINX</a> (mainline version).</p>
             <p>In the <code>/conf</code> folder of your NGINX installation, you will need to open the <code>nginx.conf</code> file and insert a line of code inside the bracket <code>http {</code> that points to the
                 internal <code>nginx.conf</code> located in the meridian application.</p>
@@ -121,7 +121,7 @@
                 <li>Start the App Server:</li>
                   <ul>
                     <li>To start the local server, run: <code>node app.js</code>.</li>
-                    <li>Open a web browser and visit <a href="http://localhost:3000">http://localhost:3000</a> to see Meridian in action.</li>
+                    <li>Open a web browser and visit <a href="http://localhost">http://localhost</a> to see Meridian in action.</li>
                   </ul>
               </ul>
 
@@ -143,6 +143,15 @@
                     <li>Run <code>bin/elasticsearch</code> on Unix, or <code>bin/elasticsearch.bat</code> on Windows.</li>
                     <li>Run <code>curl -X GET http://localhost:9200</code> or visit <code>http://localhost:9200</code> to make sure elasticsearch is running.</li>
                   </ul>
+              <li>Start NGINX:</li>
+                <ul>
+                    <li><strong>For windows users:</strong>
+                        <ul>
+                            <li>Run <code>nginx.exe</code></li>
+                            <li>Open the Task Manager to make sure <code>nginx.exe</code> is running.</li>
+                        </ul>
+                    </li>
+                </ul>
               <li>Start the App Server:</li>
                 <ul>
                   <li>To start the local server run: <code>grunt server</code>.</li>
@@ -160,15 +169,15 @@
                           <li>Press 'Ok' for the subsequent windows. Close your old console window and start a new instance of the console. Run <code>grunt server</code> in the command line.</li>
                       </ul>
                   </ul>
-                  <li>This will open the main page <a href="http://localhost:3000">http://localhost:3000</a> in your default browser.</li>
+                  <li>This will open the main page <a href="http://localhost">http://localhost</a> in your default browser.</li>
                 </ul>
                 <br><p><strong>NOTE:</strong> If when starting elastic search, you recieve warnings regarding multicasting you most likely have been added to an already exsisting elastic search cluster and may recieve unintended outcomes from the application. You can disable multicasting by navigating to the directory you extracted elastic search to and then navigating to the config/elasticsearch.yml file. In there, uncomment the line <code>discovery.zen.ping.multicast.enabled: false</code> and save the file. You can now restart elastic search.</p>
             </ul>
 
           <h4 class="page-header" id="resources">Resources within the running App</h4>
             <ul>
-              <li>The application page <a href="http://localhost:3000">http://localhost:3000</a>.</li>
-              <li>To view the documentation page, go to <a href="http://localhost:3000/docs/meridian/index.html">http://localhost:3000/docs/meridian/index.html</a>.</li>
+              <li>The application page <a href="http://localhost">http://localhost</a>.</li>
+              <li>To view the documentation page, go to <a href="http://localhost/docs/meridian/index.html">http://localhost/docs/meridian/index.html</a>.</li>
               <li>Meridian utilizes <a href="http://cmapi.org">CMAPI</a> to receive and send information while it is embedded.</li>
             </ul>
         </section><!-- md-10 container -->
