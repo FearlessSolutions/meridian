@@ -70,9 +70,6 @@ define([
                 }]
             });
 
-            //if(coords){
-            //    createNewAOIFeature(layerId, coords);
-            //}
         },
         updateAOI: function(params){
             var layerId = params.layerId,
@@ -111,28 +108,5 @@ define([
             };
         }
     };
-
-    //function createNewAOIFeature(layerId, coords){
-    //    mediator.publishUpdateData({
-    //        "layerId": layerId + "_aoi",
-    //        "data": [{
-    //            "layerId": layerId + "_aoi",
-    //            "featureId": "_aoi",
-    //            "dataService": "",
-    //            "id": "_aoi",
-    //            "geometry": {
-    //                "type": "Polygon",
-    //                "coordinates": [[
-    //                    [coords.minLon, coords.maxLat],
-    //                    [coords.maxLon, coords.maxLat],
-    //                    [coords.maxLon, coords.minLat],
-    //                    [coords.minLon, coords.minLat]
-    //                ]]
-    //            },
-    //            "type": "Feature"
-    //        }]
-    //    });
-    //}
-
     return exposed;
 });
