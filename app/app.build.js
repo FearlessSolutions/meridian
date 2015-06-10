@@ -113,6 +113,7 @@
         { name: "components/controls/user-settings-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
         { name: "components/controls/visual-mode-toggle/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
         { name: "components/controls/zoom/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
+
         //data-services
         { name: "components/data-services/fake/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
         { name: "components/data-services/mock/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
@@ -129,6 +130,7 @@
         { name: "components/displays/splash-screen/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
         { name: "components/displays/user-info/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
         //rendering-engines
+        { name: "components/rendering-engines/aoi", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },
 //        { name: "components/rendering-engines/map-openlayers/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] }, //This causes problems.
         //tools
         { name: "components/tools/bookmark/main", excludeShallow: ['text', 'handlebars', 'bootstrap', 'jquery'] },

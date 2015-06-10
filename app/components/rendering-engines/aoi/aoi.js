@@ -5,18 +5,22 @@
  * Sends everything to the map
  */
 define([
-    './aoi-publisher'
-], function (publisher) {
-    var context;
+    'bootstrap'
+
+], function () {
+    var context,
+        mediator;
 
     var exposed = {
-        init: function(thisContext) {
+        init: function(thisContext, thisMediator) {
             context = thisContext;
+            mediator = thisMediator;
         },
-        createAOI: function(args){
-            var layerId = args.layerId,
-                name = args.name,
-                coords = args.coords;
+
+        createAOI: function(params){
+            var layerId = params.layerId,
+                name = params.name,
+                coords = params.coords;
 
             if(!layerId ||
                 !context.sandbox.dataStorage.datasets[layerId] ||
@@ -25,24 +29,50 @@ define([
             }
 
             //This should be ignored if the layer exists (handled in renderer)
-            publisher.createLayer({
-                "layerId": layerId + "_aoi",
-                "name": name + "_aoi",
-                "initialVisibility": true,
-                "styleMap": {
-                    "default": {
-                        "strokeColor": '#000',
-                        "strokeOpacity": 0.3,
-                        "strokeWidth": 2,
-                        "fillColor": 'gray',
-                        "fillOpacity": 0.3
+            //publisher.createLayer({
+            mediator.createLayer({
+                layerId: layerId + '_aoi',
+                name: name + '_aoi',
+                initialVisibility: true,
+                styleMap: {
+                    default: {
+                        strokeColor: '#000',
+                        strokeOpacity: 0.3,
+                        strokeWidth: 2,
+                        fillColor: 'gray',
+                        fillOpacity: 0.3
                     }
                 }
             });
 
-            if(coords){
-                createNewAOIFeature(layerId, coords);
-            }
+            mediator.setLayerIndex({
+                layerId: layerId + '_aoi',
+                layerIndex: 0
+            });
+
+            mediator.plotFeatures({
+                layerId: layerId + '_aoi',
+                data: [{
+                    layerId: layerId + '_aoi',
+                    featureId: '_aoi',
+                    dataService: '',
+                    id: '_aoi',
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [coords.minLon, coords.maxLat],
+                            [coords.maxLon, coords.maxLat],
+                            [coords.maxLon, coords.minLat],
+                            [coords.minLon, coords.minLat]
+                        ]]
+                    },
+                    type: 'Feature'
+                }]
+            });
+
+            //if(coords){
+            //    createNewAOIFeature(layerId, coords);
+            //}
         },
         updateAOI: function(args){
             var layerId = args.layerId,
@@ -58,30 +88,49 @@ define([
         },
         clear: function() {
            //TODO?
+        },
+
+        showAOILayer: function(params) {
+            if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
+                context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = true;
+                mediator.showLayer({layerId: params.layerId + '_aoi'});
+            }
+        },
+        hideAOILayer: function(params) {
+            if(context.sandbox.stateManager.layers[params.layerId + '_aoi']) {
+                context.sandbox.stateManager.layers[params.layerId + '_aoi'].visible = false;
+                mediator.hideLayer({layerId: params.layerId + '_aoi'});
+            }
+        },
+        deleteAOILayer: function(params) {
+            var layerId = params.layerId;
+
+            delete context.sandbox.stateManager.layers[layerId + '_aoi'];
+            mediator.deleteLayer({layerId: layerId + '_aoi'});
         }
     };
 
-    function createNewAOIFeature(layerId, coords){
-        publisher.publishUpdateData({
-            "layerId": layerId + "_aoi",
-            "data": [{
-                "layerId": layerId + "_aoi",
-                "featureId": "_aoi",
-                "dataService": "",
-                "id": "_aoi",
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [[
-                        [coords.minLon, coords.maxLat],
-                        [coords.maxLon, coords.maxLat],
-                        [coords.maxLon, coords.minLat],
-                        [coords.minLon, coords.minLat]
-                    ]]
-                },
-                "type": "Feature"
-            }]
-        });
-    }
+    //function createNewAOIFeature(layerId, coords){
+    //    mediator.publishUpdateData({
+    //        "layerId": layerId + "_aoi",
+    //        "data": [{
+    //            "layerId": layerId + "_aoi",
+    //            "featureId": "_aoi",
+    //            "dataService": "",
+    //            "id": "_aoi",
+    //            "geometry": {
+    //                "type": "Polygon",
+    //                "coordinates": [[
+    //                    [coords.minLon, coords.maxLat],
+    //                    [coords.maxLon, coords.maxLat],
+    //                    [coords.maxLon, coords.minLat],
+    //                    [coords.minLon, coords.minLat]
+    //                ]]
+    //            },
+    //            "type": "Feature"
+    //        }]
+    //    });
+    //}
 
     return exposed;
 });

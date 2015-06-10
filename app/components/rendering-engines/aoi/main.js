@@ -1,13 +1,22 @@
 define([
+
+    'text!./aoi.hbs',
     './aoi',
-    './aoi-publisher',
-    './aoi-subscriber'
-], function (aoi, aoiPublisher, aoiSubscriber) {
+    './aoi-mediator',
+    'handlebars'
+
+], function (aoiHBS, aoi,
+             aoiMediator
+) {
     return {
         initialize: function() {
-            aoiPublisher.init(this);
-            aoiSubscriber.init(this);
-            aoi.init(this);
+
+            var aoiTemplate = Handlebars.compile(aoiHBS);
+            var html = aoiTemplate();
+            this.html(html);
+
+            aoiMediator.init(this);
+            aoi.init(this, aoiMediator);
         }
     };                
 });
