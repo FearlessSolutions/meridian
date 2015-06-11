@@ -10,12 +10,9 @@ Event-driven, framework-agnostic, extensible architecture for mapping applicatio
 
 Just include the following `<iframe>` on any HTML page source code:
 
-`<iframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/"></iframe>`
+`<iframe src="https://<hostname>:3000/"></iframe>`
 - You can add style to the `<iframe>` to suit any need.
 - Meridian utilizes [CMAPI](http://cmapi.org) to recieve and send information while it is embedded.
-
-##Access Meridian:
-https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/
 
 ## Download Meridian and host locally:
 
