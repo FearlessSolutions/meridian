@@ -46,23 +46,23 @@ html, body { overflow:hidden;}
             .wrapper_login {
                 margin-top:4px; float:right;
                 height:24px; width:230px; max-width:280px;
-                /*background:rgba(255,255,255,0.2);  */
                 background: linear-gradient(to right, rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.1) 37%,rgba(255,255,255,0.3) 38%,rgba(255,255,255,0.3) 100%); /* W3C */
                 border-radius:4px;
                 font-size:12px; padding-right:10px;
                 }
+                .login_1 {
+                    float:left; margin-left:9px; margin-top:4px;
+                }
                 div[data-aura-component='displays/user-info'] .user-info {
-                    float:right;
-                    position:relative;
-                    top:4px;
+                    float:left;
+                    width:125px;
+                    margin-top:4px;
+                    margin-left:15px;
+                    text-overflow:ellipsis;
+                    white-space:nowrap;
+                    overflow:hidden;
                     color:rgba(0,0,0,0.7); font-weight: bold;
                 }
-                .navbar-text {
-                    float:right;
-                    position:relative;
-                    top:-11px;
-                    margin-right:15px;
-                    }
 
 .page-header {
 	margin:1px;
@@ -72,7 +72,7 @@ html, body { overflow:hidden;}
 }
 
 @media (min-width: 768px) {
-    .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand, .navbar-text {
+    .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
 		margin-left:0px;
 	}
 }
@@ -86,9 +86,9 @@ html, body { overflow:hidden;}
     .wrapper_hlabel { top:20px; }
     .wrapper_login {
         background:rgba(255,255,255,0);
+        margin-top:14px;
         }
         div[data-aura-component='displays/user-info'] .user-info {
             top:15px;
         }
-    .navbar-text	{ top:0px; }
 }
