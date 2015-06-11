@@ -10,7 +10,10 @@ define([
     var context,
         mediator,
         grid,
-        dataView;
+        dataView,
+        $panelBody,
+        $admingridContainer,
+        $admingrid;
 
     return {
         init: function(thisContext, thisMediator) {
@@ -18,6 +21,9 @@ define([
                 options;
 
             context = thisContext;
+            $panelBody = $('.panel-body'); // can't use context, height of panel-body is not static
+            $admingridContainer = context.$('#admingridContainer');
+            $admingrid = context.$('#admingrid');
             mediator = thisMediator;
 
             dataView = new Slick.Data.DataView();
@@ -67,10 +73,10 @@ define([
             });
         },
         visible: function() {
-            context.$('#admingridContainer').css('visibility','visible');
+            $admingridContainer.css('visibility','visible');
         },
         hidden: function() {
-            context.$('#admingridContainer').css('visibility','hidden');
+            $admingridContainer.css('visibility','hidden');
         },
         createGridData: function(data) {
             var currentDataArray = [];
@@ -95,7 +101,7 @@ define([
     };
 
     function gridHeight () {
-        context.$('#admingrid').height(context.sandbox.utils.pageHeight() - (context.$('.panel-body').height() + 145));
+        $admingrid.height(context.sandbox.utils.pageHeight() - ($panelBody.height() + 145));
     }
 
 });

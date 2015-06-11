@@ -1,3 +1,6 @@
+if (!window.location.origin) {
+    window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+}
 require.config({
     baseUrl: window.location.origin, //This makes it so that all modes start at the same place.
     waitSeconds: 30,
