@@ -1,5 +1,5 @@
 ## End of Life Notice:
-We have decided to discontinue supporting the development and support of the Meridian Framework in the short term. If interests sparks, we will be happy to pick this back up! In the meantime if you have any questions or concerns please feel free to reach out to @jlfoster, @@cwilmsen, @Bill345, or @sethmussey.
+We have decided to discontinue supporting the development and support of the Meridian Framework in the short term. If interests sparks, we will be happy to pick this back up! In the meantime if you have any questions or concerns please feel free to reach out to @jlfoster2, @cwilmsen, @Bill345, or @sethmussey.
 <hr>
 
 [ ![Codeship Status for ozone-development/meridian](https://codeship.com/projects/479f9b90-5167-0132-a553-7262abc25231/status)](https://codeship.com/projects/48335)
