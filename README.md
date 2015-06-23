@@ -1,3 +1,7 @@
+## End of Life Notice:
+We have decided to discontinue supporting the development and support of the Meridian Framework in the short term. If interests sparks, we will be happy to pick this back up! In the meantime if you have any questions or concerns please feel free to reach out to @jlfoster2, @cwilmsen, @Bill345, or @sethmussey.
+<hr>
+
 [ ![Codeship Status for ozone-development/meridian](https://codeship.com/projects/479f9b90-5167-0132-a553-7262abc25231/status)](https://codeship.com/projects/48335)
 
 ![alt tag](http://ozone-development.github.io/meridian/images/logos/merid1.2.png)
@@ -10,12 +14,9 @@ Event-driven, framework-agnostic, extensible architecture for mapping applicatio
 
 Just include the following `<iframe>` on any HTML page source code:
 
-`<iframe src="https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/"></iframe>`
+`<iframe src="https://<hostname>:3000/"></iframe>`
 - You can add style to the `<iframe>` to suit any need.
 - Meridian utilizes [CMAPI](http://cmapi.org) to recieve and send information while it is embedded.
-
-##Access Meridian:
-https://ec2-54-88-124-5.compute-1.amazonaws.com:3000/
 
 ## Download Meridian and host locally:
 
