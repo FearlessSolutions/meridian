@@ -1,0 +1,53 @@
+{
+  "_from": "aura",
+  "_id": "aura@0.9.4",
+  "_inBundle": false,
+  "_integrity": "sha1-SUzbqDNqzGL+LOs/tG+52/RPhGs=",
+  "_location": "/aura",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "aura",
+    "name": "aura",
+    "escapedName": "aura",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/aura/-/aura-0.9.4.tgz",
+  "_shasum": "494cdba8336acc62fe2ceb3fb46fb9dbf44f846b",
+  "_spec": "aura",
+  "_where": "/home/chris/workspace/meridian/app",
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "An event-driven architecture for developing scalable applications",
+  "devDependencies": {
+    "bower": "^1.3.12",
+    "chai": "^1.10.0",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-connect": "^0.9.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-yuidoc": "^0.6.0",
+    "grunt-mocha": "^0.4.11",
+    "mocha": "^2.0.1",
+    "sinon": "^1.12.2",
+    "sinon-chai": "^2.6.0"
+  },
+  "homepage": "http://aurajs.com",
+  "name": "aura",
+  "scripts": {
+    "pretest": "bower install",
+    "test": "grunt build"
+  },
+  "url": "https://github.com/aurajs/aura",
+  "version": "0.9.4"
+}
