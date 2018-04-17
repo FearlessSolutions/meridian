@@ -8,7 +8,8 @@ define([
     eventCountToolCSS, 
     eventCountToolHBS, 
     eventCountTool, 
-    eventCountToolMediator
+    eventCountToolMediator,
+    Handlebars
 ){
 
     return {

@@ -10,7 +10,8 @@ define([
     supportToolHBS, 
     aboutHBS,
     supportTool, 
-    supportMediator
+    supportMediator,
+    Handlebars
 ) {
     return {
         initialize: function() {

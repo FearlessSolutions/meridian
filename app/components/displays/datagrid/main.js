@@ -15,7 +15,8 @@ define([
     datagridCSS, 
     datagridHBS, 
     datagrid, 
-    datagridMediator
+    datagridMediator,
+    Handlebars
 ){
 
     return {

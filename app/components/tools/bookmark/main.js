@@ -8,7 +8,8 @@ define([
     bookmarkToolCSS,
     bookmarkToolHBS,
     bookmarkTool,
-    bookmarkMediator
+    bookmarkMediator,
+    Handlebars
 ) {
     return {
         initialize: function() {

@@ -8,7 +8,8 @@ define([
     zoomControlCSS, 
     zoomControlHBS, 
     zoomControl, 
-    zoomControlMediator
+    zoomControlMediator,
+    Handlebars
 ) {
 
     return {

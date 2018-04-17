@@ -14,7 +14,8 @@ define([
     admingridCSS, 
     admingridHBS, 
     admingrid, 
-    admingridMediator
+    admingridMediator,
+    Handlebars
 ) {
 
     return {

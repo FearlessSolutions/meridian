@@ -4,9 +4,9 @@ define([
     'text!./mock-map-url.hbs',
     './mock-configuration',
     'jquery',
-    'bootstrap',
-    'handlebars'
-], function(infoWinHBS, infoWinCSS, mapUrlHBS, config, $) {
+    'handlebars',
+    'bootstrap'
+], function(infoWinHBS, infoWinCSS, mapUrlHBS, config, $, Handlebars) {
     var context,
         DATASOURCE_NAME,
         mapUrlTemplate;
@@ -84,12 +84,6 @@ define([
                 processMapUrl: processMapUrl,
                 namespace: config.namespace
             };
-
-            //Add the datasource to the export options
-            app.sandbox.export.utils.addDatasource({
-                id: DATASOURCE_NAME,
-                exports: config.exports
-            });
         }
     };
 

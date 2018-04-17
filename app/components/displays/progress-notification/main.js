@@ -8,7 +8,8 @@ define([
     progressNotificationCSS,
     progressNotificationHBS,
     progressNotification,
-    progressNotificationMediator
+    progressNotificationMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

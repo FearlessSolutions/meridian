@@ -1,7 +1,8 @@
 define([
     'text!./visual-mode-toggle-notification.hbs',
+    'handlebars',
     'bootstrap'
-], function (notificationHBS) {
+], function (notificationHBS, Handlebars) {
     var context,
         mediator,
         targetVisualMode,

@@ -8,7 +8,8 @@ define([
     uploadDataToolCSS, 
     uploadDataToolHBS, 
     uploadDataTool,  
-    uploadDataToolMediator
+    uploadDataToolMediator,
+    Handlebars
 ) {
     return {
         initialize: function() {

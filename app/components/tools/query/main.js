@@ -8,7 +8,8 @@ define([
     queryToolCSS, 
     queryToolHBS, 
     queryTool, 
-    queryToolMediator
+    queryToolMediator,
+    Handlebars
 ) {
 
     return {

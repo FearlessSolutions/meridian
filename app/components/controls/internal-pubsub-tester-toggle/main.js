@@ -8,7 +8,8 @@ define([
     internalPubsubTesterToggleHBS,
     internalPubsubTesterToggle,
     internalPubsubTesterTogglePublisher,
-    internalPubsubTesterToggleSubscriber
+    internalPubsubTesterToggleSubscriber,
+    Handlebars
 ){
     return {
         initialize: function() {

@@ -6,7 +6,8 @@ define([
 ], function (
     playbackHBS,
     playback, 
-    playbackMediator
+    playbackMediator,
+    Handlebars
 ) {
     return {
         initialize: function() {

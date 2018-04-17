@@ -1,8 +1,8 @@
 define([
     'text!./user-settings-basemapList.hbs',
-    'bootstrap',
-    'handlebars'
-], function (userSettingsListHBS) {
+    'handlebars',
+    'bootstrap'
+], function (userSettingsListHBS, Handlebars) {
 
     var context,
         mediator,
@@ -14,6 +14,8 @@ define([
         $minLon,
         $maxLat,
         $maxLon,
+        $username,
+        $password,
         $modal,
         $modalBody,
         $closeButton;
@@ -130,6 +132,8 @@ define([
             $minLon = context.$('#user-settings-minLon');
             $maxLat = context.$('#user-settings-maxLat');
             $maxLon = context.$('#user-settings-maxLon');
+            $username = context.$('#user-settings-user');
+            $password = context.$('#user-settings-password');
             $queryToolDefaultToggle = context.$('#query-tool-default .btn-toggle-container');
             $cursorLocationDefaultToggle = context.$('#cursor-location-default .btn-toggle-container');
 
@@ -180,6 +184,8 @@ define([
                     maxLat = $maxLat.val() || '',
                     maxLon = $maxLon.val() || '',
                     minLat = $minLat.val() || '',
+                    username = $username.val() || '',
+                    password = $password.val() || '',
                     errorFree = true;
 
                 if(isNaN(minLon) || !isFinite(minLon) || minLon === ''){
@@ -228,7 +234,9 @@ define([
                         },
                         "cursorLocation": {
                             "defaultDisplay": showCursorLocationDefault
-                        }
+                        },
+                        username: username,
+                        password: password
                     });
 
                     if(preferencesSaveStatus) {

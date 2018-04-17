@@ -6,7 +6,8 @@ define([
 ], function (
     dataToggleHBS,
     dataToggle,
-    dataToggleMediator
+    dataToggleMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

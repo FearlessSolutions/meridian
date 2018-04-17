@@ -1,12 +1,13 @@
 define([
     'text!./data-history-entry.hbs',
     'text!./data-history-detail-view.hbs',
-    'bootstrap',
     'handlebars',
+    'bootstrap',
     'moment'
 ], function (
     dataHistoryEntryHBS,
-    dataHistoryDetailViewHBS
+    dataHistoryDetailViewHBS,
+    Handlebars
 ) {
     var context,
         mediator,

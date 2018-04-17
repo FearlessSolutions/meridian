@@ -3,7 +3,8 @@
  * Cleans and aborts as required
  */
 define([
-], function() {
+    'jquery'
+], function($) {
     var activeAJAXs;
     var exposed = {
         initialize: function(app) {
@@ -57,10 +58,18 @@ define([
 
             //Register a listener so that clean is automatically called after each ajax call
             $(document).ajaxComplete(app.sandbox.ajax.clean);
+            $.ajaxPrefilter(function(options, originalOptions, jqXHR){
+                var userPrefs = app.sandbox.utils.preferences.get('john'),
+                    username = userPrefs ? userPrefs.username : '',
+                    password = userPrefs ? userPrefs.password : '';
+
+                jqXHR.setRequestHeader(
+                    'authorization',
+                    'Basic ' + btoa(username + ':' + password)
+                );
+            });
         }
     };
-
-
 
     return exposed;
 });

@@ -1,7 +1,7 @@
 define([
     'text!./datagrid-context-menu-row.hbs',
     'handlebars'
-], function (menuRowHBS) {
+], function (menuRowHBS, Handlebars) {
     var context,
         mediator,
         $menu,

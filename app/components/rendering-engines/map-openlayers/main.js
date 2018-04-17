@@ -8,7 +8,8 @@ define([
                              olMapRendererCSS,
                              olMapRendererHBS,
                              olMapRendererPublisher,
-                             olMapRendererSubscriber){
+                             olMapRendererSubscriber,
+                             Handlebars){
     return {
         initialize: function() {
             var context = this;

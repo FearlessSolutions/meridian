@@ -5,35 +5,39 @@
  * @param app
  */
 
-var context = {};
 
-var use = function(path){
-    require('./' + path + '/main').init(context);
-};
+const express = require('express');
+const bodyParser = require('body-parser');
+const https = require('https');
 
-exports.init = function(app){
+const app = express();
 
-    context.app = app;
-    context.sandbox = {};
+const certs = require('certs/certs');
 
-    // Profile - uncomment to use a local instance of elastic search
-//    require('./extensions/utils/Config').setProfile("local-test");
+// Launch vanilla https server
+https.createServer(
+    {
+        key: certs.key,
+        cert: certs.cert
+    },
+    app
+).listen(443); //You must run as root to listen on this port
+
+// Enable parsing of post bodies
+app.use(bodyParser.json()); //TODO large size
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+module.exports = app;
+
+
 
     // Extensions
-    use('extensions/config');
-    use('extensions/cors');
-    use('extensions/authorization');
-    use('extensions/elastic');
-    use('extensions/gazetteer');
-    use('extensions/kmltogeojson');
-    use('extensions/transformation');
-    use('extensions/xml-parser');
-    use('extensions/display-names');
 
-    // Components
-    use('components/mock');
-    use('components/fake');
-    use('components/file-upload');
-    use('components/file-download');
+    // use('extensions/display-names');
+    //
+    // // Components
+    // use('components/mock');
+    // use('components/fake');
 
-};

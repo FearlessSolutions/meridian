@@ -1,9 +1,9 @@
 define([
     'text!./snapshot.hbs',
     './snapshot-menu',
+    'handlebars',
     'bootstrap',
-    'handlebars'
-], function (snapshotHBS, snapshotMenu) {
+], function (snapshotHBS, snapshotMenu, Handlebars) {
     var context,
         mediator,
         snapshotTemplate,

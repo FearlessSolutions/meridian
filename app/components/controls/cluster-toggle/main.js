@@ -6,7 +6,8 @@ define([
     'handlebars'
 ], function (clusterToggleHBS,
              clusterToggle, 
-             clusterToggleMediator
+             clusterToggleMediator,
+             Handlebars
 ) {
     return {
         initialize: function() {

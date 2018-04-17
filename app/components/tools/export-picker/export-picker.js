@@ -1,8 +1,8 @@
 define([
     'text!./export-picker-layers.hbs',
+    'handlebars',
     'bootstrap',
-    'handlebars'
-], function (layersHBS) {
+], function (layersHBS, Handlebars) {
 
     var context,
         mediator,

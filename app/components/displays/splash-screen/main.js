@@ -3,8 +3,9 @@ define([
     './splash-screen',
     'handlebars'
 ], function (
-    splashScreenCSS, 
-    splashScreen
+    splashScreenCSS,
+    splashScreen,
+    Handlebars
 ) {
 
     return {

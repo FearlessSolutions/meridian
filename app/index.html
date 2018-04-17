@@ -3,9 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>Meridian Map</title>
-    <link rel="stylesheet" href="/libs/bootstrap-3.2.0/css/bootstrap.css">
+    <!--<link rel="stylesheet" href="/libs/bootstrap-3.2.0/css/bootstrap.css">-->
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="/libs/meridian_custom/css/meridian_custom.css">
-    <link rel="stylesheet" href="/libs/toastr-2.0.1/toastr.css">
+    <!--<link rel="stylesheet" href="/libs/toastr-2.0.1/toastr.css">-->
+    <link rel="stylesheet" href="/node_modules/toastr/build/toastr.css">
     <link rel="stylesheet" href="/libs/bootstrap-dialog/bootstrap-dialog.css">
     <link rel="stylesheet" href="/libs/jquery-ui-1.11.2.custom/jquery-ui.min.css">
     <link rel="stylesheet" href="/libs/bootstrap-multiselect-0.9.4/bootstrap-multiselect.css">
@@ -13,7 +15,9 @@
     <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="/styles/main.css">
     <!-- endbuild -->
-    <script data-main="./app" src="/bower_components/requirejs/require.js"></script>
+
+    <!--<script>window._ = {};</script>-->
+    <script data-main="./app" src="/node_modules/requirejs/require.js"></script>
 </head>
 <body>
     <div id="loading">
@@ -24,8 +28,6 @@
         <div data-aura-component="displays/notification-modal"></div>
         <div data-aura-component="displays/clear"></div>
         <div data-aura-component="data-services/mock"></div>
-        <div data-aura-component="data-services/fake"></div>
-        <div data-aura-component="apis/cmapi"></div>
         <div data-aura-component="rendering-engines/map-openlayers"></div>
         <div data-aura-component="controls/basemap-gallery"></div>
         <div data-aura-component="controls/timeline"></div>
@@ -33,9 +35,7 @@
         <div data-aura-component="tools/draw"></div>
         <div data-aura-component="tools/bookmark"></div>
         <div data-aura-component="tools/data-history"></div>
-        <div data-aura-component="tools/upload-data"></div>
         <div data-aura-component="tools/support"></div>
-        <div data-aura-component="tools/export-picker"></div>
         <div data-aura-component="controls/user-settings"></div>
         <div id="header-left-container">
             <div data-aura-component="tools/locator"></div>
@@ -53,13 +53,9 @@
                 <div data-aura-component="controls/datagrid-toggle"></div>
                 <div data-aura-component="controls/legend-toggle"></div>
                 <div data-aura-component="controls/clear-toggle"></div>
-                <!-- <div data-aura-component="controls/playback"></div> -->
                 <div data-aura-component="controls/data-history-toggle"></div>
-                <div data-aura-component="controls/upload-data-toggle"></div>
-                <div data-aura-component="controls/export-picker-toggle"></div>
                 <div data-aura-component="controls/basemap-gallery-toggle"></div>
                 <div data-aura-component="controls/timeline-toggle"></div>
-                <!-- <div data-aura-component="controls/internal-pubsub-tester-toggle"></div> -->
                 <div data-aura-component="controls/user-settings-toggle"></div>
                 <div data-aura-component="controls/support-toggle"></div>
             </div>
@@ -69,7 +65,6 @@
         <div data-aura-component="displays/notifications"></div>
         <div data-aura-component="displays/label"></div>
         <div data-aura-component="displays/legend"></div>
-        <div data-aura-component="controls/internal-pubsub-tester"></div>
         <div id="footer-container">
             <span class="footer-left col-sm-4 col-md-4 hidden-xs">
                 <div data-aura-component="displays/mouse-position"></div>
@@ -77,7 +72,6 @@
             <span class="footer-center col-xs-12 col-sm-4 col-md-4">
                 <div class="footer-center-container">
                     <div data-aura-component="displays/progress-notification"></div>
-                    <div data-aura-component="displays/user-info"></div>
                 </div>
             </span>
             <span class="footer-right col-sm-4 col-md-4 hidden-xs">

@@ -8,7 +8,8 @@ define([
     clearHBS, 
     clearCSS, 
     clear,  
-    clearMediator
+    clearMediator,
+    Handlebars
 ) {
 
     return {

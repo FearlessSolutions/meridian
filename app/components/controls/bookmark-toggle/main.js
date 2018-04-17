@@ -6,7 +6,8 @@ define([
 ], function (
     bookmarkToggleHBS,
     bookmarkToggle,
-    bookmarkToggleMediator
+    bookmarkToggleMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

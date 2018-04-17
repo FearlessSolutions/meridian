@@ -8,7 +8,8 @@ define([
     legendCSS, 
     legendHBS, 
     legend, 
-    legendMediator
+    legendMediator,
+    Handlebars
 ) {
 
     return {

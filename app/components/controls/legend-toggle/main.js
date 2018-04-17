@@ -6,7 +6,8 @@ define([
 ], function (
     legendToggleHBS,
     legendToggle,
-    legendToggleMediator
+    legendToggleMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

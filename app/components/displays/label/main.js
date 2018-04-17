@@ -8,7 +8,8 @@ define([
     labelDisplay, 
     labelMediator, 
     labelHBS, 
-    labelCSS
+    labelCSS,
+    Handlebars
 ) {
 
     return {

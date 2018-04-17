@@ -8,7 +8,8 @@ define([
     timelineCSS, 
     timelineHBS, 
     timeline, 
-    timelineMediator
+    timelineMediator,
+    Handlebars
 ) {
 
     return {

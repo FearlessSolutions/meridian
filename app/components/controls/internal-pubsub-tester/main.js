@@ -12,7 +12,8 @@ define([
     internalPubSubTesterHBS,
     internalPubSubTesterConfig,
     internalPubsubTesterPublisher,
-    internalPubsubTesterSubscriber
+    internalPubsubTesterSubscriber,
+    Handlebars
 ){
     return {
         initialize: function() {

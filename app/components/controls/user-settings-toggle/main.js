@@ -6,7 +6,8 @@ define([
 ], function (
     userSettingsToggleHBS,
     userSettingsToggle,
-    userSettingsToggleMediator
+    userSettingsToggleMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

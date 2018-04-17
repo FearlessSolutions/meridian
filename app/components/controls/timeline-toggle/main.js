@@ -6,7 +6,8 @@ define([
 ], function (
     timelineToggleHBS,
     timelineToggle,
-    timelineToggleMediator
+    timelineToggleMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

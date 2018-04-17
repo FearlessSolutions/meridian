@@ -3,7 +3,7 @@ define([
     'handlebars',
     'bootstrap',
     'jqueryUI'
-], function (imageHBS) {
+], function (imageHBS, Handlebars) {
     var context,
         mediator,
         $legend,

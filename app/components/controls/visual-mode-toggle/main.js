@@ -8,7 +8,8 @@ define([
     visualModeCSS, 
     visualModeHBS, 
     visualMode,  
-    visualModeMediator
+    visualModeMediator,
+    Handlebars
 ) {
 
     return {

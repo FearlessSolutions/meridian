@@ -3,7 +3,7 @@ define([
     './clear-toggle',
     './clear-toggle-mediator',
     'handlebars'
-], function (clearHBS, clear, clearMediator) {
+], function (clearHBS, clear, clearMediator, Handlebars) {
 
     return {
         initialize: function() {

@@ -8,7 +8,8 @@ define([
     exportPickerCSS,
     exportPickerHBS,
     exportPicker,
-    exportPickeMediator
+    exportPickeMediator,
+    Handlebars
 ) {
     var COMPONENT_NAME = 'tools-export-picker';
 

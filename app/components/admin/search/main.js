@@ -8,7 +8,8 @@ define([
     searchToolCSS, 
     searchToolHBS, 
     searchTool, 
-    searchMediator
+    searchMediator,
+    Handlebars
 ) {
     return {
         initialize: function() {

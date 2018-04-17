@@ -6,7 +6,8 @@ define([
 ], function(
     exportpickerHBS, 
     exportPicker, 
-    exportPickerMediator
+    exportPickerMediator,
+    Handlebars
 ){
 
     return {

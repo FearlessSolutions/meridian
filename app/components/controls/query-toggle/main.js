@@ -6,7 +6,8 @@ define([
 ], function (
     queryToggleHBS,
     queryToggle,
-    queryToggleMediator
+    queryToggleMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

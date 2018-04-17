@@ -123,7 +123,7 @@ define([
                                 if(err.statusText === 'abort') {
                                     return;
                                 }
-                                handleError({queryId: queryId});
+                                handleError({queryId: queryId}, e);
                             } else if (!results || results.length === 0) {
                                 completeQuery(queryName, queryId);
                             } else {
@@ -292,12 +292,20 @@ define([
         });
     }
 
-    function handleError(params) {
-        mediator.publishMessage({
-            messageType: 'error',
-            messageTitle: 'Data Service',
-            messageText: 'Connection to data service failed.'
-        });
+    function handleError(params, error) {
+        if(error && error.status === 401){
+            mediator.publishMessage({
+                messageType: 'error',
+                messageTitle: 'Failed Authorization',
+                messageText: 'Please log in via the user settings.'
+            });
+        } else{
+            mediator.publishMessage({
+                messageType: 'error',
+                messageTitle: 'Data Service',
+                messageText: 'Connection to data service failed.'
+            });
+        }
 
         mediator.removeFromProgressQueue();
 
@@ -345,26 +353,25 @@ define([
             },
             xhrFields: {
                 withCredentials: true
+            },
+            success: function (data) {
+                if (data && data.length > 0) {
+                    // Process and then loop to the next page
+                    processDataPage(data, params);
+                    params.start = parseInt(params.start || 0) + parseInt(params.pageSize);
+                    queryData(params);
+                } else {
+                    completeQuery(queryName, queryId);
+                }
+            },
+            error: function (e) {
+                //If the error was because we aborted, ignore
+                if (e.statusText === 'abort') {
+                    return;
+                }
+                handleError(params, e);
+                return false;
             }
-        })
-        .done(function(data) {
-            if(data && data.length > 0) {
-                // Process and then loop to the next page
-                processDataPage(data, params);
-                params.start = parseInt(params.start || 0) + parseInt(params.pageSize);
-                queryData(params);
-            } else {
-                completeQuery(queryName, queryId);
-            }
-
-        })
-        .error(function(e) {
-            //If the error was because we aborted, ignore
-            if(e.statusText === 'abort') {
-                return;
-            }
-            handleError(params);
-            return false;
         });
 
         context.sandbox.ajax.addActiveAJAX({

@@ -1,7 +1,7 @@
 define([
     'text!./user-info.hbs',
     'handlebars'
-], function (userInfoHBS) {
+], function (userInfoHBS, Handlebars) {
     var context;
 
     var exposed = {

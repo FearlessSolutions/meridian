@@ -6,7 +6,8 @@ define([
 ], function (
     drawToggleHBS,
     drawToggle,
-    drawToggleMediator
+    drawToggleMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

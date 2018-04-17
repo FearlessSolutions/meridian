@@ -6,7 +6,8 @@ define([
 ], function (
     dataHistoryToggleHBS,
     dataHistoryToggle,
-    dataHistoryToggleMediator
+    dataHistoryToggleMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

@@ -8,7 +8,8 @@ define([
     userSettings, 
     userSettingsMediator, 
     userSettingsCss, 
-    userSettingsHBS
+    userSettingsHBS,
+    Handlebars
 ) {
     return {
         initialize: function() {

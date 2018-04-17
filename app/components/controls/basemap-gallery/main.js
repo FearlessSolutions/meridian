@@ -8,7 +8,8 @@ define([
     basemapGalleryCSS, 
     basemapGalleryHBS, 
     basemapGallery, 
-    basemapGalleryMediator
+    basemapGalleryMediator,
+    Handlebars
 ) {
 
     return {

@@ -67,7 +67,6 @@ define([
                 merge: $.merge, // for help see jquery.merge
                 now: $.now, // for help see jquery.now
                 parseJSON: $.parseJSON, // for help see jquery.parseJSON
-                isEmptyObject: $.isEmptyObject,
                 preferences: {
                     get: function(key){
                         if(typeof(Storage)!=="undefined"){
@@ -240,38 +239,41 @@ define([
                         //position 5,6 are lon whole and decimal parts of the number.
                         dd[1] = parseFloat(dd[1]);
                         dd[4] = parseFloat(dd[4]);
-                        coordinates = {};
-                        coordinates.dd = {
-                            lat: dd[1],
-                            lon: dd[4]
+                        coordinates = {
+                            dd: {
+                                lat: dd[1],
+                                lon: dd[4]
+                            },
+                            dms: cc.ddToDms(dd[1],dd[4],'string'),
+                            utm: cc.ddToUtm(dd[1],dd[4],'string'),
+                            mgrs: cc.ddToMgrs(dd[1],dd[4],'string')
                         };
-                        coordinates.dms = cc.ddToDms(dd[1],dd[4],'string');
-                        coordinates.utm = cc.ddToUtm(dd[1],dd[4],'string');
-                        coordinates.mgrs = cc.ddToMgrs(dd[1],dd[4],'string');
-
                     }else if(dms !== null){
                         //positions 2,4 are the decimal places only
-                        coordinates = {};
-                        coordinates.dd = cc.dmsToDd(dms[1], dms[3], 'object');
-                        coordinates.dms = dms[0];
-                        coordinates.utm = cc.dmsToUtm(dms[1], dms[3], 'string');
-                        coordinates.mgrs = cc.dmsToMgrs(dms[1], dms[3], 'string');
+                        coordinates = {
+                            dd: cc.dmsToDd(dms[1], dms[3], 'object'),
+                            dms: dms[0],
+                            utm: cc.dmsToUtm(dms[1], dms[3], 'string'),
+                            mgrs: cc.dmsToMgrs(dms[1], dms[3], 'string')
+                        };
 
                     }else if(utm !== null){
                         //position 1 is the zone, 2 is the easting, 3 the northing.
-                        coordinates = {};
-                        coordinates.dd = cc.utmToDd(utm[1], utm[2], utm[3], 'object');
-                        coordinates.dms = cc.utmToDms(utm[1], utm[2], utm[3], 'string');
-                        coordinates.utm = utm[0];
-                        coordinates.mgrs = cc.utmToMgrs(utm[1], utm[2], utm[3], 'string');
+                        coordinates = {
+                            dd: cc.utmToDd(utm[1], utm[2], utm[3], 'object'),
+                            dms: cc.utmToDms(utm[1], utm[2], utm[3], 'string'),
+                            utm: utm[0],
+                            mgrs: cc.utmToMgrs(utm[1], utm[2], utm[3], 'string'),
+                        };
 
                     }else if(mgrs !== null){
                         //position 1 is the zone, 2 the gridLetters and 3 the numeric location.
-                        coordinates = {};
-                        coordinates.dd = cc.mgrsToDd(mgrs[1], mgrs[2], mgrs[3], 'object');
-                        coordinates.dms = cc.mgrsToDms(mgrs[1], mgrs[2], mgrs[3], 'string');
-                        coordinates.utm = cc.mgrsToUtm(mgrs[1], mgrs[2], mgrs[3], 'string');
-                        coordinates.mgrs = mgrs[1] + mgrs[2] + mgrs[3];
+                        coordinates = {
+                            dd: cc.mgrsToDd(mgrs[1], mgrs[2], mgrs[3], 'object'),
+                            dms: cc.mgrsToDms(mgrs[1], mgrs[2], mgrs[3], 'string'),
+                            utm: cc.mgrsToUtm(mgrs[1], mgrs[2], mgrs[3], 'string'),
+                            mgrs: mgrs[1] + mgrs[2] + mgrs[3]
+                        };
                     }
                     
                     return coordinates;

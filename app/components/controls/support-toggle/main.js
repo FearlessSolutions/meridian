@@ -6,8 +6,8 @@ define([
 ], function (
     supportToggleHBS,
     supportToggle,
-    supportToggleMediator
-    
+    supportToggleMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

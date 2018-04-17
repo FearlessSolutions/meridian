@@ -6,7 +6,8 @@ define([
 ], function (
     basemapGalleryToggleHBS,
     basemapGalleryToggle,
-    basemapGalleryToggleMediator
+    basemapGalleryToggleMediator,
+    Handlebars
 ){
     return {
         initialize: function() {

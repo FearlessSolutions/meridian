@@ -2,19 +2,21 @@ require.config({
     baseUrl:'./', //This makes it so that all modes start at the same place.
     waitSeconds: 30,
     paths: {
-        aura: 'bower_components/aura/lib',
-        handlebars: 'bower_components/handlebars/handlebars',
-        underscore: 'bower_components/underscore/underscore',
-        jquery: 'bower_components/jquery/dist/jquery',
-        bootstrap: 'libs/bootstrap-3.2.0/bootstrap',
+        handlebars: 'node_modules/handlebars/dist/handlebars',
+        underscore: 'node_modules/underscore/underscore',
+        _: 'node_modules/underscore/underscore',
+        jquery: 'node_modules/jquery/dist/jquery',
+        // bootstrap: 'libs/bootstrap-3.2.0/bootstrap',
+        bootstrap: 'node_modules/bootstrap/dist/js/bootstrap',
         daterangepicker: 'libs/bootstrap-daterangepicker-master/daterangepicker',
-        toastr: 'libs/toastr-2.0.1/toastr',
+        // toastr: 'libs/toastr-2.0.1/toastr',
+        toastr: 'node_modules/toastr/build/toastr.min',
         jqueryDrag: 'libs/SlickGrid-master/lib/jquery.event.drag-2.2',
         jqueryDrop: 'libs/SlickGrid-master/lib/jquery.event.drop-2.2',
         bootstro: 'libs/bootstro/bootstro',
         typeahead: 'libs/bootstrap3-typeahead-3.0.3/bootstrap3-typeahead',
-        backbone: 'libs/backbone-1.1.2/backbone',
-        kml2geojson: 'libs/kml2geojson/kml2geojson',
+        // backbone: 'libs/backbone-1.1.2/backbone',
+        backbone: 'node_modules/backbone/backbone',
         paginator: 'libs/bootstrap-paginator/bootstrap-paginator.min',
         jqueryCssWatch: 'libs/jquery-csswatch-1.2.1/jquery.csswatch',
         select2: 'libs/select2-3.4.8/select2',
@@ -25,15 +27,14 @@ require.config({
         slickdataview: 'libs/SlickGrid-master/slick.dataview',
         slickRowSelectionModel: 'libs/SlickGrid-master/plugins/slick.rowselectionmodel',
         slickpager: 'libs/SlickGrid-master/controls/slick.pager',
-        moment: 'libs/momentjs-2.8.3/moment.min',
+        // moment: 'libs/momentjs-2.8.3/moment.min',
+        moment: 'node_modules/moment/min/moment.min',
         togeojson: 'libs/togeojson/togeojson',
         coordinateConverter: 'libs/coordinate-converter/cc',
-        text: 'bower_components/requirejs-text/text'
+        aura: 'libs/aura/lib/',
+        text: 'node_modules/requirejs-text/text'
     },
     shim:{
-        aura: {
-            deps: ['underscore', 'jquery']
-        },
         backbone: {
             deps: ['underscore', 'jquery']
         },
@@ -74,6 +75,9 @@ require.config({
         },
         togeojson: {
             deps: ['jquery']
+        },
+        aura: {
+            deps: ['underscore', 'jquery', '_']
         }
     }
 });
@@ -106,9 +110,8 @@ require(['jquery',
     .use('extensions/utils-extension/utils-extension')
     .use('extensions/ajax-handler-extension/ajax-handler-extension')
     .use('extensions/session-extension/session-extension')
-    .use('extensions/external-pubsub-extension/external-pubsub-extension')
     .use('extensions/state-manager-extension/state-manager-extension')
-    .use('extensions/data-storage-extension/data-storage-extension')
+    .use('extensions/data-storage-client-extension/data-storage-client-extension')
     .use('extensions/splash-screen-extension/splash-screen-extension')
     .use('extensions/snapshot-extension/snapshot-extension')
     .use('extensions/map-configuration-extension/map-configuration-extension')
@@ -116,15 +119,7 @@ require(['jquery',
     .use('extensions/support-configuration-extension/support-configuration-extension')
     .use('extensions/icon-extension/icon-extension')
     .use('extensions/locator-extension/locator-query-extension')
-    .use('extensions/exports/export-utils/export-utils')
-    .use('extensions/exports/geojson-extension/geojson-extension')
-    .use('extensions/exports/csv-extension/csv-extension')
-    .use('extensions/exports/kml-extension/kml-extension')
-    .use('extensions/exports/googlemaps-extension/googlemaps-extension')
     .use('extensions/data-services/mock-extension/mock-extension')
-    .use('extensions/data-services/fake-extension/fake-extension')
-    .use('extensions/cmapi-extension/cmapi-extension')
-    .use('extensions/upload-data-extension/upload-data-extension')
 
     .start({ components: 'body' })
     .then(function(){

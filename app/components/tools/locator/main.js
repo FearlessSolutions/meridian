@@ -8,7 +8,8 @@ define([
     locatorCSS, 
     locatorHBS, 
     locator, 
-    locatorMediator
+    locatorMediator,
+    Handlebars
 ) {
     return {
         initialize: function() {

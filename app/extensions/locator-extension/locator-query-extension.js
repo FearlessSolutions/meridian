@@ -3,7 +3,7 @@ define([
     'text!./info-win.css',
 	'./locator-configuration',
     'handlebars'
-], function(infoWinHBS, infoWinCSS, configuration){
+], function(infoWinHBS, infoWinCSS, configuration, Handlebars){
     var context,
         infoWinTemplate,
         LAYER_ID = 'static_geolocator';

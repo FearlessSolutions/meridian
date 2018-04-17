@@ -8,7 +8,8 @@ define([
     notificationCSS, 
     notificationHBS, 
     notification, 
-    notificationMediator
+    notificationMediator,
+    Handlebars
 ) {
 
     return {

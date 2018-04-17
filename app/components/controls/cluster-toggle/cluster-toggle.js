@@ -1,8 +1,8 @@
 define([
     'text!./cluster-toggle-notification.hbs',
-    'bootstrap',
-    'handlebars'
-], function (notificationHBS) {
+    'handlebars',
+    'bootstrap'
+], function (notificationHBS, Handlebars) {
 
     var context,
         mediator,

@@ -1,9 +1,9 @@
 define([
     'text!./bookmark-entry.hbs',
-    'bootstrap',
     'handlebars',
+    'bootstrap',
     'moment'
-], function (bookmarkEntryHBS) {
+], function (bookmarkEntryHBS, Handlebars) {
 
     var context,
         mediator,

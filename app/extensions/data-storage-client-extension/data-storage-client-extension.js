@@ -1,7 +1,7 @@
 define([
     'jquery',
     'backbone'
-], function(){
+], function($, Backbone){
 
     return {
         initialize: function(app) {

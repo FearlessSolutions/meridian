@@ -2,7 +2,7 @@ define([
     'text!./snapshot-menu.hbs',
     'text!./client-only-snapshot-menu.hbs',
     'handlebars'
-], function (snapshotMenuHBS, clientOnlyMenuHBS) {
+], function (snapshotMenuHBS, clientOnlyMenuHBS, Handlebars) {
     var context, mediator;
 
     var exposed = {

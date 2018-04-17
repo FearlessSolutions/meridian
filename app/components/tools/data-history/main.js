@@ -8,7 +8,8 @@ define([
     dataHistoryCSS,
     dataHistoryHBS,
     dataHistory,
-    dataHistoryMediator
+    dataHistoryMediator,
+    Handlebars
 ) {
     return {
         initialize: function() {

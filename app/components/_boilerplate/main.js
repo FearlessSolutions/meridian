@@ -8,7 +8,8 @@ define([
     boilerplateCSS, 
     boilerplateHBS, 
     boilerplate, 
-    boilerplateMediator
+    boilerplateMediator,
+    Handlebars
 ) {
 
     return {

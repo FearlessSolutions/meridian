@@ -8,7 +8,8 @@ define([
     mousePositionCSS, 
     mousePositionHBS, 
     mousePosition, 
-    mousePositionMediator
+    mousePositionMediator,
+    Handlebars
 ) {
 
     return {
