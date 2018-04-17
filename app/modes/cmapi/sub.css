@@ -1,9 +1,0 @@
-#sub #sub-console{
-	height: 240px;
-	overflow-y: auto;
-}
-
-#sub .subscribed{
-	background-color: #95D654;
-	color: #0099FF;
-}

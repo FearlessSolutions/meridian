@@ -1,9 +1,0 @@
-1. run sudo apt-get install nginx
-2. Link (ln) /etc/nginx/sites-available/nginx.conf to  meridian/server/nginx/nginx.conf
-3. Link (ln) /etc/nginx/sites-enabled/nginx.conf to  /etc/nginx/sites-available/nginx.conf (make a chain)
-4. Install meridian/server/certs/client.p12 into your browser
-5. Run sudo /usr/sbin/nginx (This will need to be run at every startup, but only once)
-6. Go to https://localhost (notice there is no port number)
-You're ready to go.
-
-If you make any changes to nginx.conf, you will need to run sudo nginx -s reload
